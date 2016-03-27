@@ -1,7 +1,8 @@
 # Private directory
 
-The content of this directory is ignored by Git. This is the default place
-where to store your private configuration layers.
+Private subdirectory in the Spacemacs `.emacs.d` configuration directory.
+
+This directory is the for individual user's configuration files and is ignored by git when updating the main Spacemacs project. It is kept as a separate repository.
 
 To create a new configuration layer:
 
