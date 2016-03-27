@@ -1,4 +1,4 @@
-# Private directory
+# Spacemacs Private directory
 
 Private subdirectory in the Spacemacs `.emacs.d` configuration directory.
 
