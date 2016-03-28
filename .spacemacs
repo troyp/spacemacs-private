@@ -28,7 +28,8 @@ values."
      emacs-lisp
      git
      markdown
-     org
+     (org :variables
+             org-enable-github-support t)
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
@@ -38,6 +39,7 @@ values."
      haskell
      c-c++
      html
+     javascript
      extra-langs
      lua
      python
@@ -295,15 +297,33 @@ you should place you code here."
 
   (global-set-key [\M-f12] 'shell-pop)
 
-  ;; ISEARCH.
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | ISearch |
+  ;; '---------'
+
   (define-key isearch-mode-map (kbd "C-'") 'avy-isearch)
   (define-key isearch-mode-map (kbd "C-\"") 'helm-swoop)
 
-  ;; KEYBOARD MACROS.
-  ;;
-  (fset 'switch-to-most-recent-buffer [?\C-x ?b return])
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | C-c C-v |
+  ;; '---------'
 
-  ;; REGEX
+  (eval-after-load "markdown-mode"
+    '(define-key markdown-mode-map (kbd "C-c C-v") 'markdown-export-to-html-and-view))
+  (eval-after-load "web-mode"
+    '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-browser))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------,
+  ;; | Org-Mode |
+  ;; '----------'
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------,
+  ;; | Regex |
+  ;; '-------'
 
   ;; modified emacs source: GPL3
   (defun pcre-occur (regexp &optional nlines)
@@ -367,9 +387,7 @@ See also `multi-occur-in-matching-buffers'."
   ;; *           *
   ;; *************
 
-  (global-set-key [f9] 'evil-mode)
-
-  (setq-default evil-normal-state-message "-- NORMAL --")
+  ;; (global-set-key [f9] 'evil-mode)
 
   ;; -----------------------
   ;; evil-symbol-word-search
@@ -385,7 +403,14 @@ See also `multi-occur-in-matching-buffers'."
   (defalias 'evsw 'toggle-evil-symbol-word-search)
   (define-key evil-normal-state-map (kbd "C-*") #'toggle-evil-symbol-word-search)
 
-  ;; NORMAL-STATE
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------------------------,
+  ;; | Evil State Key Bindings |
+  ;; '-------------------------'
+  ;;
+  ;; ,--------------,
+  ;; | NORMAL STATE |
+  ;; '--------------'
   (define-key evil-normal-state-map [delete] #'kill-this-buffer)
   (defun insert-space () (interactive) (insert ? ))
   (define-key evil-normal-state-map (kbd "S-SPC") #'insert-space)
@@ -400,8 +425,13 @@ See also `multi-occur-in-matching-buffers'."
   (define-key evil-normal-state-map (kbd "gU") #'evil-downcase)
   ;; provide evil-repeat-find-char-reverse binding
   (define-key evil-normal-state-map (kbd "M-;") #'evil-repeat-find-char-reverse)
+  ;; [r and ]r move to beginning and end of region
+  (define-key evil-normal-state-map (kbd "[r") #'evil-visual-jump-to-region-beginning)
+  (define-key evil-normal-state-map (kbd "]r") #'evil-visual-jump-to-region-end)
 
-  ;; VISUAL STATE
+  ;; ,--------------,
+  ;; | VISUAL STATE |
+  ;; '--------------'
   (defun insert-space-visual () (interactive) (execute-kbd-macro " ") (evil-visual-restore))
   (define-key evil-visual-state-map (kbd "S-SPC") #'insert-space-visual)
   (define-key evil-visual-state-map (kbd "C-SPC") #'evil-forward-char-or-extend)
@@ -409,7 +439,9 @@ See also `multi-occur-in-matching-buffers'."
   (define-key evil-visual-state-map (kbd "M-u") #'evil-upcase)
   (define-key evil-visual-state-map (kbd "M-l") #'evil-downcase)
 
-  ;; MOTION STATE
+  ;; ,--------------,
+  ;; | MOTION STATE |
+  ;; '--------------'
   (define-key evil-motion-state-map (kbd "C-e") #'end-of-line)
 
   (define-key evil-motion-state-map (kbd "[") #'evil-motion-open-bracket-prefix-map)
@@ -429,7 +461,9 @@ See also `multi-occur-in-matching-buffers'."
   (define-key 'evil-motion-close-bracket-prefix-map "b" "t)")
   (define-key 'evil-motion-close-bracket-prefix-map "B" "t(")
 
-  ;; INSERT STATE
+;; ,--------------,
+;; | INSERT STATE |
+;; '--------------'
   (define-key evil-insert-state-map (kbd "C-S-a") #'evil-paste-last-insertion)
   (define-key evil-insert-state-map (kbd "C-a") #'beginning-of-line)
   (define-key evil-insert-state-map (kbd "C-e") #'end-of-line)
@@ -444,8 +478,11 @@ See also `multi-occur-in-matching-buffers'."
   (define-key evil-insert-state-map (kbd "C-p") #'previous-line)
   ;; (define-key evil-insert-state-map (kbd "C-M-SPC") #'hippie-expand)
 
-  ;; EVIL-LEADER
-  ;; can use bind-keys to define prefix maps (see below)
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------------------,
+  ;; | Evil Leader Bindings |
+  ;; '----------------------'
+  ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
   (evil-leader/set-key
     "En"        'spacemacs/next-error
@@ -454,7 +491,12 @@ See also `multi-occur-in-matching-buffers'."
     "<delete>"  'kill-buffer-and-window
     "RR"        'pcre-multi-occur
     "Rr"        'pcre-occur
+    "oa"        'asciiheadings-prefix-key-map
     "oc"        'character-prefix-map
+    "om"        'mode-ring-prefix-key-map
+    "ov"        'variable-pitch-mode
+    "<backtab>" 'switch-to-most-recent-buffer
+    "<return>"  'helm-buffers-list
     )
 
   (bind-keys :map spacemacs-cmds
@@ -468,7 +510,22 @@ See also `multi-occur-in-matching-buffers'."
              ("f" . get-char-face)
              )
 
-  ;; ORG-MODE
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------------------------,
+  ;; | Major Mode Leader Bindings |
+  ;; '----------------------------'
+
+  (bind-keys :map spacemacs-emacs-lisp-mode-map
+             ("j" . eval-print-last-sexp))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------------------,
+  ;; | Major Mode Bindings |
+  ;; '---------------------'
+
+  ;; ,----------,
+  ;; | Org Mode |
+  ;; '----------'
   ;; remove C-tab binding which shadows #'next-multiframe-window binding
   ;; replace with [, C-tab] binding
   (bind-key [C-tab] #'next-multiframe-window)
@@ -476,21 +533,11 @@ See also `multi-occur-in-matching-buffers'."
             (lambda ()
               (define-key org-mode-map [C-tab] #'next-multiframe-window)))
 
-  ;; REGION-BEGINNING and REGION-END
-  ;; TODO: make these into text motions
-  (defun evil-visual-jump-to-region-beginning ()
-    (interactive)
-    (goto-char (region-beginning))
-    (evil-insert-state t))
-  (defun evil-visual-jump-to-region-end ()
-    (interactive)
-    (goto-char (region-end))
-    (evil-insert-state t))
-  ;; [r and ]r move to beginning and end of region
-  (define-key evil-normal-state-map (kbd "[r") #'evil-visual-jump-to-region-beginning)
-  (define-key evil-normal-state-map (kbd "]r") #'evil-visual-jump-to-region-end)
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | Aliases |
+  ;; '---------'
 
-  ;; ALIASES
   (defalias 'init 'spacemacs/find-dotfile)
   (defalias 'string-to-symbol 'intern)
   (defalias 'symbol-to-string 'symbol-name)
@@ -498,7 +545,11 @@ See also `multi-occur-in-matching-buffers'."
   ;; aliases to user-defined functions
   (defalias 'ppm 'message-prettyprint)
 
-  ;; KEYBOARD MACROS
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------------,
+  ;; | Keyboard Macros |
+  ;; '-----------------'
+
   (fset 'switch-to-most-recent-buffer [?\C-x ?b return])
 
   ;; ;; MACROS
@@ -506,7 +557,11 @@ See also `multi-occur-in-matching-buffers'."
   ;;   (loop for (key . fn) in bindings
   ;;         do (define-key keymap key fn)))
 
-  ;; FUNCTIONS
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------,
+  ;; | Functions |
+  ;; '-----------'
+
   (defun get-char-face (&optional pos)
     (interactive)
     (message "face: %s" (get-char-property (or pos (point)) 'face)))
@@ -532,13 +587,39 @@ See also `multi-occur-in-matching-buffers'."
      (with-temp-buffer
        (cl-prettyprint FORM)
        (buffer-string))))
+  (defun browse-file-with-external-browser (file)
+      (if (browse-url-can-use-xdg-open)
+          (browse-url-xdg-open file)
+        (progn
+          (require 'eww)
+          (eww-browse-with-external-browser file))))
+  (defun browse-buffer-file-with-external-browser ()
+    (interactive)
+    (browse-file-with-external-browser buffer-file-name))
+  (defun markdown-export-to-html-and-view ()
+    (interactive)
+    (browse-file-with-external-browser (markdown-export)))
 
-  ;; TEMP
+  ;; REGION-BEGINNING and REGION-END
+  ;; TODO: make these into text motions
+  (defun evil-visual-jump-to-region-beginning ()
+    (interactive)
+    (goto-char (region-beginning))
+    (evil-insert-state t))
+  (defun evil-visual-jump-to-region-end ()
+    (interactive)
+    (goto-char (region-end))
+    (evil-insert-state t))
+  (defun funboundp (symbol) (not (fboundp symbol)))
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------------------,
+  ;; | Temporary Workarounds |
+  ;; '-----------------------'
   ;; fix deprecated #'avy--with-avy-keys
-  (with-eval-after-load 'avy
-    (when (and (not (fboundp 'avy--with-avy-keys))
-               (fboundp 'avy-with))
+  (eval-after-load "avy"
+   '(when (and (funboundp 'avy--with-avy-keys)
+               (fboundp   'avy-with))
       (defalias 'avy--with-avy-keys 'avy-with)))
 
   )
