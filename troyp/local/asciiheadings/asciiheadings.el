@@ -164,6 +164,7 @@
      (interactive "s" "heading: ")
      (let ((start (point)))
 	 (,heading-fn-sym s)
+   (indent-region start (point))
 	 (comment-region start (point)))))
 
 (fset 'box-heading-comment  (make-heading-comment 'box-heading))
@@ -296,6 +297,7 @@ comment-end string. ADJUSTED (default value: 't) corrects the result for this."
 divider followed by a simple rectangular heading."
   (interactive "sheading: \np")
   (if (= n 1) (setf n 79))
+  (beginning-of-line)
   (push-mark (point))
   (divider n)
   (insert-lines (short-rect-heading-lines s))
@@ -311,6 +313,7 @@ divider followed by a simple rectangular heading."
 inserts a divider followed by a rectangular heading."
   (interactive "sheading: \np")
   (if (= n 1) (setf n 79))
+  (beginning-of-line)
   (unless heading-indent
     (setf heading-indent (/ (- n (length s)) 2) ))
   (push-mark (point))
