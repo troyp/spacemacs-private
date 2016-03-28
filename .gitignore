@@ -1,0 +1,8 @@
+\#*
+*~
+*.elc
+*.pyc
+/*.zip
+*.db
+
+README.html
