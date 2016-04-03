@@ -25,24 +25,26 @@ values."
      ;; ----------------------------------------------------------------
      auto-completion
      ;; better-defaults
+     c-c++
      emacs-lisp
+     extra-langs
      git
+     haskell
+     html
+     javascript
+     lua
      markdown
      (org :variables
              org-enable-github-support t)
+     python
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
      ;; spell-checking
      ;; syntax-checking
      ;; version-control
-     haskell
-     c-c++
-     html
-     javascript
-     extra-langs
-     lua
-     python
+     (vinegar :variables
+              vinegar-reuse-dired-buffer t)
      troyp
      )
    ;; List of additional packages that will be installed without being
@@ -102,7 +104,7 @@ values."
    ;; `dotspacemacs-startup-lists' doesn't include `recents'. (default 5)
    dotspacemacs-startup-recent-list-size 5
    ;; Default major mode of the scratch buffer (default `text-mode')
-   dotspacemacs-scratch-mode 'emacs-lisp-mode
+   dotspacemacs-scratch-mode 'lisp-interaction-mode
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
@@ -542,16 +544,6 @@ See also `multi-occur-in-matching-buffers'."
   ;; | Emacs Lisp |
   ;; '------------'
 
-  ;; --------------------------
-  ;; Major Mode Leader Bindings
-  ;; --------------------------
-
-  (bind-keys :map spacemacs-emacs-lisp-mode-map
-             ("j" . eval-print-last-sexp)
-             ("M-RET" . eval-print-last-sexp)
-             )
-
-
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
   ;; | ISearch |
@@ -591,8 +583,27 @@ See also `multi-occur-in-matching-buffers'."
   (defalias 'string-to-symbol 'intern)
   (defalias 'symbol-to-string 'symbol-name)
   (defalias 'pr 'cl-prettyprint)
+  (defalias 'copy-string-as-kill 'kill-new)
+  (defalias 'reyas 'yas/reload-all)
+  (defalias 'arv 'auto-revert-mode)
+  (defalias 'revb 'revert-buffer)
+  (defalias 'diffb 'diff-buffer-with-file)
+  (defalias 'sim 'set-input-method)  ;; bound to C-x RET C-\
+  (defalias 'repl 'ielm)
+  (defalias 'lim 'lisp-interaction-mode)
+  (defalias 'el 'emacs-lisp-mode)
+  (defalias 'chmodx 'make-executable)
+  (defalias 'unset 'makunbound)
+  (defalias 'unfset 'fmakunbound)
+  (defalias 'vll 'visual-line-mode)
+  (defalias 'undefun 'fmakunbound)
+  (defalias 'acoff 'auto-complete-mode-off)
+  (defalias 'ali 'quick-pcre-align-repeat)
   ;; aliases to user-defined functions
   (defalias 'ppm 'message-prettyprint)
+  (defalias 'boxcom 'box-heading-comment)
+  (defalias 'reccom 'rect-heading-comment)
+  (defalias 'srecom 'short-rect-heading-comment)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------,
