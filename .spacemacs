@@ -544,6 +544,18 @@ See also `multi-occur-in-matching-buffers'."
   ;; | Emacs Lisp |
   ;; '------------'
 
+  ;; --------------------------
+  ;; Major Mode Leader Bindings
+  ;; --------------------------
+
+  (bind-keys :map spacemacs-emacs-lisp-mode-map
+             ("e RET" . eval-replace-last-sexp)
+             )
+  (bind-keys :map spacemacs-lisp-interaction-mode-map
+             ("e RET" . eval-replace-last-sexp)
+             )
+
+
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
   ;; | ISearch |
@@ -666,16 +678,14 @@ See also `multi-occur-in-matching-buffers'."
     (interactive)
     (goto-char (region-beginning))
     (evil-insert-state t))
+
   (defun evil-visual-jump-to-region-end ()
     (interactive)
     (goto-char (region-end))
     (evil-insert-state t))
+
   (defun funboundp (symbol) (not (fboundp symbol)))
-  (defun eval-replace-last-sexp ()
-    (interactive)
-    (let ((val (eval-last-sexp)))
-      (kill-sexp -1)
-      (cl-prettyprint val)))
+
   (defun buffer-major-mode (buffer)
     "Print the current major-mode in the echo area and copy to kill-ring. If called without an argument, it also copies to kill-ring."
     (interactive "i")
@@ -684,6 +694,14 @@ See also `multi-occur-in-matching-buffers'."
       (let ((mm (format "%S" major-mode)))
         (message mm)
         (unless current-prefix-arg (kill-new mm)))))
+
+  (defun eval-replace-last-sexp ()
+    "Replace the preceding sexp with its value, formatted by pp-to-string. With a prefix argument, formats the value using `(format \"%S\" val)' instead."
+    (interactive)
+    (let ((val (eval (preceding-sexp))))
+      (kill-sexp -1)
+      (if current-prefix-arg (insert (format "%S" val))
+        (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
