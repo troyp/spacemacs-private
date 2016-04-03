@@ -102,7 +102,7 @@ values."
    ;; `dotspacemacs-startup-lists' doesn't include `recents'. (default 5)
    dotspacemacs-startup-recent-list-size 5
    ;; Default major mode of the scratch buffer (default `text-mode')
-   dotspacemacs-scratch-mode 'text-mode
+   dotspacemacs-scratch-mode 'emacs-lisp-mode
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
@@ -298,29 +298,6 @@ you should place you code here."
   (global-set-key [\M-f12] 'shell-pop)
 
   ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | ISearch |
-  ;; '---------'
-
-  (define-key isearch-mode-map (kbd "C-'") 'avy-isearch)
-  (define-key isearch-mode-map (kbd "C-\"") 'helm-swoop)
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | C-c C-v |
-  ;; '---------'
-
-  (eval-after-load "markdown-mode"
-    '(define-key markdown-mode-map (kbd "C-c C-v") 'markdown-export-to-html-and-view))
-  (eval-after-load "web-mode"
-    '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-browser))
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | Org-Mode |
-  ;; '----------'
-
-  ;; -------------------------------------------------------------------------------
   ;; ,-------,
   ;; | Regex |
   ;; '-------'
@@ -428,6 +405,7 @@ See also `multi-occur-in-matching-buffers'."
   ;; [r and ]r move to beginning and end of region
   (define-key evil-normal-state-map (kbd "[r") #'evil-visual-jump-to-region-beginning)
   (define-key evil-normal-state-map (kbd "]r") #'evil-visual-jump-to-region-end)
+  (define-key evil-normal-state-map (kbd "M-RET RET") #'lisp-state-toggle-lisp-state)
 
   ;; ,--------------,
   ;; | VISUAL STATE |
@@ -468,15 +446,18 @@ See also `multi-occur-in-matching-buffers'."
   (define-key evil-insert-state-map (kbd "C-a") #'beginning-of-line)
   (define-key evil-insert-state-map (kbd "C-e") #'end-of-line)
   (define-key evil-insert-state-map (kbd "C-S-y") #'evil-copy-from-below)
-  (define-key evil-insert-state-map (kbd "C-v") #'insert-char)
   (define-key evil-insert-state-map (kbd "C-l") #'delete-char)
   (define-key evil-insert-state-map (kbd "C-S-l") #'backward-delete-char)
-  (define-key evil-insert-state-map (kbd "C-k") #'evil-insert-digraph)
   (define-key evil-insert-state-map (kbd "C-S-k") #'kill-line)
   (define-key evil-insert-state-map (kbd "C-.") 'yas-expand)
   (define-key evil-insert-state-map (kbd "C-n") #'next-line)
   (define-key evil-insert-state-map (kbd "C-p") #'previous-line)
   ;; (define-key evil-insert-state-map (kbd "C-M-SPC") #'hippie-expand)
+
+  ;; unicode insertion
+  (define-key evil-insert-state-map (kbd "C-v") #'insert-char)
+  (define-key evil-insert-state-map (kbd "M-v") #'iso-transl-ctl-x-8-map)
+  (define-key evil-insert-state-map (kbd "C-k") #'evil-insert-digraph)
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------------------,
@@ -485,18 +466,20 @@ See also `multi-occur-in-matching-buffers'."
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
   (evil-leader/set-key
-    "En"        'spacemacs/next-error
-    "EN"        'spacemacs/previous-error
-    "Ep"        'spacemacs/previous-error
-    "<delete>"  'kill-buffer-and-window
-    "RR"        'pcre-multi-occur
-    "Rr"        'pcre-occur
-    "oa"        'asciiheadings-prefix-key-map
-    "oc"        'character-prefix-map
-    "om"        'mode-ring-prefix-key-map
-    "ov"        'variable-pitch-mode
-    "<backtab>" 'switch-to-most-recent-buffer
-    "<return>"  'helm-buffers-list
+    "b C-e"      'bury-buffer
+    "b <insert>" 'buffer-major-mode
+    "En"         'spacemacs/next-error
+    "EN"         'spacemacs/previous-error
+    "Ep"         'spacemacs/previous-error
+    "<delete>"   'kill-buffer-and-window
+    "RR"         'pcre-multi-occur
+    "Rr"         'pcre-occur
+    "oa"         'asciiheadings-prefix-key-map
+    "oc"         'character-prefix-map
+    "om"         'mode-ring-prefix-key-map
+    "ov"         'variable-pitch-mode
+    "<backtab>"  'switch-to-most-recent-buffer
+    "<return>"   'helm-buffers-list
     )
 
   (bind-keys :map spacemacs-cmds
@@ -511,21 +494,87 @@ See also `multi-occur-in-matching-buffers'."
              )
 
   ;; -------------------------------------------------------------------------------
+  ;; ,-------------------------,
+  ;; | which-key Configuration |
+  ;; '-------------------------'
+
+  (which-key-add-key-based-replacements
+    "C-x r"        "rectangle"
+    "C-x 4"        "other window"
+    "C-x 5"        "frame"
+    "C-x 8"        "unicode"
+    "C-x 8 SPC"    "no-break space"
+    "C-x 8 \""     "äÄëËïÏöÖßüÜÿ"
+    "C-x 8 '"      "áÁéÉíÍóÓúÚýÝ"
+    "C-x 8 *"      "¡±­·«¯»¢©£µ°¶®§µ×¥¦"
+    "C-x 8 ,"      "¸çÇ"
+    "C-x 8 /"      "÷åÅæÆøØ"
+    "C-x 8 1"      "½¼"
+    "C-x 8 1 /"    "½¼"
+    "C-x 8 3"      "¾"
+    "C-x 8 3 /"    "¾"
+    "C-x 8 ^"      "^¹²³âÂêÊîÎôÔûÛ"
+    "C-x 8 `"      "`àÀèÈìÌòÒùÙ"
+    "C-x 8 ~"      "~ãÃðÐñÑõÕþÞ¬"
+    "C-x RET"      "coding system"
+    "C-x ESC"      "repeat-complex-command"
+    )
+
+
+  ;; ***************
+  ;; *             *
+  ;; * MAJOR MODES *
+  ;; *             *
+  ;; ***************
+
+  ;; -------------------------------------------------------------------------------
   ;; ,----------------------------,
   ;; | Major Mode Leader Bindings |
   ;; '----------------------------'
-
-  (bind-keys :map spacemacs-emacs-lisp-mode-map
-             ("j" . eval-print-last-sexp))
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------------------,
   ;; | Major Mode Bindings |
   ;; '---------------------'
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,------------,
+  ;; | Emacs Lisp |
+  ;; '------------'
+
+  ;; --------------------------
+  ;; Major Mode Leader Bindings
+  ;; --------------------------
+
+  (bind-keys :map spacemacs-emacs-lisp-mode-map
+             ("j" . eval-print-last-sexp)
+             ("M-RET" . eval-print-last-sexp)
+             )
+
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | ISearch |
+  ;; '---------'
+
+  (define-key isearch-mode-map (kbd "C-'") 'avy-isearch)
+  (define-key isearch-mode-map (kbd "C-\"") 'helm-swoop)
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | C-c C-v |
+  ;; '---------'
+
+  (eval-after-load "markdown-mode"
+    '(define-key markdown-mode-map (kbd "C-c C-v") 'markdown-export-to-html-and-view))
+  (eval-after-load "web-mode"
+    '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-browser))
+
+  ;; -------------------------------------------------------------------------------
   ;; ,----------,
-  ;; | Org Mode |
+  ;; | Org-Mode |
   ;; '----------'
+
   ;; remove C-tab binding which shadows #'next-multiframe-window binding
   ;; replace with [, C-tab] binding
   (bind-key [C-tab] #'next-multiframe-window)
@@ -611,6 +660,19 @@ See also `multi-occur-in-matching-buffers'."
     (goto-char (region-end))
     (evil-insert-state t))
   (defun funboundp (symbol) (not (fboundp symbol)))
+  (defun eval-replace-last-sexp ()
+    (interactive)
+    (let ((val (eval-last-sexp)))
+      (kill-sexp -1)
+      (cl-prettyprint val)))
+  (defun buffer-major-mode (buffer)
+    "Print the current major-mode in the echo area and copy to kill-ring. If called without an argument, it also copies to kill-ring."
+    (interactive "i")
+    (unless buffer (setq buffer (buffer-name)))
+    (with-current-buffer buffer
+      (let ((mm (format "%S" major-mode)))
+        (message mm)
+        (unless current-prefix-arg (kill-new mm)))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
