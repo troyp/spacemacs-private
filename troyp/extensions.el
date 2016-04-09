@@ -10,15 +10,9 @@
 ;;; License: GPLv3
 
 ;; Pre extensions are loaded *before* the packages
-(setq python-pre-extensions '(
-                              tsputils
-                              tspevil
-                              asciiheadings
-                              mode-ring
-                              ))
 
 ;; Post extensions are loaded *after* the packages
-(setq python-post-extensions
+(setq spacemacs-post-extensions
   '(
     (use-package tsputils)
     (use-package tspevil)
