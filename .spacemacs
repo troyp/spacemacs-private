@@ -45,6 +45,7 @@ values."
      ;; version-control
      (vinegar :variables
               vinegar-reuse-dired-buffer t)
+     vimscript
      troyp
      )
    ;; List of additional packages that will be installed without being
@@ -53,6 +54,43 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages
    '(
+     dired-sort-menu
+     lacarte
+     ;; libraries
+     dash
+     s
+     ;; Drew Adams Packages
+     autofit-frame
+     dired-sort-menu+
+     doremi
+     doremi-cmd
+     doremi-frm
+     doremi-mac
+     eyedropper
+     facemenu+
+     faces+
+     fit-frame
+     font-lock+
+     frame-cmds
+     frame-fns
+     help-fns+
+     help-mode+
+     help+
+     hexrgb
+     highlight
+     isearch+
+     isearch-prop
+     frame-cmds
+     frame-fns
+     naked
+     palette
+     replace+
+     strings
+     thingatpt+
+     thumb-frm
+     ucs-cmds
+     wid-edit+
+     zoom-frm
      )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -262,11 +300,13 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place you code here."
 
-  ;; ********************
-  ;; *                  *
-  ;; * SPACEMACS CONFIG *
-  ;; *                  *
-  ;; ********************
+  ;; ============================================================================
+  ;; =========================== ******************** ===========================
+  ;; =========================== *                  * ===========================
+  ;; =========================== * SPACEMACS CONFIG * ===========================
+  ;; =========================== *                  * ===========================
+  ;; =========================== ******************** ===========================
+  ;; ============================================================================
 
   ;; (setq-default tab-always-indent t)
   (global-linum-mode)
@@ -275,9 +315,97 @@ you should place you code here."
   ;; not working?
   (setq-default evil-esc-delay 0.00001)
 
+  (setq auto-completion-enable-help-tooltip t)
+
+  ;; ==============================================================================
+  ;;                       *****************************
+  ;;                       *                           *
+  ;;                       * ADDITIONAL LOCAL PACKAGES *
+  ;;                       *                           *
+  ;;                       *****************************
+
+  (add-to-load-path "~/.emacs.d/private/local/")
+
+  (defvar dotspacemacs-additional-local-packages
+    '(
+      help-macro+
+      ))
+  (loop for pkg in dotspacemacs-additional-local-packages do
+        (require pkg))
+
+  ;; ==============================================================================
+  ;;                                *************
+  ;;                                *           *
+  ;;                                * EVIL-MODE *
+  ;;                                *           *
+  ;;                                *************
+
+  ;; (global-set-key [f9] 'evil-mode)
+
+  ;; ,-------------------------,
+  ;; | evil-symbol-word-search |
+  ;; '-------------------------'
+
+  ;; Use symbols rather than words for * and # search
+  ;; eg. in lisp modes, this will not stop at dashes, etc.
+  ;; note: for symbol-based text-objects, use "io" ('evil-inner-symbol)
+  ;;       rather than "iw" / "iW" ('evil-inner-word / 'evil-inner-WORD)
+
+  (setq-default evil-symbol-word-search t)
+
+  (defun toggle-evil-symbol-word-search ()
+    (interactive)
+    (setf evil-symbol-word-search (not evil-symbol-word-search)))
+
+  (defalias 'evsw 'toggle-evil-symbol-word-search)
+
+;; ==============================================================================
+;;                                 ****************
+;;                                 *              *
+;;                                 * KEY-BINDINGS *
+;;                                 *              *
+;;                                 ****************
+
+  ;; ,----------------------,
+  ;; | Keybinding Functions |
+  ;; '----------------------'
+
+  (defun define-keys (keymap &rest bindings)
+    "Define multiple keys with `define-key'\nBINDINGS has the form KEY DEFN [KEY DEFN ...]"
+    (loop for (key defn) on bindings by 'cddr do
+          (define-key keymap key defn)))
+
+  (defun kbd+ (keyrep &optional need-vector)
+    (if (vectorp keyrep) keyrep (edmacro-parse-keys keyrep need-vector)))
+
+  (defun gmap (keyrep defstr)
+    "Vim-style global keybinding. Uses the `global-set-key' binding function."
+    (global-set-key (kbd+ keyrep) (edmacro-parse-keys defstr t)))
+
+  (defun fmap (keybind-fn keyrep defstr)
+    "Vim-style keybinding using the key binding function KEYBIND-FN."
+    (call keybind-fn (kbd+ keyrep) (edmacro-parse-keys defstr t)))
+
+  (defun xmap (keymap keyrep defstr)
+    "Vim-style keybinding in KEYMAP. Uses the `define-key' binding function."
+    (define-key keymap (kbd+ keyrep) (edmacro-parse-keys defstr t)))
+
+  (defun nmap (keyrep defstr) "Vim-style keybinding for `evil-normal-state.' Uses the `define-key' binding function."
+         (xmap evil-normal-state-map keyrep defstr))
+  (defun imap (keyrep defstr) "Vim-style keybinding for `evil-insert-state'. Uses the `define-key' binding function."
+         (xmap evil-insert-state-map keyrep defstr))
+  (defun vmap (keyrep defstr) "Vim-style keybinding for `evil-visual-state'. Uses the `define-key' binding function."
+         (xmap evil-visual-state-map keyrep defstr))
+  (defun mmap (keyrep defstr) "Vim-style keybinding for `evil-motion-state'. Uses the `define-key' binding function."
+         (xmap evil-motion-state-map keyrep defstr))
+
+
+  ;; ,-----------------,
+  ;; | Global Bindings |
+  ;; '-----------------'
+
   (global-set-key (kbd "<f1>") 'describe-prefix-bindings)
   (global-set-key (kbd "<C-f1>") 'describe-prefix-bindings)
-
   (global-set-key [C-tab] 'next-multiframe-window)
   (global-set-key [C-S-iso-lefttab] 'previous-multiframe-window)
   ;; change C-x - from 'shrink-window-if-larger-than-buffer to 'fit-window-to-buffer
@@ -297,7 +425,280 @@ you should place you code here."
   (global-set-key [\C-\S-down] 'move-text-down)
   (global-set-key (kbd "M-S-SPC") 'just-one-space)
 
+  (global-set-key [\C-f10] 'menu-bar-mode)
   (global-set-key [\M-f12] 'shell-pop)
+
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------------------------,
+  ;; | Evil State Key Bindings |
+  ;; '-------------------------'
+  ;;
+  ;; ,--------------,
+  ;; | NORMAL STATE |
+  ;; '--------------'
+  (define-key evil-normal-state-map [delete] 'kill-this-buffer)
+  (defun insert-space () (interactive) (insert ? ))
+  (define-key evil-normal-state-map (kbd "S-SPC") 'insert-space)
+  ;; shift reverses C-d (-scroll-down) and C-o (-jump-backward)
+  (define-key evil-normal-state-map (kbd "C-S-d") 'evil-scroll-up)
+  (define-key evil-normal-state-map (kbd "C-S-o") 'evil-jump-forward)
+  (define-key evil-normal-state-map (kbd "C-e") 'end-of-line)
+  ;; remove C-y (use global M-p)
+  (define-key evil-normal-state-map (kbd "C-y") nil)
+  ;; reverse gu and gU
+  (define-key evil-normal-state-map (kbd "gu") 'evil-upcase)
+  (define-key evil-normal-state-map (kbd "gU") 'evil-downcase)
+  ;; provide evil-repeat-find-char-reverse binding
+  (define-key evil-normal-state-map (kbd "M-;") 'evil-repeat-find-char-reverse)
+  ;; [r and ]r move to beginning and end of region
+  (define-key evil-normal-state-map (kbd "[r") 'evil-visual-jump-to-region-beginning)
+  (define-key evil-normal-state-map (kbd "]r") 'evil-visual-jump-to-region-end)
+  (define-key evil-normal-state-map (kbd "M-RET RET") 'lisp-state-toggle-lisp-state)
+  ;; evil-symbol-word-search
+  (define-key evil-normal-state-map (kbd "C-*") 'toggle-evil-symbol-word-search)
+  ;; universal-argument
+  (define-key evil-normal-state-map (kbd "C-S-u") 'universal-argument)
+
+  ;; ,--------------,
+  ;; | VISUAL STATE |
+  ;; '--------------'
+  (defun insert-space-visual () (interactive) (execute-kbd-macro " ") (evil-visual-restore))
+  (define-key evil-visual-state-map (kbd "S-SPC") 'insert-space-visual)
+  (define-key evil-visual-state-map (kbd "C-SPC") 'evil-forward-char-or-extend)
+  (define-key evil-visual-state-map (kbd "C-\\") 'shell-command-replace-region)
+  (define-key evil-visual-state-map (kbd "M-u") 'evil-upcase)
+  (define-key evil-visual-state-map (kbd "M-l") 'evil-downcase)
+
+  ;; ,--------------,
+  ;; | MOTION STATE |
+  ;; '--------------'
+  (define-key evil-motion-state-map (kbd "C-e") 'end-of-line)
+
+  (define-key evil-motion-state-map (kbd "[") 'evil-motion-open-bracket-prefix-map)
+  (define-key evil-motion-state-map (kbd "]") 'evil-motion-close-bracket-prefix-map)
+  (define-prefix-command 'evil-motion-open-bracket-prefix-map)
+  (define-prefix-command 'evil-motion-close-bracket-prefix-map)
+  (define-key 'evil-motion-open-bracket-prefix-map "{" 'evil-previous-open-brace)
+  (define-key 'evil-motion-open-bracket-prefix-map "(" 'evil-previous-open-paren)
+  (define-key 'evil-motion-open-bracket-prefix-map "]" 'evil-backward-section-end)
+  (define-key 'evil-motion-open-bracket-prefix-map "[" 'evil-backward-section-begin)
+  (define-key 'evil-motion-open-bracket-prefix-map "b" "T(")
+  (define-key 'evil-motion-open-bracket-prefix-map "B" "T)")
+  (define-key 'evil-motion-close-bracket-prefix-map "{" 'evil-next-close-brace)
+  (define-key 'evil-motion-close-bracket-prefix-map "(" 'evil-next-close-paren)
+  (define-key 'evil-motion-close-bracket-prefix-map "[" 'evil-forward-section-end)
+  (define-key 'evil-motion-close-bracket-prefix-map "]" 'evil-forward-section-begin)
+  (define-key 'evil-motion-close-bracket-prefix-map "b" "t)")
+  (define-key 'evil-motion-close-bracket-prefix-map "B" "t(")
+
+;; ,--------------,
+;; | INSERT STATE |
+;; '--------------'
+  (define-key evil-insert-state-map (kbd "C-S-a") 'evil-paste-last-insertion)
+  (define-key evil-insert-state-map (kbd "C-a") 'beginning-of-line)
+  (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
+  (define-key evil-insert-state-map (kbd "C-S-y") 'evil-copy-from-below)
+  (define-key evil-insert-state-map (kbd "C-l") 'delete-char)
+  (define-key evil-insert-state-map (kbd "C-S-l") 'backward-delete-char)
+  (define-key evil-insert-state-map (kbd "C-S-k") 'kill-line)
+  (define-key evil-insert-state-map (kbd "C-.") 'yas-expand)
+  (define-key evil-insert-state-map (kbd "C-n") 'next-line)
+  (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
+  ;; (define-key evil-insert-state-map (kbd "C-M-SPC") 'hippie-expand)
+
+  ;; unicode insertion
+  (define-key evil-insert-state-map (kbd "C-v") 'insert-char)
+  (define-key evil-insert-state-map (kbd "M-v") 'iso-transl-ctl-x-8-map)
+  (define-key evil-insert-state-map (kbd "C-k") 'evil-insert-digraph)
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------------------,
+  ;; | Evil Leader Bindings |
+  ;; '----------------------'
+  ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
+
+  (evil-leader/set-key
+    "b C-e"      'bury-buffer
+    "b <insert>" 'buffer-major-mode
+    "b <f1>"     'about-emacs
+    "En"         'spacemacs/next-error
+    "EN"         'spacemacs/previous-error
+    "Ep"         'spacemacs/previous-error
+    "h C-s"      'which-key-show-current-state-map
+    "h C-m"      'lacarte-execute-menu-command
+    "h d C-b"    'describe-personal-keybindings ;; bind-key bindings
+    "<delete>"   'kill-buffer-and-window
+    "RR"         'pcre-multi-occur
+    "Rr"         'pcre-occur
+    "oa"         'asciiheadings-prefix-key-map
+    "oc"         'character-prefix-map
+    "om"         'mode-ring-prefix-key-map
+    "ov"         'variable-pitch-mode
+    "."          'repeat-complex-command
+    "<backtab>"  'switch-to-most-recent-buffer
+    "<return>"   'helm-buffers-list
+    )
+
+  (bind-keys :map spacemacs-cmds
+             :prefix-map character-prefix-map
+             :prefix "o c"
+             :prefix-docstring "Commands that act on the character at point."
+             ("i" . insert-char)
+             ("=" . describe-char)
+             ("a" . what-cursor-position)
+             ("p" . palette-foreground-at-point)  ;; palette.el (dadams)
+             ("f" . get-char-face)
+             )
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------------------------,
+  ;; | which-key Configuration |
+  ;; '-------------------------'
+
+  (which-key-add-key-based-replacements
+    "C-x r"        "rectangle"
+    "C-x 4"        "other window"
+    "C-x 5"        "frame"
+    "C-x 8"        "unicode"
+    "C-x 8 SPC"    "no-break space"
+    "C-x 8 \""     "äÄëËïÏöÖßüÜÿ"
+    "C-x 8 '"      "áÁéÉíÍóÓúÚýÝ"
+    "C-x 8 *"      "¡±­·«¯»¢©£µ°¶®§µ×¥¦"
+    "C-x 8 ,"      "¸çÇ"
+    "C-x 8 /"      "÷åÅæÆøØ"
+    "C-x 8 1"      "½¼"
+    "C-x 8 1 /"    "½¼"
+    "C-x 8 3"      "¾"
+    "C-x 8 3 /"    "¾"
+    "C-x 8 ^"      "^¹²³âÂêÊîÎôÔûÛ"
+    "C-x 8 `"      "`àÀèÈìÌòÒùÙ"
+    "C-x 8 ~"      "~ãÃðÐñÑõÕþÞ¬"
+    "C-x RET"      "coding system"
+    "C-x ESC"      "repeat-complex-command"
+    )
+
+  ;; ,--------------------,
+  ;; | Command Docstrings |
+  ;; '--------------------'
+
+  (defmacro set-docstring (fn docstr)
+    (eval `(put ',fn 'function-documentation ,docstr)))
+
+  (defun set-docstrings (&rest pairs)
+    (eval `(loop for (fn docstr) on ',pairs by 'cddr do
+                 (eval `(put ',fn 'function-documentation ,docstr)))))
+
+  (set-docstrings
+   'evil-search-highlight-persist-remove-all    "Remove all `evil-search' highlighting"
+   )
+
+
+  ;; ***************
+  ;; *             *
+  ;; * MAJOR MODES *
+  ;; *             *
+  ;; ***************
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------------------------,
+  ;; | Major Mode Leader Bindings |
+  ;; '----------------------------'
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------------------,
+  ;; | Major Mode Bindings |
+  ;; '---------------------'
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,------------,
+  ;; | Emacs Lisp |
+  ;; '------------'
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,--------------,
+  ;; | Haskell-Mode |
+  ;; '--------------'
+
+  (eval-after-load "haskell-mode"
+    '(progn
+       (bind-keys :map haskell-mode-map
+                  ("C-c C-h" . nil)
+                  ("C-c M-h" . haskell-hoogle)
+                  ("C-c C-v" . browse-buffer-file-firefox)
+                  )
+       (which-key-add-major-mode-key-based-replacements 'haskell-mode
+         "C-c @" "hiding"
+         )
+       ))
+
+  ;; --------------------------
+  ;; Major Mode Leader Bindings
+  ;; --------------------------
+
+  (bind-keys :map spacemacs-emacs-lisp-mode-map
+             ("e RET" . eval-replace-last-sexp)
+             )
+  (bind-keys :map spacemacs-lisp-interaction-mode-map
+             ("e RET" . eval-replace-last-sexp)
+             ("e j"   . eval-prettyprint-last-sexp)
+             ("j"     . eval-prettyprint-last-sexp)
+             )
+
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | ISearch |
+  ;; '---------'
+
+  (define-key isearch-mode-map (kbd "C-'") 'avy-isearch)
+  (define-key isearch-mode-map (kbd "C-\"") 'helm-swoop)
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | C-c C-v |
+  ;; '---------'
+
+  (global-set-key (kbd "C-c C-v") 'browse-buffer-file-firefox)
+  (eval-after-load "markdown-mode"
+    '(define-key markdown-mode-map (kbd "C-c C-v") 'markdown-export-to-html-and-view))
+  (eval-after-load "web-mode"
+    '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-application))
+  (eval-after-load "haskell-mode"
+    '(define-key haskell-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------,
+  ;; | Org-Mode |
+  ;; '----------'
+
+  ;; remove C-tab binding which shadows #'next-multiframe-window binding
+  ;; replace with [, C-tab] binding
+  (bind-key [C-tab] 'next-multiframe-window)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (define-key org-mode-map [C-tab] 'next-multiframe-window)))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------,
+  ;; | Web-Mode |
+  ;; '----------'
+
+  (which-key-add-major-mode-key-based-replacements 'web-mode
+    ", g"   "navigate DOM tree"
+    ", r"   "element operations"
+    ", e"   "error"
+    )
+  (eval-after-load "web-mode"
+    '(progn
+       (setq web-mode-tag-auto-close-style  1)
+       (setq web-mode-enable-auto-expanding t)
+       ))
+  (eval-after-load "emmet-mode"
+    '(define-keys emmet-mode-keymap
+       (kbd "<C-return>")    'open-line-below
+       (kbd "<C-S-return>")  'open-line-above
+       ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
@@ -360,240 +761,13 @@ See also `multi-occur-in-matching-buffers'."
       (occur-read-primary-args)))
     (occur-1 (pcre-to-elisp regexp) nlines bufs))
 
-  ;; *************
-  ;; *           *
-  ;; * EVIL-MODE *
-  ;; *           *
-  ;; *************
-
-  ;; (global-set-key [f9] 'evil-mode)
-
-  ;; -----------------------
-  ;; evil-symbol-word-search
-  ;; -----------------------
-  ;; Use symbols rather than words for * and # search
-  ;; eg. in lisp modes, this will not stop at dashes, etc.
-  ;; note: for symbol-based text-objects, use "io" ('evil-inner-symbol)
-  ;;       rather than "iw" / "iW" ('evil-inner-word / 'evil-inner-WORD)
-  (setq-default evil-symbol-word-search t)
-  (defun toggle-evil-symbol-word-search ()
-    (interactive)
-    (setf evil-symbol-word-search (not evil-symbol-word-search)))
-  (defalias 'evsw 'toggle-evil-symbol-word-search)
-  (define-key evil-normal-state-map (kbd "C-*") #'toggle-evil-symbol-word-search)
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------------------------,
-  ;; | Evil State Key Bindings |
-  ;; '-------------------------'
-  ;;
-  ;; ,--------------,
-  ;; | NORMAL STATE |
-  ;; '--------------'
-  (define-key evil-normal-state-map [delete] #'kill-this-buffer)
-  (defun insert-space () (interactive) (insert ? ))
-  (define-key evil-normal-state-map (kbd "S-SPC") #'insert-space)
-  ;; shift reverses C-d (-scroll-down) and C-o (-jump-backward)
-  (define-key evil-normal-state-map (kbd "C-S-d") #'evil-scroll-up)
-  (define-key evil-normal-state-map (kbd "C-S-o") #'evil-jump-forward)
-  (define-key evil-normal-state-map (kbd "C-e") #'end-of-line)
-  ;; remove C-y (use global M-p)
-  (define-key evil-normal-state-map (kbd "C-y") nil)
-  ;; reverse gu and gU
-  (define-key evil-normal-state-map (kbd "gu") #'evil-upcase)
-  (define-key evil-normal-state-map (kbd "gU") #'evil-downcase)
-  ;; provide evil-repeat-find-char-reverse binding
-  (define-key evil-normal-state-map (kbd "M-;") #'evil-repeat-find-char-reverse)
-  ;; [r and ]r move to beginning and end of region
-  (define-key evil-normal-state-map (kbd "[r") #'evil-visual-jump-to-region-beginning)
-  (define-key evil-normal-state-map (kbd "]r") #'evil-visual-jump-to-region-end)
-  (define-key evil-normal-state-map (kbd "M-RET RET") #'lisp-state-toggle-lisp-state)
-
-  ;; ,--------------,
-  ;; | VISUAL STATE |
-  ;; '--------------'
-  (defun insert-space-visual () (interactive) (execute-kbd-macro " ") (evil-visual-restore))
-  (define-key evil-visual-state-map (kbd "S-SPC") #'insert-space-visual)
-  (define-key evil-visual-state-map (kbd "C-SPC") #'evil-forward-char-or-extend)
-  (define-key evil-visual-state-map (kbd "C-\\") #'shell-command-replace-region)
-  (define-key evil-visual-state-map (kbd "M-u") #'evil-upcase)
-  (define-key evil-visual-state-map (kbd "M-l") #'evil-downcase)
-
-  ;; ,--------------,
-  ;; | MOTION STATE |
-  ;; '--------------'
-  (define-key evil-motion-state-map (kbd "C-e") #'end-of-line)
-
-  (define-key evil-motion-state-map (kbd "[") #'evil-motion-open-bracket-prefix-map)
-  (define-key evil-motion-state-map (kbd "]") #'evil-motion-close-bracket-prefix-map)
-  (define-prefix-command 'evil-motion-open-bracket-prefix-map)
-  (define-prefix-command 'evil-motion-close-bracket-prefix-map)
-  (define-key 'evil-motion-open-bracket-prefix-map "{" 'evil-previous-open-brace)
-  (define-key 'evil-motion-open-bracket-prefix-map "(" 'evil-previous-open-paren)
-  (define-key 'evil-motion-open-bracket-prefix-map "]" 'evil-backward-section-end)
-  (define-key 'evil-motion-open-bracket-prefix-map "[" 'evil-backward-section-begin)
-  (define-key 'evil-motion-open-bracket-prefix-map "b" "T(")
-  (define-key 'evil-motion-open-bracket-prefix-map "B" "T)")
-  (define-key 'evil-motion-close-bracket-prefix-map "{" 'evil-next-close-brace)
-  (define-key 'evil-motion-close-bracket-prefix-map "(" 'evil-next-close-paren)
-  (define-key 'evil-motion-close-bracket-prefix-map "[" 'evil-forward-section-end)
-  (define-key 'evil-motion-close-bracket-prefix-map "]" 'evil-forward-section-begin)
-  (define-key 'evil-motion-close-bracket-prefix-map "b" "t)")
-  (define-key 'evil-motion-close-bracket-prefix-map "B" "t(")
-
-;; ,--------------,
-;; | INSERT STATE |
-;; '--------------'
-  (define-key evil-insert-state-map (kbd "C-S-a") #'evil-paste-last-insertion)
-  (define-key evil-insert-state-map (kbd "C-a") #'beginning-of-line)
-  (define-key evil-insert-state-map (kbd "C-e") #'end-of-line)
-  (define-key evil-insert-state-map (kbd "C-S-y") #'evil-copy-from-below)
-  (define-key evil-insert-state-map (kbd "C-l") #'delete-char)
-  (define-key evil-insert-state-map (kbd "C-S-l") #'backward-delete-char)
-  (define-key evil-insert-state-map (kbd "C-S-k") #'kill-line)
-  (define-key evil-insert-state-map (kbd "C-.") 'yas-expand)
-  (define-key evil-insert-state-map (kbd "C-n") #'next-line)
-  (define-key evil-insert-state-map (kbd "C-p") #'previous-line)
-  ;; (define-key evil-insert-state-map (kbd "C-M-SPC") #'hippie-expand)
-
-  ;; unicode insertion
-  (define-key evil-insert-state-map (kbd "C-v") #'insert-char)
-  (define-key evil-insert-state-map (kbd "M-v") #'iso-transl-ctl-x-8-map)
-  (define-key evil-insert-state-map (kbd "C-k") #'evil-insert-digraph)
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------------------,
-  ;; | Evil Leader Bindings |
-  ;; '----------------------'
-  ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
-
-  (evil-leader/set-key
-    "b C-e"      'bury-buffer
-    "b <insert>" 'buffer-major-mode
-    "En"         'spacemacs/next-error
-    "EN"         'spacemacs/previous-error
-    "Ep"         'spacemacs/previous-error
-    "<delete>"   'kill-buffer-and-window
-    "RR"         'pcre-multi-occur
-    "Rr"         'pcre-occur
-    "oa"         'asciiheadings-prefix-key-map
-    "oc"         'character-prefix-map
-    "om"         'mode-ring-prefix-key-map
-    "ov"         'variable-pitch-mode
-    "<backtab>"  'switch-to-most-recent-buffer
-    "<return>"   'helm-buffers-list
-    )
-
-  (bind-keys :map spacemacs-cmds
-             :prefix-map character-prefix-map
-             :prefix "o c"
-             :prefix-docstring "Commands that act on the character at point."
-             ("i" . insert-char)
-             ("=" . describe-char)
-             ("a" . what-cursor-position)
-             ("p" . palette-foreground-at-point)  ;; palette.el (dadams)
-             ("f" . get-char-face)
-             )
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------------------------,
-  ;; | which-key Configuration |
-  ;; '-------------------------'
-
-  (which-key-add-key-based-replacements
-    "C-x r"        "rectangle"
-    "C-x 4"        "other window"
-    "C-x 5"        "frame"
-    "C-x 8"        "unicode"
-    "C-x 8 SPC"    "no-break space"
-    "C-x 8 \""     "äÄëËïÏöÖßüÜÿ"
-    "C-x 8 '"      "áÁéÉíÍóÓúÚýÝ"
-    "C-x 8 *"      "¡±­·«¯»¢©£µ°¶®§µ×¥¦"
-    "C-x 8 ,"      "¸çÇ"
-    "C-x 8 /"      "÷åÅæÆøØ"
-    "C-x 8 1"      "½¼"
-    "C-x 8 1 /"    "½¼"
-    "C-x 8 3"      "¾"
-    "C-x 8 3 /"    "¾"
-    "C-x 8 ^"      "^¹²³âÂêÊîÎôÔûÛ"
-    "C-x 8 `"      "`àÀèÈìÌòÒùÙ"
-    "C-x 8 ~"      "~ãÃðÐñÑõÕþÞ¬"
-    "C-x RET"      "coding system"
-    "C-x ESC"      "repeat-complex-command"
-    )
-
-
-  ;; ***************
-  ;; *             *
-  ;; * MAJOR MODES *
-  ;; *             *
-  ;; ***************
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------------------------,
-  ;; | Major Mode Leader Bindings |
-  ;; '----------------------------'
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------------------,
-  ;; | Major Mode Bindings |
-  ;; '---------------------'
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,------------,
-  ;; | Emacs Lisp |
-  ;; '------------'
-
-  ;; --------------------------
-  ;; Major Mode Leader Bindings
-  ;; --------------------------
-
-  (bind-keys :map spacemacs-emacs-lisp-mode-map
-             ("e RET" . eval-replace-last-sexp)
-             )
-  (bind-keys :map spacemacs-lisp-interaction-mode-map
-             ("e RET" . eval-replace-last-sexp)
-             )
-
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | ISearch |
-  ;; '---------'
-
-  (define-key isearch-mode-map (kbd "C-'") 'avy-isearch)
-  (define-key isearch-mode-map (kbd "C-\"") 'helm-swoop)
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | C-c C-v |
-  ;; '---------'
-
-  (eval-after-load "markdown-mode"
-    '(define-key markdown-mode-map (kbd "C-c C-v") 'markdown-export-to-html-and-view))
-  (eval-after-load "web-mode"
-    '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-browser))
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | Org-Mode |
-  ;; '----------'
-
-  ;; remove C-tab binding which shadows #'next-multiframe-window binding
-  ;; replace with [, C-tab] binding
-  (bind-key [C-tab] #'next-multiframe-window)
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (define-key org-mode-map [C-tab] #'next-multiframe-window)))
-
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
   ;; | Aliases |
   ;; '---------'
 
+
   (defalias 'init 'spacemacs/find-dotfile)
-  (defalias 'string-to-symbol 'intern)
-  (defalias 'symbol-to-string 'symbol-name)
   (defalias 'pr 'cl-prettyprint)
   (defalias 'copy-string-as-kill 'kill-new)
   (defalias 'reyas 'yas/reload-all)
@@ -611,6 +785,14 @@ See also `multi-occur-in-matching-buffers'."
   (defalias 'undefun 'fmakunbound)
   (defalias 'acoff 'auto-complete-mode-off)
   (defalias 'ali 'quick-pcre-align-repeat)
+  (defalias 'replace-in-string 'dired-replace-in-string)
+  ;; aliases for discoverability
+  (defalias 'string-to-symbol 'intern)
+  (defalias 'symbol-to-string 'symbol-name)
+  (defalias 'key-vector-to-readable-string 'key-description)
+  (defalias 'key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
+  (defalias 'key-input-to-vector 'read-key-sequence-vector)
+  (defalias 'key-input-to-string 'read-key-sequence)
   ;; aliases to user-defined functions
   (defalias 'ppm 'message-prettyprint)
   (defalias 'boxcom 'box-heading-comment)
@@ -624,53 +806,66 @@ See also `multi-occur-in-matching-buffers'."
 
   (fset 'switch-to-most-recent-buffer [?\C-x ?b return])
 
-  ;; ;; MACROS
-  ;; (defmacro define-keys (keymap &rest bindings)
-  ;;   (loop for (key . fn) in bindings
-  ;;         do (define-key keymap key fn)))
-
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
   ;; | Functions |
   ;; '-----------'
 
+  (defun key-readable-string-to-vector (keystr)
+    (edmacro-parse-keys keystr t))
+
   (defun get-char-face (&optional pos)
     (interactive)
     (message "face: %s" (get-char-property (or pos (point)) 'face)))
-  (defun lookup-key-in-current-state ()
-    (interactive)
-    (let* ((key-input (read-key-sequence "key: "))
-           (current-state-map (eval (intern (format "evil-%s-state-map" evil-state))))
-           (function-name (lookup-key current-state-map key-input)))
-      (message (symbol-name function-name))))
+
+  (defun evalstr(str) (eval (intern str)))
+
+  (defun trim-multiline-string (str) (replace-regexp-in-string  "^\n+\\|\n+$" "" str))
+
   (defun lookup-key-interactive (keymap key)
-    (interactive "sKeymap: \nsKey: ")
-    (message
-     (with-temp-buffer
-       (cl-prettyprint (lookup-key (intern keymap) key))
-       (buffer-string))))
+    (interactive
+     (list
+      (read-string "Enter keymap: ")
+      (read-key-sequence "Press key: " nil t)))
+    (let* ((cmd (lookup-key (evalstr keymap) key)))
+      (message "%s" (trim-multiline-string (string-prettyprint cmd)))))
+
+  (defun which-key-show-current-state-map ()
+    (interactive)
+    (let ((current-state-map (format "evil-%s-state-map" evil-state)))
+      (which-key-show (intern current-state-map))))
+
   (defun string-prettyprint (FORM)
+    "Return the result of printing FORM with `cl-prettyprint' as a string."
     (with-temp-buffer
       (cl-prettyprint FORM)
       (buffer-string)))
+
   (defun message-prettyprint (FORM)
     (interactive "XForm: ")
     (message
      (with-temp-buffer
        (cl-prettyprint FORM)
        (buffer-string))))
-  (defun browse-file-with-external-browser (file)
+
+  (defun browse-file-with-external-application (file)
       (if (browse-url-can-use-xdg-open)
           (browse-url-xdg-open file)
         (progn
           (require 'eww)
           (eww-browse-with-external-browser file))))
-  (defun browse-buffer-file-with-external-browser ()
+
+  (defun browse-buffer-file-firefox ()
     (interactive)
-    (browse-file-with-external-browser buffer-file-name))
+    (browse-url-firefox buffer-file-name))
+
+  (defun browse-buffer-file-with-external-application ()
+    (interactive)
+    (browse-file-with-external-application buffer-file-name))
+
   (defun markdown-export-to-html-and-view ()
     (interactive)
-    (browse-file-with-external-browser (markdown-export)))
+    (browse-file-with-external-application (markdown-export)))
 
   ;; REGION-BEGINNING and REGION-END
   ;; TODO: make these into text motions
@@ -703,11 +898,48 @@ See also `multi-occur-in-matching-buffers'."
       (if current-prefix-arg (insert (format "%S" val))
         (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
 
+  (defun which-key-show (map)
+    "Display the keymap MAP in a which-key pop-up."
+    (interactive "SKeymap: ")
+    (which-key--show-keymap (symbol-name map) (eval map)))
+
+  (defun eval-prettyprint-last-sexp (eval-last-sexp-arg-internal)
+    (interactive "P")
+    (cl-prettyprint (eval-last-sexp eval-last-sexp-arg-internal)))
+
+  (defun replace-with-function (f)
+    (while (search-forward-regexp "\\([0-9]+\\)" nil t)
+      (replace-match
+       (funcall f (match-string 1)) t nil)))
+
+  (defun replace-int-with-char ()
+    (interactive)
+      (replace-with-function
+       (lambda (s)
+         (format "\"%c\"" (string-to-number (match-string 1))))))
+
+  ;; FIXME
+  (defun prettyprint-keymap (kmap)
+    (interactive "SKeymap: ")
+    (set-mark-command)
+    (cl-prettyprint (eval kmap))
+    (evil-active-region 1)
+    (replace-int-with-char))
+
+  (defun get-binding (cmd)
+    (interactive "SCommand name: ")
+    (let* ((cmdname       (symbol-name cmd))
+           (cmdname-escd  (format "\\[%s]" cmdname))
+           (cmdkey        (substitute-command-keys cmdname-escd))
+           (cmdcons       (cons cmdname cmdkey)))
+      (message "%S" cmdcons)
+      cmdcons))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
   ;; '-----------------------'
-  ;; fix deprecated #'avy--with-avy-keys
+  ;; fix deprecated 'avy--with-avy-keys
   (eval-after-load "avy"
    '(when (and (funboundp 'avy--with-avy-keys)
                (fboundp   'avy-with))
