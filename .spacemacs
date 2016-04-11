@@ -43,8 +43,8 @@ values."
      ;; spell-checking
      ;; syntax-checking
      ;; version-control
-     (vinegar :variables
-              vinegar-reuse-dired-buffer t)
+     ;; (vinegar :variables
+     ;;          vinegar-reuse-dired-buffer t)
      vimscript
      troyp
      )
@@ -58,6 +58,7 @@ values."
      lacarte
      ;; libraries
      dash
+     diff-hl
      s
      ;; Drew Adams Packages
      autofit-frame
@@ -334,6 +335,16 @@ you should place you code here."
         (require pkg))
 
   ;; ==============================================================================
+  ;;                             *******************
+  ;;                             *                 *
+  ;;                             * AUTO-MODE-ALIST *
+  ;;                             *                 *
+  ;;                             *******************
+
+  (add-to-list 'auto-mode-alist '("\\.zsh" . sh-mode))
+
+
+  ;; ==============================================================================
   ;;                                *************
   ;;                                *           *
   ;;                                * EVIL-MODE *
@@ -356,8 +367,19 @@ you should place you code here."
   (defun toggle-evil-symbol-word-search ()
     (interactive)
     (setf evil-symbol-word-search (not evil-symbol-word-search)))
-
   (defalias 'evsw 'toggle-evil-symbol-word-search)
+
+  ;; ,----------,
+  ;; | digraphs |
+  ;; '----------'
+
+  (setq evil-digraphs-table-user
+        '(
+          ((?. ? ) . ?\x2024)    ;; one-dot leader
+          ((?. ?/) . ?\x2026)    ;; (horizontal) ellipsis
+          ((?. ?-) . ?\x30fb)    ;; CJK middle-dot
+          ))
+  (defalias 'digra 'evil-enter-digraphs)  ;; evil-utils
 
 ;; ==============================================================================
 ;;                                 ****************
@@ -934,6 +956,7 @@ See also `multi-occur-in-matching-buffers'."
            (cmdcons       (cons cmdname cmdkey)))
       (message "%S" cmdcons)
       cmdcons))
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
