@@ -60,6 +60,7 @@ values."
      dash
      diff-hl
      s
+     tiny
      ;; Drew Adams Packages
      autofit-frame
      dired-sort-menu+
@@ -557,6 +558,7 @@ you should place you code here."
     "oc"         'character-prefix-map
     "om"         'mode-ring-prefix-key-map
     "ov"         'variable-pitch-mode
+    "x-"         'tiny-expand
     "."          'repeat-complex-command
     "<backtab>"  'switch-to-most-recent-buffer
     "<return>"   'helm-buffers-list
@@ -915,10 +917,18 @@ See also `multi-occur-in-matching-buffers'."
   (defun eval-replace-last-sexp ()
     "Replace the preceding sexp with its value, formatted by pp-to-string. With a prefix argument, formats the value using `(format \"%S\" val)' instead."
     (interactive)
-    (let ((val (eval (preceding-sexp))))
-      (kill-sexp -1)
-      (if current-prefix-arg (insert (format "%S" val))
-        (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
+    (if (boundp 'evil-state)
+        (evil-save-state
+          (call-interactively #'evil-append)
+          (eval-replace-last-sexp-core))
+      (eval-replace-last-sexp-core)))
+
+  (defun eval-replace-last-sexp-core ()
+    "Replace the preceding sexp with its value, formatted by pp-to-string. With a prefix argument, formats the value using `(format \"%S\" val)' instead."
+      (let ((val (eval (preceding-sexp))))
+        (kill-sexp -1)
+        (if current-prefix-arg (insert (format "%S" val))
+          (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
 
   (defun which-key-show (map)
     "Display the keymap MAP in a which-key pop-up."
