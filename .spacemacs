@@ -371,7 +371,7 @@ you should place you code here."
   (defalias 'evsw 'toggle-evil-symbol-word-search)
 
   ;; ,----------,
-  ;; | digraphs |
+  ;; | Digraphs |
   ;; '----------'
 
   (setq evil-digraphs-table-user
@@ -381,6 +381,17 @@ you should place you code here."
           ((?. ?-) . ?\x30fb)    ;; CJK middle-dot
           ))
   (defalias 'digra 'evil-enter-digraphs)  ;; evil-utils
+
+  ;; ,--------------,
+  ;; | Text Objects |
+  ;; '--------------'
+
+  (spacemacs|define-text-object "." "dot" "." ".")
+
+  (evil-define-text-object evil-inner-line (count &optional beg end type)
+    (list (line-visible-beginning-position) (+ 1 (line-visible-ending-position))))
+  (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
+
 
 ;; ==============================================================================
 ;;                                 ****************
@@ -548,19 +559,19 @@ you should place you code here."
     "En"         'spacemacs/next-error
     "EN"         'spacemacs/previous-error
     "Ep"         'spacemacs/previous-error
-    "h C-s"      'which-key-show-current-state-map
     "h C-m"      'lacarte-execute-menu-command
     "h d C-b"    'describe-personal-keybindings ;; bind-key bindings
-    "<delete>"   'kill-buffer-and-window
+    "i-"         'tiny-expand
     "RR"         'pcre-multi-occur
     "Rr"         'pcre-occur
     "oa"         'asciiheadings-prefix-key-map
     "oc"         'character-prefix-map
     "om"         'mode-ring-prefix-key-map
     "ov"         'variable-pitch-mode
-    "x-"         'tiny-expand
+    "xlU"        'delete-duplicate-lines-nonblank
     "."          'repeat-complex-command
     "<backtab>"  'switch-to-most-recent-buffer
+    "<delete>"   'kill-buffer-and-window
     "<return>"   'helm-buffers-list
     )
 
@@ -573,6 +584,26 @@ you should place you code here."
              ("a" . what-cursor-position)
              ("p" . palette-foreground-at-point)  ;; palette.el (dadams)
              ("f" . get-char-face)
+             )
+
+  (bind-keys :map spacemacs-cmds
+             :prefix-map keymaps-prefix-map
+             :prefix "K"
+             :prefix-docstring "Commands dealing with keymaps."
+             ("a" . which-key-show-keymap-at-point)
+             ("p" . parent-keymap-at-point)
+             ("s" . which-key-show-current-state-map)
+             )
+
+  (bind-keys :map spacemacs-cmds
+             :prefix-map structured-text-prefix-map
+             :prefix "X"
+             :prefix-docstring "Commands dealing with structured text."
+             ("sn" . sort-numeric-fields)
+             )
+
+  (bind-keys :map search-map
+             ;; M-s map
              )
 
   ;; -------------------------------------------------------------------------------
@@ -600,6 +631,8 @@ you should place you code here."
     "C-x 8 ~"      "~ãÃðÐñÑõÕþÞ¬"
     "C-x RET"      "coding system"
     "C-x ESC"      "repeat-complex-command"
+    "M-g"          "goto-map"
+    "M-s"          "search-map"
     )
 
   ;; ,--------------------,
@@ -966,6 +999,48 @@ See also `multi-occur-in-matching-buffers'."
            (cmdcons       (cons cmdname cmdkey)))
       (message "%S" cmdcons)
       cmdcons))
+
+  (defun delete-duplicate-lines-nonblank (beg end &optional reverse adjacent delete-blanks interactive)
+    "Delete duplicate lines within region. This is the same as `delete-duplicate-lines' except it keeps blank lines by default unless the DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
+ C-u          Keep the last instance of each line
+ C-u C-u      Delete blank line duplicates
+ C-u C-u C-u  Only delete adjacent duplicates
+\nSee also `spacemacs/uniquify-lines', which deletes adjacent duplicate lines within the region."
+    (interactive
+     (progn
+       (list
+        (region-beginning) (region-end)
+        (equal current-prefix-arg '(4))
+        (equal current-prefix-arg '(64))
+        (equal current-prefix-arg '(16))
+        t)))
+    (delete-duplicate-lines beg end reverse adjacent (not delete-blanks) interactive))
+
+  (defun which-key-show-keymap-at-point (sym)
+    (interactive (list (symbol-at-point)))
+    (let ((kmap (cond
+                 ((keymapp sym)        sym)
+                 ((keymapp (eval sym))  (eval sym))
+                 (t                     nil))))
+      (which-key-show kmap)))
+
+  (defun parent-keymap-at-point (sym)
+    (interactive (list (symbol-at-point)))
+    (let ((kmap (cond
+                 ((keymapp sym)        sym)
+                 ((keymapp (eval sym))  (eval sym))
+                 (t                     nil))))
+      (keymap-parent kmap)))
+
+  (defun line-visible-beginning-position ()
+    (save-excursion
+      (back-to-indentation)
+      (point)))
+
+  (defun line-visible-ending-position ()
+    (save-excursion
+      (end-of-line)
+      (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
 
 
   ;; -------------------------------------------------------------------------------
