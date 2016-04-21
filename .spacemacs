@@ -424,7 +424,7 @@ you should place you code here."
     "Vim-style keybinding in KEYMAP. Uses the `define-key' binding function."
     (define-key keymap (kbd+ keyrep) (edmacro-parse-keys defstr t)))
 
-  (defun nmap (keyrep defstr) "Vim-style keybinding for `evil-normal-state.' Uses the `define-key' binding function."
+  (defun nmap (keyrep defstr) "Vim-style keybinding for `evil-normal-state'. Uses the `define-key' binding function."
          (xmap evil-normal-state-map keyrep defstr))
   (defun imap (keyrep defstr) "Vim-style keybinding for `evil-insert-state'. Uses the `define-key' binding function."
          (xmap evil-insert-state-map keyrep defstr))
@@ -457,7 +457,14 @@ you should place you code here."
   (global-set-key (kbd "<C-S-return>") 'open-line-above)     ;; troyp/utils.el
   (global-set-key [\C-\S-up] 'move-text-up)
   (global-set-key [\C-\S-down] 'move-text-down)
+
   (global-set-key (kbd "M-S-SPC") 'just-one-space)
+  (global-set-key (kbd "C-M-d") 'scroll-other-window)
+  (global-set-key (kbd "C-M-u") 'scroll-other-window-down)
+  (global-set-key (kbd "C-M-S-d") 'scroll-other-window-down)
+
+  (global-set-key (kbd "C-M-v") 'er/expand-region)
+  (global-set-key (kbd "C-S-M-v") 'er/contract-region)
 
   (global-set-key [\C-f10] 'menu-bar-mode)
   (global-set-key [\M-f12] 'shell-pop)
@@ -587,16 +594,44 @@ you should place you code here."
              )
 
   (bind-keys :map spacemacs-cmds
+             :prefix-map follow-prefix-map
+             :prefix "w f"
+             :prefix-docstring "Commands dealing with follow-mode."
+             ("f"    . follow-delete-other-windows-and-split)
+             ("SPC" . follow-mode)
+             )
+
+  (bind-keys :map spacemacs-cmds
              :prefix-map keymaps-prefix-map
+             :menu-name "keys/keymaps"
              :prefix "K"
              :prefix-docstring "Commands dealing with keymaps."
+             ("f" . get-binding)
+             ("r" . replace-ints-with-char)
+             ("w" . which-key-show)
+             ("i" . lookup-key-interactive)
              ("a" . which-key-show-keymap-at-point)
+             ("e"   . evil-evilified-state)
              ("p" . parent-keymap-at-point)
              ("s" . which-key-show-current-state-map)
              )
 
+  (bind-keys :map keymaps-prefix-map
+             :prefix-map keymaps-describe-prefix-map
+             :prefix "d"
+             :prefix-docstring "Describe commands related to keymaps and key binding."
+             ("C-b" . describe-personal-keybindings)
+             ("K"   . describe-keymap)
+             ("l"   . spacemacs/describe-last-keys)
+             ("m"   . spacemacs/describe-mode)
+             ("k"   . describe-key)
+             ("f"   . describe-function)
+             ("b"   . describe-bindings)
+             )
+
   (bind-keys :map spacemacs-cmds
              :prefix-map structured-text-prefix-map
+             :menu-name "structured text"
              :prefix "X"
              :prefix-docstring "Commands dealing with structured text."
              ("sn" . sort-numeric-fields)
@@ -633,6 +668,8 @@ you should place you code here."
     "C-x ESC"      "repeat-complex-command"
     "M-g"          "goto-map"
     "M-s"          "search-map"
+    "SPC K"        "keys/keymaps"
+    "SPC X"        "structured text"
     )
 
   ;; ,--------------------,
@@ -819,10 +856,91 @@ See also `multi-occur-in-matching-buffers'."
     (occur-1 (pcre-to-elisp regexp) nlines bufs))
 
   ;; -------------------------------------------------------------------------------
+  ;; ,-----------------,
+  ;; | Keyboard Macros |
+  ;; '-----------------'
+
+  (fset 'switch-to-most-recent-buffer [?\C-x ?b return])
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,--------------------------------,
+  ;; | Key/Keymap Functions & Aliases |
+  ;; '--------------------------------'
+  (defalias 'key-vector-to-readable-string 'key-description)
+  (defalias 'key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
+  (defalias 'key-input-to-vector 'read-key-sequence-vector)
+  (defalias 'key-input-to-string 'read-key-sequence)
+  (defun key-readable-string-to-vector (keystr) (edmacro-parse-keys keystr t))
+
+  (defun lookup-key-interactive (keymap key)
+    (interactive
+     (list
+      (read-string "Enter keymap: ")
+      (read-key-sequence "Press key: " nil t)))
+    (let* ((cmd (lookup-key (evalstr keymap) key)))
+      (message "%s" (trim-multiline-string (string-prettyprint cmd)))))
+
+  (defun which-key-show-current-state-map ()
+    (interactive)
+    (let ((current-state-map (format "evil-%s-state-map" evil-state)))
+      (which-key-show (intern current-state-map))))
+
+  (defun which-key-show (map)
+    "Display the keymap MAP in a which-key pop-up."
+    (interactive "SKeymap: ")
+    (which-key--show-keymap (symbol-name map) (eval map)))
+
+  (defun replace-ints-with-char (beg end)
+    (interactive "r")
+    (unless (use-region-p)
+      (setq beg (point-min)
+            end (point-max)))
+    (save-excursion
+      (goto-char beg)
+      (while (search-forward-regexp "\\([0-9]+\\)" end t)
+        (if (string= (match-string 0) "92")
+            (replace-match "\"\\\\\\\\\"" t nil)
+          (replace-match
+           (format "\"%c\"" (string-to-number (match-string 1)))
+           t nil)))))
+  ;; FIXME
+  (defun prettyprint-keymap (kmap)
+    (interactive "SKeymap: ")
+    (set-mark-command)
+    (cl-prettyprint (eval kmap))
+    (evil-active-region 1)
+    (replace-ints-with-char))
+
+  (defun get-binding (cmd)
+    (interactive "SCommand name: ")
+    (let* ((cmdname       (symbol-name cmd))
+           (cmdname-escd  (format "\\[%s]" cmdname))
+           (cmdkey        (substitute-command-keys cmdname-escd))
+           (cmdcons       (cons cmdname cmdkey)))
+      (message "%S" cmdcons)
+      cmdcons))
+
+  (defun which-key-show-keymap-at-point (sym)
+    (interactive (list (symbol-at-point)))
+    (let ((kmap (cond
+                 ((keymapp sym)        sym)
+                 ((keymapp (eval sym))  (eval sym))
+                 (t                     nil))))
+      (which-key-show kmap)))
+
+  (defun parent-keymap-at-point (sym)
+    (interactive (list (symbol-at-point)))
+    (let ((kmap (cond
+                 ((keymapp sym)        sym)
+                 ((keymapp (eval sym))  (eval sym))
+                 (t                     nil))))
+      (keymap-parent kmap)))
+
+
+  ;; -------------------------------------------------------------------------------
   ;; ,---------,
   ;; | Aliases |
   ;; '---------'
-
 
   (defalias 'init 'spacemacs/find-dotfile)
   (defalias 'pr 'cl-prettyprint)
@@ -846,10 +964,6 @@ See also `multi-occur-in-matching-buffers'."
   ;; aliases for discoverability
   (defalias 'string-to-symbol 'intern)
   (defalias 'symbol-to-string 'symbol-name)
-  (defalias 'key-vector-to-readable-string 'key-description)
-  (defalias 'key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
-  (defalias 'key-input-to-vector 'read-key-sequence-vector)
-  (defalias 'key-input-to-string 'read-key-sequence)
   ;; aliases to user-defined functions
   (defalias 'ppm 'message-prettyprint)
   (defalias 'boxcom 'box-heading-comment)
@@ -857,19 +971,9 @@ See also `multi-occur-in-matching-buffers'."
   (defalias 'srecom 'short-rect-heading-comment)
 
   ;; -------------------------------------------------------------------------------
-  ;; ,-----------------,
-  ;; | Keyboard Macros |
-  ;; '-----------------'
-
-  (fset 'switch-to-most-recent-buffer [?\C-x ?b return])
-
-  ;; -------------------------------------------------------------------------------
   ;; ,-----------,
   ;; | Functions |
   ;; '-----------'
-
-  (defun key-readable-string-to-vector (keystr)
-    (edmacro-parse-keys keystr t))
 
   (defun get-char-face (&optional pos)
     (interactive)
@@ -878,19 +982,6 @@ See also `multi-occur-in-matching-buffers'."
   (defun evalstr(str) (eval (intern str)))
 
   (defun trim-multiline-string (str) (replace-regexp-in-string  "^\n+\\|\n+$" "" str))
-
-  (defun lookup-key-interactive (keymap key)
-    (interactive
-     (list
-      (read-string "Enter keymap: ")
-      (read-key-sequence "Press key: " nil t)))
-    (let* ((cmd (lookup-key (evalstr keymap) key)))
-      (message "%s" (trim-multiline-string (string-prettyprint cmd)))))
-
-  (defun which-key-show-current-state-map ()
-    (interactive)
-    (let ((current-state-map (format "evil-%s-state-map" evil-state)))
-      (which-key-show (intern current-state-map))))
 
   (defun string-prettyprint (FORM)
     "Return the result of printing FORM with `cl-prettyprint' as a string."
@@ -963,42 +1054,9 @@ See also `multi-occur-in-matching-buffers'."
         (if current-prefix-arg (insert (format "%S" val))
           (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
 
-  (defun which-key-show (map)
-    "Display the keymap MAP in a which-key pop-up."
-    (interactive "SKeymap: ")
-    (which-key--show-keymap (symbol-name map) (eval map)))
-
   (defun eval-prettyprint-last-sexp (eval-last-sexp-arg-internal)
     (interactive "P")
     (cl-prettyprint (eval-last-sexp eval-last-sexp-arg-internal)))
-
-  (defun replace-with-function (f)
-    (while (search-forward-regexp "\\([0-9]+\\)" nil t)
-      (replace-match
-       (funcall f (match-string 1)) t nil)))
-
-  (defun replace-int-with-char ()
-    (interactive)
-      (replace-with-function
-       (lambda (s)
-         (format "\"%c\"" (string-to-number (match-string 1))))))
-
-  ;; FIXME
-  (defun prettyprint-keymap (kmap)
-    (interactive "SKeymap: ")
-    (set-mark-command)
-    (cl-prettyprint (eval kmap))
-    (evil-active-region 1)
-    (replace-int-with-char))
-
-  (defun get-binding (cmd)
-    (interactive "SCommand name: ")
-    (let* ((cmdname       (symbol-name cmd))
-           (cmdname-escd  (format "\\[%s]" cmdname))
-           (cmdkey        (substitute-command-keys cmdname-escd))
-           (cmdcons       (cons cmdname cmdkey)))
-      (message "%S" cmdcons)
-      cmdcons))
 
   (defun delete-duplicate-lines-nonblank (beg end &optional reverse adjacent delete-blanks interactive)
     "Delete duplicate lines within region. This is the same as `delete-duplicate-lines' except it keeps blank lines by default unless the DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
@@ -1015,22 +1073,6 @@ See also `multi-occur-in-matching-buffers'."
         (equal current-prefix-arg '(16))
         t)))
     (delete-duplicate-lines beg end reverse adjacent (not delete-blanks) interactive))
-
-  (defun which-key-show-keymap-at-point (sym)
-    (interactive (list (symbol-at-point)))
-    (let ((kmap (cond
-                 ((keymapp sym)        sym)
-                 ((keymapp (eval sym))  (eval sym))
-                 (t                     nil))))
-      (which-key-show kmap)))
-
-  (defun parent-keymap-at-point (sym)
-    (interactive (list (symbol-at-point)))
-    (let ((kmap (cond
-                 ((keymapp sym)        sym)
-                 ((keymapp (eval sym))  (eval sym))
-                 (t                     nil))))
-      (keymap-parent kmap)))
 
   (defun line-visible-beginning-position ()
     (save-excursion
