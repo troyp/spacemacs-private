@@ -26,22 +26,36 @@ values."
      auto-completion
      ;; better-defaults
      c-c++
+     (clojure :variables
+              ;; clojure-enable-fancify-symbols t
+              )
      emacs-lisp
      extra-langs
      git
+     go
      haskell
      html
+     java
      javascript
      lua
      markdown
+     octave
      (org :variables
-             org-enable-github-support t)
+          org-enable-github-support t
+          )
      python
+     racket
+     scala
+     scheme
      (shell :variables
             shell-default-height 30
-            shell-default-position 'bottom)
+            shell-default-position 'bottom
+            )
+     shell-scripts
      ;; spell-checking
-     ;; syntax-checking
+     (syntax-checking :variables
+                      syntax-checking-enable-by-default t
+                      )
      ;; version-control
      ;; (vinegar :variables
      ;;          vinegar-reuse-dired-buffer t)
@@ -313,6 +327,7 @@ you should place you code here."
   ;; (setq-default tab-always-indent t)
   (global-linum-mode)
   (menu-bar-mode)
+  (minibuffer-depth-indicate-mode 1)
 
   ;; not working?
   (setq-default evil-esc-delay 0.00001)
@@ -389,8 +404,11 @@ you should place you code here."
   (spacemacs|define-text-object "." "dot" "." ".")
 
   (evil-define-text-object evil-inner-line (count &optional beg end type)
-    (list (line-visible-beginning-position) (+ 1 (line-visible-ending-position))))
+    (list (line-visible-beginning-position) (+ 1 (line-visible-end-position))))
+  (evil-define-text-object evil-outer-line (count &optional beg end type)
+    (list (line-beginning-position) (line-end-position)))
   (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
+  (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
 
 
 ;; ==============================================================================
@@ -515,7 +533,6 @@ you should place you code here."
   ;; | MOTION STATE |
   ;; '--------------'
   (define-key evil-motion-state-map (kbd "C-e") 'end-of-line)
-
   (define-key evil-motion-state-map (kbd "[") 'evil-motion-open-bracket-prefix-map)
   (define-key evil-motion-state-map (kbd "]") 'evil-motion-close-bracket-prefix-map)
   (define-prefix-command 'evil-motion-open-bracket-prefix-map)
@@ -560,6 +577,7 @@ you should place you code here."
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
   (evil-leader/set-key
+    "b M"        'switch-to-messages-buffer
     "b C-e"      'bury-buffer
     "b <insert>" 'buffer-major-mode
     "b <f1>"     'about-emacs
@@ -580,7 +598,15 @@ you should place you code here."
     "<backtab>"  'switch-to-most-recent-buffer
     "<delete>"   'kill-buffer-and-window
     "<return>"   'helm-buffers-list
+    "C-/"        'evil-search-highlight-persist-remove-all
     )
+
+  (bind-keys :map spacemacs-cmds
+             :prefix-map help-download-prefix-map
+             :prefix "h w"
+             :prefix-docstring "Commands to download additional documentation."
+             ("r" . github-download-README)
+             )
 
   (bind-keys :map spacemacs-cmds
              :prefix-map character-prefix-map
@@ -639,6 +665,10 @@ you should place you code here."
 
   (bind-keys :map search-map
              ;; M-s map
+             )
+
+  (bind-keys :map helm-map
+             ("C-0" . helm-select-action)
              )
 
   ;; -------------------------------------------------------------------------------
@@ -739,6 +769,64 @@ you should place you code here."
              ("j"     . eval-prettyprint-last-sexp)
              )
 
+  ;; ,-----------,
+  ;; | Info-Mode |
+  ;; '-----------'
+
+  (spacemacs/set-leader-keys-for-major-mode 'Info-mode
+    "ci"      'info-index
+    "cm"      'info-menu
+    "cs"      'info-search
+    "c RET"   'Info-follow-nearest-node
+    "c SPC"   'Info-scroll-up
+    "c+"      'Info-merge-subnodes
+    "c,"      'Info-index-next
+    "c-"      'negative-argument
+    "c?"      'describe-mode
+    "cG"      'Info-goto-node-web
+    "cH"      'describe-mode
+    "cL"      'Info-history
+    "cT"      'Info-toc
+    "c["      'Info-backward-node
+    "c]"      'Info-forward-node
+    "c^"      'Info-up
+    "cb"      'beginning-of-buffer
+    "ce"      'end-of-buffer
+    "cf"      'Info-follow-reference
+    "cg"      'Info-goto-node
+    "ch"      'Info-help
+    "cl"      'Info-history-back
+    "cn"      'Info-next
+    "ct"      'Info-top-node
+    "cv"      'Info-virtual-book
+    "cw"      'Info-copy-current-node-name
+    )
+
+  (spacemacs/declare-prefix-for-mode 'Info-mode "mc" "commands")
+
+  (eval-after-load "Info-mode"
+    '(progn
+       (evil-define-key 'normal' Info-mode-map
+         (kbd ",")   'spacemacs-Info-mode-map
+         (kbd "M-;") 'evil-repeat-find-char-reverse
+         )
+       (evil-define-key 'visual' Info-mode-map
+         (kbd ",")   'spacemacs-Info-mode-map
+         (kbd "M-;") 'evil-repeat-find-char-reverse
+         )
+       (evil-define-key 'motion' Info-mode-map
+         (kbd ",")   'spacemacs-Info-mode-map
+         (kbd "M-;") 'evil-repeat-find-char-reverse
+         )
+       (evil-define-key 'evilified-state' Info-mode-map
+         (kbd ",")   'spacemacs-Info-mode-map
+         (kbd "M-;") 'evil-repeat-find-char-reverse
+         )
+       (define-key Info-mode-map
+         (kbd "M-RET") 'spacemacs-Info-mode-map
+         (kbd "M-;")   'evil-repeat-find-char-reverse
+         )
+       ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
@@ -772,6 +860,69 @@ you should place you code here."
   (add-hook 'org-mode-hook
             (lambda ()
               (define-key org-mode-map [C-tab] 'next-multiframe-window)))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------------------------,
+  ;; | Undo-Tree-Visualizer-Mode |
+  ;; '---------------------------'
+
+  (spacemacs/set-leader-keys-for-major-mode 'undo-tree-visualizer-mode
+    "d"              'undo-tree-visualizer-toggle-diff
+    "c?"             'describe-mode
+    "cb"             'undo-tree-visualize-switch-branch-left
+    "cd"             'undo-tree-visualizer-toggle-diff
+    "cf"             'undo-tree-visualize-switch-branch-right
+    "cg"             'revert-buffer
+    "ch"             'describe-mode
+    "cn"             'undo-tree-visualize-redo
+    "cp"             'undo-tree-visualize-undo
+    "cq"             'undo-tree-visualizer-quit
+    "cs"             'undo-tree-visualizer-selection-mode
+    "ct"             'undo-tree-visualizer-toggle-timestamps
+    "c DEL"          'scroll-down-command
+    "c S-SPC"        'scroll-down-command
+    "c <C-down>"     'undo-tree-visualize-redo-to-x
+    "c <C-up>"       'undo-tree-visualize-undo-to-x
+    "c <down>"       'undo-tree-visualize-redo
+    "c <left>"       'undo-tree-visualize-switch-branch-left
+    "c <mouse-1>"    'undo-tree-visualizer-mouse-set
+    "c <next>"       'undo-tree-visualizer-scroll-up
+    "c <prior>"      'undo-tree-visualizer-scroll-down
+    "c <right>"      'undo-tree-visualize-switch-branch-right
+    "c <up>"         'undo-tree-visualize-undo
+    )
+
+  (spacemacs/declare-prefix-for-mode 'undo-tree-visualizer-mode "mc" "commands")
+
+  (eval-after-load "undo-tree-visualizer-mode"
+    '(progn
+       (evil-define-key 'normal' undo-tree-visualizer-mode-map
+         (kbd ",")   'spacemacs-undo-tree-visualizer-mode-map
+         (kbd "M-;") 'evil-repeat-find-char-reverse
+         )
+       (evil-define-key 'visual' undo-tree-visualizer-mode-map
+         (kbd ",")   'spacemacs-undo-tree-visualizer-mode-map
+         (kbd "M-;") 'evil-repeat-find-char-reverse
+         )
+       (evil-define-key 'motion' undo-tree-visualizer-mode-map
+         (kbd ",")   'spacemacs-undo-tree-visualizer-mode-map
+         (kbd "M-;") 'evil-repeat-find-char-reverse
+         )
+       (evil-define-key 'evilified-state' undo-tree-visualizer-mode-map
+         (kbd ",")   'spacemacs-undo-tree-visualizer-mode-map
+         (kbd "M-;") 'evil-repeat-find-char-reverse
+         )
+       (define-key undo-tree-visualizer-mode-map
+         (kbd "M-RET") 'spacemacs-undo-tree-visualizer-mode-map
+         (kbd "M-;")   'evil-repeat-find-char-reverse
+       )))
+
+  ;; ---------------
+  ;; Leader Bindings
+  ;; ---------------
+  (bind-keys :map spacemacs-emacs-lisp-mode-map
+             ("m" . spacemacs-undo-tree-visualizer-mode-map)
+             )
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
@@ -903,6 +1054,7 @@ See also `multi-occur-in-matching-buffers'."
           (replace-match
            (format "\"%c\"" (string-to-number (match-string 1)))
            t nil)))))
+
   ;; FIXME
   (defun prettyprint-keymap (kmap)
     (interactive "SKeymap: ")
@@ -1079,11 +1231,25 @@ See also `multi-occur-in-matching-buffers'."
       (back-to-indentation)
       (point)))
 
-  (defun line-visible-ending-position ()
+  (defun line-visible-end-position ()
     (save-excursion
       (end-of-line)
       (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
 
+  (defun github-download-README (author repo)
+    (interactive "sAUTHOR: \nsREPO: ")
+    (let ((cmd (concat "tempdir=`mktemp -d`;\n"
+                       "cd $tempdir;\n"
+                       "url=\"https://github.com/" author "/" repo ".git\";\n"
+                       "echo Creating Temp directory: $tempdir\n"
+                       "git clone \"$url\";\n"
+                       "cd *;\n"
+                       "for f in *README*; do\n"
+                       "done;")))
+      (shell-command (format "bash -c %s" (shell-quote-argument cmd)))))
+  (defun switch-to-messages-buffer ()
+    (interactive)
+    (switch-to-buffer (messages-buffer)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
