@@ -57,8 +57,8 @@ values."
                       syntax-checking-enable-by-default t
                       )
      ;; version-control
-     ;; (vinegar :variables
-     ;;          vinegar-reuse-dired-buffer t)
+     (vinegar :variables
+              vinegar-reuse-dired-buffer t)
      vimscript
      troyp
      )
@@ -69,6 +69,11 @@ values."
    dotspacemacs-additional-packages
    '(
      dired-sort-menu
+     (dired+ :variables
+             diredp-hide-details-initially-flag t
+             diredp-hide-details-propagate-flag t
+             toggle-diredp-find-file-reuse-dir  t
+             )
      lacarte
      ;; libraries
      dash
@@ -130,7 +135,7 @@ values."
    ;; This variable has no effect if Emacs is launched with the parameter
    ;; `--insecure' which forces the value of this variable to nil.
    ;; (default t)
-   dotspacemacs-elpa-https t
+   dotspacemacs-elpa-https nil
    ;; Maximum allowed time in seconds to contact an ELPA repository.
    dotspacemacs-elpa-timeout 5
    ;; If non nil then spacemacs will check for updates at startup
@@ -456,6 +461,8 @@ you should place you code here."
   ;; | Global Bindings |
   ;; '-----------------'
 
+  (global-set-key (kbd "M-S-x") 'execute-extended-command)
+
   (global-set-key (kbd "<f1>") 'describe-prefix-bindings)
   (global-set-key (kbd "<C-f1>") 'describe-prefix-bindings)
   (global-set-key [C-tab] 'next-multiframe-window)
@@ -481,11 +488,15 @@ you should place you code here."
   (global-set-key (kbd "C-M-u") 'scroll-other-window-down)
   (global-set-key (kbd "C-M-S-d") 'scroll-other-window-down)
 
+  (global-set-key [\C-f10] 'menu-bar-mode)
+  (global-set-key [\M-f12] 'shell-pop)
+
   (global-set-key (kbd "C-M-v") 'er/expand-region)
   (global-set-key (kbd "C-S-M-v") 'er/contract-region)
 
-  (global-set-key [\C-f10] 'menu-bar-mode)
-  (global-set-key [\M-f12] 'shell-pop)
+  (global-set-key [f7] 'exchange-point-and-mark)
+  (global-set-key [f8] 'er/contract-region)
+  (global-set-key [f9] 'er/expand-region)
 
 
   ;; -------------------------------------------------------------------------------
@@ -528,6 +539,7 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "C-\\") 'shell-command-replace-region)
   (define-key evil-visual-state-map (kbd "M-u") 'evil-upcase)
   (define-key evil-visual-state-map (kbd "M-l") 'evil-downcase)
+  (define-key evil-visual-state-map (kbd "M-=") 'count-region)
 
   ;; ,--------------,
   ;; | MOTION STATE |
@@ -586,6 +598,7 @@ you should place you code here."
     "Ep"         'spacemacs/previous-error
     "h C-m"      'lacarte-execute-menu-command
     "h d C-b"    'describe-personal-keybindings ;; bind-key bindings
+    "h1"         'evil-goto-definition
     "i-"         'tiny-expand
     "RR"         'pcre-multi-occur
     "Rr"         'pcre-occur
@@ -594,7 +607,10 @@ you should place you code here."
     "om"         'mode-ring-prefix-key-map
     "ov"         'variable-pitch-mode
     "xlU"        'delete-duplicate-lines-nonblank
+    "x C-l"      'quick-pcre-align-repeat
     "."          'repeat-complex-command
+    ","          'helm-mini
+    "<"          'ido-switch-buffer
     "<backtab>"  'switch-to-most-recent-buffer
     "<delete>"   'kill-buffer-and-window
     "<return>"   'helm-buffers-list
@@ -606,6 +622,7 @@ you should place you code here."
              :prefix "h w"
              :prefix-docstring "Commands to download additional documentation."
              ("r" . github-download-README)
+             ("w" . github-clone-wiki)
              )
 
   (bind-keys :map spacemacs-cmds
@@ -632,14 +649,15 @@ you should place you code here."
              :menu-name "keys/keymaps"
              :prefix "K"
              :prefix-docstring "Commands dealing with keymaps."
-             ("f" . get-binding)
-             ("r" . replace-ints-with-char)
-             ("w" . which-key-show)
-             ("i" . lookup-key-interactive)
              ("a" . which-key-show-keymap-at-point)
-             ("e"   . evil-evilified-state)
+             ("e" . evil-evilified-state)
+             ("f" . get-binding)
+             ("i" . lookup-key-interactive)
              ("p" . parent-keymap-at-point)
+             ("r" . replace-ints-with-char)
              ("s" . which-key-show-current-state-map)
+             ("w" . which-key-show)
+             ("K" . which-key-show-top-level)
              )
 
   (bind-keys :map keymaps-prefix-map
@@ -665,10 +683,7 @@ you should place you code here."
 
   (bind-keys :map search-map
              ;; M-s map
-             )
-
-  (bind-keys :map helm-map
-             ("C-0" . helm-select-action)
+             ("s" . dired-mark-files-regexp)
              )
 
   ;; -------------------------------------------------------------------------------
@@ -676,8 +691,15 @@ you should place you code here."
   ;; | which-key Configuration |
   ;; '-------------------------'
 
+  (bind-keys :map which-key-C-h-map
+             ("C-h" . which-key-abort)
+             )
+
   (which-key-add-key-based-replacements
+    "C-x a"        "abbrev"
+    "C-x n"        "narrow"
     "C-x r"        "rectangle"
+    "C-x X"        "edebug"
     "C-x 4"        "other window"
     "C-x 5"        "frame"
     "C-x 8"        "unicode"
@@ -696,11 +718,23 @@ you should place you code here."
     "C-x 8 ~"      "~ãÃðÐñÑõÕþÞ¬"
     "C-x RET"      "coding system"
     "C-x ESC"      "repeat-complex-command"
+    "C-x @"        "event-apply--modifier"
     "M-g"          "goto-map"
     "M-s"          "search-map"
+    "SPC b h"      "*spacemacs*"
+    "SPC b s"      "*scratch*"
+    "SPC b M"      "*messages*"
+    "SPC b <f1>"   "*About GNU Emacs*"
     "SPC K"        "keys/keymaps"
     "SPC X"        "structured text"
     )
+
+  (dolist (cons '(("return"  . "RET")
+                  ("delete"  . "DEL")
+                  ("backtab" . "S-TAB")
+                  ("escape"  . "ESC")
+                  ))
+    (add-to-list 'which-key-key-replacement-alist cons))
 
   ;; ,--------------------,
   ;; | Command Docstrings |
@@ -733,6 +767,50 @@ you should place you code here."
   ;; ,---------------------,
   ;; | Major Mode Bindings |
   ;; '---------------------'
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------,
+  ;; | Dired |
+  ;; '-------'
+
+  ;; TODO: get dired init working with eval-after-load
+
+  (require 'dired)
+  (require 'dired+)
+
+  (evilified-state-evilify dired-mode dired-mode-map
+    (kbd "c")      'diredp-copy-this-file
+    (kbd "j")      'diredp-next-line
+    (kbd "k")      'diredp-previous-line
+    ;; (kbd "{")      'evil-backward-paragraph
+    ;; (kbd "}")      'evil-forward-paragraph
+    (kbd "{")      'dired-prev-subdir
+    (kbd "}")      'dired-next-subdir
+    (kbd "C-n")    'ido-find-file
+    (kbd "M-=")    'dired-create-directory
+    (kbd "M-DEL")  'diredp-up-directory-reuse-dir-buffer
+    )
+  ;; set function definition of 'dired-mode-map (same as value)
+  (fset 'dired-mode-map dired-mode-map)
+  ;; major-mode leader-key
+  (spacemacs/set-leader-keys-for-major-mode 'dired-mode
+    "c"     'dired-mode-map
+    "tr"    'toggle-diredp-find-file-reuse-dir
+    )
+  (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
+
+  (eval-after-load "dired"
+    `(progn
+       ))
+
+  (setq diredp-hide-details-initially-flag t)
+  (setq diredp-hide-details-propagate-flag t)
+  (setq toggle-diredp-find-file-reuse-dir  1)
+
+  (eval-after-load "dired+"
+    `(progn
+       ;; (require 'dired+)
+       ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,------------,
@@ -768,6 +846,17 @@ you should place you code here."
              ("e j"   . eval-prettyprint-last-sexp)
              ("j"     . eval-prettyprint-last-sexp)
              )
+
+  ;; ,-----------,
+  ;; | helm-mode |
+  ;; '-----------'
+
+  (eval-after-load "helm-mode"
+    `(progn
+       (bind-keys :map helm-map
+                  ("C-0" . helm-select-action)
+                  )
+       ))
 
   ;; ,-----------,
   ;; | Info-Mode |
@@ -1236,6 +1325,13 @@ See also `multi-occur-in-matching-buffers'."
       (end-of-line)
       (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
 
+  (defun pcre-replace-regexp-in-string (PCRE REP STRING &optional FIXEDCASE LITERAL SUBEXP START)
+    "Replace all matches for PCRE with REP in STRING, where PCRE is converted to an elisp regexp by the function `rxt-pcre-to-elisp'.\n
+For the meaning of the optional arguments, see `replace-regexp-in-string'."
+    (replace-regexp-in-string (pcre-to-elisp REGEXP)
+                              REP STRING FIXEDCASE LITERAL SUBEXP START))
+
+  ;; TODO: these github download functions require the home directory hard-coded because ~ and $HOME aren't working -- investigate
   (defun github-download-README (author repo)
     (interactive "sAUTHOR: \nsREPO: ")
     (let ((cmd (concat "tempdir=`mktemp -d`;\n"
@@ -1245,11 +1341,26 @@ See also `multi-occur-in-matching-buffers'."
                        "git clone \"$url\";\n"
                        "cd *;\n"
                        "for f in *README*; do\n"
+                       "  name=\"" repo "-$f\";"
+                       "  cp \"$f\" \"/home/troy/.emacs.d/private/docs/$name\";"
                        "done;")))
+      (message cmd)
       (shell-command (format "bash -c %s" (shell-quote-argument cmd)))))
+
+    (defun github-clone-wiki (repo-str)
+      (interactive "sUSER/REPO or URL: ")
+      (let* ((user/repo (replace-regexp-in-string (pcre-to-elisp "^https://github.com/|/wiki$|(\.wiki)?\.git$") "" repo-str))
+             (url       (concat "https://github.com/" user/repo ".wiki.git"))
+             (userdir   (replace-regexp-in-string (pcre-to-elisp "^~/") "/home/troy/" user-emacs-directory))
+             (dir       (concat userdir "private/docs")))
+        (shell-command (format "cd '%s'; git clone %s" dir url))))
+
   (defun switch-to-messages-buffer ()
     (interactive)
     (switch-to-buffer (messages-buffer)))
+
+  ;; TODO: make C-S-up/down work with regions
+  ;; TODO: write replace-line function.
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
@@ -1261,8 +1372,27 @@ See also `multi-occur-in-matching-buffers'."
                (fboundp   'avy-with))
       (defalias 'avy--with-avy-keys 'avy-with)))
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------------------,
+  ;; | Load Private Data |
+  ;; '-------------------'
+  (load "~/.emacs.d/private/private-data.el")
+
   )
 
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(paradox-automatically-star t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
