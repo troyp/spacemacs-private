@@ -19,6 +19,7 @@
 (require 'tsputils)
 
 ;; TODO: rename functions with module prefix
+;; TODO: refactor
 
 ;; ---------------------------------------------------------------------------
 ;; ,-----------------------,
@@ -125,7 +126,7 @@
 
 
 ;; ===========================================================================
-;;        __________________ 
+;;        __________________
 ;;       |                  |
 ;;       | HEADING COMMANDS |
 ;;       |__________________|
@@ -205,6 +206,24 @@
       (goto-char end-of-underline-pos)
       (newline))))
 
+(defun banner-heading-comment-current-line ()
+  ;; TODO: make undo-able in single step
+  ;; TODO: rewrite in terms of box-heading
+  (interactive)
+  (let ((char (cond
+               ((equal current-prefix-arg '(4)) ?-)
+               ((equal current-prefix-arg '(16)) ?=)
+               ((characterp current-prefix-arg) current-prefix-arg)
+               (t ?=))))
+    (underline-comment char)
+    (save-excursion
+      (next-line 1)
+      (copy-current-line)
+      (kill-whole-line)
+      (previous-line 2)
+      (beginning-of-line)
+      (yank))))
+
 (defun underline-and-open-line-below (&optional char length-adjustment)
   (interactive)
   (underline char length-adjustment t))
@@ -218,12 +237,12 @@
     (save-excursion
       (underline char length-delta nil)
       (next-line)
-      (comment-region-lines (line-beginning-position) (line-end-position))
+      (comment-region (line-beginning-position) (line-end-position))
       (setf end-of-comment-pos (line-end-position)))
     (when start-new-line
       (goto-char end-of-comment-pos)
       (newline))))
-    
+
 (defun underline-comment-and-open-line-below (&optional char length-adjustment)
   (interactive)
   (underline-comment char length-adjustment t))
@@ -249,9 +268,9 @@ comment-end string. ADJUSTED (default value: 't) corrects the result for this."
     (+ comment-adjusted-start-len
        comment-end-len
        comment-total-pad-len)))
-    
+
 ;; ===========================================================================
-;;        ____________________________ 
+;;        ____________________________
 ;;       |                            |
 ;;       | DIVIDER & SECTION COMMANDS |
 ;;       |____________________________|
@@ -309,7 +328,7 @@ divider followed by a simple rectangular heading."
   (pop-mark))
 
 (defun rh-section-comment (s &optional n &optional heading-indent)
-  "Rectangular section heading. Using comment syntax, 
+  "Rectangular section heading. Using comment syntax,
 inserts a divider followed by a rectangular heading."
   (interactive "sheading: \np")
   (if (= n 1) (setf n 79))
@@ -347,6 +366,7 @@ inserts a divider followed by a rectangular heading."
 (define-key 'asciiheadings-prefix-key-map   ";r"  'short-rect-heading-comment)
 (define-key 'asciiheadings-prefix-key-map   "S"  'rh-section-comment)
 (define-key 'asciiheadings-prefix-key-map   "s"  'srh-section-comment)
+(define-key 'asciiheadings-prefix-key-map   "="  'banner-heading-comment-current-line)
 
 ;; -----------------------------------------------------------------------------
 
