@@ -589,32 +589,39 @@ you should place you code here."
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
   (evil-leader/set-key
-    "b M"        'switch-to-messages-buffer
-    "b C-e"      'bury-buffer
-    "b <insert>" 'buffer-major-mode
-    "b <f1>"     'about-emacs
-    "En"         'spacemacs/next-error
-    "EN"         'spacemacs/previous-error
-    "Ep"         'spacemacs/previous-error
-    "h C-m"      'lacarte-execute-menu-command
-    "h d C-b"    'describe-personal-keybindings ;; bind-key bindings
-    "h1"         'evil-goto-definition
-    "i-"         'tiny-expand
-    "RR"         'pcre-multi-occur
-    "Rr"         'pcre-occur
-    "oa"         'asciiheadings-prefix-key-map
-    "oc"         'character-prefix-map
-    "om"         'mode-ring-prefix-key-map
-    "ov"         'variable-pitch-mode
-    "xlU"        'delete-duplicate-lines-nonblank
-    "x C-l"      'quick-pcre-align-repeat
-    "."          'repeat-complex-command
-    ","          'helm-mini
-    "<"          'ido-switch-buffer
-    "<backtab>"  'switch-to-most-recent-buffer
-    "<delete>"   'kill-buffer-and-window
-    "<return>"   'helm-buffers-list
-    "C-/"        'evil-search-highlight-persist-remove-all
+    "b M"          'switch-to-messages-buffer
+    "b C-e"        'bury-buffer
+    "b <insert>"   'buffer-major-mode
+    "b <f1>"       'about-emacs
+    "En"           'spacemacs/next-error
+    "EN"           'spacemacs/previous-error
+    "Ep"           'spacemacs/previous-error
+    "h C-m"        'lacarte-execute-menu-command
+    "h d C-b"      'describe-personal-keybindings ;; bind-key bindings
+    "h1"           'evil-goto-definition
+    "i-"           'tiny-expand
+    "RR"           'pcre-multi-occur
+    "Rr"           'pcre-occur
+    "oa"           'asciiheadings-prefix-key-map
+    "oc"           'character-prefix-map
+    "om"           'mode-ring-prefix-key-map
+    "ov"           'variable-pitch-mode
+    "xa."          'spacemacs/align-repeat-period
+    "xa'"          'spacemacs/align-repeat-quote
+    "xa\""         'spacemacs/align-repeat-double-quote
+    "xa-"          'spacemacs/align-repeat-dash
+    "xa C-;"       'spacemacs/align-repeat-semicolon-comment
+    "xa SPC"       'quick-pcre-align-repeat
+    "xlU"          'delete-duplicate-lines-nonblank
+    "x C-l"        'quick-pcre-align-repeat
+    "."            'repeat-complex-command
+    ","            'helm-mini
+    "<"            'ido-switch-buffer
+    "<backtab>"    'switch-to-most-recent-buffer
+    "<backspace>"  'kill-this-buffer
+    "<delete>"     'kill-buffer-and-window
+    "<return>"     'helm-buffers-list
+    "C-/"          'evil-search-highlight-persist-remove-all
     )
 
   (bind-keys :map spacemacs-cmds
@@ -730,7 +737,7 @@ you should place you code here."
     )
 
   (dolist (cons '(("return"  . "RET")
-                  ("delete"  . "DEL")
+                  ("delete"  . "Delete")
                   ("backtab" . "S-TAB")
                   ("escape"  . "ESC")
                   ))
@@ -1030,9 +1037,20 @@ you should place you code here."
        ))
   (eval-after-load "emmet-mode"
     '(define-keys emmet-mode-keymap
-       (kbd "<C-return>")    'open-line-below
-       (kbd "<C-S-return>")  'open-line-above
+       (kbd "<C-return>")   'open-line-below
+       (kbd "<C-S-return>") 'open-line-above
        ))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------,
+  ;; | Align |
+  ;; '-------'
+
+  (spacemacs|create-align-repeat-x "period" "." nil t)
+  (spacemacs|create-align-repeat-x "quote" "'")
+  (spacemacs|create-align-repeat-x "double-quote" "\"")
+  (spacemacs|create-align-repeat-x "dash" "-")
+  (spacemacs|create-align-repeat-x "semicolon-comment" ";;?" )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
