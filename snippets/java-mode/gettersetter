@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: getter&setter
+# key: gs
+# --
+public ${1:int} get${2:`(upcase-initials (current-kill 0))`}()
+       return ${3:`(current-kill 0)`};
+}
+public void set$2(${4:x})
+       $3 = $4;
+}
