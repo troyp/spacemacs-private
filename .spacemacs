@@ -45,6 +45,7 @@ values."
           )
      python
      racket
+     ruby
      scala
      scheme
      (shell :variables
@@ -52,6 +53,7 @@ values."
             shell-default-position 'bottom
             )
      shell-scripts
+     smex
      ;; spell-checking
      (syntax-checking :variables
                       syntax-checking-enable-by-default t
@@ -72,7 +74,6 @@ values."
      (dired+ :variables
              diredp-hide-details-initially-flag t
              diredp-hide-details-propagate-flag t
-             toggle-diredp-find-file-reuse-dir  t
              )
      lacarte
      ;; libraries
@@ -109,6 +110,7 @@ values."
      strings
      thingatpt+
      thumb-frm
+     top-mode
      ucs-cmds
      wid-edit+
      zoom-frm
@@ -339,6 +341,19 @@ you should place you code here."
 
   (setq auto-completion-enable-help-tooltip t)
 
+  (setq scroll-preserve-screen-position 1)
+
+
+  ;; ==============================================================================
+                                ;; ***************
+                                ;; *             *
+                                ;; * ENVIRONMENT *
+                                ;; *             *
+                                ;; ***************
+
+  (setenv "PATH" (concat "/home/troy/.nvm/versions/node/v0.12.7/bin" ":" (getenv "PATH")))
+  (add-to-list 'exec-path "/home/troy/.nvm/versions/node/v0.12.7/bin")
+
   ;; ==============================================================================
   ;;                       *****************************
   ;;                       *                           *
@@ -363,6 +378,7 @@ you should place you code here."
   ;;                             *******************
 
   (add-to-list 'auto-mode-alist '("\\.zsh" . sh-mode))
+  (add-to-list 'auto-mode-alist '("\\.keynavrc" . conf-mode))
 
 
   ;; ==============================================================================
@@ -463,8 +479,8 @@ you should place you code here."
 
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
 
-  (global-set-key (kbd "<f1>") 'describe-prefix-bindings)
-  (global-set-key (kbd "<C-f1>") 'describe-prefix-bindings)
+  (global-set-key [\M-f4] 'kill-buffer-and-window)
+
   (global-set-key [C-tab] 'next-multiframe-window)
   (global-set-key [C-S-iso-lefttab] 'previous-multiframe-window)
   ;; change C-x - from 'shrink-window-if-larger-than-buffer to 'fit-window-to-buffer
@@ -478,7 +494,7 @@ you should place you code here."
                   (lambda () (interactive) (scroll-other-window-down -1)))
 
   (global-set-key "\C-a" 'move-beginning-of-line-or-text)    ;; troyp/utils.el
-  (global-set-key (kbd "<C-return>") 'open-line-below)       ;; troyp/utils.el
+  (global-set-key (kbd "<S-return>") 'open-line-below)       ;; troyp/utils.el
   (global-set-key (kbd "<C-S-return>") 'open-line-above)     ;; troyp/utils.el
   (global-set-key [\C-\S-up] 'move-text-up)
   (global-set-key [\C-\S-down] 'move-text-down)
@@ -487,6 +503,8 @@ you should place you code here."
   (global-set-key (kbd "C-M-d") 'scroll-other-window)
   (global-set-key (kbd "C-M-u") 'scroll-other-window-down)
   (global-set-key (kbd "C-M-S-d") 'scroll-other-window-down)
+  (global-set-key (kbd "M-J") 'scroll-up-line)
+  (global-set-key (kbd "M-K") 'scroll-down-line)
 
   (global-set-key [\C-f10] 'menu-bar-mode)
   (global-set-key [\M-f12] 'shell-pop)
@@ -494,10 +512,17 @@ you should place you code here."
   (global-set-key (kbd "C-M-v") 'er/expand-region)
   (global-set-key (kbd "C-S-M-v") 'er/contract-region)
 
+  (global-set-key [f1] 'help-map)
+  (global-set-key (kbd "<C-f1>") 'describe-prefix-bindings)
+  (global-set-key (kbd "<M-f1>") 'describe-key)
+  (global-set-key [f5] 'spacemacs-cmds)
+
   (global-set-key [f7] 'exchange-point-and-mark)
   (global-set-key [f8] 'er/contract-region)
   (global-set-key [f9] 'er/expand-region)
 
+  (global-set-key (kbd "M-c") 'evil-upcase-first-letter)
+  (global-set-key (kbd "M-C") 'capitalize-word)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------------,
@@ -529,6 +554,9 @@ you should place you code here."
   (define-key evil-normal-state-map (kbd "C-*") 'toggle-evil-symbol-word-search)
   ;; universal-argument
   (define-key evil-normal-state-map (kbd "C-S-u") 'universal-argument)
+  ;; evil-shift-up/down-line-or-block
+  (define-key evil-normal-state-map [\M-\S-down] 'evil-shift-down-line-or-block)
+  (define-key evil-normal-state-map [\M-\S-up] 'evil-shift-up-line-or-block)
 
   ;; ,--------------,
   ;; | VISUAL STATE |
@@ -566,7 +594,7 @@ you should place you code here."
 ;; | INSERT STATE |
 ;; '--------------'
   (define-key evil-insert-state-map (kbd "C-S-a") 'evil-paste-last-insertion)
-  (define-key evil-insert-state-map (kbd "C-a") 'beginning-of-line)
+  (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line-or-text)
   (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
   (define-key evil-insert-state-map (kbd "C-S-y") 'evil-copy-from-below)
   (define-key evil-insert-state-map (kbd "C-l") 'delete-char)
@@ -590,21 +618,29 @@ you should place you code here."
 
   (evil-leader/set-key
     "b M"          'switch-to-messages-buffer
+    "b W"          'switch-to-warnings-buffer
+    "b -"          'diff-buffer-with-file
     "b C-e"        'bury-buffer
+    "b C-u"        'undo-tree-clear
     "b <insert>"   'buffer-major-mode
     "b <f1>"       'about-emacs
     "En"           'spacemacs/next-error
     "EN"           'spacemacs/previous-error
     "Ep"           'spacemacs/previous-error
+    ;; "h"            'help-prefix-map
+    "h w"          'help-download-prefix-map
     "h C-m"        'lacarte-execute-menu-command
-    "h d C-b"      'describe-personal-keybindings ;; bind-key bindings
-    "h1"           'evil-goto-definition
+    "h C-/"        'evil-search-highlight-persist-remove-all
+    "h C-?"        'evil-search-highlight-restore
+    "h d C-b"      'describe-personal-keybindings
+    "h 1"          'evil-goto-definition
+    ;; "h <f1>"       'help-map
     "i-"           'tiny-expand
     "RR"           'pcre-multi-occur
     "Rr"           'pcre-occur
     "oa"           'asciiheadings-prefix-key-map
     "oc"           'character-prefix-map
-    "om"           'mode-ring-prefix-key-map
+    "om"           'modes-prefix-key-map
     "ov"           'variable-pitch-mode
     "xa."          'spacemacs/align-repeat-period
     "xa'"          'spacemacs/align-repeat-quote
@@ -622,7 +658,11 @@ you should place you code here."
     "<delete>"     'kill-buffer-and-window
     "<return>"     'helm-buffers-list
     "C-/"          'evil-search-highlight-persist-remove-all
+    "C-?"          'evil-search-highlight-restore
     )
+
+  ;; set function definition of 'help-map (same as value)
+  (fset 'help-map help-map)
 
   (bind-keys :map spacemacs-cmds
              :prefix-map help-download-prefix-map
@@ -657,7 +697,6 @@ you should place you code here."
              :prefix "K"
              :prefix-docstring "Commands dealing with keymaps."
              ("a" . which-key-show-keymap-at-point)
-             ("e" . evil-evilified-state)
              ("f" . get-binding)
              ("i" . lookup-key-interactive)
              ("p" . parent-keymap-at-point)
@@ -679,6 +718,15 @@ you should place you code here."
              ("f"   . describe-function)
              ("b"   . describe-bindings)
              )
+
+  (bind-keys :map spacemacs-cmds
+             :prefix-map modes-prefix-key-map
+             :prefix "o m"
+             :prefix-docstring "Commands dealing with modes and states. Inherits from `mode-ring-prefix-key-map'"
+             ("e" . evil-evilified-state)
+             ("n" . evil-normal-state)
+             )
+  (set-keymap-parent modes-prefix-key-map mode-ring-prefix-key-map)
 
   (bind-keys :map spacemacs-cmds
              :prefix-map structured-text-prefix-map
@@ -776,6 +824,20 @@ you should place you code here."
   ;; '---------------------'
 
   ;; -------------------------------------------------------------------------------
+  ;; ,-----------,
+  ;; | ansi-term |
+  ;; '-----------'
+
+  (evil-set-initial-state 'term-mode 'emacs)
+  (eval-after-load "term"
+    '(progn
+       (define-key term-raw-map (kbd "C-p")      'term-send-up)
+       (define-key term-raw-map (kbd "C-n")      'term-send-down)
+       (define-key term-raw-map (kbd "C-c C-y")  'term-paste)
+       ))
+
+
+  ;; -------------------------------------------------------------------------------
   ;; ,-------,
   ;; | Dired |
   ;; '-------'
@@ -785,8 +847,14 @@ you should place you code here."
   (require 'dired)
   (require 'dired+)
 
+  ;; INITIAL STATE:
+  ;; dired-mode  :   (customized) evilified state
+  ;; wdired-mode :                normal state
   (evilified-state-evilify dired-mode dired-mode-map
     (kbd "c")      'diredp-copy-this-file
+    (kbd "gd")     'dired-hide-details-mode
+    (kbd "gu")     'diredp-up-directory-reuse-dir-buffer
+    (kbd "gw")     'dired-toggle-read-only
     (kbd "j")      'diredp-next-line
     (kbd "k")      'diredp-previous-line
     ;; (kbd "{")      'evil-backward-paragraph
@@ -796,7 +864,10 @@ you should place you code here."
     (kbd "C-n")    'ido-find-file
     (kbd "M-=")    'dired-create-directory
     (kbd "M-DEL")  'diredp-up-directory-reuse-dir-buffer
+    [f2]           'dired-toggle-read-only
     )
+  (evil-set-initial-state 'wdired-mode 'normal)
+
   ;; set function definition of 'dired-mode-map (same as value)
   (fset 'dired-mode-map dired-mode-map)
   ;; major-mode leader-key
@@ -809,15 +880,20 @@ you should place you code here."
   (eval-after-load "dired"
     `(progn
        ))
-
-  (setq diredp-hide-details-initially-flag t)
-  (setq diredp-hide-details-propagate-flag t)
-  (setq toggle-diredp-find-file-reuse-dir  1)
-
   (eval-after-load "dired+"
     `(progn
        ;; (require 'dired+)
+       (diredp-toggle-find-file-reuse-dir 1)
+       ;; (setq diredp-hide-details-initially-flag t)
+       ;; (setq diredp-hide-details-propagate-flag t)
        ))
+
+  (defun wdired-init ()
+    (define-keys wdired-mode-map
+      (kbd "C-c <escape>") 'wdired-abort-changes
+      [f2]                 'wdired-finish-edit
+      ))
+  (add-hook 'wdired-mode-hook 'wdired-init)
 
   ;; -------------------------------------------------------------------------------
   ;; ,------------,
@@ -854,6 +930,7 @@ you should place you code here."
              ("j"     . eval-prettyprint-last-sexp)
              )
 
+  ;; -------------------------------------------------------------------------------
   ;; ,-----------,
   ;; | helm-mode |
   ;; '-----------'
@@ -862,9 +939,46 @@ you should place you code here."
     `(progn
        (bind-keys :map helm-map
                   ("C-0" . helm-select-action)
+                  ("M-m" . spacemacs-cmds)
+                  ("C-u" . helm-delete-minibuffer-contents)
                   )
        ))
 
+  (spacemacs/set-leader-keys-for-major-mode 'helm-major-mode
+    "tm"    'helm-toggle-all-marks
+    )
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------,
+  ;; | help-mode |
+  ;; '-----------'
+
+  (eval-after-load "help-mode"
+    `(progn
+       (bind-keys :map help-mode-map
+                  ("a" . help-previous)
+                  ("d" . help-next)
+                  )
+       ))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------,
+  ;; | ido-mode |
+  ;; '----------'
+
+  (defun ido-init ()
+    (bind-keys :map ido-completion-map
+               ("M-+" . ido-make-directory)
+               ("M-=" . ido-make-directory)
+               ("M-m" . spacemacs-cmds)
+               ))
+
+  (add-hook 'ido-setup-hook 'ido-init)
+
+  ;; (spacemacs/set-leader-keys-for-minor-mode 'ido-mode
+  ;;   )
+
+  ;; -------------------------------------------------------------------------------
   ;; ,-----------,
   ;; | Info-Mode |
   ;; '-----------'
@@ -946,6 +1060,49 @@ you should place you code here."
     '(define-key haskell-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox))
 
   ;; -------------------------------------------------------------------------------
+  ;; ,------,
+  ;; | Java |
+  ;; '------'
+
+  (defun java-init () (interactive)
+    (define-key java-mode-map (kbd "M-c") 'evil-upcase-first-letter)
+    (define-key java-mode-map (kbd "RET") 'c-indent-new-comment-line)
+    )
+
+  (add-hook 'java-mode-hook 'java-init)
+
+  (setq eclim-eclipse-dirs "~/opt/eclipse"
+        eclim-executable "~/opt/eclipse/eclim")
+
+  ;; ================
+  ;; Keyboard Macros.
+  ;; ================
+
+  (fset 'java-fn-from-spec
+        (lambda (&optional arg)
+          "Keyboard macro."
+          (interactive "p")
+          (kmacro-exec-ring-item
+           (quote ([86 201326629 47 47 46 42 return return 102 58 120 119 104 167772192 1 102 41 108 11 1 101 112 65 32 123 125 escape 106 1] 0 "%d")) arg)))
+
+  (fset 'java-constructor-from-spec
+        (lambda (&optional arg)
+          "Keyboard macro."
+          (interactive "p")
+          (kmacro-exec-ring-item
+           (quote ([1 86 201326629 47 47 46 42 36 92 124 36 13 123 125 13 121 106 1] 0 "%d")) arg)))
+
+
+  (fset 'java-field-from-spec
+        (lambda
+          (&optional arg)
+          "Keyboard macro."
+          (interactive "p")
+          (kmacro-exec-ring-item
+           (quote ([1 102 58 119 100 119 1 101 97 32 escape 112 102 58 114 59 86 134217848 100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104 105 116 101 115 112 97 99 101 13 65 escape 106 1] 0 "%d")) arg)))
+
+
+  ;; -------------------------------------------------------------------------------
   ;; ,----------,
   ;; | Org-Mode |
   ;; '----------'
@@ -953,9 +1110,20 @@ you should place you code here."
   ;; remove C-tab binding which shadows #'next-multiframe-window binding
   ;; replace with [, C-tab] binding
   (bind-key [C-tab] 'next-multiframe-window)
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (define-key org-mode-map [C-tab] 'next-multiframe-window)))
+
+  (defun org-init ()
+    (define-key org-mode-map [C-tab] 'next-multiframe-window))
+
+  (add-hook 'org-mode-hook 'org-init)
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------------------,
+  ;; | Spacemacs-Buffer-Mode |
+  ;; '-----------------------'
+
+  (which-key-add-major-mode-key-based-replacements 'spacemacs-buffer-mode
+    "m"     "jump to menu"
+    )
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------------------------,
@@ -1343,6 +1511,15 @@ See also `multi-occur-in-matching-buffers'."
       (end-of-line)
       (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
 
+  (defalias 'move-visible-beginning-of-line 'back-to-indentation
+    "Move to the first non-whitespace character on the line (or the end of line if no non-whitespace)")
+
+  (defun move-visible-end-of-line ()
+    "Move to the last non-whitespace character on the line (or the start of line if no non-whitespace)"
+    (interactive)
+    (end-of-line)
+    (re-search-backward "[^ \t\n]" (line-beginning-position) 1))
+
   (defun pcre-replace-regexp-in-string (PCRE REP STRING &optional FIXEDCASE LITERAL SUBEXP START)
     "Replace all matches for PCRE with REP in STRING, where PCRE is converted to an elisp regexp by the function `rxt-pcre-to-elisp'.\n
 For the meaning of the optional arguments, see `replace-regexp-in-string'."
@@ -1376,6 +1553,75 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
   (defun switch-to-messages-buffer ()
     (interactive)
     (switch-to-buffer (messages-buffer)))
+
+  (defun switch-to-messages-buffer ()
+    (interactive)
+    (switch-to-buffer "*Warnings*"))
+
+  (defun help-previous ()
+    (interactive)
+    (help-xref-go-back (current-buffer)))
+  (defun help-next ()
+    (interactive)
+    (help-xref-go-forward (current-buffer)))
+
+  (defun help-buttons()
+    "List of help buttons in current buffer"
+    (loop for (text . pos) in (ace-link--help-collect)
+          collect (cons text (button-at pos))))
+
+  ;; TODO: work out how to test for search highlighting -> write toggle function
+  (defun evil-search-highlight-restore ()
+    (interactive)
+    (hlt-highlight-regexp-region (buffer-end -1) (buffer-end 1) (car regexp-search-ring)))
+
+  (defun evil-upcase-first-letter ()
+    (interactive)
+    ;; TODO: make work with regions and motions
+    (evil-upcase (point) (+ 1 (point)))
+    (evil-forward-word-begin))
+
+  (evil-define-operator evil-upcase-first-letter (beg end type)
+    "Convert text to upper case."
+    (if (eq type 'block)
+        (evil-apply-on-block #'evil-upcase-first-letter beg end nil)
+      (while (< (point) end)
+        (evil-upcase (point) (+ 1 (point)))
+        (evil-forward-word-begin))))
+
+  (defun match-line (regexp)
+    "Check the current line against regexp and return the match position the or nil if it fails."
+    (save-excursion
+      (beginning-of-line)
+      (re-search-forward regexp (line-end-position) t)))
+
+  ;; TODO: make operation atomic wrt undo
+  (evil-define-operator evil-shift-down-line-or-block (beg end type &optional register yank-handler)
+    "shift line or region downwards 1 line."
+    :motion evil-line
+    :keep-visual t
+    (if (not (region-active-p))
+        (call-interactively 'move-text-down)
+      (evil-delete beg end type register yank-handler)
+      (evil-next-line)
+      (evil-paste-after register yank-handler)
+      (setq deactivate-mark nil)
+      (activate-mark)))
+  (evil-define-operator evil-shift-up-line-or-block (beg end type &optional register yank-handler)
+    "Shift line or region upwards 1 line."
+    :motion evil-line
+    :keep-visual t
+    (if (not (region-active-p))
+        (call-interactively 'move-text-up)
+      (evil-delete beg end type register yank-handler)
+      (evil-previous-line)
+      (evil-paste-before register yank-handler)
+      (setq deactivate-mark nil)
+      (activate-mark)))
+
+  (defun undo-tree-clear ()
+    (interactive)
+    (setq buffer-undo-tree nil))
 
   ;; TODO: make C-S-up/down work with regions
   ;; TODO: write replace-line function.
