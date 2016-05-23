@@ -343,6 +343,10 @@ you should place you code here."
 
   (setq scroll-preserve-screen-position 1)
 
+  (setq spacemacs-private-directory (concat (getenv "HOME") "/.emacs.d/private"))
+
+  ;; disable warnings about setting path in rc files (caused by nvm or rvm)
+  (setq exec-path-from-shell-check-startup-files nil)
 
   ;; ==============================================================================
                                 ;; ***************
@@ -379,6 +383,7 @@ you should place you code here."
 
   (add-to-list 'auto-mode-alist '("\\.zsh" . sh-mode))
   (add-to-list 'auto-mode-alist '("\\.keynavrc" . conf-mode))
+  (add-to-list 'auto-mode-alist '("\\.pryrc" . ruby-mode))
 
 
   ;; ==============================================================================
@@ -627,6 +632,7 @@ you should place you code here."
     "En"           'spacemacs/next-error
     "EN"           'spacemacs/previous-error
     "Ep"           'spacemacs/previous-error
+    "f'p"          'dired-spacemacs-private-directory
     ;; "h"            'help-prefix-map
     "h w"          'help-download-prefix-map
     "h C-m"        'lacarte-execute-menu-command
@@ -1117,6 +1123,13 @@ you should place you code here."
   (add-hook 'org-mode-hook 'org-init)
 
   ;; -------------------------------------------------------------------------------
+  ;; ,-----------,
+  ;; | Ruby-mode |
+  ;; '-----------'
+
+
+
+  ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Spacemacs-Buffer-Mode |
   ;; '-----------------------'
@@ -1554,7 +1567,7 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
     (interactive)
     (switch-to-buffer (messages-buffer)))
 
-  (defun switch-to-messages-buffer ()
+  (defun switch-to-warnings-buffer ()
     (interactive)
     (switch-to-buffer "*Warnings*"))
 
@@ -1622,6 +1635,10 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
   (defun undo-tree-clear ()
     (interactive)
     (setq buffer-undo-tree nil))
+
+  (defun dired-spacemacs-private-directory ()
+    (interactive)
+    (dired spacemacs-private-directory))
 
   ;; TODO: make C-S-up/down work with regions
   ;; TODO: write replace-line function.
