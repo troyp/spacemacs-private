@@ -10,6 +10,8 @@
 
 ;;; Commentary:
 
+(require 's)
+
 ;; ===========================================================================
 ;;        ___________________
 ;;       |                   |
@@ -251,7 +253,9 @@
   "Returns the total length of comment characters used in comment commands.
 Comment commands double a single-char comment-start string when there is no
 comment-end string. ADJUSTED (default value: 't) corrects the result for this."
-  (let* ((comment-start-len  (length comment-start))
+  (let* (;; don't combine padding in comment-start and comment-padding
+         (comment-padding    (if (s-ends-with? " " comment-start) "" comment-padding))
+         (comment-start-len  (length comment-start))
          (comment-end-len    (length comment-end))
          (comment-pad-len    (length comment-padding))
          (line-end-comment-p (string-empty-p comment-end))
