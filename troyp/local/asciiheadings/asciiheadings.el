@@ -233,7 +233,7 @@
 (defun underline-comment (&optional char length-adjustment start-new-line)
   (interactive)
   (unless length-adjustment (setf length-adjustment 0))
-  (let* ((comment-str-len     (comment-str-total-length t))
+  (let* ((comment-str-len     (comment-str-total-length (string= comment-start ";")))
          (length-delta        (- length-adjustment comment-str-len))
          (end-of-comment-pos  nil))
     (save-excursion
@@ -249,7 +249,7 @@
   (interactive)
   (underline-comment char length-adjustment t))
 
-(cl-defun comment-str-total-length (&optional (adjusted 't))
+(cl-defun comment-str-total-length (&optional (adjusted nil))
   "Returns the total length of comment characters used in comment commands.
 Comment commands double a single-char comment-start string when there is no
 comment-end string. ADJUSTED (default value: 't) corrects the result for this."
