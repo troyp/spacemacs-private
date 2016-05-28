@@ -680,6 +680,10 @@ you should place you code here."
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
     "M-x"          'helm-M-x
+<<<<<<< HEAD
+    "M-S-SPC"      'just-one-blank-line
+=======
+>>>>>>> 4b14f41f2b21f83bc287157161663683eed447d2
     )
 
   ;; set function definition of 'help-map (same as value)
@@ -1689,7 +1693,25 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
      (cadr (symbol-at-point-with-bounds))
      (- (cddr (symbol-at-point-with-bounds)) 1)))
 
+<<<<<<< HEAD
+  (defun get-region-or-symbol-at-point ()
+    (let ((r (if (region-active-p)
+                 (cons (region-beginning) (region-end))
+               (cons
+                (cadr (symbol-at-point-with-bounds))
+                (- (cddr (symbol-at-point-with-bounds)) 1)))))
+      r))
+
+  (defun get-region-or-buffer ()
+    (let ((r (if (region-active-p)
+                 (cons (region-beginning) (region-end))
+               (cons (point-min) (point-max)))))
+      r))
+
+  (defun evil-get-visual-region-or-symbol-at-point ()
+=======
   (defun evil-get-region-or-symbol-at-point ()
+>>>>>>> 4b14f41f2b21f83bc287157161663683eed447d2
     (let ((r (if (region-active-p)
                  (cons (region-beginning) (- (region-end) 1))
                (cons
@@ -1697,6 +1719,15 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
                 (- (cddr (symbol-at-point-with-bounds)) 1)))))
       r))
 
+<<<<<<< HEAD
+  (defun evil-get-visual-region-or-buffer ()
+    (let ((r (if (region-active-p)
+                 (cons (region-beginning) (- (region-end) 1))
+               (cons (point-min) (point-max)))))
+      r))
+
+=======
+>>>>>>> 4b14f41f2b21f83bc287157161663683eed447d2
   (defun evil-lisp-insert-function-application (pt mk)
     "Surround the region (or symbol-at-point if region is inactive) with parens
 and position point after the open-paren, with a space after it."
@@ -1743,6 +1774,14 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
              (adjacent-line-blank-p))
         (delete-blank-lines)))
 
+<<<<<<< HEAD
+  (defun delete-adjacent-repeated-lines ()
+    (interactive)
+    (destructuring-bind (beg . end) (evil-get-visual-region-or-buffer)
+      (delete-duplicate-lines beg end nil t nil t)))
+
+=======
+>>>>>>> 4b14f41f2b21f83bc287157161663683eed447d2
   (defun evil-eval-print-last-sexp ()
     (if (string= evil-state))
     )
