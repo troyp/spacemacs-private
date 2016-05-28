@@ -45,7 +45,10 @@ values."
           )
      python
      racket
-     ruby
+     (ruby :variables
+           ruby-version-manager 'rvm
+           inf-ruby-default-implementation "pry"
+           )
      scala
      scheme
      (shell :variables
@@ -423,6 +426,12 @@ you should place you code here."
           ))
   (defalias 'digra 'evil-enter-digraphs)  ;; evil-utils
 
+  ;; ,------------,
+  ;; | Lisp State |
+  ;; '------------'
+
+  (define-key evil-lisp-state-map "," spacemacs-emacs-lisp-mode-map)
+
   ;; ,--------------,
   ;; | Text Objects |
   ;; '--------------'
@@ -435,7 +444,6 @@ you should place you code here."
     (list (line-beginning-position) (line-end-position)))
   (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
   (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
-
 
 ;; ==============================================================================
 ;;                                 ****************
@@ -529,6 +537,8 @@ you should place you code here."
   (global-set-key (kbd "M-c") 'evil-upcase-first-letter)
   (global-set-key (kbd "M-C") 'capitalize-word)
 
+  (global-set-key (kbd "C->") 'evil-repeat-pop-next)
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------------,
   ;; | Evil State Key Bindings |
@@ -573,6 +583,8 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "M-u") 'evil-upcase)
   (define-key evil-visual-state-map (kbd "M-l") 'evil-downcase)
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
+  (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
+  (define-key evil-visual-state-map (kbd ">") 'er/contract-region)
 
   ;; ,--------------,
   ;; | MOTION STATE |
@@ -656,6 +668,8 @@ you should place you code here."
     "xa SPC"       'quick-pcre-align-repeat
     "xlU"          'delete-duplicate-lines-nonblank
     "x C-l"        'quick-pcre-align-repeat
+    "3"            'spacemacs/enter-ahs-backward
+    "8"            'spacemacs/enter-ahs-forward
     "."            'repeat-complex-command
     ","            'helm-mini
     "<"            'ido-switch-buffer
@@ -665,6 +679,7 @@ you should place you code here."
     "<return>"     'helm-buffers-list
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
+    "M-x"          'helm-M-x
     )
 
   ;; set function definition of 'help-map (same as value)
@@ -1127,6 +1142,11 @@ you should place you code here."
   ;; | Ruby-mode |
   ;; '-----------'
 
+  (defun ruby-init ()
+    (define-key spacemacs-ruby-mode-map "sb" 'ruby-send-buffer)
+    (define-key spacemacs-ruby-mode-map "sI" 'inf-ruby))
+
+  (add-hook 'ruby-mode-hook 'ruby-init)
 
 
   ;; -------------------------------------------------------------------------------
@@ -1408,7 +1428,8 @@ See also `multi-occur-in-matching-buffers'."
   (defalias 'ppm 'message-prettyprint)
   (defalias 'boxcom 'box-heading-comment)
   (defalias 'reccom 'rect-heading-comment)
-  (defalias 'srecom 'short-rect-heading-comment)
+  (defalias 'sreccom 'short-rect-heading-comment)
+  (defalias 'ppp 'insert-pp)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
@@ -1431,10 +1452,14 @@ See also `multi-occur-in-matching-buffers'."
 
   (defun message-prettyprint (FORM)
     (interactive "XForm: ")
-    (message
+    (message "%s"
      (with-temp-buffer
        (cl-prettyprint FORM)
        (buffer-string))))
+
+  (defun eval-string (s)
+    "Evaluates a SEXP which is represented as a string."
+    (eval (car (read-from-string s))))
 
   (defun browse-file-with-external-application (file)
       (if (browse-url-can-use-xdg-open)
@@ -1609,17 +1634,6 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
       (re-search-forward regexp (line-end-position) t)))
 
   ;; TODO: make operation atomic wrt undo
-  (evil-define-operator evil-shift-down-line-or-block (beg end type &optional register yank-handler)
-    "shift line or region downwards 1 line."
-    :motion evil-line
-    :keep-visual t
-    (if (not (region-active-p))
-        (call-interactively 'move-text-down)
-      (evil-delete beg end type register yank-handler)
-      (evil-next-line)
-      (evil-paste-after register yank-handler)
-      (setq deactivate-mark nil)
-      (activate-mark)))
   (evil-define-operator evil-shift-up-line-or-block (beg end type &optional register yank-handler)
     "Shift line or region upwards 1 line."
     :motion evil-line
@@ -1631,6 +1645,18 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
       (evil-paste-before register yank-handler)
       (setq deactivate-mark nil)
       (activate-mark)))
+  ;; FIXME: down operator is broken for regions (char and line)
+  (evil-define-operator evil-shift-down-line-or-block (beg end type &optional register yank-handler)
+    "shift line or region downwards 1 line."
+    :motion evil-line
+    :keep-visual t
+    (if (not (region-active-p))
+        (call-interactively 'move-text-down)
+      (evil-delete beg end type register yank-handler)
+      (evil-next-line)
+      (evil-paste-after register yank-handler)
+      (setq deactivate-mark nil)
+      (activate-mark)))
 
   (defun undo-tree-clear ()
     (interactive)
@@ -1640,7 +1666,87 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
     (interactive)
     (dired spacemacs-private-directory))
 
-  ;; TODO: make C-S-up/down work with regions
+  (defun insert-pp (object)
+    "`insert' the pretty-printed representation of OBJECT into current buffer. See `pp'."
+    (interactive)
+    (insert (pp object)))
+
+  ;; evil-shift-right/left while maintaining visual mode
+  (defun evil-visual-shift-left ()
+    (interactive)
+    (call-interactively 'evil-shift-left)
+    (evil-visual-restore))
+  (defun evil-visual-shift-right ()
+    (interactive)
+    (call-interactively 'evil-shift-right)
+    (evil-visual-restore))
+
+  (defun set-region-to-symbol-at-point ()
+    (posn-set-point (posn-at-point (cadr (symbol-at-point-with-bounds))))
+    (push-mark                     (cddr (symbol-at-point-with-bounds))))
+  (defun evil-set-region-to-symbol-at-point ()
+    (evil-visual-make-selection
+     (cadr (symbol-at-point-with-bounds))
+     (- (cddr (symbol-at-point-with-bounds)) 1)))
+
+  (defun evil-get-region-or-symbol-at-point ()
+    (let ((r (if (region-active-p)
+                 (cons (region-beginning) (- (region-end) 1))
+               (cons
+                (cadr (symbol-at-point-with-bounds))
+                (- (cddr (symbol-at-point-with-bounds)) 1)))))
+      r))
+
+  (defun evil-lisp-insert-function-application (pt mk)
+    "Surround the region (or symbol-at-point if region is inactive) with parens
+and position point after the open-paren, with a space after it."
+    (interactive "r")
+    (unless (region-active-p)
+      (setf pt (cadr (symbol-at-point-with-bounds)))
+      (setf mk (- (cddr (symbol-at-point-with-bounds)) 1)))
+    (evil-visual-make-selection pt mk)
+    (evil-insert-state)
+    (evil-goto-char (+ mk 1))
+    (insert ")")
+    (evil-goto-char pt)
+    (insert "( ")
+    (evil-backward-char))
+
+  (defun line-at-point-string ()
+    "Return the line around point as a string.
+Similar to (thing-at-point \'line t) except it does not return a trailing newline.
+See also `thing-at-point'"
+    (let ((beg (line-beginning-position))
+          (end (line-end-position)))
+      (buffer-substring-no-properties beg end)))
+
+  (defun line-at-point-blank-p ()
+    "Returns a non-nil value if the current line contains only whitespace."
+    (string-match-p "^[[:space:]]*$" (line-at-point-string)))
+  (defun line-above-blank-p (&optional n)
+    (save-excursion
+      (forward-line (- (or n 1)))
+      (line-at-point-blank-p)))
+  (defun line-below-blank-p (&optional n)
+    (save-excursion
+      (forward-line (or n 1))
+      (line-at-point-blank-p)))
+  (defun adjacent-line-blank-p (&optional n)
+    "Returns a non-nil value if the Nth line above and/or below is blank (contains only whitespace).
+See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
+    (or (line-above-blank-p n)
+        (line-below-blank-p n)))
+
+  (defun just-one-blank-line ()
+    (interactive)
+    (if (and (line-at-point-blank-p)
+             (adjacent-line-blank-p))
+        (delete-blank-lines)))
+
+  (defun evil-eval-print-last-sexp ()
+    (if (string= evil-state))
+    )
+
   ;; TODO: write replace-line function.
 
   ;; -------------------------------------------------------------------------------
@@ -1660,6 +1766,7 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
   (load "~/.emacs.d/private/private-data.el")
 
   )
+
 
 
 ;; Do not write anything past this comment. This is where Emacs will
