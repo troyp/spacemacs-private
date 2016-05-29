@@ -39,6 +39,7 @@ values."
      javascript
      lua
      markdown
+     ocaml
      octave
      (org :variables
           org-enable-github-support t
@@ -351,6 +352,9 @@ you should place you code here."
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
 
+  (setq evil-want-fine-undo "No")
+
+
   ;; ==============================================================================
                                 ;; ***************
                                 ;; *             *
@@ -387,6 +391,7 @@ you should place you code here."
   (add-to-list 'auto-mode-alist '("\\.zsh" . sh-mode))
   (add-to-list 'auto-mode-alist '("\\.keynavrc" . conf-mode))
   (add-to-list 'auto-mode-alist '("\\.pryrc" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("\\.ocamlinit" . tuareg-mode))
 
 
   ;; ==============================================================================
@@ -707,6 +712,15 @@ you should place you code here."
              )
 
   (bind-keys :map spacemacs-cmds
+             :prefix-map undo-prefix-map
+             :prefix "o u"
+             :prefix-docstring "Commands related to undo."
+             ("t" . global-undo-tree-mode)
+             ("v" . undo-tree-visualize)
+             )
+
+
+  (bind-keys :map spacemacs-cmds
              :prefix-map follow-prefix-map
              :prefix "w f"
              :prefix-docstring "Commands dealing with follow-mode."
@@ -890,6 +904,10 @@ you should place you code here."
     [f2]           'dired-toggle-read-only
     )
   (evil-set-initial-state 'wdired-mode 'normal)
+
+  (which-key-add-major-mode-key-based-replacements 'dired-mode
+    "T"    "tags"
+    )
 
   ;; set function definition of 'dired-mode-map (same as value)
   (fset 'dired-mode-map dired-mode-map)
