@@ -590,7 +590,7 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "M-l") 'evil-downcase)
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
-  (define-key evil-visual-state-map (kbd ">") 'er/contract-region)
+  (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
 
   ;; ,--------------,
   ;; | MOTION STATE |
@@ -651,6 +651,9 @@ you should place you code here."
     "EN"           'spacemacs/previous-error
     "Ep"           'spacemacs/previous-error
     "f'p"          'dired-spacemacs-private-directory
+    "f/f"          'sudo-open-file
+    "f/e"          'spacemacs/sudo-edit
+    "f/b"          'sudo-edit-this-file
     ;; "h"            'help-prefix-map
     "h w"          'help-download-prefix-map
     "h C-m"        'lacarte-execute-menu-command
@@ -664,6 +667,7 @@ you should place you code here."
     "Rr"           'pcre-occur
     "oa"           'asciiheadings-prefix-key-map
     "oc"           'character-prefix-map
+    "ok"           'kmacro-keymap
     "om"           'modes-prefix-key-map
     "ov"           'variable-pitch-mode
     "xa."          'spacemacs/align-repeat-period
@@ -678,11 +682,13 @@ you should place you code here."
     "8"            'spacemacs/enter-ahs-forward
     "."            'repeat-complex-command
     ","            'helm-mini
-    "<"            'ido-switch-buffer
+    ">"            'evil-shift-right-fine-dispatcher
+    "<"            'evil-shift-left-fine-dispatcher
     "<backtab>"    'switch-to-most-recent-buffer
     "<backspace>"  'kill-this-buffer
     "<delete>"     'kill-buffer-and-window
     "<return>"     'helm-buffers-list
+    "C-."            'ido-switch-buffer
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
     "M-x"          'helm-M-x
@@ -1142,6 +1148,21 @@ you should place you code here."
           (kmacro-exec-ring-item
            (quote ([1 102 58 119 100 119 1 101 97 32 escape 112 102 58 114 59 86 134217848 100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104 105 116 101 115 112 97 99 101 13 65 escape 106 1] 0 "%d")) arg)))
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------,
+  ;; | Ocaml |
+  ;; '-------'
+
+  (which-key-add-major-mode-key-based-replacements 'tuareg-mode
+    ", c"     "compile"
+    ", e"     "error"
+    ", g"     "locate/alternate-file"
+    ", g g"   "locate identifier at point (no new window)"
+    ", g G"   "locate identifier at point in new window"
+    ", h"     "documentation"
+    ", r"     "case-analyze"
+    ", s"     "utop"
+    )
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
@@ -1801,6 +1822,41 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (destructuring-bind (beg . end) (evil-get-visual-region-or-buffer)
       (delete-duplicate-lines beg end nil t nil t)))
 
+  (defun sudo-edit-this-file ()
+    (interactive)
+    (let ((f (concat "/sudo::" (expand-file-name buffer-file-name))))
+      (find-file f)))
+
+  (defun evil-shift-left-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (call-interactively 'evil-shift-left)))
+  (defun evil-shift-right-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (call-interactively 'evil-shift-right)))
+  (defun evil-visual-shift-left-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (evil-visual-shift-left))
+    (execute-kbd-macro "gv"))
+  (defun evil-visual-shift-right-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (evil-visual-shift-right))
+    (execute-kbd-macro "gv"))
+
+  (defun evil-shift-left-fine-dispatcher ()
+    (interactive)
+    (if (eq evil-state 'visual)
+        (call-interactively 'evil-visual-shift-left-fine)
+      (call-interactively 'evil-shift-left-fine)))
+(defun evil-shift-right-fine-dispatcher ()
+    (interactive)
+    (if (eq evil-state 'visual)
+        (call-interactively 'evil-visual-shift-right-fine)
+      (call-interactively 'evil-shift-right-fine)))
+
   (defun evil-eval-print-last-sexp ()
     (if (string= evil-state))
     )
@@ -1834,6 +1890,7 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(exec-path-from-shell-arguments (quote ("-l")))
  '(paradox-automatically-star t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
