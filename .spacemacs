@@ -354,6 +354,10 @@ you should place you code here."
 
   (setq evil-want-fine-undo "No")
 
+  ;; CUA RECTANGLE
+  (setq cua-enable-cua-keys nil)
+  (cua-mode t)
+
 
   ;; ==============================================================================
                                 ;; ***************
@@ -511,6 +515,8 @@ you should place you code here."
                   (lambda () (interactive) (scroll-other-window-down 1)))
   (global-set-key (kbd "C-S-k")
                   (lambda () (interactive) (scroll-other-window-down -1)))
+
+  (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
   (global-set-key "\C-a" 'move-beginning-of-line-or-text)    ;; troyp/utils.el
   (global-set-key (kbd "<S-return>") 'open-line-below)       ;; troyp/utils.el
@@ -688,7 +694,8 @@ you should place you code here."
     "<backspace>"  'kill-this-buffer
     "<delete>"     'kill-buffer-and-window
     "<return>"     'helm-buffers-list
-    "C-."            'ido-switch-buffer
+    "C-v"          'evil-cua-toggle
+    "C-."          'ido-switch-buffer
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
     "M-x"          'helm-M-x
@@ -1029,6 +1036,11 @@ you should place you code here."
   ;; ,-----------,
   ;; | Info-Mode |
   ;; '-----------'
+
+  (bind-keys :map Info-mode-map
+             ("M-h" . Info-history-back)
+             ("M-l" . Info-history-forward)
+             )
 
   (spacemacs/set-leader-keys-for-major-mode 'Info-mode
     "ci"      'info-index
@@ -1856,6 +1868,18 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (if (eq evil-state 'visual)
         (call-interactively 'evil-visual-shift-right-fine)
       (call-interactively 'evil-shift-right-fine)))
+
+(defun evil-cua-toggle ()
+  (interactive)
+  (if cua-rectangle-mark-mode
+      (progn
+        (cua-rectangle-mark-mode -1)
+        (cua-cancel)
+        (evil-exit-emacs-state))
+    (evil-emacs-state)
+    (cua-rectangle-mark-mode 1)))
+(global-set-key (kbd "<C-return>") 'evil-cua-toggle)
+
 
   (defun evil-eval-print-last-sexp ()
     (if (string= evil-state))
