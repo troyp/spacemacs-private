@@ -87,6 +87,7 @@ values."
      tiny
      ;; Drew Adams Packages
      autofit-frame
+     bookmark+
      dired-sort-menu+
      doremi
      doremi-cmd
@@ -584,6 +585,8 @@ you should place you code here."
   ;; evil-shift-up/down-line-or-block
   (define-key evil-normal-state-map [\M-\S-down] 'evil-shift-down-line-or-block)
   (define-key evil-normal-state-map [\M-\S-up] 'evil-shift-up-line-or-block)
+  ;; insert at WORD beginning
+  (define-key evil-normal-state-map (kbd "M-B") 'evil-insert-at-WORD-beginning)
 
   ;; ,--------------,
   ;; | VISUAL STATE |
@@ -640,6 +643,13 @@ you should place you code here."
   (define-key evil-insert-state-map (kbd "C-k") 'evil-insert-digraph)
 
   ;; -------------------------------------------------------------------------------
+  ;; ,--------------------,
+  ;; | Keymap Definitions |
+  ;; '--------------------'
+  ;; set function definition to value for keymaps defined only as values
+  (fset 'help-map help-map)
+
+  ;; -------------------------------------------------------------------------------
   ;; ,----------------------,
   ;; | Evil Leader Bindings |
   ;; '----------------------'
@@ -673,9 +683,11 @@ you should place you code here."
     "Rr"           'pcre-occur
     "oa"           'asciiheadings-prefix-key-map
     "oc"           'character-prefix-map
+    "of"           'flycheck-command-map
     "ok"           'kmacro-keymap
     "om"           'modes-prefix-key-map
     "ov"           'variable-pitch-mode
+    "w TAB"        'ace-swap-window
     "xa."          'spacemacs/align-repeat-period
     "xa'"          'spacemacs/align-repeat-quote
     "xa\""         'spacemacs/align-repeat-double-quote
@@ -701,9 +713,6 @@ you should place you code here."
     "M-x"          'helm-M-x
     "M-S-SPC"      'just-one-blank-line
     )
-
-  ;; set function definition of 'help-map (same as value)
-  (fset 'help-map help-map)
 
   (bind-keys :map spacemacs-cmds
              :prefix-map help-download-prefix-map
@@ -830,6 +839,7 @@ you should place you code here."
     "SPC b s"      "*scratch*"
     "SPC b M"      "*messages*"
     "SPC b <f1>"   "*About GNU Emacs*"
+    "SPC o f"      "flycheck"
     "SPC K"        "keys/keymaps"
     "SPC X"        "structured text"
     )
@@ -856,6 +866,42 @@ you should place you code here."
    'evil-search-highlight-persist-remove-all    "Remove all `evil-search' highlighting"
    )
 
+  ;; ***************
+  ;; *             *
+  ;; * MINOR MODES *
+  ;; *             *
+  ;; ***************
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------,
+  ;; | Flycheck |
+  ;; '----------'
+
+  (eval-after-load "flycheck"
+    '(progn
+       (bind-keys
+        :map spacemacs-cmds
+        :prefix-map flycheck-prefix-map
+        :prefix "o f"
+        :prefix-docstring "flycheck commands."
+        ("x"   . flycheck-disable-checker)
+        ("v"   . flycheck-verify-setup)
+        ("V"   . flycheck-version)
+        ("i"   . flycheck-manual)
+        ("H"   . display-local-help)
+        ("h"   . flycheck-display-error-at-point)
+        ("?"   . flycheck-describe-checker)
+        ("e"   . flycheck-set-checker-executable)
+        ("s"   . flycheck-select-checker)
+        ("C-w" . flycheck-copy-errors-as-kill)
+        ("l"   . flycheck-list-errors)
+        ("p"   . flycheck-previous-error)
+        ("n"   . flycheck-next-error)
+        ("C-c" . flycheck-compile)
+        ("C"   . flycheck-clear)
+        ("c"   . flycheck-buffer)
+        )
+       ))
 
   ;; ***************
   ;; *             *
@@ -892,55 +938,49 @@ you should place you code here."
   ;; | Dired |
   ;; '-------'
 
-  ;; TODO: get dired init working with eval-after-load
-
-  (require 'dired)
-  (require 'dired+)
-
   ;; INITIAL STATE:
   ;; dired-mode  :   (customized) evilified state
   ;; wdired-mode :                normal state
-  (evilified-state-evilify dired-mode dired-mode-map
-    (kbd "c")      'diredp-copy-this-file
-    (kbd "gd")     'dired-hide-details-mode
-    (kbd "gu")     'diredp-up-directory-reuse-dir-buffer
-    (kbd "gw")     'dired-toggle-read-only
-    (kbd "j")      'diredp-next-line
-    (kbd "k")      'diredp-previous-line
-    ;; (kbd "{")      'evil-backward-paragraph
-    ;; (kbd "}")      'evil-forward-paragraph
-    (kbd "{")      'dired-prev-subdir
-    (kbd "}")      'dired-next-subdir
-    (kbd "C-n")    'ido-find-file
-    (kbd "M-=")    'dired-create-directory
-    (kbd "M-DEL")  'diredp-up-directory-reuse-dir-buffer
-    [f2]           'dired-toggle-read-only
-    )
-  (evil-set-initial-state 'wdired-mode 'normal)
-
-  (which-key-add-major-mode-key-based-replacements 'dired-mode
-    "T"    "tags"
-    )
-
-  ;; set function definition of 'dired-mode-map (same as value)
-  (fset 'dired-mode-map dired-mode-map)
-  ;; major-mode leader-key
-  (spacemacs/set-leader-keys-for-major-mode 'dired-mode
-    "c"     'dired-mode-map
-    "tr"    'toggle-diredp-find-file-reuse-dir
-    )
-  (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
 
   (eval-after-load "dired"
-    `(progn
-       ))
-  (eval-after-load "dired+"
-    `(progn
-       ;; (require 'dired+)
-       (diredp-toggle-find-file-reuse-dir 1)
-       ;; (setq diredp-hide-details-initially-flag t)
-       ;; (setq diredp-hide-details-propagate-flag t)
-       ))
+   `(progn
+      (require 'dired+)
+
+      ;; keys
+      (evilified-state-evilify dired-mode dired-mode-map
+        (kbd "c")      'diredp-copy-this-file
+        (kbd "gd")     'dired-hide-details-mode
+        (kbd "gu")     'diredp-up-directory-reuse-dir-buffer
+        (kbd "gw")     'dired-toggle-read-only
+        (kbd "j")      'diredp-next-line
+        (kbd "k")      'diredp-previous-line
+        ;; (kbd "{")      'evil-backward-paragraph
+        ;; (kbd "}")      'evil-forward-paragraph
+        (kbd "{")      'dired-prev-subdir
+        (kbd "}")      'dired-next-subdir
+        (kbd "C-n")    'ido-find-file
+        (kbd "M-=")    'dired-create-directory
+        (kbd "M-DEL")  'diredp-up-directory-reuse-dir-buffer
+        [f2]           'dired-toggle-read-only
+        )
+      ;; T is the prefix key for the tags commands
+      (which-key-add-major-mode-key-based-replacements 'dired-mode "T"  "tags")
+      ;; set function definition of 'dired-mode-map (same as value)
+      (fset 'dired-mode-map dired-mode-map)
+      ;; major-mode leader-key
+      (spacemacs/set-leader-keys-for-major-mode 'dired-mode
+        "c"     'dired-mode-map
+        "tr"    'toggle-diredp-find-file-reuse-dir
+        )
+      (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
+
+      ;; wdired-mode
+      (evil-set-initial-state 'wdired-mode 'normal)
+      )
+   )
+
+  (eval-after-load "dired+" `(diredp-toggle-find-file-reuse-dir 1))
+  (eval-after-load "dired-sort-menu" `(require 'dired-sort-menu+))
 
   (defun wdired-init ()
     (define-keys wdired-mode-map
@@ -1880,6 +1920,10 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (cua-rectangle-mark-mode 1)))
 (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
+(defun evil-insert-at-WORD-beginning (&optional count)
+  (interactive "p")
+  (evil-backward-WORD-begin count)
+  (evil-insert-state))
 
   (defun evil-eval-print-last-sexp ()
     (if (string= evil-state))

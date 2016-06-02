@@ -92,7 +92,7 @@
 (defvar *rect-heading-omit-left*)
 (defvar *rect-heading-omit-right*)
 (defvar *rect-heading-omit-top*)
-(defun rect-heading-lines (s)
+(defun rect-heading-lines (s &optional no-trailing-space)
   (unless (has-value-p *rect-heading-omit-top*)   (setq *rect-heading-omit-top* nil))
   (unless (has-value-p *rect-heading-omit-left*)  (setq *rect-heading-omit-left* nil))
   (unless (has-value-p *rect-heading-omit-right*) (setq *rect-heading-omit-right* nil))
@@ -102,7 +102,7 @@
 	 (spc   32)    ; space
 	 (N     (+ n 2 (* 2 d)))
 	 (lspc  (if *rect-heading-omit-left* "" " "))
-	 (rspc  (if *rect-heading-omit-right* "" " "))
+   (rspc  (unless no-trailing-space (if *rect-heading-omit-right* "" " ")))
 	 (l  (if *rect-heading-omit-left* "" "|"))
 	 (r  (if *rect-heading-omit-right* "" "|"))
 
@@ -141,11 +141,12 @@
 
 (defun make-heading-command (heading-lines-fn-sym)
   `(lambda (s)
+     (beginning-of-line)
      (interactive "s")
      (insert-lines (,heading-lines-fn-sym s))))
 
 (fset 'box-heading (make-heading-command 'box-heading-lines))
-(fset 'rect-heading (make-heading-command 'rect-heading-lines))
+(fset 'rect-heading (make-heading-command (lambda (s) (rect-heading-lines s 'notrailing))))
 (fset 'short-rect-heading (make-heading-command 'short-rect-heading-lines))
 
 (defun rect-heading-join-under (s)
@@ -166,9 +167,9 @@
   `(lambda (s)
      (interactive "s" "heading: ")
      (let ((start (point)))
-	 (,heading-fn-sym s)
-   (indent-region start (point))
-	 (comment-region start (point)))))
+       (,heading-fn-sym s)
+       (comment-region start (point))
+       (indent-region start (point)))))
 
 (fset 'box-heading-comment  (make-heading-comment 'box-heading))
 (fset 'rect-heading-comment (make-heading-comment 'rect-heading))
