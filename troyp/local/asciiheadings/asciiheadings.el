@@ -166,6 +166,7 @@
 (defun make-heading-comment (heading-fn-sym)
   `(lambda (s)
      (interactive "s" "heading: ")
+     (beginning-of-line)
      (let ((start (point)))
        (,heading-fn-sym s)
        (comment-region start (point))
