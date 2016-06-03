@@ -83,6 +83,8 @@ values."
      ;; libraries
      dash
      diff-hl
+     f
+     names
      s
      tiny
      ;; Drew Adams Packages
@@ -244,7 +246,7 @@ values."
    dotspacemacs-helm-position 'bottom
    ;; If non nil the paste micro-state is enabled. When enabled pressing `p`
    ;; several times cycle between the kill ring content. (default nil)
-   dotspacemacs-enable-paste-micro-state nil
+   dotspacemacs-enable-paste-micro-state t
    ;; Which-key delay in seconds. The which-key buffer is the popup listing
    ;; the commands bound to the current keystroke sequence. (default 0.4)
    dotspacemacs-which-key-delay 0.4
@@ -938,6 +940,10 @@ you should place you code here."
   ;; | Dired |
   ;; '-------'
 
+  (defun dired-copy-file-path-as-kill () (dired-copy-filename-as-kill 0))
+  (defun dired-copy-file-directory-as-kill ()
+    (file-name-directory (dired-copy-file-path-as-kill)))
+
   ;; INITIAL STATE:
   ;; dired-mode  :   (customized) evilified state
   ;; wdired-mode :                normal state
@@ -954,6 +960,10 @@ you should place you code here."
         (kbd "gw")     'dired-toggle-read-only
         (kbd "j")      'diredp-next-line
         (kbd "k")      'diredp-previous-line
+        ;; copy name/path bindings: as in ranger
+        (kbd "yd")     'dired-copy-file-directory-as-kill
+        (kbd "yn")     'dired-copy-filename-as-kill
+        (kbd "yp")     'dired-copy-file-path-as-kill
         ;; (kbd "{")      'evil-backward-paragraph
         ;; (kbd "}")      'evil-forward-paragraph
         (kbd "{")      'dired-prev-subdir
@@ -964,13 +974,18 @@ you should place you code here."
         [f2]           'dired-toggle-read-only
         )
       ;; T is the prefix key for the tags commands
-      (which-key-add-major-mode-key-based-replacements 'dired-mode "T"  "tags")
+      (which-key-add-major-mode-key-based-replacements 'dired-mode
+        "T"      "tags"
+        "M-+"    "diredp-recursive-map"
+        "y"    "copy--as-kill"
+        )
       ;; set function definition of 'dired-mode-map (same as value)
       (fset 'dired-mode-map dired-mode-map)
       ;; major-mode leader-key
       (spacemacs/set-leader-keys-for-major-mode 'dired-mode
         "c"     'dired-mode-map
         "tr"    'toggle-diredp-find-file-reuse-dir
+        "Y"     'diredp-relsymlink-this-file
         )
       (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
 
@@ -1164,9 +1179,9 @@ you should place you code here."
   ;; '------'
 
   (defun java-init () (interactive)
-    (define-key java-mode-map (kbd "M-c") 'evil-upcase-first-letter)
-    (define-key java-mode-map (kbd "RET") 'c-indent-new-comment-line)
-    )
+         (define-key java-mode-map (kbd "M-c") 'evil-upcase-first-letter)
+         (define-key java-mode-map (kbd "RET") 'c-indent-new-comment-line)
+         )
 
   (add-hook 'java-mode-hook 'java-init)
 
@@ -1305,7 +1320,7 @@ you should place you code here."
        (define-key undo-tree-visualizer-mode-map
          (kbd "M-RET") 'spacemacs-undo-tree-visualizer-mode-map
          (kbd "M-;")   'evil-repeat-find-char-reverse
-       )))
+         )))
 
   ;; ---------------
   ;; Leader Bindings
@@ -1559,20 +1574,20 @@ See also `multi-occur-in-matching-buffers'."
   (defun message-prettyprint (FORM)
     (interactive "XForm: ")
     (message "%s"
-     (with-temp-buffer
-       (cl-prettyprint FORM)
-       (buffer-string))))
+             (with-temp-buffer
+               (cl-prettyprint FORM)
+               (buffer-string))))
 
   (defun eval-string (s)
     "Evaluates a SEXP which is represented as a string."
     (eval (car (read-from-string s))))
 
   (defun browse-file-with-external-application (file)
-      (if (browse-url-can-use-xdg-open)
-          (browse-url-xdg-open file)
-        (progn
-          (require 'eww)
-          (eww-browse-with-external-browser file))))
+    (if (browse-url-can-use-xdg-open)
+        (browse-url-xdg-open file)
+      (progn
+        (require 'eww)
+        (eww-browse-with-external-browser file))))
 
   (defun browse-buffer-file-firefox ()
     (interactive)
@@ -1620,10 +1635,10 @@ See also `multi-occur-in-matching-buffers'."
 
   (defun eval-replace-last-sexp-core ()
     "Replace the preceding sexp with its value, formatted by pp-to-string. With a prefix argument, formats the value using `(format \"%S\" val)' instead."
-      (let ((val (eval (preceding-sexp))))
-        (kill-sexp -1)
-        (if current-prefix-arg (insert (format "%S" val))
-          (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
+    (let ((val (eval (preceding-sexp))))
+      (kill-sexp -1)
+      (if current-prefix-arg (insert (format "%S" val))
+        (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
 
   (defun eval-prettyprint-last-sexp (eval-last-sexp-arg-internal)
     (interactive "P")
@@ -1686,13 +1701,13 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
       (message cmd)
       (shell-command (format "bash -c %s" (shell-quote-argument cmd)))))
 
-    (defun github-clone-wiki (repo-str)
-      (interactive "sUSER/REPO or URL: ")
-      (let* ((user/repo (replace-regexp-in-string (pcre-to-elisp "^https://github.com/|/wiki$|(\.wiki)?\.git$") "" repo-str))
-             (url       (concat "https://github.com/" user/repo ".wiki.git"))
-             (userdir   (replace-regexp-in-string (pcre-to-elisp "^~/") "/home/troy/" user-emacs-directory))
-             (dir       (concat userdir "private/docs")))
-        (shell-command (format "cd '%s'; git clone %s" dir url))))
+  (defun github-clone-wiki (repo-str)
+    (interactive "sUSER/REPO or URL: ")
+    (let* ((user/repo (replace-regexp-in-string (pcre-to-elisp "^https://github.com/|/wiki$|(\.wiki)?\.git$") "" repo-str))
+           (url       (concat "https://github.com/" user/repo ".wiki.git"))
+           (userdir   (replace-regexp-in-string (pcre-to-elisp "^~/") "/home/troy/" user-emacs-directory))
+           (dir       (concat userdir "private/docs")))
+      (shell-command (format "cd '%s'; git clone %s" dir url))))
 
   (defun switch-to-messages-buffer ()
     (interactive)
@@ -1903,27 +1918,27 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (if (eq evil-state 'visual)
         (call-interactively 'evil-visual-shift-left-fine)
       (call-interactively 'evil-shift-left-fine)))
-(defun evil-shift-right-fine-dispatcher ()
+  (defun evil-shift-right-fine-dispatcher ()
     (interactive)
     (if (eq evil-state 'visual)
         (call-interactively 'evil-visual-shift-right-fine)
       (call-interactively 'evil-shift-right-fine)))
 
-(defun evil-cua-toggle ()
-  (interactive)
-  (if cua-rectangle-mark-mode
-      (progn
-        (cua-rectangle-mark-mode -1)
-        (cua-cancel)
-        (evil-exit-emacs-state))
-    (evil-emacs-state)
-    (cua-rectangle-mark-mode 1)))
-(global-set-key (kbd "<C-return>") 'evil-cua-toggle)
+  (defun evil-cua-toggle ()
+    (interactive)
+    (if cua-rectangle-mark-mode
+        (progn
+          (cua-rectangle-mark-mode -1)
+          (cua-cancel)
+          (evil-exit-emacs-state))
+      (evil-emacs-state)
+      (cua-rectangle-mark-mode 1)))
+  (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
-(defun evil-insert-at-WORD-beginning (&optional count)
-  (interactive "p")
-  (evil-backward-WORD-begin count)
-  (evil-insert-state))
+  (defun evil-insert-at-WORD-beginning (&optional count)
+    (interactive "p")
+    (evil-backward-WORD-begin count)
+    (evil-insert-state))
 
   (defun evil-eval-print-last-sexp ()
     (if (string= evil-state))
