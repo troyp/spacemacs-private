@@ -515,9 +515,9 @@ you should place you code here."
   (global-set-key (kbd "M-n") 'evil-scroll-line-down)
   (global-set-key (kbd "M-p") 'evil-scroll-line-up)
   (global-set-key (kbd "C-S-j")
-                  (lambda () (interactive) (scroll-other-window-down 1)))
+                  (lambda () (interactive) (scroll-other-window 1)))
   (global-set-key (kbd "C-S-k")
-                  (lambda () (interactive) (scroll-other-window-down -1)))
+                  (lambda () (interactive) (scroll-other-window-down 1)))
 
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
@@ -1939,6 +1939,48 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (interactive "p")
     (evil-backward-WORD-begin count)
     (evil-insert-state))
+
+  ;; adapted from query-replace and evil operator code: GPL
+  (evil-define-operator evil-query-replace
+    (start end type from to  &optional delimited backward)
+    "Replace text from START to END with CHAR."
+    :motion evil-forward-char
+    (interactive ;; "<R>"
+                 (let ((common
+                        (query-replace-read-args
+                         (concat "Query replace"
+                                 (if current-prefix-arg
+                                     (if (eq current-prefix-arg '-) " backward" " word")
+                                   "")
+                                 (if (and transient-mark-mode mark-active) " in region" ""))
+                         nil))
+                       (selection (evil-visual-range)))
+                   (list
+                    ;; These are done separately here
+                    ;; so that command-history will record these expressions
+                    ;; rather than the values they had this time.
+                    (nth 0 selection)
+                    (nth 1 selection)
+                    (nth 2 selection)
+                    (nth 0 common) (nth 1 common)
+                    (nth 2 common)
+                    (nth 3 common))))
+    (when from
+      (if (eq type 'block)
+          (save-excursion
+            (evil-apply-on-rectangle
+             #'(lambda (startcol endcol from to)
+                 (let ((maxcol (evil-column (line-end-position))))
+                   (when (< startcol maxcol)
+                     (setq endcol (min endcol maxcol))
+                     (let ((start (evil-move-to-column startcol nil t))
+                           (end (evil-move-to-column endcol nil t)))
+                       (perform-replace from to
+                                        t nil delimited nil nil start end backward)))))
+             start end from to))
+        :else
+        (perform-replace from to
+                         t nil delimited nil nil start end backward))))
 
   (defun evil-eval-print-last-sexp ()
     (if (string= evil-state))
