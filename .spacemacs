@@ -1940,47 +1940,54 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (evil-backward-WORD-begin count)
     (evil-insert-state))
 
-  ;; adapted from query-replace and evil operator code: GPL
   (evil-define-operator evil-query-replace
-    (start end type from to  &optional delimited backward)
-    "Replace text from START to END with CHAR."
+    (start end type fromstr tostr  &optional delimited backward)
+    "An interactive function which acts on the evil visual region.
+Replace FROMSTR with TOSTR from START to END with CHAR.
+If DELIMITED is non-nil (or a prefix argument is given interactively), only matches surrounded by word boundaries are replaced.
+If BACKWARD is non-nil (or a negative prefix argument is given interactively), the replacement proceeds backward.
+This operator respects visual-block selections.
+See also `query-replace'."
     :motion evil-forward-char
-    (interactive ;; "<R>"
-                 (let ((common
-                        (query-replace-read-args
-                         (concat "Query replace"
-                                 (if current-prefix-arg
-                                     (if (eq current-prefix-arg '-) " backward" " word")
-                                   "")
-                                 (if (and transient-mark-mode mark-active) " in region" ""))
-                         nil))
-                       (selection (evil-visual-range)))
-                   (list
-                    ;; These are done separately here
-                    ;; so that command-history will record these expressions
-                    ;; rather than the values they had this time.
-                    (nth 0 selection)
-                    (nth 1 selection)
-                    (nth 2 selection)
-                    (nth 0 common) (nth 1 common)
-                    (nth 2 common)
-                    (nth 3 common))))
-    (when from
+    (interactive
+     (let ((selection (evil-visual-range))
+           (args (query-replace-read-args
+                  (concat
+                   "Query replace"
+                   (if current-prefix-arg
+                       (let (arg (prefix-numeric-value current-prefix-arg))
+                         (cond
+                          ((< arg 0) "backward")
+                          (otherwise "word"))
+                         (if (eq current-prefix-arg '-) " backward" " word"))
+                     "")
+                   (if (and transient-mark-mode mark-active) " in region" ""))
+                  nil)))
+       (list (nth 0 selection)
+             (nth 1 selection)
+             (nth 2 selection)
+             (nth 0 args)
+             (nth 1 args)
+             (nth 2 args)
+             (nth 3 args))))
+    (when fromstr
       (if (eq type 'block)
           (save-excursion
+            (defun do-replace (begcol endcol fromstr tostr)
+              (let* ((maxcol (evil-column (line-end-position)))
+                     (endcol (min endcol maxcol)))
+                (unless (> begcol maxcol)
+                  (let ((begpos (evil-move-to-column begcol))
+                        (endpos (evil-move-to-column endcol)))
+                    (perform-replace fromstr tostr
+                                     t nil delimited nil nil
+                                     begpos endpos backward)))))
             (evil-apply-on-rectangle
-             #'(lambda (startcol endcol from to)
-                 (let ((maxcol (evil-column (line-end-position))))
-                   (when (< startcol maxcol)
-                     (setq endcol (min endcol maxcol))
-                     (let ((start (evil-move-to-column startcol nil t))
-                           (end (evil-move-to-column endcol nil t)))
-                       (perform-replace from to
-                                        t nil delimited nil nil start end backward)))))
-             start end from to))
+             #'do-replace start end fromstr tostr))
         :else
-        (perform-replace from to
-                         t nil delimited nil nil start end backward))))
+        (perform-replace fromstr tostr
+                         t nil delimited nil nil
+                         start end backward))))
 
   (defun evil-eval-print-last-sexp ()
     (if (string= evil-state))
