@@ -90,6 +90,7 @@ values."
      ;; Drew Adams Packages
      autofit-frame
      bookmark+
+     column-enforce-mode
      dired-sort-menu+
      doremi
      doremi-cmd
@@ -246,7 +247,7 @@ values."
    dotspacemacs-helm-position 'bottom
    ;; If non nil the paste micro-state is enabled. When enabled pressing `p`
    ;; several times cycle between the kill ring content. (default nil)
-   dotspacemacs-enable-paste-micro-state t
+   dotspacemacs-enable-paste-micro-state nil
    ;; Which-key delay in seconds. The which-key buffer is the popup listing
    ;; the commands bound to the current keystroke sequence. (default 0.4)
    dotspacemacs-which-key-delay 0.4
@@ -455,8 +456,13 @@ you should place you code here."
     (list (line-visible-beginning-position) (+ 1 (line-visible-end-position))))
   (evil-define-text-object evil-outer-line (count &optional beg end type)
     (list (line-beginning-position) (line-end-position)))
+  (evil-define-text-object evil-inner-defun (count &optional beg end type)
+    (save-excursion
+      (mark-defun)
+      (list (point) (mark))))
   (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
   (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
+  (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
 
 ;; ==============================================================================
 ;;                                 ****************
@@ -544,6 +550,7 @@ you should place you code here."
   (global-set-key (kbd "<C-f1>") 'describe-prefix-bindings)
   (global-set-key (kbd "<M-f1>") 'describe-key)
   (global-set-key [f5] 'spacemacs-cmds)
+  (global-set-key [\C-f5] 'which-key-show-top-level)
 
   (global-set-key [f7] 'exchange-point-and-mark)
   (global-set-key [f8] 'er/contract-region)
@@ -553,6 +560,13 @@ you should place you code here."
   (global-set-key (kbd "M-C") 'capitalize-word)
 
   (global-set-key (kbd "C->") 'evil-repeat-pop-next)
+
+  ;; approximate global mapping (with higher priority)
+  (define-key evil-normal-state-map (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
+  (define-key evil-visual-state-map (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
+  (define-key evil-insert-state-map (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
+  (define-key evil-emacs-state-map  (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
+  (define-key evil-hybrid-state-map (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------------,
@@ -602,6 +616,9 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
+  (define-key evil-visual-state-map (kbd "M-%") 'evil-virep-query-replace)
+  (define-key evil-visual-state-map (kbd "C-M-%") 'evil-virep-replace-regexp)
+
 
   ;; ,--------------,
   ;; | MOTION STATE |
@@ -661,6 +678,7 @@ you should place you code here."
     "b M"          'switch-to-messages-buffer
     "b W"          'switch-to-warnings-buffer
     "b -"          'diff-buffer-with-file
+    "b C-b"        'ibuffer
     "b C-e"        'bury-buffer
     "b C-u"        'undo-tree-clear
     "b <insert>"   'buffer-major-mode
@@ -689,6 +707,7 @@ you should place you code here."
     "ok"           'kmacro-keymap
     "om"           'modes-prefix-key-map
     "ov"           'variable-pitch-mode
+    "t|"           'fci-mode
     "w TAB"        'ace-swap-window
     "xa."          'spacemacs/align-repeat-period
     "xa'"          'spacemacs/align-repeat-quote
@@ -709,6 +728,7 @@ you should place you code here."
     "<delete>"     'kill-buffer-and-window
     "<return>"     'helm-buffers-list
     "C-v"          'evil-cua-toggle
+    "C-w"          'delete-frame
     "C-."          'ido-switch-buffer
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
@@ -806,6 +826,9 @@ you should place you code here."
   ;; ,-------------------------,
   ;; | which-key Configuration |
   ;; '-------------------------'
+
+  ;; ;; enable which-key for motions - breaks t/f
+  ;; (setq which-key-show-operator-state-maps t)
 
   (bind-keys :map which-key-C-h-map
              ("C-h" . which-key-abort)
@@ -1050,6 +1073,8 @@ you should place you code here."
                   ("C-0" . helm-select-action)
                   ("M-m" . spacemacs-cmds)
                   ("C-u" . helm-delete-minibuffer-contents)
+                  ("<f5>"  . nil)
+                  ("<f11>"  . nil)
                   )
        ))
 
@@ -1940,57 +1965,22 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (evil-backward-WORD-begin count)
     (evil-insert-state))
 
-  (evil-define-operator evil-query-replace
-    (start end type fromstr tostr  &optional delimited backward)
-    "An interactive function which acts on the evil visual region.
-Replace FROMSTR with TOSTR from START to END with CHAR.
-If DELIMITED is non-nil (or a prefix argument is given interactively), only matches surrounded by word boundaries are replaced.
-If BACKWARD is non-nil (or a negative prefix argument is given interactively), the replacement proceeds backward.
-This operator respects visual-block selections.
-See also `query-replace'."
-    :motion evil-forward-char
-    (interactive
-     (let ((selection (evil-visual-range))
-           (args (query-replace-read-args
-                  (concat
-                   "Query replace"
-                   (if current-prefix-arg
-                       (let (arg (prefix-numeric-value current-prefix-arg))
-                         (cond
-                          ((< arg 0) "backward")
-                          (otherwise "word"))
-                         (if (eq current-prefix-arg '-) " backward" " word"))
-                     "")
-                   (if (and transient-mark-mode mark-active) " in region" ""))
-                  nil)))
-       (list (nth 0 selection)
-             (nth 1 selection)
-             (nth 2 selection)
-             (nth 0 args)
-             (nth 1 args)
-             (nth 2 args)
-             (nth 3 args))))
-    (when fromstr
-      (if (eq type 'block)
-          (save-excursion
-            (defun do-replace (begcol endcol fromstr tostr)
-              (let* ((maxcol (evil-column (line-end-position)))
-                     (endcol (min endcol maxcol)))
-                (unless (> begcol maxcol)
-                  (let ((begpos (evil-move-to-column begcol))
-                        (endpos (evil-move-to-column endcol)))
-                    (perform-replace fromstr tostr
-                                     t nil delimited nil nil
-                                     begpos endpos backward)))))
-            (evil-apply-on-rectangle
-             #'do-replace start end fromstr tostr))
-        :else
-        (perform-replace fromstr tostr
-                         t nil delimited nil nil
-                         start end backward))))
-
-  (defun evil-eval-print-last-sexp ()
-    (if (string= evil-state))
+  ;; TODO: finish
+  (defun evil-eval-print-last-sexp (&optional arg)
+    "Evaluate the sexp before point and print it on a new line.
+Long output is truncated. See the variables `eval-expression-print-length' and `eval-expression-print-level'.
+A prefix argument of 0 inhibits truncation and prints integers with additional octal, hexadecimal and character representations, in the format:  1 (#o1, #x1, ?\C-a).
+Errors start the debugger unless an argument of `nil' is passed for `eval-expression-debug-on-error'.
+This function is a wrapper around `eval-print-last-sexp' which corrects for cursor position in normal/visual statee."
+    (interactive)
+    (cl-case evil-state
+      ('normal (progn
+                 (evil-append)
+                 (eval-print-last-sexp arg)
+                 ))
+      ('visual (progn
+                 ))
+      (otherwise (eval-print-last-sexp arg)))
     )
 
   ;; TODO: write replace-line function.
