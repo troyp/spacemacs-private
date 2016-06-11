@@ -29,6 +29,7 @@ values."
      (clojure :variables
               ;; clojure-enable-fancify-symbols t
               )
+     elfeed
      emacs-lisp
      extra-langs
      git
@@ -530,8 +531,8 @@ you should place you code here."
   (global-set-key "\C-a" 'move-beginning-of-line-or-text)    ;; troyp/utils.el
   (global-set-key (kbd "<S-return>") 'open-line-below)       ;; troyp/utils.el
   (global-set-key (kbd "<C-S-return>") 'open-line-above)     ;; troyp/utils.el
-  (global-set-key [\C-\S-up] 'move-text-up)
-  (global-set-key [\C-\S-down] 'move-text-down)
+  (global-set-key [\C-\S-down] 'spacemacs//move-text-move-text-down-J)
+  (global-set-key [\C-\S-up] 'spacemacs//move-text-move-text-up-K)
 
   (global-set-key (kbd "M-S-SPC") 'just-one-space)
   (global-set-key (kbd "C-M-d") 'scroll-other-window)
@@ -727,6 +728,7 @@ you should place you code here."
     "<backspace>"  'kill-this-buffer
     "<delete>"     'kill-buffer-and-window
     "<return>"     'helm-buffers-list
+    "C-l"          'quick-pcre-align-repeat
     "C-v"          'evil-cua-toggle
     "C-w"          'delete-frame
     "C-."          'ido-switch-buffer
@@ -1028,6 +1030,17 @@ you should place you code here."
   (add-hook 'wdired-mode-hook 'wdired-init)
 
   ;; -------------------------------------------------------------------------------
+  ;; ,--------,
+  ;; | Elfeed |
+  ;; '--------'
+
+  ;; auto-evilification can't remap 'elfeed-search-fetch
+  (eval-after-load "elfeed"
+    `(progn
+       (define-key elfeed-search-mode-map (kbd "C-x G") 'elfeed-search-fetch)
+       ))
+
+  ;; -------------------------------------------------------------------------------
   ;; ,------------,
   ;; | Emacs Lisp |
   ;; '------------'
@@ -1070,11 +1083,12 @@ you should place you code here."
   (eval-after-load "helm-mode"
     `(progn
        (bind-keys :map helm-map
-                  ("C-0" . helm-select-action)
-                  ("M-m" . spacemacs-cmds)
-                  ("C-u" . helm-delete-minibuffer-contents)
+                  ("C-0"   . helm-select-action)
+                  ("C-)"   . helm-execute-persistent-action)
+                  ("M-m"   . spacemacs-cmds)
+                  ("C-u"   . helm-delete-minibuffer-contents)
                   ("<f5>"  . nil)
-                  ("<f11>"  . nil)
+                  ("<f11>" . nil)
                   )
        ))
 
@@ -1779,31 +1793,6 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
       (beginning-of-line)
       (re-search-forward regexp (line-end-position) t)))
 
-  ;; TODO: make operation atomic wrt undo
-  (evil-define-operator evil-shift-up-line-or-block (beg end type &optional register yank-handler)
-    "Shift line or region upwards 1 line."
-    :motion evil-line
-    :keep-visual t
-    (if (not (region-active-p))
-        (call-interactively 'move-text-up)
-      (evil-delete beg end type register yank-handler)
-      (evil-previous-line)
-      (evil-paste-before register yank-handler)
-      (setq deactivate-mark nil)
-      (activate-mark)))
-  ;; FIXME: down operator is broken for regions (char and line)
-  (evil-define-operator evil-shift-down-line-or-block (beg end type &optional register yank-handler)
-    "shift line or region downwards 1 line."
-    :motion evil-line
-    :keep-visual t
-    (if (not (region-active-p))
-        (call-interactively 'move-text-down)
-      (evil-delete beg end type register yank-handler)
-      (evil-next-line)
-      (evil-paste-after register yank-handler)
-      (setq deactivate-mark nil)
-      (activate-mark)))
-
   (defun undo-tree-clear ()
     (interactive)
     (setq buffer-undo-tree nil))
@@ -1959,6 +1948,15 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
       (evil-emacs-state)
       (cua-rectangle-mark-mode 1)))
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
+
+  (defmacro after-motion (fn)
+    "Builds a function to map a point to its new position after the motion
+command FN has been applied."
+    `(lambda (pt)
+       (save-excursion
+         (goto-char pt)
+         (funcall ,fn)
+         (point))))
 
   (defun evil-insert-at-WORD-beginning (&optional count)
     (interactive "p")
