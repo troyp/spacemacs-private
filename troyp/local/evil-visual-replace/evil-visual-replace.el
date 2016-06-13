@@ -49,9 +49,12 @@
   (start end type fromstr tostr  &optional delimited backward)
   "An interactive function which acts on the evil visual region.
 Replace FROMSTR with TOSTR from START to END with CHAR.
-If DELIMITED is non-nil (or a prefix argument is given interactively), only matches surrounded by word boundaries are replaced.
-If BACKWARD is non-nil (or a negative prefix argument is given interactively), the replacement proceeds backward.
-This operator respects visual-block selections. For non-block visual state operations, it is identical to `query-replace'.
+If DELIMITED is non-nil (or a prefix argument is given interactively), only
+matches surrounded by word boundaries are replaced.
+If BACKWARD is non-nil (or a negative prefix argument is given interactively),
+the replacement proceeds backward.
+This operator respects visual-block selections. For non-block visual state
+operations, it is identical to `query-replace'.
 For non-visual-state replacements, use `query-replace'."
   :motion evil-forward-char
   (interactive
@@ -99,10 +102,14 @@ For non-visual-state replacements, use `query-replace'."
     (start end type regexp tostr  &optional delimited backward)
     "An interactive function which acts on the evil visual region.
 Replace REGEXP with TOSTR from START to END with CHAR.
-If DELIMITED is non-nil (or a prefix argument is given interactively), only matches surrounded by word boundaries are replaced.
-If BACKWARD is non-nil (or a negative prefix argument is given interactively), the replacement proceeds backward.
-This operator respects visual-block selections. For non-block visual state operations, it is identical to `replace-regexp'.
+If DELIMITED is non-nil (or a prefix argument is given interactively), only
+matches surrounded by word boundaries are replaced.
+If BACKWARD is non-nil (or a negative prefix argument is given interactively),
+the replacement proceeds backward.
+This operator respects visual-block selections. For non-block visual state
+operations, it is identical to `replace-regexp'.
 For non-visual-state replacements, use `replace-regexp'."
+
     :motion evil-forward-char
     (interactive
      (let ((selection (evil-visual-range))
