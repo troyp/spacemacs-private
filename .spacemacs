@@ -1891,7 +1891,8 @@ See also `thing-at-point'"
       (forward-line (or n 1))
       (line-at-point-blank-p)))
   (defun adjacent-line-blank-p (&optional n)
-    "Returns a non-nil value if the Nth line above and/or below is blank (contains only whitespace).
+    "Returns a non-nil value if the Nth line above and/or below point is blank
+(ie. contains only whitespace).
 See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (or (line-above-blank-p n)
         (line-below-blank-p n)))
@@ -1969,10 +1970,16 @@ command FN has been applied."
 
   (defun evil-eval-print-last-sexp (&optional arg)
     "Evaluate the sexp before point and print it on a new line.
-Long output is truncated. See the variables `eval-expression-print-length' and `eval-expression-print-level'.
-A prefix argument of 0 inhibits truncation and prints integers with additional octal, hexadecimal and character representations, in the format:  1 (#o1, #x1, ?\C-a).
-Errors start the debugger unless an argument of `nil' is passed for `eval-expression-debug-on-error'.
-This function is a wrapper around `eval-print-last-sexp' which corrects for cursor position in normal/visual statee."
+Long output is truncated. See the variables `eval-expression-print-length' and
+`eval-expression-print-level'.
+A prefix argument of 0 inhibits truncation and prints integers with additional
+octal, hexadecimal and character representations, in the format: 1 (#o1, #x1,
+?\C-a).
+Errors start the debugger unless an argument of `nil' is passed for
+`eval-expression-debug-on-error'.
+This function is a wrapper around `eval-print-last-sexp' which corrects for
+cursor position in normal/visual statee."
+
     (interactive "P")
     (cl-case evil-state
       ('normal (progn
