@@ -1659,7 +1659,8 @@ See also `multi-occur-in-matching-buffers'."
   (defun funboundp (symbol) (not (fboundp symbol)))
 
   (defun buffer-major-mode (buffer)
-    "Print the current major-mode in the echo area and copy to kill-ring. If called without an argument, it also copies to kill-ring."
+    "Print the current major-mode in the echo area and copy to kill-ring. If called
+ without an argument, it also copies to kill-ring."
     (interactive "i")
     (unless buffer (setq buffer (buffer-name)))
     (with-current-buffer buffer
@@ -1668,7 +1669,8 @@ See also `multi-occur-in-matching-buffers'."
         (unless current-prefix-arg (kill-new mm)))))
 
   (defun eval-replace-last-sexp ()
-    "Replace the preceding sexp with its value, formatted by pp-to-string. With a prefix argument, formats the value using `(format \"%S\" val)' instead."
+    "Replace the preceding sexp with its value, formatted by pp-to-string. With a
+ prefix argument, formats the value using `(format \"%S\" val)' instead."
     (interactive)
     (if (boundp 'evil-state)
         (evil-save-state
@@ -1677,7 +1679,8 @@ See also `multi-occur-in-matching-buffers'."
       (eval-replace-last-sexp-core)))
 
   (defun eval-replace-last-sexp-core ()
-    "Replace the preceding sexp with its value, formatted by pp-to-string. With a prefix argument, formats the value using `(format \"%S\" val)' instead."
+    "Replace the preceding sexp with its value, formatted by pp-to-string. With a
+ prefix argument, formats the value using `(format \"%S\" val)' instead."
     (let ((val (eval (preceding-sexp))))
       (kill-sexp -1)
       (if current-prefix-arg (insert (format "%S" val))
@@ -1687,12 +1690,17 @@ See also `multi-occur-in-matching-buffers'."
     (interactive "P")
     (cl-prettyprint (eval-last-sexp eval-last-sexp-arg-internal)))
 
-  (defun delete-duplicate-lines-nonblank (beg end &optional reverse adjacent delete-blanks interactive)
-    "Delete duplicate lines within region. This is the same as `delete-duplicate-lines' except it keeps blank lines by default unless the DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
+  (defun delete-duplicate-lines-nonblank
+      (beg end &optional reverse adjacent delete-blanks interactive)
+    "Delete duplicate lines within region. This is the same as
+ `delete-duplicate-lines' except it keeps blank lines by default unless the
+ DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
+
  C-u          Keep the last instance of each line
  C-u C-u      Delete blank line duplicates
  C-u C-u C-u  Only delete adjacent duplicates
-\nSee also `spacemacs/uniquify-lines', which deletes adjacent duplicate lines within the region."
+\nSee also `spacemacs/uniquify-lines', which deletes adjacent duplicate lines
+within the region."
     (interactive
      (progn
        (list
@@ -1714,21 +1722,26 @@ See also `multi-occur-in-matching-buffers'."
       (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
 
   (defalias 'move-visible-beginning-of-line 'back-to-indentation
-    "Move to the first non-whitespace character on the line (or the end of line if no non-whitespace)")
+    "Move to the first non-whitespace character on the line (or the end of line if
+ no non-whitespace)")
 
   (defun move-visible-end-of-line ()
-    "Move to the last non-whitespace character on the line (or the start of line if no non-whitespace)"
+    "Move to the last non-whitespace character on the line (or the start of line if
+ no non-whitespace)"
     (interactive)
     (end-of-line)
     (re-search-backward "[^ \t\n]" (line-beginning-position) 1))
 
   (defun pcre-replace-regexp-in-string (PCRE REP STRING &optional FIXEDCASE LITERAL SUBEXP START)
-    "Replace all matches for PCRE with REP in STRING, where PCRE is converted to an elisp regexp by the function `rxt-pcre-to-elisp'.\n
+    "Replace all matches for PCRE with REP in STRING, where PCRE is converted to
+    an elisp regexp by the function `rxt-pcre-to-elisp'.\n
+
 For the meaning of the optional arguments, see `replace-regexp-in-string'."
     (replace-regexp-in-string (pcre-to-elisp REGEXP)
                               REP STRING FIXEDCASE LITERAL SUBEXP START))
 
-  ;; TODO: these github download functions require the home directory hard-coded because ~ and $HOME aren't working -- investigate
+  ;; TODO: these github download functions require the home directory hard-coded
+  ;; TODO: because ~ and $HOME aren't working -- investigate
   (defun github-download-README (author repo)
     (interactive "sAUTHOR: \nsREPO: ")
     (let ((cmd (concat "tempdir=`mktemp -d`;\n"
@@ -1746,9 +1759,15 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
 
   (defun github-clone-wiki (repo-str)
     (interactive "sUSER/REPO or URL: ")
-    (let* ((user/repo (replace-regexp-in-string (pcre-to-elisp "^https://github.com/|/wiki$|(\.wiki)?\.git$") "" repo-str))
+    (let* ((user/repo (replace-regexp-in-string
+                       (pcre-to-elisp "^https://github.com/|/wiki$|(\.wiki)?\.git$")
+                       ""
+                       repo-str))
            (url       (concat "https://github.com/" user/repo ".wiki.git"))
-           (userdir   (replace-regexp-in-string (pcre-to-elisp "^~/") "/home/troy/" user-emacs-directory))
+           (userdir   (replace-regexp-in-string
+                       (pcre-to-elisp "^~/")
+                       "/home/troy/"
+                       user-emacs-directory))
            (dir       (concat userdir "private/docs")))
       (shell-command (format "cd '%s'; git clone %s" dir url))))
 
@@ -1792,7 +1811,8 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
         (evil-forward-word-begin))))
 
   (defun match-line (regexp)
-    "Check the current line against regexp and return the match position the or nil if it fails."
+    "Check the current line against regexp and return the match position the or nil
+ if it fails."
     (save-excursion
       (beginning-of-line)
       (re-search-forward regexp (line-end-position) t)))
@@ -1857,8 +1877,8 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
       r))
 
   (defun evil-lisp-insert-function-application (pt mk)
-    "Surround the region (or symbol-at-point if region is inactive) with parens
-and position point after the open-paren, with a space after it."
+    "Surround the region (or symbol-at-point if region is inactive) with parens and
+ position point after the open-paren, with a space after it."
     (interactive "r")
     (unless (region-active-p)
       (setf pt (cadr (symbol-at-point-with-bounds)))
@@ -1978,8 +1998,7 @@ octal, hexadecimal and character representations, in the format: 1 (#o1, #x1,
 Errors start the debugger unless an argument of `nil' is passed for
 `eval-expression-debug-on-error'.
 This function is a wrapper around `eval-print-last-sexp' which corrects for
-cursor position in normal/visual statee."
-
+cursor position in normal/visual states."
     (interactive "P")
     (cl-case evil-state
       ('normal (progn
