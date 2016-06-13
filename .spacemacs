@@ -735,6 +735,7 @@ you should place you code here."
     "C-."          'ido-switch-buffer
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
+    "M-q"          'split-lines-in-region
     "M-x"          'helm-M-x
     "M-S-SPC"      'just-one-blank-line
     )
@@ -1986,6 +1987,17 @@ This function is a wrapper around `eval-print-last-sexp' which corrects for curs
                  ))
       (otherwise (eval-print-last-sexp arg))
       ))
+
+  (defun split-lines-in-region (beg end)
+    "An interactive function to split lines longer than `fill-column'.
+Splits long lines in the region using `fill-paragraph', but never joins lines.
+Ie., each line is treated as a distinct paragraph."
+    (interactive "r")
+    (replace-string "\n" "\n\n" nil beg end)
+    (evil-active-region 1)
+    (fill-paragraph nil t)
+    (replace-string "\n\n" "\n" nil beg end)
+    )
 
   ;; TODO: write replace-line function.
 
