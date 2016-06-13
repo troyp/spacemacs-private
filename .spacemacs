@@ -1642,7 +1642,9 @@ See also `multi-occur-in-matching-buffers'."
 
   (defun markdown-export-to-html-and-view ()
     (interactive)
-    (browse-file-with-external-application (markdown-export)))
+    (let ((fname (or (markdown-export-file-name)
+                    (make-temp-file "markdown-output"))))
+      (browse-file-with-external-application (markdown-export fname))))
 
   ;; REGION-BEGINNING and REGION-END
   ;; TODO: make these into text motions
