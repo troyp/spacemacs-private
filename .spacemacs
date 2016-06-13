@@ -1045,6 +1045,8 @@ you should place you code here."
   ;; ,------------,
   ;; | Emacs Lisp |
   ;; '------------'
+  (define-key lisp-interaction-mode-map
+    [remap eval-print-last-sexp] 'evil-eval-print-last-sexp)
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------------,
@@ -1964,23 +1966,26 @@ command FN has been applied."
     (evil-backward-WORD-begin count)
     (evil-insert-state))
 
-  ;; TODO: finish
   (defun evil-eval-print-last-sexp (&optional arg)
     "Evaluate the sexp before point and print it on a new line.
 Long output is truncated. See the variables `eval-expression-print-length' and `eval-expression-print-level'.
 A prefix argument of 0 inhibits truncation and prints integers with additional octal, hexadecimal and character representations, in the format:  1 (#o1, #x1, ?\C-a).
 Errors start the debugger unless an argument of `nil' is passed for `eval-expression-debug-on-error'.
 This function is a wrapper around `eval-print-last-sexp' which corrects for cursor position in normal/visual statee."
-    (interactive)
+    (interactive "P")
     (cl-case evil-state
       ('normal (progn
-                 (evil-append)
+                 (evil-append 1)
                  (eval-print-last-sexp arg)
+                 (evil-normal-state)
                  ))
       ('visual (progn
+                 (evil-append 1)
+                 (eval-print-last-sexp arg)
+                 (evil-visual-restore)
                  ))
-      (otherwise (eval-print-last-sexp arg)))
-    )
+      (otherwise (eval-print-last-sexp arg))
+      ))
 
   ;; TODO: write replace-line function.
 
