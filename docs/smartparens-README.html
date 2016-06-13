@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>smartparens-README.html</title>
+
+</head>
+
+<body>
+
+<h1>Smartparens</h1>
+
+<p><a href="http://melpa.org/#/smartparens"><img src="http://melpa.org/packages/smartparens-badge.svg" alt="MELPA" title="" /></a>
+<a href="http://stable.melpa.org/#/smartparens"><img src="http://stable.melpa.org/packages/smartparens-badge.svg" alt="MELPA Stable" title="" /></a>
+<a href="https://travis-ci.org/Fuco1/smartparens"><img src="https://travis-ci.org/Fuco1/smartparens.png?branch=master" alt="Build Status" title="" /></a>
+<a href="https://coveralls.io/github/Fuco1/smartparens"><img src="https://coveralls.io/repos/github/Fuco1/smartparens/badge.svg" alt="Coverage Status" title="" /></a>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CEYP5YVHDRX8C"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="Paypal logo" title="" /></a></p>
+
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
+**Table of Contents**
+
+- [Smartparens](#smartparens)
+    - [Getting Started](#getting-started)
+    - [Usage](#usage)
+    - [Contributing](#contributing)
+        - [Language Support](#language-support)
+    - [Supporting Smartparens](#supporting-smartparens)
+    - [Related Projects](#related-projects)
+
+<!-- markdown-toc end -->
+
+<p>Smartparens is a minor mode for dealing with pairs in Emacs.</p>
+
+<p>It can automatically insert pairs:</p>
+
+<p><img src="images/smartparens-insert.gif" alt="smartparens insert" title="" /></p>
+
+<p>wrap, unwrap and rewrap pairs:</p>
+
+<p><img src="images/smartparens-wrap.gif" alt="smartparens wrapping" title="" /></p>
+
+<p>expand and contract pairs:</p>
+
+<p><img src="images/smartparens-slurp.gif" alt="smartparens slurping" title="" /></p>
+
+<p>navigate pairs:</p>
+
+<p><img src="images/smartparens-navigate.gif" alt="smartparens navigating" title="" /></p>
+
+<p>and much more!</p>
+
+<h2>Getting Started</h2>
+
+<p>We generally target GNU Emacs version 24.3 and newer, however,
+everything should work mostly fine on anything newer than version 24.</p>
+
+<p>You can install smartparens from <a href="http://melpa.org/">MELPA</a>.  Once
+installed, enable the default configuration:</p>
+
+<p><code>lisp
+(require 'smartparens-config)
+</code></p>
+
+<p>You can now use smartparens with <code>M-x smartparens-mode</code>. To
+automatically enable smartparens in a programming mode:</p>
+
+<p><code>lisp
+;; Always start smartparens mode in js-mode.
+(add-hook 'js-mode-hook #'smartparens-mode)
+</code></p>
+
+<p>You may want to try <code>smartparens-strict-mode</code>. This enforces that
+pairs are always balanced, so commands like <code>kill-line</code> keep your code
+well-formed.</p>
+
+<h2>Usage</h2>
+
+<p>Inside Emacs, <code>M-x sp-cheat-sheet</code> will show you all the commands
+available, with examples.</p>
+
+<p>There's also a
+<a href="https://ebzzry.github.io/emacs-pairs.html">great article demonstrating movement and editing in smartparens</a>
+and <a href="https://github.com/Fuco1/smartparens/wiki">extensive documentation in the wiki</a>.</p>
+
+<h2>Contributing</h2>
+
+<p>We love pull requests. Please include tests. Smartparens uses
+<a href="https://github.com/rejeep/ert-runner.el">ert-runner</a> for testing. To
+run all the tests, run:</p>
+
+<p><code>
+$ make test
+</code></p>
+
+<p>Alternatively, you can open the individual files in Emacs, then
+<code>M-x eval-buffer</code> <code>M-x ert</code>.</p>
+
+<p>There are also some ecukes tests, but these are deprecated.</p>
+
+<p>You can learn more about how we test on the <a href="https://github.com/Fuco1/smartparens/wiki/Testing">testing</a> wiki page.</p>
+
+<h3>Language Support</h3>
+
+<p>Smartparens has a default configuration that works well for most
+languages. For language-specific behaviour, smartparens has a separate
+<code>smartparens-FOO.el</code> file for every language and
+<code>smartparens-config.el</code> loads these automatically.</p>
+
+<h2>Supporting Smartparens</h2>
+
+<p>If you want to support this project, you can:</p>
+
+<ul>
+<li><p>Contribute code. If you have an idea that is not yet implemented and
+will benefit this project, feel free to implement it and submit a
+pull request. If you have any concerns whether your contribution
+will be accepted, ask beforehand. You can email the author or
+<a href="https://github.com/Fuco1/smartparens/issues/new">start an issue</a> on
+the tracker.</p></li>
+<li><p>Contribute ideas. Even if you can't code Emacs Lisp, you can still
+contribute valuable ideas for other programmers to implement. Simply
+<a href="https://github.com/Fuco1/smartparens/issues/new">start new issue</a>
+on the tracker and submit your suggestion.</p></li>
+<li><p>You can make a
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CEYP5YVHDRX8C">financial donation</a>
+through PayPal.  If you like smartparens and can spare a modest
+amount on a donation, feel free to do so.  These donations are
+expressions of your gratitude and are used for my personal "rewards"
+(books, games, music etc.).  You can also gift me a game on
+<a href="http://steamcommunity.com/profiles/76561198265034071/wishlist">Steam</a>
+or buy something on
+<a href="http://www.amazon.com/gp/registry/wishlist/2I8DOQH8OZEUR">Amazon</a>.
+Regardless of the donations, smartparens will always be free both as
+in beer and as in speech.</p></li>
+</ul>
+
+<h2>Related Projects</h2>
+
+<p>Other Emacs projects that deal with pairs include:</p>
+
+<ul>
+<li><a href="https://github.com/capitaomorte/autopair">autopair</a></li>
+<li><a href="http://code.google.com/p/emacs-textmate/">textmate</a></li>
+<li><a href="https://github.com/rejeep/wrap-region">wrap-region</a></li>
+<li><a href="http://www.emacswiki.org/emacs/ElectricPair">electric-pair-mode</a></li>
+<li><a href="http://emacswiki.org/emacs/ParEdit">paredit</a></li>
+</ul>
+
+<p>Smartparens aims to provide a superset of these features, in all
+programming languages.</p>
+
+</body>
+</html>
