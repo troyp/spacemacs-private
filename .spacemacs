@@ -1089,6 +1089,7 @@ you should place you code here."
        (bind-keys :map helm-map
                   ("C-0"   . helm-select-action)
                   ("C-)"   . helm-execute-persistent-action)
+                  ("C-S-W" . helm-yank-symbol-at-point)
                   ("M-m"   . spacemacs-cmds)
                   ("C-u"   . helm-delete-minibuffer-contents)
                   ("<f5>"  . nil)
@@ -2032,6 +2033,13 @@ Ie., each line is treated as a distinct paragraph."
     (fill-paragraph nil t)
     (replace-string "\n\n" "\n" nil beg end)
     )
+
+(defun helm-yank-symbol-at-point ()
+  "Yank the symbol at point in `helm-current-buffer' into minibuffer."
+  (interactive)
+  (with-helm-current-buffer
+    (let ((sym (symbol-name (symbol-at-point))))
+      (helm-set-pattern (concat helm-pattern sym)))))
 
   ;; TODO: write replace-line function.
 
