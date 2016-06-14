@@ -1513,7 +1513,11 @@ See also `multi-occur-in-matching-buffers'."
     (interactive "SKeymap: ")
     (which-key--show-keymap (symbol-name map) (eval map)))
 
+  ;; TODO: work out what 8-digit integers represent in a keymap.
+  ;; Currently, they're left untouched.
   (defun replace-ints-with-char (beg end)
+    "Replace the numbers in a keymap representation with a readable string
+representation."
     (interactive "r")
     (unless (use-region-p)
       (setq beg (point-min)
@@ -1523,9 +1527,11 @@ See also `multi-occur-in-matching-buffers'."
       (while (search-forward-regexp "\\([0-9]+\\)" end t)
         (if (string= (match-string 0) "92")
             (replace-match "\"\\\\\\\\\"" t nil)
-          (replace-match
-           (format "\"%c\"" (string-to-number (match-string 1)))
-           t nil)))))
+          (let* ((match (match-string 1))
+                 (num   (string-to-number match)))
+            (if (characterp num)
+                (replace-match (format "\"%c\"" num)
+                               t nil)))))))
 
   ;; FIXME
   (defun prettyprint-keymap (kmap)
