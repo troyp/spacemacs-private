@@ -372,8 +372,6 @@ you should place you code here."
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
 
-  (setq evil-want-fine-undo "No")
-
   ;; CUA RECTANGLE
   (setq cua-enable-cua-keys nil)
   (cua-mode t)
@@ -481,6 +479,34 @@ you should place you code here."
   (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
   (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
 
+  ;; ,-----------,
+  ;; | Undo Tree |
+  ;; '-----------'
+
+  (setq evil-want-fine-undo "No")
+
+  (setq undo-tree-auto-save-history t)
+  ;; Attempt to prevent undo-tree history corruption...
+  ;; https://github.com/syl20bnr/spacemacs/issues/774#issuecomment-194527210
+  (defun my-save-undo-history ()
+    (when (and (boundp 'undo-tree-mode)
+               undo-tree-mode
+               buffer-file-name
+               (file-writable-p buffer-file-name)
+               (not (eq buffer-undo-list t))
+               (not revert-buffer-in-progress-p))
+      (undo-tree-save-history nil t)))
+
+  (defun my-save-all-undo-history ()
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (my-save-undo-history))))
+
+  (add-hook 'kill-emacs-hook #'my-save-all-undo-history)
+  (add-hook 'kill-buffer-hook #'my-save-undo-history)
+
+
+
 ;; ==============================================================================
 ;;                                 ****************
 ;;                                 *              *
@@ -525,6 +551,14 @@ you should place you code here."
   ;; ,-----------------,
   ;; | Global Bindings |
   ;; '-----------------'
+
+  (global-set-key (kbd "M-0") 'universal-argument)
+  ;; approximate global mapping (with higher priority)
+  (define-key evil-normal-state-map (kbd "M-0") 'universal-argument)
+  (define-key evil-visual-state-map (kbd "M-0") 'universal-argument)
+  (define-key evil-insert-state-map (kbd "M-0") 'universal-argument)
+  (define-key evil-emacs-state-map  (kbd "M-0") 'universal-argument)
+  (define-key evil-hybrid-state-map (kbd "M-0") 'universal-argument)
 
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
 
@@ -1107,10 +1141,12 @@ you should place you code here."
        (bind-keys :map helm-map
                   ("C-0"   . helm-select-action)
                   ("C-)"   . helm-execute-persistent-action)
+                  ("C-S-O" . helm-previous-source)
                   ("C-S-W" . helm-yank-symbol-at-point)
                   ("M-m"   . spacemacs-cmds)
                   ("C-u"   . helm-delete-minibuffer-contents)
                   ("<f5>"  . nil)
+                  ("<f9>"  . spacemacs/helm-navigation-micro-state)
                   ("<f11>" . nil)
                   )
        ))
@@ -1306,6 +1342,13 @@ you should place you code here."
     (define-key org-mode-map [C-tab] 'next-multiframe-window))
 
   (add-hook 'org-mode-hook 'org-init)
+
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+           "* TODO %?\n  %i\n  %a")
+          ("j" "Journal" entry (file+datetree "~/org/journal.org")
+           "* [%t] %^G\n%?")
+          ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
@@ -2088,6 +2131,7 @@ Ie., each line is treated as a distinct paragraph."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.cache/bookmarks")
  '(exec-path-from-shell-arguments (quote ("-l")))
  '(paradox-automatically-star t))
 (custom-set-faces
