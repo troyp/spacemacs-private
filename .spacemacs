@@ -295,7 +295,7 @@ values."
    ;; Select a scope to highlight delimiters. Possible values are `any',
    ;; `current', `all' or `nil'. Default is `all' (highlight any scope and
    ;; emphasis the current one). (default 'all)
-   dotspacemacs-highlight-delimiters 'all
+   dotspacemacs-highlight-delimiters 'current
    ;; If non nil advises quit functions to keep server open when quitting.
    ;; (default nil)
    dotspacemacs-persistent-server nil
@@ -352,7 +352,22 @@ you should place you code here."
 
   (setq scroll-preserve-screen-position 1)
 
-  (setq spacemacs-private-directory (concat (getenv "HOME") "/.emacs.d/private"))
+  (defun concat-as-directory (&rest parts)
+    "Concatenate a group of path components, adding trailing separators where needed."
+    (cl-loop for part in parts concat (file-name-as-directory part)))
+  (defun concat-as-file-path (&rest parts)
+    "Concatenate a group of path components, with a final filename, adding trailing
+ separators where needed."
+    (concat (cl-loop for partsleft on (butlast parts)
+                      while (rest partsleft)
+                      concat (file-name-as-directory (first partsleft)))
+            (-last 'identity parts)))
+
+  (setq spacemacs-private-directory (concat-as-directory (getenv "HOME")
+                                                         ".emacs.d/private/"))
+  (setq bookmark-default-file (concat-as-file-path spacemacs-private-directory
+                                                   ".cache" "bookmarks"))
+  (setq org-default-notes-file (concat-as-file-path org-directory "notes.org"))
 
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
@@ -553,6 +568,7 @@ you should place you code here."
   (global-set-key (kbd "<M-f1>") 'describe-key)
   (global-set-key [f5] 'spacemacs-cmds)
   (global-set-key [\C-f5] 'which-key-show-top-level)
+  (global-set-key (kbd "<M-f9>") 'evil-evilified-state)
 
   (global-set-key [f7] 'exchange-point-and-mark)
   (global-set-key [f8] 'er/contract-region)
@@ -562,6 +578,8 @@ you should place you code here."
   (global-set-key (kbd "M-C") 'capitalize-word)
 
   (global-set-key (kbd "C->") 'evil-repeat-pop-next)
+
+  (global-set-key (kbd "<M-insert>") 'org-capture)
 
   ;; approximate global mapping (with higher priority)
   (define-key evil-normal-state-map (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
@@ -841,7 +859,7 @@ you should place you code here."
   (which-key-add-key-based-replacements
     "C-x a"        "abbrev"
     "C-x n"        "narrow"
-    "C-x r"        "rectangle"
+    "C-x r"        "rectangle/bookmark"
     "C-x X"        "edebug"
     "C-x 4"        "other window"
     "C-x 5"        "frame"
