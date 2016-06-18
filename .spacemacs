@@ -372,8 +372,6 @@ you should place you code here."
                                                    ".cache" "recentf"))
   (setq bookmark-default-file (concat-as-file-path spacemacs-private-directory
                                                    ".cache" "bookmarks"))
-  (setq org-directory (concat-as-directory (getenv "HOME") "org"))
-  (setq org-default-notes-file (concat-as-file-path org-directory "notes.org"))
 
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
@@ -523,6 +521,12 @@ you should place you code here."
   ;; ,----------------------,
   ;; | Keybinding Functions |
   ;; '----------------------'
+  ;; spacemacs macros:   evil-map evil-define-key evil-define-minor-mode-key
+  ;;                     evil-define-keymap spacemacs|define-micro-state
+  ;; bindkey fns/macros: bind-map bind-key bind-key* bind-keys bind-keys*
+  ;;                     bind-keys-form bind-map-add-to-major-mode-list
+  ;;                     bind-map-set-keys bind-map-kbd-keys unbind-key
+  ;; other:   defhydra
 
   (defun define-keys (keymap &rest bindings)
     "Define multiple keys with `define-key'\nBINDINGS has the form KEY DEFN [KEY DEFN ...]"
@@ -752,10 +756,10 @@ you should place you code here."
     "b C-u"        'undo-tree-clear
     "b <insert>"   'buffer-major-mode
     "b <f1>"       'about-emacs
-    "f'p"          'dired-spacemacs-private-directory
-    "f/f"          'sudo-open-file
-    "f/e"          'spacemacs/sudo-edit
-    "f/b"          'sudo-edit-this-file
+    "f ' p"        'dired-spacemacs-private-directory
+    "f / f"        'sudo-open-file
+    "f / e"        'spacemacs/sudo-edit
+    "f / b"        'sudo-edit-this-file
     ;; "h"            'help-prefix-map
     "h f f"        'find-function
     "h f k"        'find-function-on-key
@@ -771,25 +775,26 @@ you should place you code here."
     "h d C-b"      'describe-personal-keybindings
     "h 1"          'evil-goto-definition
     ;; "h <f1>"       'help-map
-    "i-"           'tiny-expand
-    "RR"           'pcre-multi-occur
-    "Rr"           'pcre-occur
-    "oa"           'asciiheadings-prefix-key-map
-    "oc"           'character-prefix-map
-    "of"           'flycheck-command-map
-    "ok"           'kmacro-keymap
-    "om"           'modes-prefix-key-map
-    "ov"           'variable-pitch-mode
-    "t|"           'fci-mode
+    "i -"          'tiny-expand
+    "R R"          'pcre-multi-occur
+    "R r"          'pcre-occur
+    "o a"          'asciiheadings-prefix-key-map
+    "o c"          'character-prefix-map
+    "o f"          'flycheck-command-map
+    "o k"          'kmacro-keymap
+    "o m"          'modes-prefix-key-map
+    "o v"          'variable-pitch-mode
+    "t |"          'fci-mode
     "w TAB"        'ace-swap-window
-    "xa."          'spacemacs/align-repeat-period
-    "xa'"          'spacemacs/align-repeat-quote
-    "xa\""         'spacemacs/align-repeat-double-quote
-    "xa-"          'spacemacs/align-repeat-dash
-    "xa C-;"       'spacemacs/align-repeat-semicolon-comment
-    "xa SPC"       'quick-pcre-align-repeat
-    "xlU"          'delete-duplicate-lines-nonblank
+    "x a ."        'spacemacs/align-repeat-period
+    "x a '"        'spacemacs/align-repeat-quote
+    "x a \""       'spacemacs/align-repeat-double-quote
+    "x a -"        'spacemacs/align-repeat-dash
+    "x a C-;"      'spacemacs/align-repeat-semicolon-comment
+    "x a SPC"      'quick-pcre-align-repeat
+    "x l U"        'delete-duplicate-lines-nonblank
     "x C-l"        'quick-pcre-align-repeat
+    "x N"          'rectangle-number-lines-interactive
     "3"            'spacemacs/enter-ahs-backward
     "8"            'spacemacs/enter-ahs-forward
     "."            'repeat-complex-command
@@ -1420,18 +1425,17 @@ you should place you code here."
   ;; replace with [, C-tab] binding
   (bind-key [C-tab] 'next-multiframe-window)
 
-  (defun org-init ()
+  (eval-after-load 'org
     (define-key org-mode-map [C-tab] 'next-multiframe-window)
+    (setq org-capture-templates
+          '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+             "* TODO %?\n  %i\n  %a")
+            ("j" "Journal" entry (file+datetree "~/org/journal.org")
+             "* [%t] %^G\n%?")
+            ))
+    (setq org-directory (concat-as-directory (getenv "HOME") "org"))
+    (setq org-default-notes-file (concat-as-file-path org-directory "notes.org"))
     )
-
-  (add-hook 'org-mode-hook 'org-init)
-
-  (setq org-capture-templates
-        '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-           "* TODO %?\n  %i\n  %a")
-          ("j" "Journal" entry (file+datetree "~/org/journal.org")
-           "* [%t] %^G\n%?")
-          ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
@@ -2192,6 +2196,15 @@ Ie., each line is treated as a distinct paragraph."
     (find-function-other-window function)
     (select-window thiswin)
     ))
+
+(defun rectangle-number-lines-interactive ()
+  "Insert a column of incrementing numbers in the rectangular region.
+The command prompts for an initial number and a format string.
+The format string is interpreted as in the `format' function.
+See also `rectangle-number-lines'."
+  (interactive)
+  (let ((current-prefix-arg 4))
+    (call-interactively #'rectangle-number-lines)))
 
   ;; TODO: write replace-line function.
 
