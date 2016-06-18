@@ -4,7 +4,9 @@
 *.pyc
 /*.zip
 *.db
-
+*.~undo-tree~
+.cache/
+!.cache/bookmarks
 scratch.el
 README.html
 private-data.el
