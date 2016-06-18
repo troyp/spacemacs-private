@@ -90,7 +90,7 @@ values."
      tiny
      ;; Drew Adams Packages
      autofit-frame
-     bookmark+
+     ;; bookmark+
      column-enforce-mode
      dired-sort-menu+
      doremi
@@ -100,10 +100,12 @@ values."
      eyedropper
      facemenu+
      faces+
+     firefox-controller
      fit-frame
      font-lock+
      frame-cmds
      frame-fns
+     helm-firefox
      help-fns+
      help-mode+
      help+
@@ -358,15 +360,19 @@ you should place you code here."
   (defun concat-as-file-path (&rest parts)
     "Concatenate a group of path components, with a final filename, adding trailing
  separators where needed."
-    (concat (cl-loop for partsleft on (butlast parts)
-                      while (rest partsleft)
-                      concat (file-name-as-directory (first partsleft)))
-            (-last 'identity parts)))
+    (cl-loop for partsleft on parts
+             concat (let ((part (car partsleft)))
+                      (if (cdr partsleft)
+                          (file-name-as-directory part)
+                        part))))
 
   (setq spacemacs-private-directory (concat-as-directory (getenv "HOME")
                                                          ".emacs.d/private/"))
+  (setq recentf-save-file (concat-as-file-path spacemacs-private-directory
+                                                   ".cache" "recentf"))
   (setq bookmark-default-file (concat-as-file-path spacemacs-private-directory
                                                    ".cache" "bookmarks"))
+  (setq org-directory (concat-as-directory (getenv "HOME") "org"))
   (setq org-default-notes-file (concat-as-file-path org-directory "notes.org"))
 
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
@@ -584,7 +590,10 @@ you should place you code here."
   (global-set-key [\C-\S-down] 'spacemacs//move-text-move-text-down-J)
   (global-set-key [\C-\S-up] 'spacemacs//move-text-move-text-up-K)
 
-  (global-set-key (kbd "M-S-SPC") 'just-one-space)
+  ;; remove C-S-SPC from cua-global-keymap and bind to just-one-space
+  (define-key cua-global-keymap (kbd "C-S-SPC") nil)
+  (global-set-key (kbd "C-S-SPC") 'just-one-space)
+
   (global-set-key (kbd "C-M-d") 'scroll-other-window)
   (global-set-key (kbd "C-M-u") 'scroll-other-window-down)
   (global-set-key (kbd "C-M-S-d") 'scroll-other-window-down)
@@ -602,6 +611,7 @@ you should place you code here."
   (global-set-key (kbd "<M-f1>") 'describe-key)
   (global-set-key [f5] 'spacemacs-cmds)
   (global-set-key [\C-f5] 'which-key-show-top-level)
+  (global-set-key (kbd "<C-f9>") 'evil-normal-state)
   (global-set-key (kbd "<M-f9>") 'evil-evilified-state)
 
   (global-set-key [f7] 'exchange-point-and-mark)
@@ -630,6 +640,9 @@ you should place you code here."
   ;; ,--------------,
   ;; | NORMAL STATE |
   ;; '--------------'
+  ;; note: evilified state map uses the bindings for keys:
+  ;; / : h j k l n N v V gg G C-f C-b C-e C-y C-d C-u C-z
+  ;; when rebinding them for normal-state, rebind for evilified-state also
   (define-key evil-normal-state-map [delete] 'kill-this-buffer)
   (defun insert-space () (interactive) (insert ? ))
   (define-key evil-normal-state-map (kbd "S-SPC") 'insert-space)
@@ -637,8 +650,10 @@ you should place you code here."
   (define-key evil-normal-state-map (kbd "C-S-d") 'evil-scroll-up)
   (define-key evil-normal-state-map (kbd "C-S-o") 'evil-jump-forward)
   (define-key evil-normal-state-map (kbd "C-e") 'end-of-line)
+  (define-key evil-evilified-state-map (kbd "C-e") 'end-of-line)
   ;; remove C-y (use global M-p)
   (define-key evil-normal-state-map (kbd "C-y") nil)
+  (define-key evil-evilified-state-map (kbd "C-y") nil)
   ;; reverse gu and gU
   (define-key evil-normal-state-map (kbd "gu") 'evil-upcase)
   (define-key evil-normal-state-map (kbd "gU") 'evil-downcase)
@@ -737,14 +752,18 @@ you should place you code here."
     "b C-u"        'undo-tree-clear
     "b <insert>"   'buffer-major-mode
     "b <f1>"       'about-emacs
-    "En"           'spacemacs/next-error
-    "EN"           'spacemacs/previous-error
-    "Ep"           'spacemacs/previous-error
     "f'p"          'dired-spacemacs-private-directory
     "f/f"          'sudo-open-file
     "f/e"          'spacemacs/sudo-edit
     "f/b"          'sudo-edit-this-file
     ;; "h"            'help-prefix-map
+    "h f f"        'find-function
+    "h f k"        'find-function-on-key
+    "h f h"        'describe-function
+    "h f w"        'find-function-other-window
+    "h f W"        'find-function-other-window-noselect
+    "h f 5"        'find-function-other-frame
+    "h f ."        'find-function-at-point
     "h w"          'help-download-prefix-map
     "h C-m"        'lacarte-execute-menu-command
     "h C-/"        'evil-search-highlight-persist-remove-all
@@ -789,7 +808,8 @@ you should place you code here."
     "C-?"          'evil-search-highlight-restore
     "M-q"          'split-lines-in-region
     "M-x"          'helm-M-x
-    "M-S-SPC"      'just-one-blank-line
+    "C-SPC"        'cua-toggle-global-mark
+    "C-S-SPC"      'just-one-blank-line
     )
 
   (bind-keys :map spacemacs-cmds
@@ -854,6 +874,14 @@ you should place you code here."
              ("k"   . describe-key)
              ("f"   . describe-function)
              ("b"   . describe-bindings)
+             )
+
+  (bind-keys :map spacemacs-cmds
+             :prefix-map external-apps-prefix
+             :menu-name "external apps"
+             :prefix "!"
+             :prefix-docstring "Commands dealing with external applications."
+             ("f b" . helm-firefox-bookmarks)
              )
 
   (bind-keys :map spacemacs-cmds
@@ -1013,6 +1041,17 @@ you should place you code here."
        (define-key term-raw-map (kbd "C-c C-y")  'term-paste)
        ))
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------------------,
+  ;; | bookmark-bmenu-mode |
+  ;; '---------------------'
+
+  ;; eval-after-load "bookmark.el" isn't working? (nor with 'bookmark)
+  (defun bookmark-bmenu-mode-init ()
+    (evilified-state-evilify-map bookmark-bmenu-mode-map
+      :mode bookmark-bmenu-mode))
+  (add-hook 'bookmark-bmenu-mode-hook 'bookmark-bmenu-mode-init)
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
@@ -1032,7 +1071,9 @@ you should place you code here."
       (require 'dired+)
 
       ;; keys
-      (evilified-state-evilify dired-mode dired-mode-map
+      (evilified-state-evilify-map dired-mode-map
+        :mode dired-mode
+        :bindings
         (kbd "c")      'diredp-copy-this-file
         (kbd "gd")     'dired-hide-details-mode
         (kbd "gu")     'diredp-up-directory-reuse-dir-buffer
@@ -1051,6 +1092,8 @@ you should place you code here."
         (kbd "M-=")    'dired-create-directory
         (kbd "M-DEL")  'diredp-up-directory-reuse-dir-buffer
         [f2]           'dired-toggle-read-only
+        (kbd "H")      'dired-do-hard-link
+        (kbd "C-h")    'help-map
         )
       ;; T is the prefix key for the tags commands
       (which-key-add-major-mode-key-based-replacements 'dired-mode
@@ -1154,6 +1197,45 @@ you should place you code here."
   (spacemacs/set-leader-keys-for-major-mode 'helm-major-mode
     "tm"    'helm-toggle-all-marks
     )
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,--------------,
+  ;; | helm-firefox |
+  ;; '--------------'
+
+  (defgroup firefox nil
+    "Customization variables for interacting with the Firefox browser."
+    :group 'environment)
+
+  (defcustom firefox-profile-directory "~/.mozilla/firefox/"
+    "The root directory for firefox profile config folders."
+    :group 'firefox
+    :type 'string)
+
+  (defcustom firefox-default-user-profile "2xdr1tat.Troy"
+    "The default firefox profile."
+    :group 'firefox
+    :type 'string)
+
+  (defcustom firefox-default-user-path
+    (concat-as-directory firefox-profile-directory firefox-default-user-profile)
+    "The root directory for firefox profile config folders."
+    :group 'firefox
+    :type 'string)
+
+  ;; requires wmctrl executable
+  ;; firefox executable is "firefox" by default, otherwise $FIREFOXEXE
+  (eval-after-load "helm-firefox"
+    `(progn
+       (defun helm-get-firefox-user-init-dir ()
+         firefox-default-user-path)))
+
+  ;; install firefox protocol ffbookmarks in about:config or user.js:
+  ;; user_pref("network.protocol-handler.expose.ffbookmarks", false);
+  (eval-after-load "firefox-protocol"
+    `(progn
+       (defun firefox-protocol--get-firefox-user-init-dir ()
+         firefox-default-user-path)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
@@ -1339,7 +1421,8 @@ you should place you code here."
   (bind-key [C-tab] 'next-multiframe-window)
 
   (defun org-init ()
-    (define-key org-mode-map [C-tab] 'next-multiframe-window))
+    (define-key org-mode-map [C-tab] 'next-multiframe-window)
+    )
 
   (add-hook 'org-mode-hook 'org-init)
 
@@ -2101,6 +2184,14 @@ Ie., each line is treated as a distinct paragraph."
   (with-helm-current-buffer
     (let ((sym (symbol-name (symbol-at-point))))
       (helm-set-pattern (concat helm-pattern sym)))))
+
+(defun find-function-other-window-noselect (function)
+  "Display the source of FUNCTION in other window."
+  (interactive (find-function-read))
+  (let ((thiswin (selected-window)))
+    (find-function-other-window function)
+    (select-window thiswin)
+    ))
 
   ;; TODO: write replace-line function.
 
