@@ -1184,6 +1184,10 @@ you should place you code here."
   ;; | helm-mode |
   ;; '-----------'
 
+  (defun helm-switch-to-mini ()
+    (interactive)
+    (helm-run-after-exit #'helm-mini))
+
   (eval-after-load "helm-mode"
     `(progn
        (bind-keys :map helm-map
@@ -1193,6 +1197,7 @@ you should place you code here."
                   ("C-S-W" . helm-yank-symbol-at-point)
                   ("M-m"   . spacemacs-cmds)
                   ("C-u"   . helm-delete-minibuffer-contents)
+                  ("C-,"   . helm-switch-to-mini)
                   ("<f5>"  . nil)
                   ("<f9>"  . spacemacs/helm-navigation-micro-state)
                   ("<f11>" . nil)
@@ -1203,7 +1208,8 @@ you should place you code here."
     "tm"    'helm-toggle-all-marks
     )
 
-  ;; -------------------------------------------------------------------------------
+
+; -------------------------------------------------------------------------------
   ;; ,--------------,
   ;; | helm-firefox |
   ;; '--------------'
@@ -1425,17 +1431,21 @@ you should place you code here."
   ;; replace with [, C-tab] binding
   (bind-key [C-tab] 'next-multiframe-window)
 
+  (defun org-init ()
+    (define-key org-mode-map [C-tab] 'next-multiframe-window))
+
   (eval-after-load 'org
-    (define-key org-mode-map [C-tab] 'next-multiframe-window)
-    (setq org-capture-templates
-          '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-             "* TODO %?\n  %i\n  %a")
-            ("j" "Journal" entry (file+datetree "~/org/journal.org")
-             "* [%t] %^G\n%?")
-            ))
-    (setq org-directory (concat-as-directory (getenv "HOME") "org"))
-    (setq org-default-notes-file (concat-as-file-path org-directory "notes.org"))
-    )
+    `(progn
+       (add-hook 'org-mode-hook 'org-init)
+       (setq org-capture-templates
+             '(("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+                "* TODO %?\n  %i\n  %a")
+               ("j" "Journal" entry (file+datetree "~/org/journal.org")
+                "* [%t] %^G\n%?")
+               ))
+       (setq org-directory (concat-as-directory (getenv "HOME") "org"))
+       (setq org-default-notes-file (concat-as-file-path org-directory "notes.org"))
+       ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
