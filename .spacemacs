@@ -115,6 +115,7 @@ values."
      isearch-prop
      frame-cmds
      frame-fns
+     mozc
      naked
      palette
      replace+
@@ -167,7 +168,7 @@ values."
    ;; directory. A string value must be a path to an image format supported
    ;; by your Emacs build.
    ;; If the value is nil then no banner is displayed. (default 'official)
-   dotspacemacs-startup-banner 'official
+   dotspacemacs-startup-banner 001
    ;; List of items to show in the startup buffer. If nil it is disabled.
    ;; Possible values are: `recents' `bookmarks' `projects'.
    ;; (default '(recents projects))
@@ -428,8 +429,6 @@ you should place you code here."
   ;;                                *           *
   ;;                                *************
 
-  ;; (global-set-key [f9] 'evil-mode)
-
   ;; ,-------------------------,
   ;; | evil-symbol-word-search |
   ;; '-------------------------'
@@ -470,6 +469,7 @@ you should place you code here."
   ;; '--------------'
 
   (spacemacs|define-text-object "." "dot" "." ".")
+  (spacemacs|define-text-object "h" "helplink" "`" "'")
 
   (evil-define-text-object evil-inner-line (count &optional beg end type)
     (list (line-visible-beginning-position) (+ 1 (line-visible-end-position))))
@@ -479,6 +479,7 @@ you should place you code here."
     (save-excursion
       (mark-defun)
       (list (point) (mark))))
+
   (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
   (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
   (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
@@ -606,6 +607,9 @@ you should place you code here."
 
   (global-set-key [\C-f10] 'menu-bar-mode)
   (global-set-key [\M-f12] 'shell-pop)
+  (global-set-key (kbd "C-'") 'shell-pop)
+
+  (global-set-key (kbd "C-x a C-'") 'abbrev-prefix-mark)
 
   (global-set-key (kbd "C-M-v") 'er/expand-region)
   (global-set-key (kbd "C-S-M-v") 'er/contract-region)
@@ -617,6 +621,7 @@ you should place you code here."
   (global-set-key [\C-f5] 'which-key-show-top-level)
   (global-set-key (kbd "<C-f9>") 'evil-normal-state)
   (global-set-key (kbd "<M-f9>") 'evil-evilified-state)
+  (global-set-key (kbd "<S-f9>") 'current-mode-and-state)
 
   (global-set-key [f7] 'exchange-point-and-mark)
   (global-set-key [f8] 'er/contract-region)
@@ -646,6 +651,7 @@ you should place you code here."
   ;; '--------------'
   ;; note: evilified state map uses the bindings for keys:
   ;; / : h j k l n N v V gg G C-f C-b C-e C-y C-d C-u C-z
+
   ;; when rebinding them for normal-state, rebind for evilified-state also
   (define-key evil-normal-state-map [delete] 'kill-this-buffer)
   (defun insert-space () (interactive) (insert ? ))
@@ -751,16 +757,20 @@ you should place you code here."
     "b M"          'switch-to-messages-buffer
     "b W"          'switch-to-warnings-buffer
     "b -"          'diff-buffer-with-file
+    "b SPC"    'spacemacs/new-empty-buffer
     "b C-b"        'ibuffer
     "b C-e"        'bury-buffer
     "b C-u"        'undo-tree-clear
     "b <insert>"   'buffer-major-mode
     "b <f1>"       'about-emacs
+    "f ."          'find-alternate-file
+    "f >"          'find-alternate-file-other-window
     "f ' p"        'dired-spacemacs-private-directory
     "f / f"        'sudo-open-file
     "f / e"        'spacemacs/sudo-edit
     "f / b"        'sudo-edit-this-file
     ;; "h"            'help-prefix-map
+    "h a"          'apropos
     "h f f"        'find-function
     "h f k"        'find-function-on-key
     "h f h"        'describe-function
@@ -781,7 +791,7 @@ you should place you code here."
     "o a"          'asciiheadings-prefix-key-map
     "o c"          'character-prefix-map
     "o f"          'flycheck-command-map
-    "o k"          'kmacro-keymap
+    "<f3>"          'kmacro-keymap
     "o m"          'modes-prefix-key-map
     "o v"          'variable-pitch-mode
     "t |"          'fci-mode
@@ -811,7 +821,7 @@ you should place you code here."
     "C-."          'ido-switch-buffer
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
-    "M-q"          'split-lines-in-region
+    "M-q"          'wrap-lines-in-region
     "M-x"          'helm-M-x
     "C-SPC"        'cua-toggle-global-mark
     "C-S-SPC"      'just-one-blank-line
@@ -849,7 +859,7 @@ you should place you code here."
              :prefix-map follow-prefix-map
              :prefix "w f"
              :prefix-docstring "Commands dealing with follow-mode."
-             ("f"    . follow-delete-other-windows-and-split)
+             ("f"   . follow-delete-other-windows-and-split)
              ("SPC" . follow-mode)
              )
 
@@ -872,13 +882,14 @@ you should place you code here."
              :prefix-map keymaps-describe-prefix-map
              :prefix "d"
              :prefix-docstring "Describe commands related to keymaps and key binding."
-             ("C-b" . describe-personal-keybindings)
-             ("K"   . describe-keymap)
+             ("b"   . describe-bindings)
+             ("f"   . describe-function)
+             ("k"   . describe-key)
              ("l"   . spacemacs/describe-last-keys)
              ("m"   . spacemacs/describe-mode)
-             ("k"   . describe-key)
-             ("f"   . describe-function)
-             ("b"   . describe-bindings)
+             ("o"   . describe-option)
+             ("K"   . describe-keymap)
+             ("C-b" . describe-personal-keybindings)
              )
 
   (bind-keys :map spacemacs-cmds
@@ -926,7 +937,7 @@ you should place you code here."
   (which-key-add-key-based-replacements
     "C-x a"        "abbrev"
     "C-x n"        "narrow"
-    "C-x r"        "rectangle/bookmark"
+    "C-x r"        "rectangle/register/bookmark"
     "C-x X"        "edebug"
     "C-x 4"        "other window"
     "C-x 5"        "frame"
@@ -953,6 +964,7 @@ you should place you code here."
     "SPC b s"      "*scratch*"
     "SPC b M"      "*messages*"
     "SPC b <f1>"   "*About GNU Emacs*"
+    "SPC h f"      "find-function"
     "SPC o f"      "flycheck"
     "SPC K"        "keys/keymaps"
     "SPC X"        "structured text"
@@ -964,6 +976,8 @@ you should place you code here."
                   ("escape"  . "ESC")
                   ))
     (add-to-list 'which-key-key-replacement-alist cons))
+
+  (setq which-key-show-operator-state-maps t)
 
   ;; ,--------------------,
   ;; | Command Docstrings |
@@ -1017,6 +1031,15 @@ you should place you code here."
         )
        ))
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,------,
+  ;; | Mozc |
+  ;; '------'
+  (require 'mozc)
+  (setq default-input-method "japanese-mozc")
+  (setq mozc-candidate-style 'overlay)
+
+
   ;; ***************
   ;; *             *
   ;; * MAJOR MODES *
@@ -1024,19 +1047,46 @@ you should place you code here."
   ;; ***************
 
   ;; -------------------------------------------------------------------------------
-  ;; ,----------------------------,
-  ;; | Major Mode Leader Bindings |
-  ;; '----------------------------'
+  ;; =====,------------------------,=====
+  ;; =====| Terminal & Shell Modes |=====
+  ;; ====='------------------------'=====
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------------------,
-  ;; | Major Mode Bindings |
-  ;; '---------------------'
+  (defun shell-pop-shell-type-set (shell-type)
+    (cl-case shell-type
+      ('multi (setq shell-pop-shell-type
+                    ("multiterm" "*multiterm*"
+                     (lambda nil (funcall 'multiterm nil)))))
+      ('shell  (setq shell-pop-shell-type
+                     ("shell" "*shell*"
+                      (lambda nil (funcall 'shell nil)))))
+      ('term   (setq shell-pop-shell-type
+                     ("term" "*term*"
+                      (lambda nil (funcall 'term shell-pop-term-shell)))))
+      ('ansi   (setq shell-pop-shell-type
+                     ("ansi-term" "*ansi-term*"
+                      (lambda nil (funcall 'ansi-term shell-pop-term-shell)))
+                     ))
+      ('eshell (setq shell-pop-shell-type
+                     ("eshell" "*eshell*"
+                      (lambda nil (funcall 'eshell nil)))))))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | ansi-term |
-  ;; '-----------'
+  (defun shell-pop-shell-type-set-and-launch (shell-type)
+    (shell-pop-shell-type-set shell-type)
+    (shell-pop))
+
+  (defhydra shell-pop-choose (global-map "C-x <f12>" :color blue :columns 6)
+    "Terminal/Shell Mode"
+    ( "a " (shell-pop-shell-type-set-and-launch 'ansi)   "ansi-term")
+    ( "e " (shell-pop-shell-type-set-and-launch 'eshell) "eshell-mode")
+    ( "s " (shell-pop-shell-type-set-and-launch 'shell)  "shell-mode")
+    ( "t " (shell-pop-shell-type-set-and-launch 'term)   "term-mode")
+    ( "m " (shell-pop-shell-type-set-and-launch 'multi)  "multi-term")
+    ("ESC" nil "abort"))
+  (global-set-key (kbd "C-x <f12>") 'shell-pop-choose/body)
+
+  ;;           ,-----------,
+  ;;           | ansi-term |
+  ;;           '-----------'
 
   (evil-set-initial-state 'term-mode 'emacs)
   (eval-after-load "term"
@@ -1045,6 +1095,45 @@ you should place you code here."
        (define-key term-raw-map (kbd "C-n")      'term-send-down)
        (define-key term-raw-map (kbd "C-c C-y")  'term-paste)
        ))
+
+
+  ;;            ,-----------,
+  ;;            | term-mode |
+  ;;            '-----------'
+
+  ;; Toggle between term-mode and shell-mode
+  ;; https://www.emacswiki.org/emacs/ShellMode#toc12
+  (eval-after-load 'term
+    (require 'shell)
+    )
+
+  (defun term-switch-to-shell-mode ()
+    (interactive)
+    (shell-mode)
+    (set-process-filter  (get-buffer-process (current-buffer)) 'comint-output-filter )
+    (local-set-key (kbd "C-j") 'term-switch-to-shell-mode)
+    (compilation-shell-minor-mode 1)
+    (comint-send-input))
+
+  (defun term-switch-back-from-shell-mode ()
+    (interactive)
+    (compilation-shell-minor-mode -1)
+    (font-lock-mode -1)
+    (set-process-filter  (get-buffer-process (current-buffer)) 'term-emulate-terminal)
+    (term-mode)
+    (term-char-mode)
+    (term-send-raw-string (kbd "C-l")))
+
+  (defun term-switch-to-shell-mode ()
+    (interactive)
+    (if (equal major-mode 'term-mode)
+        (term-switch-to-shell-mode)
+      (term-switch-back-from-shell-mode)))
+
+  ;; ,-----------------,
+  ;; | multi-term-mode |
+  ;; '-----------------'
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------------------,
@@ -1112,6 +1201,7 @@ you should place you code here."
       (spacemacs/set-leader-keys-for-major-mode 'dired-mode
         "c"     'dired-mode-map
         "tr"    'toggle-diredp-find-file-reuse-dir
+        "v"     'dired-view-file    ;; for discovery - can just use \v
         "Y"     'diredp-relsymlink-this-file
         )
       (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
@@ -1130,6 +1220,16 @@ you should place you code here."
       [f2]                 'wdired-finish-edit
       ))
   (add-hook 'wdired-mode-hook 'wdired-init)
+
+  (evil-define-key 'normal view-mode-map
+    "q"   'View-quit
+    )
+  (defun view-mode-init ()
+    (spacemacs/set-leader-keys-for-minor-mode 'view-mode
+      "q"   'View-quit
+      ))
+  (add-hook 'view-mode-hook #'view-mode-init)
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------,
@@ -1191,18 +1291,30 @@ you should place you code here."
   (eval-after-load "helm-mode"
     `(progn
        (bind-keys :map helm-map
-                  ("C-0"   . helm-select-action)
-                  ("C-)"   . helm-execute-persistent-action)
-                  ("C-S-O" . helm-previous-source)
-                  ("C-S-W" . helm-yank-symbol-at-point)
-                  ("M-m"   . spacemacs-cmds)
-                  ("C-u"   . helm-delete-minibuffer-contents)
-                  ("C-,"   . helm-switch-to-mini)
-                  ("<f5>"  . nil)
-                  ("<f9>"  . spacemacs/helm-navigation-micro-state)
-                  ("<f11>" . nil)
+                  ("C-0"        . helm-select-action)
+                  ("C-)"        . helm-execute-persistent-action)
+                  ("C-S-O"      . helm-previous-source)
+                  ("C-S-W"      . helm-yank-symbol-at-point)
+                  ("M-m"        . spacemacs-cmds)
+                  ("C-u"        . helm-delete-minibuffer-contents)
+                  ("C-,"        . helm-switch-to-mini)
+                  ("<f5>"       . nil)
+                  ("<f9>"       . spacemacs/helm-navigation-micro-state)
+                  ("<f11>"      . nil)
+                  ("<escape>"   . evil-evilified-state)
+                  ("<S-escape>" . evil-normal-state)
                   )
-       ))
+
+       (evilified-state-evilify-map helm-map
+         :mode helm-mode
+         :bindings
+         "j"           'helm-next-line
+         "k"           'helm-previous-line
+         "i"           'evil-insert
+         "a"           'evil-append
+         [escape]      'keyboard-escape-quit
+         [S-escape]    'evil-normal-state
+         )))
 
   (spacemacs/set-leader-keys-for-major-mode 'helm-major-mode
     "tm"    'helm-toggle-all-marks
@@ -1260,6 +1372,19 @@ you should place you code here."
                   ("d" . help-next)
                   )
        ))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | ibuffer |
+  ;; '---------'
+
+  (evil-set-initial-state 'ibuffer-mode 'evilified)
+  (eval-after-load 'ibuffer
+    `(progn
+      (require 'ibuffer-hydra)
+      (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
+      (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
+      ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
@@ -1321,19 +1446,19 @@ you should place you code here."
 
   (eval-after-load "Info-mode"
     '(progn
-       (evil-define-key 'normal' Info-mode-map
+       (evil-define-key 'normal Info-mode-map
          (kbd ",")   'spacemacs-Info-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
-       (evil-define-key 'visual' Info-mode-map
+       (evil-define-key 'visual Info-mode-map
          (kbd ",")   'spacemacs-Info-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
-       (evil-define-key 'motion' Info-mode-map
+       (evil-define-key 'motion Info-mode-map
          (kbd ",")   'spacemacs-Info-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
-       (evil-define-key 'evilified-state' Info-mode-map
+       (evil-define-key 'evilified-state Info-mode-map
          (kbd ",")   'spacemacs-Info-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
@@ -1648,6 +1773,7 @@ See also `multi-occur-in-matching-buffers'."
   ;; ,--------------------------------,
   ;; | Key/Keymap Functions & Aliases |
   ;; '--------------------------------'
+  ;; to show keymap with which-key:  (which-key--show-keymap keymap-name keymap)
   (defalias 'key-vector-to-readable-string 'key-description)
   (defalias 'key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
   (defalias 'key-input-to-vector 'read-key-sequence-vector)
@@ -1725,6 +1851,64 @@ representation."
                  (t                     nil))))
       (keymap-parent kmap)))
 
+  (defun key-to-edmacro-format (key)
+    "Converts a key to edmacro format (eg  -> C-x C-a).
+The key should be entered using quoted-insert, or entered interactively.
+See `edmacro-format-keys'."
+    (interactive "kKey: ")
+    (edmacro-format-keys key))
+
+  ;; adapted from emacs source. GPL3.
+  (defun read-key-sequence-and-related ()
+    "This is the read-function used in `describe-key'.
+It returns a list of (KEY UNTRANSLATED UP-EVENT).
+
+KEY can be any kind of a key sequence; it can include keyboard events,
+mouse events, and/or menu events.
+UNTRANSLATED is a vector of the corresponding untranslated events.
+UP-EVENT is the up-event that was discarded by reading KEY, or nil.
+
+If KEY is a menu item or a tool-bar button that is disabled, this command
+temporarily enables it to allow getting help on disabled items and buttons."
+    (let ((enable-disabled-menus-and-buttons t)
+          (cursor-in-echo-area t)
+          saved-yank-menu)
+      (unwind-protect
+          ;; =====BODYFORMS====
+          (let (key)
+            ;; If yank-menu is empty, populate it temporarily, so that
+            ;; "Select and Paste" menu can generate a complete event.
+            (when (null (cdr yank-menu))
+              (setq saved-yank-menu (copy-sequence yank-menu))
+              (menu-bar-update-yank-menu "(any string)" nil))
+            (setq key (read-key-sequence "Describe key (or click or menu item): "))
+            (list
+             key
+             (prefix-numeric-value current-prefix-arg)
+             ;; If KEY is a down-event, read and include the
+             ;; corresponding up-event.  Note that there are also
+             ;; down-events on scroll bars and mode lines: the actual
+             ;; event then is in the second element of the vector.
+             (and (vectorp key)
+                  (let ((last-idx (1- (length key))))
+                    (and (eventp (aref key last-idx))
+                         (memq 'down (event-modifiers (aref key last-idx)))))
+                  (or (and (eventp (aref key 0))
+                           (memq 'down (event-modifiers (aref key 0)))
+                           ;; However, for the C-down-mouse-2 popup
+                           ;; menu, there is no subsequent up-event.  In
+                           ;; this case, the up-event is the next
+                           ;; element in the supplied vector.
+                           (= (length key) 1))
+                      (and (> (length key) 1)
+                           (eventp (aref key 1))
+                           (memq 'down (event-modifiers (aref key 1)))))
+                  (read-event))))
+        ;; =====UNWINDFORMS=====
+        ;; Put yank-menu back as it was, if we changed it.
+        (when saved-yank-menu
+          (setq yank-menu (copy-sequence saved-yank-menu))
+          (fset 'yank-menu (cons 'keymap yank-menu))))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
@@ -1799,7 +1983,7 @@ representation."
 
   (defun browse-buffer-file-firefox ()
     (interactive)
-    (browse-url-firefox buffer-file-name))
+    (browse-url-firefox (or buffer-file-name default-directory)))
 
   (defun browse-buffer-file-with-external-application ()
     (interactive)
@@ -2181,16 +2365,33 @@ cursor position in normal/visual states."
       (otherwise (eval-print-last-sexp arg))
       ))
 
-  (defun split-lines-in-region (beg end)
+  (defun wrap-lines-in-region (beg end)
     "An interactive function to split lines longer than `fill-column'.
 Splits long lines in the region using `fill-paragraph', but never joins lines.
 Ie., each line is treated as a distinct paragraph."
     (interactive "r")
+    (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+    (replace-string "\n" "\n\n" nil beg end)
+    (evil-active-region 1)
+    (fill-paragraph nil t)
+    (replace-string "\n\n" "\n" nil beg end))
+
+;; FIXME: splits the line after region (near start of line); irregular indentation.
+(defun wrap-region-or-comment (beg end)
+  "An interactive function to split lines longer than `fill-column'.
+Splits long lines in the region using `fill-paragraph', but never joins lines.
+Ie., each line is treated as a distinct paragraph.
+Comments are first uncommented using `evilnc-comment-or-uncomment-region' before
+wrapping and then re-commented."
+  (interactive "r")
+  (let ((comment? (evilnc--in-comment-p beg)))
+    (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+    (when comment? (evilnc--comment-or-uncomment-region beg end))
     (replace-string "\n" "\n\n" nil beg end)
     (evil-active-region 1)
     (fill-paragraph nil t)
     (replace-string "\n\n" "\n" nil beg end)
-    )
+    (when comment? (evilnc--comment-or-uncomment-region beg end))))
 
 (defun helm-yank-symbol-at-point ()
   "Yank the symbol at point in `helm-current-buffer' into minibuffer."
@@ -2216,23 +2417,169 @@ See also `rectangle-number-lines'."
   (let ((current-prefix-arg 4))
     (call-interactively #'rectangle-number-lines)))
 
+(defun current-mode-and-state()
+  "Display the current `evil-state' and `major-mode' in the minibuffer."
+  (interactive)
+  (let ((s (format "evil-state: %S || major-mode: %S"
+                   evil-state
+                   major-mode)))
+    (message s)))
+
+(defun sprint-keymap (map)
+  (with-temp-buffer
+    (cl-prettyprint map)
+    (replace-ints-with-char (point-min) (point-max))
+    (buffer-string)))
+
+(defun symbol-or-function-near-point ()
+  (or (when (fboundp 'symbol-nearest-point) (symbol-nearest-point))
+      (function-called-at-point)))
+
+(defun prettyprint-keymap ()
+  "Insert a pretty-printed representation of a keymap."
+  (interactive)
+  (let* ((mapstr (completing-read "keymap: " obarray
+                                  nil nil
+                                  (symbol-name (symbol-or-function-near-point))))
+         (mapsym (intern mapstr))
+         (map (eval mapsym)))
+    (move-end-of-line 1)
+    (newline)
+    (insert (sprint-keymap map))))
+
   ;; TODO: write replace-line function.
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------------------,
-  ;; | Temporary Workarounds |
-  ;; '-----------------------'
-  ;; fix deprecated 'avy--with-avy-keys
-  (eval-after-load "avy"
-   '(when (and (funboundp 'avy--with-avy-keys)
-               (fboundp   'avy-with))
-      (defalias 'avy--with-avy-keys 'avy-with)))
+;; -------------------------------------------------------------------------------
+;; ,-----------------------,
+;; | Temporary Workarounds |
+;; '-----------------------'
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------------------,
-  ;; | Load Private Data |
-  ;; '-------------------'
-  (load "~/.emacs.d/private/private-data.el")
+;; ==================================
+;; fix deprecated 'avy--with-avy-keys
+;; ==================================
+(eval-after-load "avy"
+  '(when (and (funboundp 'avy--with-avy-keys)
+              (fboundp   'avy-with))
+     (defalias 'avy--with-avy-keys 'avy-with)))
+
+
+;; ==========================================================
+;; describe-symbol command taken from emacs 25 sources (GPL3)
+;; ==========================================================
+(global-set-key (kbd "C-h o") 'describe-symbol)
+
+;;;###autoload
+(defun describe-symbol (symbol &optional buffer frame)
+  "Display the full documentation of SYMBOL.
+Will show the info of SYMBOL as a function, variable, and/or face."
+  (interactive
+   ;; FIXME: also let the user enter a face name.
+   (let* ((v-or-f (variable-at-point))
+          (found (symbolp v-or-f))
+          (v-or-f (if found v-or-f (function-called-at-point)))
+          (found (or found v-or-f))
+          (enable-recursive-minibuffers t)
+          val)
+     (setq val (completing-read (if found
+                                    (format
+                                     "Describe symbol (default %s): " v-or-f)
+                                  "Describe symbol: ")
+                                obarray
+                                (lambda (vv)
+                                  (cl-some (lambda (x) (funcall (nth 1 x) vv))
+                                           describe-symbol-backends))
+                                t nil nil
+                                (if found (symbol-name v-or-f))))
+     (list (if (equal val "")
+               v-or-f (intern val)))))
+  (if (not (symbolp symbol))
+      (user-error "You didn't specify a function or variable"))
+  (unless (buffer-live-p buffer) (setq buffer (current-buffer)))
+  (unless (frame-live-p frame) (setq frame (selected-frame)))
+  (with-current-buffer (help-buffer)
+    ;; Push the previous item on the stack before clobbering the output buffer.
+    (help-setup-xref nil nil)
+    (let* ((docs
+            (nreverse
+             (delq nil
+                   (mapcar (pcase-lambda (`(,name ,testfn ,descfn))
+                                         (when (funcall testfn symbol)
+                                           ;; Don't record the current entry in the stack.
+                                           (setq help-xref-stack-item nil)
+                                           (cons name
+                                                 (funcall descfn symbol buffer frame))))
+                           describe-symbol-backends))))
+           (single (null (cdr docs))))
+      (while (cdr docs)
+        (goto-char (point-min))
+        (let ((inhibit-read-only t)
+              (name (caar docs))        ;Name of doc currently at BOB.
+              (doc (cdr (cadr docs))))  ;Doc to add at BOB.
+          (insert doc)
+          (delete-region (point) (progn (skip-chars-backward " \t\n") (point)))
+          (insert "\n\n"
+                  (eval-when-compile
+                    (propertize "\n" 'face '(:height 0.1 :inverse-video t)))
+                  "\n")
+          (when name
+            (insert (symbol-name symbol)
+                    " is also a " name "." "\n\n")))
+        (setq docs (cdr docs)))
+      (unless single
+        ;; Don't record the `describe-variable' item in the stack.
+        (setq help-xref-stack-item nil)
+        (help-setup-xref (list #'describe-symbol symbol) nil))
+      (goto-char (point-min)))))
+
+(defvar describe-symbol-backends
+  `((nil ,#'fboundp ,(lambda (s _b _f) (describe-function s)))
+    ("face" ,#'facep ,(lambda (s _b _f) (describe-face s)))
+    (nil
+     ,(lambda (symbol)
+        (or (and (boundp symbol) (not (keywordp symbol)))
+            (get symbol 'variable-documentation)))
+     ,#'describe-variable)))
+
+;;;###autoload
+(defmacro pcase-lambda (lambda-list &rest body)
+  "Like `lambda' but allow each argument to be a pattern.
+I.e. accepts the usual &optional and &rest keywords, but every
+formal argument can be any pattern accepted by `pcase' (a mere
+variable name being but a special case of it)."
+  (declare (doc-string 2) (indent defun)
+           (debug ((&rest pcase-PAT) body)))
+  (let* ((bindings ())
+         (parsed-body (macroexp-parse-body body))
+         (args (mapcar (lambda (pat)
+                         (if (symbolp pat)
+                             ;; Simple vars and &rest/&optional are just passed
+                             ;; through unchanged.
+                             pat
+                           (let ((arg (make-symbol
+                                       (format "arg%s" (length bindings)))))
+                             (push `(,pat ,arg) bindings)
+                             arg)))
+                       lambda-list)))
+    `(lambda ,args ,@(car parsed-body)
+       (pcase-let* ,(nreverse bindings) ,@(cdr parsed-body)))))
+
+;;;###autoload
+(defun macroexp-parse-body (body)
+  "Parse a function BODY into (DECLARATIONS . EXPS)."
+  (let ((decls ()))
+    (while (and (cdr body)
+                (let ((e (car body)))
+                  (or (stringp e)
+                      (memq (car-safe e)
+                            '(:documentation declare interactive cl-declare)))))
+      (push (pop body) decls))
+    (cons (nreverse decls) body)))
+
+;; -------------------------------------------------------------------------------
+;; ,-------------------,
+;; | Load Private Data |
+;; '-------------------'
+(load "~/.emacs.d/private/private-data.el")
 
   )
 
