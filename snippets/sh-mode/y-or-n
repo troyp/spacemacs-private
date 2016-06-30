@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: y-or-n
+# key: yn
+# --
+while read -r -p "Continue? [y/n] " answer; do
+    case `echo $answer | tr 'A-Z' 'a-z'` in
+        y|yes)
+            break
+            ;;
+        n|no)
+            exit 2
+    esac
+done 
