@@ -10,6 +10,8 @@
 
 ;;; Commentary:
 
+;;; Code:
+
 (require 's)
 
 ;; ===========================================================================
@@ -288,13 +290,25 @@ comment-end string. ADJUSTED (default value: 't) corrects the result for this."
 ;; '------------------'
 
 (defvar *divider-char* ?-)
+(defvar divider-use-np nil
+ "Indicates that divider commands should use an NP form feed character:
+
+rather than a string of regular characters by default.")
 
 (defun divider (n)
+  "Insert a divider above the current line."
   (interactive "p")
   (if (= n 1) (setf n 79))
   (move-beginning-of-line nil)
-  (insert (make-string n *divider-char*))
+  (if divider-use-np
+      (insert "")
+  (insert (make-string n *divider-char*)))
   (newline))
+
+(defun divider-np (n)
+  (interactive "p")
+  (let ((divider-use-np t))
+    (divider n)))
 
 (defun divider-thick (n)
   (interactive "p")
