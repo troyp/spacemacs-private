@@ -1104,7 +1104,7 @@ you should place you code here."
   ;; Toggle between term-mode and shell-mode
   ;; https://www.emacswiki.org/emacs/ShellMode#toc12
   (eval-after-load 'term
-    (require 'shell)
+    `(require 'shell)
     )
 
   (defun term-switch-to-shell-mode ()
@@ -1571,6 +1571,11 @@ you should place you code here."
        (setq org-directory (concat-as-directory (getenv "HOME") "org"))
        (setq org-default-notes-file (concat-as-file-path org-directory "notes.org"))
        ))
+
+  (spacemacs/set-leader-keys-for-major-mode 'org-mode
+    "SPC"    'ace-link-org
+    )
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
@@ -2093,18 +2098,55 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
 
   ;; TODO: these github download functions require the home directory hard-coded
   ;; TODO: because ~ and $HOME aren't working -- investigate
-  (defun github-download-README (author repo)
-    (interactive "sAUTHOR: \nsREPO: ")
-    (let ((cmd (concat "tempdir=`mktemp -d`;\n"
-                       "cd $tempdir;\n"
-                       "url=\"https://github.com/" author "/" repo ".git\";\n"
-                       "echo Creating Temp directory: $tempdir\n"
-                       "git clone \"$url\";\n"
-                       "cd *;\n"
-                       "for f in *README*; do\n"
-                       "  name=\"" repo "-$f\";"
-                       "  cp \"$f\" \"/home/troy/.emacs.d/private/docs/$name\";"
-                       "done;")))
+  (defun github-download-README (repo-str)
+    (interactive "sUSER/REPO or URL: ")
+    (let* ((user/repo (replace-regexp-in-string
+                       (pcre-to-elisp "^https://github.com/|/wiki$|(\.wiki)?\.git$")
+                       ""
+                       repo-str))
+           (url       (concat "https://github.com/" user/repo ".git"))
+           (userdir   (replace-regexp-in-string (pcre-to-elisp "^~/")
+                                                (concat (getenv "HOME") "/")
+                                                user-emacs-directory))
+           (dir       (concat userdir "private/docs/"))
+           (repo      (replace-regexp-in-string "[^/]+/" ""
+                                                user/repo))
+           (cmd       (concat "tempdir=`mktemp -d`;\n"
+                              "cd $tempdir;\n"
+                              "url=\"" url "\";\n"
+                              "echo Creating Temp directory: $tempdir\n"
+                              "git clone \"$url\";\n"
+                              "cd *;\n"
+                              "for f in *README*; do\n"
+                              "  name=\"" repo "-$f\";"
+                              "  cp \"$f\" \"" dir "$name\";"
+                              "done;")))
+      (message cmd)
+      (shell-command (format "bash -c %s" (shell-quote-argument cmd)))))
+
+  (defun github-download-docs (repo-str)
+    (interactive "sUSER/REPO or URL: ")
+    (let* ((user/repo (replace-regexp-in-string
+                       (pcre-to-elisp "^https://github.com/|/wiki$|(\.wiki)?\.git$")
+                       ""
+                       repo-str))
+           (url       (concat "https://github.com/" user/repo ".git"))
+           (userdir   (replace-regexp-in-string (pcre-to-elisp "^~/")
+                                                (concat (getenv "HOME") "/")
+                                                user-emacs-directory))
+           (dir       (concat userdir "private/docs/"))
+           (repo      (replace-regexp-in-string "[^/]+/" ""
+                                                user/repo))
+           (cmd       (concat "tempdir=`mktemp -d`;\n"
+                              "cd $tempdir;\n"
+                              "url=\"" url "\";\n"
+                              "echo Creating Temp directory: $tempdir\n"
+                              "git clone \"$url\";\n"
+                              "cd *;\n"
+                              "for f in doc docs; do\n"
+                              "  name=\"" repo "-$f\";"
+                              "  cp -r -T \"$f\" \"" dir "$name\";"
+                              "done;")))
       (message cmd)
       (shell-command (format "bash -c %s" (shell-quote-argument cmd)))))
 
@@ -2117,9 +2159,9 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
            (url       (concat "https://github.com/" user/repo ".wiki.git"))
            (userdir   (replace-regexp-in-string
                        (pcre-to-elisp "^~/")
-                       "/home/troy/"
+                       (concat (getenv "HOME") "/")
                        user-emacs-directory))
-           (dir       (concat userdir "private/docs")))
+           (dir       (concat userdir "private/docs/")))
       (shell-command (format "cd '%s'; git clone %s" dir url))))
 
   (defun switch-to-messages-buffer ()
@@ -2273,6 +2315,10 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (if (and (line-at-point-blank-p)
              (adjacent-line-blank-p))
         (delete-blank-lines)))
+
+(defun remove-doubled-blank-lines ()
+  (interactive)
+  (replace-regexp "\n[[:space:]]*\n\\([[:space:]]*\n\\)+" "\n\n"))
 
   (defun delete-adjacent-repeated-lines ()
     (interactive)
@@ -2435,17 +2481,17 @@ See also `rectangle-number-lines'."
   (or (when (fboundp 'symbol-nearest-point) (symbol-nearest-point))
       (function-called-at-point)))
 
-(defun prettyprint-keymap ()
+(defun prettyprint-keymap (map)
   "Insert a pretty-printed representation of a keymap."
-  (interactive)
-  (let* ((mapstr (completing-read "keymap: " obarray
-                                  nil nil
-                                  (symbol-name (symbol-or-function-near-point))))
-         (mapsym (intern mapstr))
-         (map (eval mapsym)))
-    (move-end-of-line 1)
-    (newline)
-    (insert (sprint-keymap map))))
+  (interactive (list
+                (completing-read "keymap: " obarray
+                                 nil nil
+                                 (symbol-name (symbol-or-function-near-point)))))
+  (when (stringp map) (setq map (intern map)))
+  (when (symbolp map) (setq map (eval map)))
+  (move-end-of-line 1)
+  (newline)
+  (insert (sprint-keymap map)))
 
   ;; TODO: write replace-line function.
 
