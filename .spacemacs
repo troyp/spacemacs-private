@@ -811,6 +811,7 @@ you should place you code here."
     ","            'helm-mini
     ">"            'evil-shift-right-fine-dispatcher
     "<"            'evil-shift-left-fine-dispatcher
+    "|"            'extend-to-column
     "<backtab>"    'switch-to-most-recent-buffer
     "<backspace>"  'kill-this-buffer
     "<delete>"     'kill-buffer-and-window
@@ -821,10 +822,12 @@ you should place you code here."
     "C-."          'ido-switch-buffer
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
-    "M-q"          'wrap-lines-in-region
-    "M-x"          'helm-M-x
     "C-SPC"        'cua-toggle-global-mark
     "C-S-SPC"      'just-one-blank-line
+    "M-q"          'wrap-lines-in-region
+    "M-x"          'helm-M-x
+    "M-%"          'evil-virep-query-replace
+    "M-C-%"        'evil-virep-replace-regexp
     )
 
   (bind-keys :map spacemacs-cmds
@@ -2492,6 +2495,25 @@ See also `rectangle-number-lines'."
   (move-end-of-line 1)
   (newline)
   (insert (sprint-keymap map)))
+
+(defun extend-to-column (&optional col set-fill-column)
+  "Extend line to column COL by adding spaces, if necessary.
+
+Interactively, COL is provided as a prefix argument. If COL is omitted, the
+value of `fill-column' is used.
+
+If SET-FILL-COLUMN is true, or if the prefix argument is negative, the (positive)
+value of COL is additionally set as the new value of `fill-column'."
+  (interactive "p")
+  (when (or (null col)
+            (and (called-interactively-p) (null current-prefix-arg)))
+    (setq col fill-column))
+  (when (and (called-interactively-p) (< col 0))
+    (setq set-fill-column t)
+    (setq col (abs col)))
+  (when set-fill-column
+    (setf fill-column col))
+  (move-to-column col t))
 
   ;; TODO: write replace-line function.
 
