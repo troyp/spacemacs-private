@@ -536,6 +536,9 @@ otherwise is equal to 'align-default-spacing."
      (interactive)
      (eval ,CODE)))
 
+(defmacro prmacro (CODE)
+  "Pretty print a macro-expansion for CODE (less expansion than `cl-prettyexpand')."
+  `(cl-prettyprint (macroexpand ',CODE)))
 
 ;; ===============================================================================
 ;;                                ____________________
