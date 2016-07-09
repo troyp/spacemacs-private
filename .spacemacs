@@ -675,8 +675,16 @@ you should place you code here."
   (define-key evil-normal-state-map (kbd "M-RET RET") 'lisp-state-toggle-lisp-state)
   ;; evil-symbol-word-search
   (define-key evil-normal-state-map (kbd "C-*") 'toggle-evil-symbol-word-search)
+
   ;; universal-argument
   (define-key evil-normal-state-map (kbd "C-S-u") 'universal-argument)
+  ;; 'negative-argument is also on C-M--
+  ;; M-- was bound to 'ahs-back-to-start but it doesn't seem to work
+  (define-key evil-normal-state-map (kbd "M--") 'negative-argument)
+
+  (define-key evil-normal-state-map (kbd "C--") 'spacemacs/evil-numbers-decrease)
+  (define-key evil-normal-state-map (kbd "C-=") 'spacemacs/evil-numbers-increase)
+
   ;; evil-shift-up/down-line-or-block
   (define-key evil-normal-state-map [\M-\S-down] 'evil-shift-down-line-or-block)
   (define-key evil-normal-state-map [\M-\S-up] 'evil-shift-up-line-or-block)
@@ -794,6 +802,7 @@ you should place you code here."
     "<f3>"          'kmacro-keymap
     "o m"          'modes-prefix-key-map
     "o v"          'variable-pitch-mode
+    "t T"          'toggle-indent-tabs-mode
     "t |"          'fci-mode
     "w TAB"        'ace-swap-window
     "x a ."        'spacemacs/align-repeat-period
@@ -2514,6 +2523,22 @@ value of COL is additionally set as the new value of `fill-column'."
   (when set-fill-column
     (setf fill-column col))
   (move-to-column col t))
+
+(defun spacemacs-rgrep (regexp)
+  (interactive "sREGEXP: ")
+  (rgrep regexp
+         "*.el spacemacs"
+         (expand-file-name user-emacs-directory)))
+
+(defmacro def-variable-toggle (var)
+	(let* ((fname `(concat "toggle-" (symbol-name ',var)))
+				 (fsym  (intern (eval fname))))
+		`(defun ,fsym ()
+			 "Defined with `def-variable-toggle'."
+			 (interactive)
+			 (setq ,var (not ,var)))))
+
+(def-variable-toggle indent-tabs-mode)
 
   ;; TODO: write replace-line function.
 
