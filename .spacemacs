@@ -490,7 +490,11 @@ you should place you code here."
 
   (setq evil-want-fine-undo "No")
 
+  (setq undo-tree-history-directory-alist
+        (let ((undohistdir (concat spacemacs-private-directory ".undo-tree-history/")))
+          `((".*" . ,undohistdir))))
   (setq undo-tree-auto-save-history t)
+
   ;; Attempt to prevent undo-tree history corruption...
   ;; https://github.com/syl20bnr/spacemacs/issues/774#issuecomment-194527210
   (defun my-save-undo-history ()
@@ -518,6 +522,14 @@ you should place you code here."
 ;;                                 * KEY-BINDINGS *
 ;;                                 *              *
 ;;                                 ****************
+
+  (defmacro def-variable-toggle (var)
+    (let* ((fname `(concat "toggle-" (symbol-name ',var)))
+           (fsym  (intern (eval fname))))
+      `(defun ,fsym ()
+         "Defined with `def-variable-toggle'."
+         (interactive)
+         (setq ,var (not ,var)))))
 
   ;; ,----------------------,
   ;; | Keybinding Functions |
@@ -802,8 +814,10 @@ you should place you code here."
     "<f3>"          'kmacro-keymap
     "o m"          'modes-prefix-key-map
     "o v"          'variable-pitch-mode
-    "t T"          'toggle-indent-tabs-mode
+    "t O"          (def-variable-toggle which-key-show-operator-state-maps)
+    "t T"          (def-variable-toggle indent-tabs-mode)
     "t |"          'fci-mode
+    "t C-/"        'evil-search-highlight-persist
     "w TAB"        'ace-swap-window
     "x a ."        'spacemacs/align-repeat-period
     "x a '"        'spacemacs/align-repeat-quote
@@ -989,7 +1003,6 @@ you should place you code here."
                   ))
     (add-to-list 'which-key-key-replacement-alist cons))
 
-  (setq which-key-show-operator-state-maps t)
 
   ;; ,--------------------,
   ;; | Command Docstrings |
@@ -1164,8 +1177,11 @@ you should place you code here."
   ;; | Dired |
   ;; '-------'
 
-  (defun dired-copy-file-path-as-kill () (dired-copy-filename-as-kill 0))
+  (defun dired-copy-file-path-as-kill ()
+    (interactive)
+    (dired-copy-filename-as-kill 0))
   (defun dired-copy-file-directory-as-kill ()
+    (interactive)
     (file-name-directory (dired-copy-file-path-as-kill)))
 
   ;; INITIAL STATE:
@@ -2000,7 +2016,12 @@ temporarily enables it to allow getting help on disabled items and buttons."
 
   (defun browse-buffer-file-firefox ()
     (interactive)
-    (browse-url-firefox (or buffer-file-name default-directory)))
+    (browse-url-firefox
+     (replace-regexp-in-string
+      " "
+      "%20"
+      (concat "file://"
+              (expand-file-name (or buffer-file-name default-directory))))))
 
   (defun browse-buffer-file-with-external-application ()
     (interactive)
@@ -2057,27 +2078,6 @@ temporarily enables it to allow getting help on disabled items and buttons."
   (defun eval-prettyprint-last-sexp (eval-last-sexp-arg-internal)
     (interactive "P")
     (cl-prettyprint (eval-last-sexp eval-last-sexp-arg-internal)))
-
-  (defun delete-duplicate-lines-nonblank
-      (beg end &optional reverse adjacent delete-blanks interactive)
-    "Delete duplicate lines within region. This is the same as
- `delete-duplicate-lines' except it keeps blank lines by default unless the
- DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
-
- C-u          Keep the last instance of each line
- C-u C-u      Delete blank line duplicates
- C-u C-u C-u  Only delete adjacent duplicates
-\nSee also `spacemacs/uniquify-lines', which deletes adjacent duplicate lines
-within the region."
-    (interactive
-     (progn
-       (list
-        (region-beginning) (region-end)
-        (equal current-prefix-arg '(4))
-        (equal current-prefix-arg '(64))
-        (equal current-prefix-arg '(16))
-        t)))
-    (delete-duplicate-lines beg end reverse adjacent (not delete-blanks) interactive))
 
   (defun line-visible-beginning-position ()
     (save-excursion
@@ -2296,6 +2296,11 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
     (insert "( ")
     (evil-backward-char))
 
+
+  ;; ============================
+  ;; functions dealing with lines
+  ;; ============================
+
   (defun line-at-point-string ()
     "Return the line around point as a string.
 Similar to (thing-at-point \'line t) except it does not return a trailing newline.
@@ -2316,11 +2321,37 @@ See also `thing-at-point'"
       (forward-line (or n 1))
       (line-at-point-blank-p)))
   (defun adjacent-line-blank-p (&optional n)
-    "Returns a non-nil value if the Nth line above and/or below point is blank
-(ie. contains only whitespace).
+    "Returns a non-nil value if the Nth line above and/or below point contains
+only whitespace).
 See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (or (line-above-blank-p n)
         (line-below-blank-p n)))
+
+
+;; ======================
+;; delete duplicate lines
+;; ======================
+
+  (defun delete-duplicate-lines-nonblank
+      (beg end &optional reverse adjacent delete-blanks interactive)
+    "Delete duplicate lines within region. This is the same as
+`delete-duplicate-lines' except it keeps blank lines by default unless the
+DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
+
+C-u          Keep the last instance of each line
+C-u C-u      Delete blank line duplicates
+C-u C-u C-u  Only delete adjacent duplicates
+\nSee also `spacemacs/uniquify-lines', which deletes adjacent duplicate lines
+within the region."
+    (interactive
+     (progn
+       (list
+        (region-beginning) (region-end)
+        (equal current-prefix-arg '(4))
+        (equal current-prefix-arg '(64))
+        (equal current-prefix-arg '(16))
+        t)))
+    (delete-duplicate-lines beg end reverse adjacent (not delete-blanks) interactive))
 
   (defun just-one-blank-line ()
     (interactive)
@@ -2328,19 +2359,27 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
              (adjacent-line-blank-p))
         (delete-blank-lines)))
 
-(defun remove-doubled-blank-lines ()
-  (interactive)
-  (replace-regexp "\n[[:space:]]*\n\\([[:space:]]*\n\\)+" "\n\n"))
+
+  (defun remove-doubled-blank-lines ()
+    (interactive)
+    (replace-regexp "\n[[:space:]]*\n\\([[:space:]]*\n\\)+" "\n\n"))
 
   (defun delete-adjacent-repeated-lines ()
     (interactive)
     (destructuring-bind (beg . end) (evil-get-visual-region-or-buffer)
       (delete-duplicate-lines beg end nil t nil t)))
 
+
   (defun sudo-edit-this-file ()
     (interactive)
     (let ((f (concat "/sudo::" (expand-file-name buffer-file-name))))
       (find-file f)))
+
+
+;; ================
+;; shift left/right
+;; ================
+;; TODO: non-hackish versions
 
   (defun evil-shift-left-fine ()
     (interactive)
@@ -2360,7 +2399,6 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (let ((evil-shift-width 1))
       (evil-visual-shift-right))
     (execute-kbd-macro "gv"))
-
   (defun evil-shift-left-fine-dispatcher ()
     (interactive)
     (if (eq evil-state 'visual)
@@ -2371,6 +2409,7 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (if (eq evil-state 'visual)
         (call-interactively 'evil-visual-shift-right-fine)
       (call-interactively 'evil-shift-right-fine)))
+
 
   (defun evil-cua-toggle ()
     (interactive)
@@ -2530,16 +2569,6 @@ value of COL is additionally set as the new value of `fill-column'."
          "*.el spacemacs"
          (expand-file-name user-emacs-directory)))
 
-(defmacro def-variable-toggle (var)
-	(let* ((fname `(concat "toggle-" (symbol-name ',var)))
-				 (fsym  (intern (eval fname))))
-		`(defun ,fsym ()
-			 "Defined with `def-variable-toggle'."
-			 (interactive)
-			 (setq ,var (not ,var)))))
-
-(def-variable-toggle indent-tabs-mode)
-
   ;; TODO: write replace-line function.
 
 ;; -------------------------------------------------------------------------------
@@ -2559,7 +2588,7 @@ value of COL is additionally set as the new value of `fill-column'."
 ;; ==========================================================
 ;; describe-symbol command taken from emacs 25 sources (GPL3)
 ;; ==========================================================
-(global-set-key (kbd "C-h o") 'describe-symbol)
+(global-set-key (kbd "C-h y") 'describe-symbol)
 
 ;;;###autoload
 (defun describe-symbol (symbol &optional buffer frame)
@@ -2573,15 +2602,14 @@ Will show the info of SYMBOL as a function, variable, and/or face."
           (found (or found v-or-f))
           (enable-recursive-minibuffers t)
           val)
-     (setq val (completing-read (if found
-                                    (format
-                                     "Describe symbol (default %s): " v-or-f)
+     (setq val (completing-read (if found (format "Describe symbol (default %s): " v-or-f)
                                   "Describe symbol: ")
                                 obarray
-                                (lambda (vv)
-                                  (cl-some (lambda (x) (funcall (nth 1 x) vv))
-                                           describe-symbol-backends))
-                                t nil nil
+                                (lambda (vv) (cl-some (lambda (x) (funcall (nth 1 x) vv))
+                                                      describe-symbol-backends))
+                                t
+                                nil
+                                nil
                                 (if found (symbol-name v-or-f))))
      (list (if (equal val "")
                v-or-f (intern val)))))
