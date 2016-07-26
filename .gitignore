@@ -12,5 +12,6 @@ README.html
 private-data.el
 snippets/README.html
 local/README.html
+local/evil-visual-replace
 .undo-tree-history
 

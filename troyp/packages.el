@@ -66,7 +66,6 @@ Each entry is either:
   )
 
 (defun troyp/init-asciiheadings       () (use-package asciiheadings       :init :after tsputils))
-(defun troyp/init-evil-visual-replace () (use-package evil-visual-replace :init))
 (defun troyp/init-mode-ring           () (use-package mode-ring           :init))
 (defun troyp/init-tspevil             () (use-package tspevil             :init))
 (defun troyp/init-tsputils            () (use-package tsputils            :init))

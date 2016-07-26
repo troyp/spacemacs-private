@@ -17,7 +17,6 @@
     (use-package tsputils)
     (use-package tspevil)
     (use-package asciiheadings)
-    (use-package evil-visual-replace)
     (use-package mode-ring)
     ))
 
