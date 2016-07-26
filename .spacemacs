@@ -102,6 +102,7 @@ values."
      faces+
      firefox-controller
      fit-frame
+     flycheck-package
      font-lock+
      frame-cmds
      frame-fns
@@ -400,10 +401,18 @@ you should place you code here."
   ;;                       *****************************
 
   (add-to-load-path "~/.emacs.d/private/local/")
+  (add-to-load-path "~/.emacs.d/private/local/evil-visual-replace")
+  (add-to-load-path "~/.emacs.d/private/local/firefox-protocol")
 
-  (defvar dotspacemacs-additional-local-packages
+  (defvar dotspacemacs-additional-local-packages)
+  (setf dotspacemacs-additional-local-packages
     '(
+      dired+
+      evil-visual-replace
+      find-func+
+      firefox-protocol
       help-macro+
+      ibuffer-hydra
       ))
   (loop for pkg in dotspacemacs-additional-local-packages do
         (require pkg))
@@ -672,10 +681,8 @@ you should place you code here."
   (define-key evil-normal-state-map (kbd "C-S-d") 'evil-scroll-up)
   (define-key evil-normal-state-map (kbd "C-S-o") 'evil-jump-forward)
   (define-key evil-normal-state-map (kbd "C-e") 'end-of-line)
-  (define-key evil-evilified-state-map (kbd "C-e") 'end-of-line)
   ;; remove C-y (use global M-p)
   (define-key evil-normal-state-map (kbd "C-y") nil)
-  (define-key evil-evilified-state-map (kbd "C-y") nil)
   ;; reverse gu and gU
   (define-key evil-normal-state-map (kbd "gu") 'evil-upcase)
   (define-key evil-normal-state-map (kbd "gU") 'evil-downcase)
@@ -703,6 +710,18 @@ you should place you code here."
   ;; insert at WORD beginning
   (define-key evil-normal-state-map (kbd "M-B") 'evil-insert-at-WORD-beginning)
 
+  ;; ,-----------------,
+  ;; | EVILIFIED STATE |
+  ;; '-----------------'
+
+  (defun evilified-state-init ()
+    (define-keys evil-evilified-state-map
+      (kbd "C-y") nil
+      (kbd "C-e") 'end-of-line
+      (kbd "C-v") 'evil-visual-block
+      ))
+  (add-hook 'evil-evilified-state-entry-hook 'evilified-state-init)
+
   ;; ,--------------,
   ;; | VISUAL STATE |
   ;; '--------------'
@@ -715,8 +734,9 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
-  (define-key evil-visual-state-map (kbd "M-%") 'evil-virep-query-replace)
-  (define-key evil-visual-state-map (kbd "C-M-%") 'evil-virep-replace-regexp)
+  ;; (define-key evil-visual-state-map (kbd "M-%") 'evil-virep-query-replace)
+  ;; (define-key evil-visual-state-map (kbd "C-M-%") 'evil-virep-replace-regexp)
+  (evil-virep-visual-bindings)
 
 
   ;; ,--------------,
@@ -806,14 +826,14 @@ you should place you code here."
     "h 1"          'evil-goto-definition
     ;; "h <f1>"       'help-map
     "i -"          'tiny-expand
-    "R R"          'pcre-multi-occur
-    "R r"          'pcre-occur
     "o a"          'asciiheadings-prefix-key-map
     "o c"          'character-prefix-map
     "o f"          'flycheck-command-map
-    "<f3>"          'kmacro-keymap
     "o m"          'modes-prefix-key-map
     "o v"          'variable-pitch-mode
+    "r b"          'bookmark-map
+    "R R"          'pcre-multi-occur
+    "R r"          'pcre-occur
     "t O"          (def-variable-toggle which-key-show-operator-state-maps)
     "t T"          (def-variable-toggle indent-tabs-mode)
     "t |"          'fci-mode
@@ -839,6 +859,8 @@ you should place you code here."
     "<backspace>"  'kill-this-buffer
     "<delete>"     'kill-buffer-and-window
     "<return>"     'helm-buffers-list
+    "<f3>"         'kmacro-keymap
+    "<f5>"         'spacemacs/safe-revert-buffer
     "C-l"          'quick-pcre-align-repeat
     "C-v"          'evil-cua-toggle
     "C-w"          'delete-frame
@@ -1576,6 +1598,16 @@ you should place you code here."
     )
 
   ;; -------------------------------------------------------------------------------
+  ;; ,------------,
+  ;; | Occur-Mode |
+  ;; '------------'
+
+  (evilified-state-evilify-map occur-mode-map
+    :mode occur-mode
+    :bindings
+    )
+
+  ;; -------------------------------------------------------------------------------
   ;; ,----------,
   ;; | Org-Mode |
   ;; '----------'
@@ -2100,6 +2132,7 @@ temporarily enables it to allow getting help on disabled items and buttons."
     (end-of-line)
     (re-search-backward "[^ \t\n]" (line-beginning-position) 1))
 
+  ;; TODO: maintain position if no matches
   (defun pcre-replace-regexp-in-string (PCRE REP STRING &optional FIXEDCASE LITERAL SUBEXP START)
     "Replace all matches for PCRE with REP in STRING, where PCRE is converted to
     an elisp regexp by the function `rxt-pcre-to-elisp'.\n
