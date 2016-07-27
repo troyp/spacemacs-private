@@ -30,31 +30,52 @@
 
 (setq t--key-absent (gensym "t-"))
 
-(defmacro t-hash (&rest sexps)
-  "Create a new hash-table.
+(defmacro t-make-hash (proplist &rest tabledata)
+  "Create a new hash-table, specifying properties and initial data.
 
-Usage:
-  (t-hash [properties :prop propvalue ....
-           data]
-           KEY VALUE ... )
 Examples:
+  (t-make-hash nil :a 1 :b 2)
+  ;; #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8 data (:a 1 :b 2))
+  (t-make-hash (:size 120 :rehash-threshold 0.9)
+    :a 1
+    :d 4)
+  ;; #s(hash-table size 120 test eql rehash-size 1.5 rehash-threshold 0.9 data (:a 1 :d 4))
+
+See also `t-hash'
+
+\(fn ([PROP-NAME1 PROP-VALUE1...]) [KEY1 VAL1...])"
+  (declare (indent 1))
+  `(cl-loop with    table = (apply #'make-hash-table ',proplist)
+            for     (k v) on ',tabledata by #'cddr
+            do      (puthash k v table)
+            finally return table))
+
+(defmacro t-hash (&rest data)
+  "Create a new hash-table with default properties from keys and values.
+
+Example:
   (t-hash :a 1 :b 2)
   ;; #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8 data (:a 1 :b 2))
-  (t-hash properties
-          :size 120
-          :rehash-threshold 0.9
-          data
-          :a 1
-          :d 4)
-  ;; #s(hash-table size 120 test eql rehash-size 1.5 rehash-threshold 0.9 data (:a 1 :d 4)) "
-  (let* ((arglists   (-split-on 'data sexps))
-         (has-props? (eql (car sexps) 'properties))
-         (tableprops (when has-props? (cdar arglists)))
-         (tabledata  (if has-props? (cadr arglists) (car arglists))))
-    `(cl-loop with    table = (apply #'make-hash-table ',tableprops)
-              for     (k v) on ',tabledata by #'cddr
-              do      (puthash k v table)
-              finally return table)))
+
+See also `t-make-hash'
+
+  \(fn [KEY1 VAL1...])"
+  `(cl-loop with    table = (make-hash-table)
+            for     (k v) on ',data by #'cddr
+            do      (puthash k v table)
+            finally return table))
+
+(defmacro t-zip-to-hash (keylist valuelist)
+  "Create a hash-table from corresponding lists of keys and values.
+
+Example:
+  (t-zip-to-hash '(:a :b :c) '(2 3 5))
+  ;; #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8 data (:a 2 :b 3 :c 5))"
+  `(cl-loop with    table = (make-hash-table)
+            for     k in ,keylist
+            for     v in ,valuelist
+            do      (puthash k v table)
+            finally return table))
 
 (defun t-contains? (table key)
   "Returns `t' if TABLE contains the key KEY, `nil' otherwise. Identical to
