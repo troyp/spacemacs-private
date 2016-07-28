@@ -797,7 +797,7 @@ you should place you code here."
     "b M"          'switch-to-messages-buffer
     "b W"          'switch-to-warnings-buffer
     "b -"          'diff-buffer-with-file
-    "b SPC"    'spacemacs/new-empty-buffer
+    "b SPC"        'spacemacs/new-empty-buffer
     "b C-b"        'ibuffer
     "b C-e"        'bury-buffer
     "b C-u"        'undo-tree-clear
@@ -1342,6 +1342,8 @@ you should place you code here."
   (eval-after-load "helm-mode"
     `(progn
        (bind-keys :map helm-map
+                  ("C-q"        . ace-jump-helm-line-and-select)  ;; was ace-jump-helm-line
+                  ("C-S-q"      . ace-jump-helm-line)
                   ("C-0"        . helm-select-action)
                   ("C-)"        . helm-execute-persistent-action)
                   ("C-S-O"      . helm-previous-source)
