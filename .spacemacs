@@ -734,9 +734,9 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
-  ;; (define-key evil-visual-state-map (kbd "M-%") 'evil-virep-query-replace)
-  ;; (define-key evil-visual-state-map (kbd "C-M-%") 'evil-virep-replace-regexp)
-  (evil-virep-visual-bindings)
+  ;; (define-key evil-visual-state-map (kbd "M-%") 'evil-visual-replace-query-replace)
+  ;; (define-key evil-visual-state-map (kbd "C-M-%") 'evil-visual-replace-replace-regexp)
+  (evil-visual-replace-visual-bindings)
 
 
   ;; ,--------------,
@@ -871,8 +871,8 @@ you should place you code here."
     "C-S-SPC"      'just-one-blank-line
     "M-q"          'wrap-lines-in-region
     "M-x"          'helm-M-x
-    "M-%"          'evil-virep-query-replace
-    "M-C-%"        'evil-virep-replace-regexp
+    "M-%"          'evil-visual-replace-query-replace
+    "M-C-%"        'evil-visual-replace-replace-regexp
     )
 
   (bind-keys :map spacemacs-cmds
@@ -1343,7 +1343,7 @@ you should place you code here."
     `(progn
        (bind-keys :map helm-map
                   ("C-q"        . ace-jump-helm-line-and-select)  ;; was ace-jump-helm-line
-                  ("C-S-q"      . ace-jump-helm-line)
+                  ("C-S-q"      . ace-jump-helm-line) 
                   ("C-0"        . helm-select-action)
                   ("C-)"        . helm-execute-persistent-action)
                   ("C-S-O"      . helm-previous-source)
@@ -2093,8 +2093,8 @@ temporarily enables it to allow getting help on disabled items and buttons."
         (unless current-prefix-arg (kill-new mm)))))
 
   (defun eval-replace-last-sexp ()
-    "Replace the preceding sexp with its value, formatted by pp-to-string. With a
- prefix argument, formats the value using `(format \"%S\" val)' instead."
+    "Replace the preceding sexp with its value, formatted by `pp-to-string'.
+With a prefix argument, formats the value using `(format \"%S\" val)' instead."
     (interactive)
     (if (boundp 'evil-state)
         (evil-save-state
@@ -2604,6 +2604,17 @@ value of COL is additionally set as the new value of `fill-column'."
   (rgrep regexp
          "*.el spacemacs"
          (expand-file-name user-emacs-directory)))
+
+(defun prettyexpand-at-point ()
+  "Pretty print macro-expansion of sexp at point.
+
+Inserts the expansion on a new line at the end of the sexp."
+  (interactive)
+  (let ((sexp (sexp-at-point)))
+    (forward-sexp)
+    (newline)
+    (insert (cl-prettyexpand sexp))))
+
 
   ;; TODO: write replace-line function.
 
