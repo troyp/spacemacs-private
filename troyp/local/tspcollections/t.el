@@ -30,7 +30,7 @@
 
 (setq t--key-absent (gensym "t-"))
 
-(defmacro t-make-hash (proplist &rest tabledata)
+(defmacro t-make-hash (proplist &rest data)
   "Create a new hash-table, specifying properties and initial data.
 
 Examples:
@@ -38,30 +38,36 @@ Examples:
   ;; #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8
   ;;               data (:a 1 :b 2))
   (t-make-hash (:size 120 :rehash-threshold 0.9)
-    :a 1
-    :d 4)
+    'a 1
+    'd 4)
   ;; #s(hash-table size 120 test eql rehash-size 1.5 rehash-threshold 0.9
-  ;;               data (:a 1 :d 4))
+  ;;               data (a 1 d 4))
 
-See also `t-hash'
+See also `t-hash'.
 
-\(fn ([PROP-NAME1 PROP-VALUE1...]) [KEY1 VAL1...])"
+\(fn ([:PROP-NAME1 PROP-VALUE1...]) [KEY1 VAL1...])"
   (declare (debug (form body))
            (indent 1))
-  `(cl-loop with    table = (apply #'make-hash-table ',proplist)
-            for     (k v) on ',tabledata by #'cddr
-            do      (puthash k v table)
-            finally return table))
+  (let ((putlist (mapcar (lambda (pr) `(puthash ,@pr table))
+                         (-partition 2 data))))
+    `(let ((table (make-hash-table ,@proplist)))
+       ,@putlist
+       table)))
 
 (defmacro t-hash (&rest data)
   "Create a new hash-table with default properties from keys and values.
 
-Example:
+Note that key names are automatically quoted, so only literal values may be
+used. If a variable (dynamic) key is required, use `t-make-hash'. Similarly,
+if non-default properties are required, `t-make-hash' should be used.
+
+Examples:
   (t-hash :a 1 :b 2)
   ;; #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8
   ;;               data (:a 1 :b 2))
-
-See also `t-make-hash'
+  (t-hash a 1 b 2)
+  ;; #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8
+  ;;               data (a 1 b 2))
 
   \(fn [KEY1 VAL1...])"
   (declare (debug (body)))
@@ -85,10 +91,10 @@ Example:
 
 (defun t-contains? (table key)
   "Return `t' if TABLE contains the key KEY, `nil' otherwise. Identical to
-`t-in-hash-p' except with the arguments in the other order."
+`t-in?' except with the arguments in the other order."
   (not (eql (gethash key table t--key-absent) t--key-absent)))
 
-(defun t-in-hash-p (key table)
+(defun t-in? (key table)
   "Return `t' if TABLE contains the key KEY, `nil' otherwise. Identical to
 `t-contains?' except with the arguments in the other order."
   (t-contains? table key))
@@ -104,6 +110,8 @@ Uses the `hash-table-test' predicate to perform the comparison."
 (defun t-get (table key &optional default)
   "Return the value of KEY in TABLE, or optionally DEFAULT if absent."
   (gethash key table default))
+(defalias 't- 't-get
+  "Return the value of KEY in TABLE, or optionally DEFAULT if absent.")
 
 (defun t-get-values (table &rest keys)
   "Return an ordered list of values associated with KEYS in TABLE.
@@ -147,6 +155,23 @@ The return value is TABLE.
 
 (defalias 't-put-values 't-conj!)
 
+(defun t-remove! (table &rest keys)
+  "Remove KEYS from TABLE.
+
+The return value is TABLE."
+  (dolist (k keys)
+    (remhash k table))
+  table)
+
+(defun t-remove (table &rest keys)
+  "Return a new hash-table resulting from removal of KEYS from TABLE."
+  (let ((result (copy-hash-table table)))
+    (dolist (k keys)
+      (remhash k result))
+    result))
+
+(defalias 't-clear 'clrhash)
+
 ;; TODO: should some/all map functions allow multiple tables?
 ;;       if not, should they take TABLE first, like all other 1-table functions?
 
@@ -154,7 +179,7 @@ The return value is TABLE.
   "Return a new hash-table formed by associating each key in TABLE with the
 result of applying FN to its associated value.
 
-See also `t-map!', `t-map-with-key', `t-map-with-key!'"
+See also `t-map!', `t-map-with-key', `t-map-with-key!'."
   (let ((result (make-hash-table)))
     (maphash (lambda (k v) (puthash k (funcall fn v) result))
              table)
@@ -164,14 +189,14 @@ See also `t-map!', `t-map-with-key', `t-map-with-key!'"
   "Return a new hash-table formed by associating each key in table with the
 result of (fn key val).
 
-See also `t-map-with-key!', `t-map', `t-map!'"
+See also `t-map-with-key!', `t-map', `t-map!'."
   (let ((result (make-hash-table)))
     (maphash (lambda (key val)
                (puthash key (funcall fn key val) result))
              table)
     result))
 
-(alias 't-maphash 't-map-with-key)
+(defalias 't-maphash 't-map-with-key)
 
 (defun t-map! (fn table)
   "Transform TABLE by associating each key in TABLE with the result of applying
@@ -280,7 +305,7 @@ returned as the result.
   "Transform TABLE by associating each key with the result of successively
 applying each function in FNS (from left to right) to its associated value.
 
-See also `t-transform'
+See also `t-transform'.
 
 \(fn TABLE FUNCTION...)"
   (declare (indent 1))
@@ -290,7 +315,7 @@ See also `t-transform'
   "Return a new hash-table formed by associating each key in TABLE with the
 result of successively applying each function in FNS to its associated value.
 
-See also `t-transform!'
+See also `t-transform!'.
 
 \(fn TABLE FUNCTION...)"
   (declare (indent 1))
@@ -301,7 +326,7 @@ See also `t-transform!'
 key, the last (rightmost) table takes precedence. The equalitiy test used is
 `eql'.
 
-See also `t-merge!', `t-merge-with!', `t-merge-with'
+See also `t-merge!', `t-merge-with!', `t-merge-with'.
 
 \(fn TABLE...)"
   (let ((result (make-hash-table)))
@@ -317,7 +342,7 @@ table takes precedence. The equality test used is `eql'.
 
 The return value is BASE-TABLE.
 
-See also `t-merge', `t-merge-with!', `t-merge-with'"
+See also `t-merge', `t-merge-with!', `t-merge-with'."
   (cl-flet ((result-put (key val) (puthash key val base-table)))
     (cl-loop for table in other-tables
              do (maphash #'result-put table)))
@@ -426,7 +451,7 @@ Example:
   (t-collect mytable #'car (lambda (p) (* (cdr p) (cdr p))))
   ;; (:a 1 :b 4 :c 9)
 
-See also `t-to-alist', `t-to-plist'
+See also `t-to-alist', `t-to-plist'.
 
 \(fn TABLE FUNCTION...)"
   (declare (indent 1))
@@ -445,6 +470,10 @@ See also `t-to-alist', `t-to-plist'
 (defun t-to-plist (table)
   "Return a plist representing the hash-table."
   (t-collect table #'car #'cdr))
+
+(defun t-to-nested-list (table)
+  "Return a list of (KEY VALUE) lists representing the hash-table."
+  (t-collect table (lambda (p) (list (car p) (cdr p)))))
 
 (defun t-fold (table init function)
   "Reduce TABLE using FUNCTION on the values, starting with value INIT.
@@ -488,6 +517,29 @@ updated result."
          (-sort (lambda(a b) (string< (format "%S" a)
                                       (format "%S" b)))))))
 
+(defmacro t-let (table &rest body)
+  "Execute BODY inside a `let' binding defined by TABLE.
+
+All keys of TABLE should all be symbols. The keys and associated values are
+used as bindings."
+  (declare (indent 1)
+           (debug (sexp body)))
+  (let ((bindings `(t-to-nested-list ,table)))
+    `(let (,@(eval bindings))
+       ,@body)))
+
+(defmacro t-let-keys (table keys &rest body)
+  "Execute BODY inside a `let' binding defined by KEYS in TABLE.
+
+The specified KEYS of TABLE should all be symbols. The keys and associated
+values are used as bindings."
+  (declare (indent 1)
+           (debug (sexp sexp body)))
+  (let ((bindings `(mapcar (lambda (k) (list k (gethash k ,table))) ,keys)))
+    `(let (,@(eval bindings))
+       ,@body)))
+
+
 (provide 't)
 
 ;;; t ends here
