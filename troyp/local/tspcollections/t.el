@@ -46,7 +46,8 @@ Examples:
 See also `t-hash'
 
 \(fn ([PROP-NAME1 PROP-VALUE1...]) [KEY1 VAL1...])"
-  (declare (indent 1))
+  (declare (debug (form body))
+           (indent 1))
   `(cl-loop with    table = (apply #'make-hash-table ',proplist)
             for     (k v) on ',tabledata by #'cddr
             do      (puthash k v table)
@@ -63,6 +64,7 @@ Example:
 See also `t-make-hash'
 
   \(fn [KEY1 VAL1...])"
+  (declare (debug (body)))
   `(cl-loop with    table = (make-hash-table)
             for     (k v) on ',data by #'cddr
             do      (puthash k v table)
@@ -74,6 +76,7 @@ See also `t-make-hash'
 Example:
   (t-zip-to-hash '(:a :b :c) '(2 3 5))
   ;; #s(hash-table ... data (:a 2 :b 3 :c 5))"
+  (declare (debug (form form)))
   `(cl-loop with    table = (make-hash-table)
             for     k in ,keylist
             for     v in ,valuelist
@@ -144,21 +147,6 @@ The return value is TABLE.
 
 (defalias 't-put-values 't-conj!)
 
-(defun t-do! (table &rest fns)
-  "Execute each function in FNS for each key-value pair in TABLE. Each function
-takes 2 arguments, (KEY VAL).
-
-Note that the return value is the original table. This is useful if the table is
-to be used in a sequence of operations, eg. with dash.el's threading macro `->'.
-
-\(fn TABLE FUNCTION...)"
-  (declare (indent 1))
-  (maphash (lambda (k v)
-             (cl-loop for fn in fns
-                      do (funcall fn k v)))
-           table)
-  table)
-
 ;; TODO: should some/all map functions allow multiple tables?
 ;;       if not, should they take TABLE first, like all other 1-table functions?
 
@@ -205,53 +193,86 @@ See also `t-map-with-key', `t-map', `t-map!'"
            table)
     table)
 
-(alias 't-maphash! 't-map-with-key!)
+(defalias 't-maphash! 't-map-with-key!)
 
-(defmacro t-dohash (spec &rest forms)
+(defmacro t-do (spec &rest body)
   "Iterate through TABLE, executing BODY for each key-value pair.
 
 For each iteration, KEYVAR is bound to the key and VALUEVAR is bound to the value.
 
-Always returns nil.
+The return value is obtained by evaluating RESULT (nil by default).
 
-See also `t-for'.
+Example:
+  (t-do ((key value) h sum)
+    (when (symbolp key)
+      (setf sum (+ (or sum 0) value))))
+  ;; add values associated with all keys that are symbols.
 
-\(fn ((KEYVAR VALUEVAR) TABLE) BODY...)"
-  (declare (indent 1))
-   (let* ((vars  (car spec))
-          (kvar  (car vars))
-          (vvar  (cadr vars))
-          (table (cadr spec)))
-     `(maphash (lambda (,kvar ,vvar)
-                 ,@forms)
-               ,table)))
+(t-do ((k v) h)
+  (insert (format \"%S\t%S\n\" k v)))
+  ;; print keys and values
+
+See also `t--do'.
+
+\(fn ((KEYVAR VALUEVAR) TABLE [RESULT]) BODY...)"
+  (declare (debug (((sexp sexp) form) body))
+           (indent 1))
+  (let* ((vars  (car spec))
+         (kvar  (car vars))
+         (vvar  (cadr vars))
+         (table (cadr spec))
+         (result (caddr spec)))
+    (if result
+        `(let (,result)
+           (maphash (lambda (,kvar ,vvar)
+                      ,@body)
+                    ,table)
+           ,result)
+      `(maphash (lambda (,kvar ,vvar)
+                 ,@body)
+               ,table))))
 
-(defmacro t-for (table &rest forms)
+(defmacro t--do (table &rest body)
   "Iterate through TABLE, executing BODY for each key-value pair.
 
-For each iteration, the pre-bound variables 'k and 'v refer to the key and value
-repectively. This is a more concise variant of `t-dohash', without the need to
-specify iteration variables.
+This is a more concise, anaphoric variant of `t-do', without the need to specify
+iteration or result variables.
 
-Always returns nil.
+For each iteration, the pre-bound anaphoric variables 'k and 'v refer to the key
+and value repectively, while the variable 'result (initially nil), can be set
+within BODY and used to accumulate the result.
 
-\(fn TABLE FORM...)"
-  (declare (indent 1))
-  `(maphash (lambda (k v)
-              ,@forms)
-            ,table))
+Example:
+  (t--do h
+    (when (symbolp k)
+      (setf result (+ (or result 0) v))))
+  ;; add values associated with all keys that are symbols.
+
+  (t--do h
+    (insert (format \"%S\t%S\n\" k v)))
+  ;; print keys and values
+
+\(fn TABLE BODY...)"
+  (declare (debug (form body))
+           (indent 1))
+  `(let (result)
+     (maphash (lambda (k v) ,@body) ,table)
+     result))
 
-(defmacro t-do-collect (table &rest forms)
+(defmacro t-do-collect (table &rest body)
   "Iterate through the keys of TABLE, binding the variables 'key and 'val to
-each key-value pair in turn, and executes FORMS. The last expression in FORMS
-in each iteration is collected into a list and returned as the result.
+each key-value pair in turn, and executes BODY... .
 
-\(fn TABLE FORM...)"
-  (declare (indent 1))
+The last expression in BODY... in each iteration is collected into a list and
+returned as the result.
+
+\(fn TABLE BODY...)"
+  (declare (debug (form body))
+           (indent 1))
   `(progn
      (let (result)
-       (t-for ,table
-              (!cons (progn ,@forms)
+       (t-do ,table
+              (!cons (progn ,@body)
                      result))
        (reverse result))))
 
