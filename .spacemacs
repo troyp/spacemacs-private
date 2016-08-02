@@ -805,6 +805,7 @@ you should place you code here."
 
   (evil-leader/set-key
     "b M"          'switch-to-messages-buffer
+    "b S"          'spacemacs/switch-to-scratch-buffer-other-window
     "b W"          'switch-to-warnings-buffer
     "b -"          'diff-buffer-with-file
     "b SPC"        'spacemacs/new-empty-buffer
@@ -848,6 +849,7 @@ you should place you code here."
     "t O"          (def-variable-toggle which-key-show-operator-state-maps)
     "t T"          (def-variable-toggle indent-tabs-mode)
     "t |"          'fci-mode
+    "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t C-/"        'evil-search-highlight-persist
     "w TAB"        'ace-swap-window
     "x a ."        'spacemacs/align-repeat-period
@@ -1774,6 +1776,13 @@ you should place you code here."
        (kbd "<C-S-return>") 'open-line-above
        ))
 
+  (evil-define-text-object evil-inner-element (count &optional beg end type)
+    (list (+ 1 (web-mode-tag-end-position (web-mode-element-beginning-position (point)))) (web-mode-tag-beginning-position (web-mode-element-end-position (- (point) 1)))))
+  (evil-define-text-object evil-outer-element (count &optional beg end type)
+    (list (web-mode-element-beginning-position (point)) (+ 1 (web-mode-element-end-position (point)))))
+  (define-key evil-inner-text-objects-map "e" 'evil-inner-element)
+  (define-key evil-outer-text-objects-map "e" 'evil-outer-element)
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
   ;; | Align |
@@ -2558,6 +2567,37 @@ Inserts the expansion on a new line at the end of the sexp."
     (newline)
     (insert (cl-prettyexpand sexp))))
 
+(defun describe-bindings-orig ()
+  (interactive)
+  (let ((helm-descbinds-mode? helm-descbinds-mode))
+    (helm-descbinds-mode 0)
+    (describe-bindings)
+    (when helm-descbinds-mode? (helm-descbinds-mode 1))))
+
+(defun avy-goto-form-feed ()
+  (interactive)
+  (avy-goto-subword-0 1 (lambda () (= 12 (char-after)))))
+
+;; redefine - make avy work with form-feed
+(defun avy-goto-word-1 (char &optional arg)
+  "Jump to the currently visible CHAR at a word start.
+The window scope is determined by `avy-all-windows' (ARG negates it)."
+  (interactive (list (read-char "char: " t)
+                     current-prefix-arg))
+  (if (= char 12)
+      (avy-goto-subword-0 1 (lambda () (= 12 (char-after))))
+    (avy-with avy-goto-word-1
+      (let* ((str (string char))
+             (regex (cond ((string= str ".")
+                           "\\.")
+                          ((and avy-word-punc-regexp
+                                (string-match avy-word-punc-regexp str))
+                           (regexp-quote str))
+                          (t
+                           (concat
+                            "\\b"
+                            str)))))
+        (avy--generic-jump regex arg avy-style)))))
 
   ;; TODO: write replace-line function.
 
