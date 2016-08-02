@@ -79,9 +79,14 @@ Examples:
 (defmacro t-zip-to-hash (keylist valuelist)
   "Create a hash-table from corresponding lists of keys and values.
 
-Example:
-  (t-zip-to-hash '(:a :b :c) '(2 3 5))
-  ;; #s(hash-table ... data (:a 2 :b 3 :c 5))"
+Examples:
+
+  (t-zip-to-hash '(a b c) '(2 3 5))
+  ;; #s(hash-table ... data (a 2 b 3 c 5))
+
+  (t-zip-to-hash (list \"foo\" \"bar\" (concat \"foo\" \"bar\"))
+                 (list 3 5 (+ 3 5)))
+  #s(hash-table ... data (\"foo\" 3 \"bar\" 5 \"foobar\" 8))"
   (declare (debug (form form)))
   `(cl-loop with    table = (make-hash-table)
             for     k in ,keylist
