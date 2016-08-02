@@ -117,6 +117,7 @@ values."
      frame-cmds
      frame-fns
      mozc
+     move-dup
      naked
      palette
      replace+
@@ -401,13 +402,16 @@ you should place you code here."
   ;;                       *****************************
 
   (add-to-load-path "~/.emacs.d/private/local/")
-  (add-to-load-path "~/.emacs.d/private/local/evil-visual-replace")
   (add-to-load-path "~/.emacs.d/private/local/firefox-protocol")
+  ;; my packages
+  (add-to-load-path "~/.emacs.d/private/local/evil-visual-replace")
+  (add-to-load-path "~/.emacs.d/private/local/evil-adjust")
 
   (defvar dotspacemacs-additional-local-packages)
   (setf dotspacemacs-additional-local-packages
     '(
       dired+
+      evil-adjust
       evil-visual-replace
       find-func+
       firefox-protocol
@@ -437,6 +441,9 @@ you should place you code here."
   ;;                                * EVIL-MODE *
   ;;                                *           *
   ;;                                *************
+
+  ;; prevent cursor from moving back a space at the end of a line
+  (setq evil-move-cursor-back nil)
 
   ;; ,-------------------------,
   ;; | evil-symbol-word-search |
@@ -472,6 +479,7 @@ you should place you code here."
   ;; '------------'
 
   (define-key evil-lisp-state-map "," spacemacs-emacs-lisp-mode-map)
+  ;; (define-key evil-lisp-state-map "." nil) ;; available
 
   ;; ,--------------,
   ;; | Text Objects |
@@ -1215,6 +1223,8 @@ you should place you code here."
    `(progn
       (require 'dired+)
 
+      (define-key dired-mode-map (kbd "C-h") nil)
+
       ;; keys
       (evilified-state-evilify-map dired-mode-map
         :mode dired-mode
@@ -1238,7 +1248,7 @@ you should place you code here."
         (kbd "M-DEL")  'diredp-up-directory-reuse-dir-buffer
         [f2]           'dired-toggle-read-only
         (kbd "H")      'dired-do-hard-link
-        (kbd "C-h")    'help-map
+        (kbd "C-h")    nil
         )
       ;; T is the prefix key for the tags commands
       (which-key-add-major-mode-key-based-replacements 'dired-mode
@@ -1316,19 +1326,6 @@ you should place you code here."
          "C-c @" "hiding"
          )
        ))
-
-  ;; --------------------------
-  ;; Major Mode Leader Bindings
-  ;; --------------------------
-
-  (bind-keys :map spacemacs-emacs-lisp-mode-map
-             ("e RET" . eval-replace-last-sexp)
-             )
-  (bind-keys :map spacemacs-lisp-interaction-mode-map
-             ("e RET" . eval-replace-last-sexp)
-             ("e j"   . eval-prettyprint-last-sexp)
-             ("j"     . eval-prettyprint-last-sexp)
-             )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
@@ -1529,6 +1526,7 @@ you should place you code here."
   (define-key isearch-mode-map (kbd "C-'") 'avy-isearch)
   (define-key isearch-mode-map (kbd "C-\"") 'helm-swoop)
 
+
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
   ;; | C-c C-v |
@@ -1583,6 +1581,21 @@ you should place you code here."
           (interactive "p")
           (kmacro-exec-ring-item
            (quote ([1 102 58 119 100 119 1 101 97 32 escape 112 102 58 114 59 86 134217848 100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104 105 116 101 115 112 97 99 101 13 65 escape 106 1] 0 "%d")) arg)))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,------,
+  ;; | Lisp |
+  ;; '------'
+
+  (bind-keys :map spacemacs-emacs-lisp-mode-map
+             ("e RET" . eval-replace-last-sexp)
+             )
+  (bind-keys :map spacemacs-lisp-interaction-mode-map
+             ("e RET" . eval-replace-last-sexp)
+             ("e j"   . eval-prettyprint-last-sexp)
+             ("j"     . eval-prettyprint-last-sexp)
+             ("x"     . prettyexpand-at-point)
+             )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
@@ -1836,6 +1849,13 @@ See also `multi-occur-in-matching-buffers'."
   ;; '-----------------'
 
   (fset 'switch-to-most-recent-buffer [?\C-x ?b return])
+
+  (fset 'comment-bar-heading-5=
+        (lambda (&optional arg)
+          "Keyboard macro."
+          (interactive "p")
+          (kmacro-exec-ring-item
+           (quote ("gu$vils=vils=vils=vils=vils= ;;" 0 "%d")) arg)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------------------------------,
@@ -2114,16 +2134,6 @@ With a prefix argument, formats the value using `(format \"%S\" val)' instead."
     (interactive "P")
     (cl-prettyprint (eval-last-sexp eval-last-sexp-arg-internal)))
 
-  (defun line-visible-beginning-position ()
-    (save-excursion
-      (back-to-indentation)
-      (point)))
-
-  (defun line-visible-end-position ()
-    (save-excursion
-      (end-of-line)
-      (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
-
   (defalias 'move-visible-beginning-of-line 'back-to-indentation
     "Move to the first non-whitespace character on the line (or the end of line if
  no non-whitespace)")
@@ -2251,13 +2261,6 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
         (evil-upcase (point) (+ 1 (point)))
         (evil-forward-word-begin))))
 
-  (defun match-line (regexp)
-    "Check the current line against regexp and return the match position the or nil
- if it fails."
-    (save-excursion
-      (beginning-of-line)
-      (re-search-forward regexp (line-end-position) t)))
-
   (defun undo-tree-clear ()
     (interactive)
     (setq buffer-undo-tree nil))
@@ -2281,42 +2284,6 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
     (call-interactively 'evil-shift-right)
     (evil-visual-restore))
 
-  (defun set-region-to-symbol-at-point ()
-    (posn-set-point (posn-at-point (cadr (symbol-at-point-with-bounds))))
-    (push-mark                     (cddr (symbol-at-point-with-bounds))))
-  (defun evil-set-region-to-symbol-at-point ()
-    (evil-visual-make-selection
-     (cadr (symbol-at-point-with-bounds))
-     (- (cddr (symbol-at-point-with-bounds)) 1)))
-
-  (defun get-region-or-symbol-at-point ()
-    (let ((r (if (region-active-p)
-                 (cons (region-beginning) (region-end))
-               (cons
-                (cadr (symbol-at-point-with-bounds))
-                (- (cddr (symbol-at-point-with-bounds)) 1)))))
-      r))
-
-  (defun get-region-or-buffer ()
-    (let ((r (if (region-active-p)
-                 (cons (region-beginning) (region-end))
-               (cons (point-min) (point-max)))))
-      r))
-
-  (defun evil-get-visual-region-or-symbol-at-point ()
-    (let ((r (if (region-active-p)
-                 (cons (region-beginning) (- (region-end) 1))
-               (cons
-                (cadr (symbol-at-point-with-bounds))
-                (- (cddr (symbol-at-point-with-bounds)) 1)))))
-      r))
-
-  (defun evil-get-visual-region-or-buffer ()
-    (let ((r (if (region-active-p)
-                 (cons (region-beginning) (- (region-end) 1))
-               (cons (point-min) (point-max)))))
-      r))
-
   (defun evil-lisp-insert-function-application (pt mk)
     "Surround the region (or symbol-at-point if region is inactive) with parens and
  position point after the open-paren, with a space after it."
@@ -2331,7 +2298,6 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
     (evil-goto-char pt)
     (insert "( ")
     (evil-backward-char))
-
 
   ;; ============================
   ;; functions dealing with lines
@@ -2472,32 +2438,6 @@ command FN has been applied."
     (evil-backward-WORD-begin count)
     (evil-insert-state))
 
-  (defun evil-eval-print-last-sexp (&optional arg)
-    "Evaluate the sexp before point and print it on a new line.
-Long output is truncated. See the variables `eval-expression-print-length' and
-`eval-expression-print-level'.
-A prefix argument of 0 inhibits truncation and prints integers with additional
-octal, hexadecimal and character representations, in the format: 1 (#o1, #x1,
-?\C-a).
-Errors start the debugger unless an argument of `nil' is passed for
-`eval-expression-debug-on-error'.
-This function is a wrapper around `eval-print-last-sexp' which corrects for
-cursor position in normal/visual states."
-    (interactive "P")
-    (cl-case evil-state
-      ('normal (progn
-                 (evil-append 1)
-                 (eval-print-last-sexp arg)
-                 (evil-normal-state)
-                 ))
-      ('visual (progn
-                 (evil-append 1)
-                 (eval-print-last-sexp arg)
-                 (evil-visual-restore)
-                 ))
-      (otherwise (eval-print-last-sexp arg))
-      ))
-
   (defun wrap-lines-in-region (beg end)
     "An interactive function to split lines longer than `fill-column'.
 Splits long lines in the region using `fill-paragraph', but never joins lines.
@@ -2602,7 +2542,7 @@ value of COL is additionally set as the new value of `fill-column'."
 (defun spacemacs-rgrep (regexp)
   (interactive "sREGEXP: ")
   (rgrep regexp
-         "*.el spacemacs"
+         ".spacemacs* *.el"
          (expand-file-name user-emacs-directory)))
 
 (defun prettyexpand-at-point ()

@@ -18,6 +18,7 @@
     (use-package tspevil)
     (use-package asciiheadings)
     (use-package mode-ring)
+    (use-package tsplib)
     ))
 
 ;; Initialize the extensions
