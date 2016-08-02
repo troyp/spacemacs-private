@@ -61,6 +61,30 @@ the `list' function passed as the first argument."
            (mapcar (lambda (f) (apply f args))
                    functions))))
 
+(defmacro fn (&rest body)
+  "Return a function defined by BODY.
+
+The definition BODY may use the anaphoric parameters _ and _1 to refer to the
+first argument, _2 to refer to the second, and so on up to _9.
+
+Example:
+  (funcall (fn (/ (-sum _) (length _)))
+           '(3.0 4.0 5.0 5.0 10.0))
+  ;; 5.4"
+  (declare (debug 'body))
+  `(lambda (&rest args)
+     (let* ((_  (nth 0 args))
+            (_1 (nth 0 args))
+            (_2 (nth 1 args))
+            (_3 (nth 2 args))
+            (_4 (nth 3 args))
+            (_5 (nth 4 args))
+            (_6 (nth 5 args))
+            (_7 (nth 6 args))
+            (_8 (nth 7 args))
+            (_9 (nth 8 args)))
+       ,@body)))
+
 
 (provide 'tsplib-functional)
 
