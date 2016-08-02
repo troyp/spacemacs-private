@@ -811,6 +811,7 @@ you should place you code here."
     "b C-u"        'undo-tree-clear
     "b <insert>"   'buffer-major-mode
     "b <f1>"       'about-emacs
+    "e F"          'flycheck-mode
     "f ."          'find-alternate-file
     "f >"          'find-alternate-file-other-window
     "f ' p"        'dired-spacemacs-private-directory
