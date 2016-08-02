@@ -34,6 +34,38 @@ The CLAUSES follow `cl-loop' syntax. The macro call is equivalent to:
 
   (cl-loop for n CLAUSE... collect n)
 
+Examples:
+
+  (range to 5)
+  ;; (0 1 2 3 4 5)
+
+  (range below 5)
+  ;; (0 1 2 3 4)
+
+  (range from 1 to 10 by 2)
+  ;; (1 3 5 7 9)
+
+  (range from 1 to 10 by 1.5)
+  ;; (1 2.5 4.0 5.5 7.0 8.5 10.0)
+
+  (range from 5 downto -5)
+  ;; (5 4 3 2 1 0 -1 -2 -3 -4 -5)
+
+  (range in '(a b c d e))
+  ;; (a b c d e)
+
+  (range in '(a b c d e) by 'cddr)
+  ;; (a c e)
+
+  (range on '(a b c d e))
+  ;; ((a b c d e) (b c d e) (c d e) (d e) (e))
+
+  (range on (range to 3))
+  ;; ((0 1 2 3) (1 2 3) (2 3) (3))
+
+  (-map 'string (range from ?A to ?K))
+  ;; (\"A\" \"B\" \"C\" \"D\" \"E\" \"F\" \"G\" \"H\" \"I\" \"J\" \"K\")
+
 \(fn CLAUSE...)"
   (declare (indent 'cl-loop)
            (debug body))
