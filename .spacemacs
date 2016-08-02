@@ -406,17 +406,19 @@ you should place you code here."
   ;; my packages
   (add-to-load-path "~/.emacs.d/private/local/evil-visual-replace")
   (add-to-load-path "~/.emacs.d/private/local/evil-adjust")
+  (add-to-load-path "~/.emacs.d/private/local/t")
 
   (defvar dotspacemacs-additional-local-packages)
   (setf dotspacemacs-additional-local-packages
     '(
       dired+
-      evil-adjust
-      evil-visual-replace
       find-func+
       firefox-protocol
       help-macro+
       ibuffer-hydra
+      evil-adjust
+      evil-visual-replace
+      t
       ))
   (loop for pkg in dotspacemacs-additional-local-packages do
         (require pkg))
