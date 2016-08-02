@@ -55,11 +55,11 @@ See also `t-hash'.
        table)))
 
 (defmacro t-hash (&rest data)
-  "Create a new hash-table with default properties from keys and values.
+  "Create a new hash-table literal with default properties from keys and values.
 
-Note that key names are automatically quoted, so only literal values may be
-used. If a variable (dynamic) key is required, use `t-make-hash'. Similarly,
-if non-default properties are required, `t-make-hash' should be used.
+Note that the keys and values are not evaluated, so only literal values may be
+used. If a variable (dynamic) key/value is required, use `t-make-hash'.
+Similarly, if non-default properties are required, `t-make-hash' should be used.
 
 Examples:
   (t-hash :a 1 :b 2)
