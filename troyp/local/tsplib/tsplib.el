@@ -26,8 +26,6 @@
 
 ;;; Code:
 
-(require 'tsplib-functional)
-
 
 ;; ======CURRENT LINE OR REGION======
 
