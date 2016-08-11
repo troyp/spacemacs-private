@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: erc-test
+# key: test
+# --
+  (ert-deftest test-$1 ()
+    "Test \`$1'."
+    $0
+    )

@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: ert
+# key: ert
+# --
+
+;;;  -*- lexical-binding: t -*-
+
+(require 'ert)
+
+(cl-flet
+    ((should-equal (a b)
+                   (should (equal a b)))
+     (should-eql (a b)
+                 (should (eql a b)))
+     (should= (a b)
+              (should (= a b))))
+
+  $0
+  )
