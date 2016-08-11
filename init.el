@@ -82,12 +82,28 @@ values."
              )
      lacarte
      ;; libraries
+     cl-lib-highlight
      dash
      diff-hl
      f
      names
      s
      tiny
+
+     ;; TODO: work out why local packages aren't working
+     ;; ;; Local
+     ;; (dired+ :location local)
+     ;; (find-func+ :location local)
+     ;; (firefox-protocol :location local)
+     ;; ;; My Local
+     ;; (ibuffer-hydra :location local)
+     ;; (evil-adjust :location local)
+     ;; (t :location local)
+
+     ;; My Packages
+     evil-visual-replace
+     (fn :location (recipe :fetcher github :repo "troyp/fn.el" :files ("fn.el")))
+     (ls :location (recipe :fetcher github :repo "troyp/ls.el" :files ("ls.el")))
      ;; Drew Adams Packages
      autofit-frame
      ;; bookmark+
@@ -349,6 +365,7 @@ you should place you code here."
   (global-linum-mode)
   (menu-bar-mode)
   (minibuffer-depth-indicate-mode 1)
+  (setq evil-search-highlight-persist nil)
 
   ;; not working?
   (setq-default evil-esc-delay 0.00001)
@@ -403,8 +420,10 @@ you should place you code here."
 
   (add-to-load-path "~/.emacs.d/private/local/")
   (add-to-load-path "~/.emacs.d/private/local/firefox-protocol")
-  ;; my packages
-  (add-to-load-path "~/.emacs.d/private/local/evil-visual-replace")
+  ;; MY PACKAGES
+  ;; (add-to-load-path "~/.emacs.d/private/repos/evil-visual-replace")
+  ;; (add-to-load-path "~/.emacs.d/private/repos/fn")
+  ;; (add-to-load-path "~/.emacs.d/private/repos/ls")
   (add-to-load-path "~/.emacs.d/private/local/evil-adjust")
   (add-to-load-path "~/.emacs.d/private/local/t")
 
@@ -417,7 +436,9 @@ you should place you code here."
       help-macro+
       ibuffer-hydra
       evil-adjust
-      evil-visual-replace
+      ;; evil-visual-replace
+      ;; fn
+      ;; ls
       t
       ))
   (loop for pkg in dotspacemacs-additional-local-packages do
@@ -744,8 +765,6 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
-  ;; (define-key evil-visual-state-map (kbd "M-%") 'evil-visual-replace-query-replace)
-  ;; (define-key evil-visual-state-map (kbd "C-M-%") 'evil-visual-replace-replace-regexp)
   (evil-visual-replace-visual-bindings)
 
 
@@ -831,6 +850,7 @@ you should place you code here."
     "h f 5"        'find-function-other-frame
     "h f ."        'find-function-at-point
     "h w"          'help-download-prefix-map
+    "h ."          'count-words
     "h C-m"        'lacarte-execute-menu-command
     "h C-/"        'evil-search-highlight-persist-remove-all
     "h C-?"        'evil-search-highlight-restore
@@ -932,6 +952,7 @@ you should place you code here."
              ("a" . which-key-show-keymap-at-point)
              ("f" . get-binding)
              ("i" . lookup-key-interactive)
+             ("m" . which-key-show-minor-mode-keymap)
              ("p" . prettyprint-keymap)
              ("r" . replace-ints-with-char)
              ("s" . which-key-show-current-state-map)
@@ -1312,6 +1333,7 @@ you should place you code here."
   ;; ,------------,
   ;; | Emacs Lisp |
   ;; '------------'
+  (require 'evil-adjust)
   (define-key lisp-interaction-mode-map
     [remap eval-print-last-sexp] 'evil-eval-print-last-sexp)
 
@@ -1578,7 +1600,6 @@ you should place you code here."
           (kmacro-exec-ring-item
            (quote ([1 86 201326629 47 47 46 42 36 92 124 36 13 123 125 13 121 106 1] 0 "%d")) arg)))
 
-
   (fset 'java-field-from-spec
         (lambda
           (&optional arg)
@@ -1587,20 +1608,35 @@ you should place you code here."
           (kmacro-exec-ring-item
            (quote ([1 102 58 119 100 119 1 101 97 32 escape 112 102 58 114 59 86 134217848 100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104 105 116 101 115 112 97 99 101 13 65 escape 106 1] 0 "%d")) arg)))
 
+  (fset 'md-sig-to-list-item
+        (fset 'md-sig-to-list-item
+              (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([118 69 121 103 118 115 93 105 42 32 escape 69 108 120 97 35 escape 80 16 97 45 escape 118 36 104 201326629 38 63 32 return 45 return] 0 "%d")) arg))))
+
   ;; -------------------------------------------------------------------------------
   ;; ,------,
   ;; | Lisp |
   ;; '------'
 
   (bind-keys :map spacemacs-emacs-lisp-mode-map
-             ("e RET" . eval-replace-last-sexp)
+             ("e p"    . eval-print-last-sexp)
+             ("e RET"  . eval-replace-last-sexp)
+             ("t i"    . ert-run-tests-interactively)
+             ("<f3> n" . kmacro-name-last-macro)
+             ("<f3> p" . insert-kbd-macro)
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
              ("e RET" . eval-replace-last-sexp)
              ("e j"   . eval-prettyprint-last-sexp)
              ("j"     . eval-prettyprint-last-sexp)
              ("x"     . prettyexpand-at-point)
+             ("<f3> n" . kmacro-name-last-macro)
+             ("<f3> p" . insert-kbd-macro)
              )
+
+  (which-key-add-major-mode-key-based-replacements 'emacs-lisp-mode
+    ", d"         "macrostep"
+    ", <f3>"      "kmacro"
+    )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
