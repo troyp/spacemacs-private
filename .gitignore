@@ -7,12 +7,13 @@
 *.~undo-tree~
 .cache/
 !.cache/bookmarks
-scratch.el
-README.html
+.undo-tree-history
 private-data.el
+scratch.el
+
+*-README.html
 snippets/README.html
 local/README.html
 local/evil-visual-replace
 repos/
-.undo-tree-history
 
