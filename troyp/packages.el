@@ -33,7 +33,6 @@
   '(
     (tsputils            :location local)
     (asciiheadings       :location local)
-    (evil-visual-replace :location local)
     (mode-ring           :location local)
     (tspevil             :location local)
     (tsplib              :location local)
