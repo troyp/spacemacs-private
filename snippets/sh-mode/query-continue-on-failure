@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: y-or-n
+# name: query-continue-on-failure
 # key: cont
 # --
 echo -n "${1:describe action} ... "
