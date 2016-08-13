@@ -400,6 +400,9 @@ you should place you code here."
   (setq cua-enable-cua-keys nil)
   (cua-mode t)
 
+  ;; ANY KEYS
+  (setq avy-keys (list 97 115 100 102 106 107 108 59))
+
 
   ;; ==============================================================================
                                 ;; ***************
@@ -465,8 +468,8 @@ you should place you code here."
   ;;                                *           *
   ;;                                *************
 
-  ;; prevent cursor from moving back a space at the end of a line
-  (setq evil-move-cursor-back nil)
+  ;; ;; prevent cursor from moving back a space at the end of a line
+  ;; (setq evil-move-cursor-back nil)
 
   ;; ,-------------------------,
   ;; | evil-symbol-word-search |
@@ -496,13 +499,6 @@ you should place you code here."
           ((?. ?-) . ?\x30fb)    ;; CJK middle-dot
           ))
   (defalias 'digra 'evil-enter-digraphs)  ;; evil-utils
-
-  ;; ,------------,
-  ;; | Lisp State |
-  ;; '------------'
-
-  (define-key evil-lisp-state-map "," spacemacs-emacs-lisp-mode-map)
-  ;; (define-key evil-lisp-state-map "." nil) ;; available
 
   ;; ,--------------,
   ;; | Text Objects |
@@ -1287,6 +1283,7 @@ you should place you code here."
       ;; major-mode leader-key
       (spacemacs/set-leader-keys-for-major-mode 'dired-mode
         "c"     'dired-mode-map
+        "to"    'dired-omit-mode
         "tr"    'toggle-diredp-find-file-reuse-dir
         "v"     'dired-view-file    ;; for discovery - can just use \v
         "Y"     'diredp-relsymlink-this-file
@@ -1328,14 +1325,6 @@ you should place you code here."
     `(progn
        (define-key elfeed-search-mode-map (kbd "C-x G") 'elfeed-search-fetch)
        ))
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,------------,
-  ;; | Emacs Lisp |
-  ;; '------------'
-  (require 'evil-adjust)
-  (define-key lisp-interaction-mode-map
-    [remap eval-print-last-sexp] 'evil-eval-print-last-sexp)
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------------,
@@ -1617,7 +1606,12 @@ you should place you code here."
   ;; | Lisp |
   ;; '------'
 
+  (require 'evil-adjust)
+  (define-key lisp-interaction-mode-map
+    [remap eval-print-last-sexp] 'evil-eval-print-last-sexp)
+
   (bind-keys :map spacemacs-emacs-lisp-mode-map
+             ("e D"    . eval-instrument-defun)
              ("e p"    . eval-print-last-sexp)
              ("e RET"  . eval-replace-last-sexp)
              ("t i"    . ert-run-tests-interactively)
@@ -1625,6 +1619,7 @@ you should place you code here."
              ("<f3> p" . insert-kbd-macro)
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
+             ("e D"    . eval-instrument-defun)
              ("e RET" . eval-replace-last-sexp)
              ("e j"   . eval-prettyprint-last-sexp)
              ("j"     . eval-prettyprint-last-sexp)
@@ -1637,6 +1632,12 @@ you should place you code here."
     ", d"         "macrostep"
     ", <f3>"      "kmacro"
     )
+
+  ;; =====SWITCH TO EVIL LISP STATE=====
+
+  (define-key evil-lisp-state-map "," spacemacs-emacs-lisp-mode-map)
+  ;; (define-key evil-lisp-state-map "." nil) ;; available
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
@@ -2181,6 +2182,12 @@ With a prefix argument, formats the value using `(format \"%S\" val)' instead."
   (defun eval-prettyprint-last-sexp (eval-last-sexp-arg-internal)
     (interactive "P")
     (cl-prettyprint (eval-last-sexp eval-last-sexp-arg-internal)))
+
+  (defun eval-instrument-defun ()
+    "Equivalent to `eval-defun' with a prefix argument."
+    (interactive)
+    (let ((current-prefix-arg t))
+      (call-interactively 'eval-defun)))
 
   (defalias 'move-visible-beginning-of-line 'back-to-indentation
     "Move to the first non-whitespace character on the line (or the end of line if
