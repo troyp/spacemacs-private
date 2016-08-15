@@ -75,6 +75,7 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages
    '(
+     ;; quelpa-use-package
      dired-sort-menu
      (dired+ :variables
              diredp-hide-details-initially-flag t
@@ -83,7 +84,8 @@ values."
      lacarte
      ;; libraries
      cl-lib-highlight
-     dash
+     (dash            :location (recipe :fetcher github :repo "magnars/dash.el" :files ("dash.el")))
+     (dash-functional :location (recipe :fetcher github :repo "magnars/dash.el" :files ("dash-functional.el")))
      diff-hl
      f
      names
@@ -611,13 +613,7 @@ you should place you code here."
   ;; | Global Bindings |
   ;; '-----------------'
 
-  (global-set-key (kbd "M-0") 'universal-argument)
-  ;; approximate global mapping (with higher priority)
-  (define-key evil-normal-state-map (kbd "M-0") 'universal-argument)
-  (define-key evil-visual-state-map (kbd "M-0") 'universal-argument)
-  (define-key evil-insert-state-map (kbd "M-0") 'universal-argument)
-  (define-key evil-emacs-state-map  (kbd "M-0") 'universal-argument)
-  (define-key evil-hybrid-state-map (kbd "M-0") 'universal-argument)
+  (bind-key* "M-0" 'universal-argument)
 
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
 
@@ -682,12 +678,23 @@ you should place you code here."
 
   (global-set-key (kbd "<M-insert>") 'org-capture)
 
-  ;; approximate global mapping (with higher priority)
-  (define-key evil-normal-state-map (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
-  (define-key evil-visual-state-map (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
-  (define-key evil-insert-state-map (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
-  (define-key evil-emacs-state-map  (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
-  (define-key evil-hybrid-state-map (kbd "C-M-x") 'helm-eval-expression-with-eldoc)
+  (bind-key* "C-M-x" 'helm-eval-expression-with-eldoc)
+
+  (bind-keys :map global-map
+             :prefix-map snippets-prefix-map
+             :prefix "M-<f3>"
+             :prefix-docstring "Snippets and templates commands"
+             ("c"      . aya-create)
+             ("x"      . aya-expand)
+             ("s"      . aya-yank-snippet)
+             ("M-<f3>" . aya-open-line)
+             ("a"      . aya-create-one-line)
+             ("n"      . aya-create-snippet-with-newline)
+             )
+  (defun aya-create-snippet-with-newline ()
+    (interactive)
+    (let ((aya-create-with-newline t))
+      (call-interactively 'aya-create)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------------,
@@ -2641,6 +2648,40 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
                             "\\b"
                             str)))))
         (avy--generic-jump regex arg avy-style)))))
+
+;; -------------------------------------------------------------------------------
+;; ,-------------,
+;; | Minor Modes |
+;; '-------------'
+
+(defun current-minor-modes ()
+  (--filter (and (boundp it) (eval it))
+            minor-mode-list))
+
+(defun add-minor-mode-menu ()
+  (interactive)
+  (defvar minor-mode-menu (make-sparse-keymap "Minor Modes"))
+  (define-key-after
+    global-map
+    [menu-bar minor-modes]
+    (cons "Minor Modes" minor-mode-menu)
+    'Perspectives)
+  (dolist (mmode (current-minor-modes))
+    (eval `(define-key minor-mode-menu [,mmode] '(menu-item ,(symbol-name mmode) ,mmode :help ,(format "Toggle %S" mmode))))))
+
+(defun helm-describe-minor-modes ()
+  (interactive)
+  (helm :sources `((name . "minor modes")
+                   (candidates . ,(current-minor-modes))
+                   (action . describe-function))))
+
+(defun helm-choose-minor-mode ()
+  (interactive)
+  (helm :sources `((name . "minor modes")
+                   (candidates . ,(current-minor-modes))
+                   (action . intern))))
+
+;; -------------------------------------------------------------------------------
 
   ;; TODO: write replace-line function.
 
