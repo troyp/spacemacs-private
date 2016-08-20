@@ -10,6 +10,7 @@
 .undo-tree-history
 private-data.el
 scratch.el
+README.md
 
 *-README.html
 snippets/README.html
