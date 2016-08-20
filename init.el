@@ -690,6 +690,8 @@ you should place you code here."
              ("M-<f3>" . aya-open-line)
              ("a"      . aya-create-one-line)
              ("n"      . aya-create-snippet-with-newline)
+             ("<tab>"  . helm-yas-complete)
+             ("y"      . yas-new-snippet)
              )
   (defun aya-create-snippet-with-newline ()
     (interactive)
