@@ -1679,12 +1679,17 @@ you should place you code here."
   ;; | Org-Mode |
   ;; '----------'
 
-  ;; remove C-tab binding which shadows #'next-multiframe-window binding
-  ;; replace with [, C-tab] binding
-  (bind-key [C-tab] 'next-multiframe-window)
-
   (defun org-init ()
-    (define-key org-mode-map [C-tab] 'next-multiframe-window))
+    (interactive)
+    ;; remove C-tab binding which shadows #'next-multiframe-window binding
+    ;; replace with [, C-tab] binding
+    (unbind-key [C-tab] org-mode-map)
+    (bind-keys
+     :map org-mode-map
+     ("<tab>" . org-next-link)
+     ("<S-iso-lefttab>" . org-previous-link)
+     )
+    )
 
   (eval-after-load 'org
     `(progn
@@ -1700,7 +1705,10 @@ you should place you code here."
        ))
 
   (spacemacs/set-leader-keys-for-major-mode 'org-mode
-    "SPC"    'ace-link-org
+    "SPC"      'ace-link-org
+    "<C-tab>"  'org-force-cycle-archived
+    "<tab>"    'org-cycle
+    "<S-tab>"  'org-shifttab
     )
 
 
