@@ -74,6 +74,20 @@
               (- (cddr (symbol-at-point-with-bounds)) 1)))))
     r))
 
+;; =====FILE & DIRECTORY FUNCTIONS=====
+(defun concat-as-directory (&rest parts)
+  "Concatenate a group of path components, adding trailing separators where needed."
+  (cl-loop for part in parts concat (file-name-as-directory part)))
+(defun concat-as-file-path (&rest parts)
+  "Concatenate a group of path components, with a final filename, adding trailing
+ separators where needed."
+  (cl-loop for partsleft on parts
+           concat (let ((part (car partsleft)))
+                    (if (cdr partsleft)
+                        (file-name-as-directory part)
+                      part))))
+
+
 
 (provide 'tsplib)
 
