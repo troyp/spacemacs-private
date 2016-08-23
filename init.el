@@ -88,6 +88,7 @@ values."
      (dash-functional :location (recipe :fetcher github :repo "magnars/dash.el" :files ("dash-functional.el")))
      diff-hl
      f
+     google-this
      names
      s
      tiny
@@ -376,24 +377,13 @@ you should place you code here."
 
   (setq scroll-preserve-screen-position 1)
 
-  (defun concat-as-directory (&rest parts)
-    "Concatenate a group of path components, adding trailing separators where needed."
-    (cl-loop for part in parts concat (file-name-as-directory part)))
-  (defun concat-as-file-path (&rest parts)
-    "Concatenate a group of path components, with a final filename, adding trailing
- separators where needed."
-    (cl-loop for partsleft on parts
-             concat (let ((part (car partsleft)))
-                      (if (cdr partsleft)
-                          (file-name-as-directory part)
-                        part))))
+  (defvar spacemacs-private-directory
+    (expand-file-name (file-name-as-directory "private") user-emacs-directory)
+    "Location of Spacemacs private/ directory.")
 
-  (setq spacemacs-private-directory (concat-as-directory (getenv "HOME")
-                                                         ".emacs.d/private/"))
-  (setq recentf-save-file (concat-as-file-path spacemacs-private-directory
-                                                   ".cache" "recentf"))
-  (setq bookmark-default-file (concat-as-file-path spacemacs-private-directory
-                                                   ".cache" "bookmarks"))
+  (defvar recentf-save-file
+    (expand-file-name ".cache/recentf" spacemacs-private-directory)
+    "Location of the save-file used by `recentf-mode'.")
 
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
@@ -619,8 +609,8 @@ you should place you code here."
 
   (global-set-key [\M-f4] 'kill-buffer-and-window)
 
-  (global-set-key [C-tab] 'next-multiframe-window)
-  (global-set-key [C-S-iso-lefttab] 'previous-multiframe-window)
+  (global-set-key (kbd "<C-tab>") 'next-multiframe-window)
+  (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-multiframe-window)
   ;; change C-x - from 'shrink-window-if-larger-than-buffer to 'fit-window-to-buffer
   (global-set-key (kbd "\C-x -") 'fit-window-to-buffer)
 
@@ -679,6 +669,8 @@ you should place you code here."
   (global-set-key (kbd "<M-insert>") 'org-capture)
 
   (bind-key* "C-M-x" 'helm-eval-expression-with-eldoc)
+
+  (bind-key "C-c /" 'google-this-mode-submap)
 
   (bind-keys :map global-map
              :prefix-map snippets-prefix-map
@@ -839,8 +831,13 @@ you should place you code here."
     "b <insert>"   'buffer-major-mode
     "b <f1>"       'about-emacs
     "e F"          'flycheck-mode
+    "f e s s"      'spacemacs-rgrep
+    "f e s p"      'spacemacs-private-rgrep
+    "f e s o"      'spacemacs-only-rgrep
+    "f e s e"      'elpa-rgrep
     "f ."          'find-alternate-file
     "f >"          'find-alternate-file-other-window
+    "f ' e"        'dired-spacemacs-directory
     "f ' p"        'dired-spacemacs-private-directory
     "f / f"        'sudo-open-file
     "f / e"        'spacemacs/sudo-edit
@@ -1416,7 +1413,8 @@ you should place you code here."
     :type 'string)
 
   (defcustom firefox-default-user-path
-    (concat-as-directory firefox-profile-directory firefox-default-user-profile)
+    (expand-file-name (file-name-as-directory firefox-default-user-profile)
+                      firefox-profile-directory)
     "The root directory for firefox profile config folders."
     :group 'firefox
     :type 'string)
@@ -1683,7 +1681,8 @@ you should place you code here."
     (interactive)
     ;; remove C-tab binding which shadows #'next-multiframe-window binding
     ;; replace with [, C-tab] binding
-    (unbind-key [C-tab] org-mode-map)
+    ;; (unbind-key [C-tab] org-mode-map)
+    (unbind-key "<C-tab>" org-mode-map)
     (bind-keys
      :map org-mode-map
      ("<tab>" . org-next-link)
@@ -1700,8 +1699,11 @@ you should place you code here."
                ("j" "Journal" entry (file+datetree "~/org/journal.org")
                 "* [%t] %^G\n%?")
                ))
-       (setq org-directory (concat-as-directory (getenv "HOME") "org"))
-       (setq org-default-notes-file (concat-as-file-path org-directory "notes.org"))
+       (setq org-directory (expand-file-name (file-name-as-directory "org")
+                                             (getenv "HOME")))
+       (setq org-default-notes-file
+             (expand-file-name (file-name-as-directory "notes.org")
+                               org-directory))
        ))
 
   (spacemacs/set-leader-keys-for-major-mode 'org-mode
@@ -2337,10 +2339,6 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
     (interactive)
     (setq buffer-undo-tree nil))
 
-  (defun dired-spacemacs-private-directory ()
-    (interactive)
-    (dired spacemacs-private-directory))
-
   (defun insert-pp (object)
     "`insert' the pretty-printed representation of OBJECT into current buffer. See `pp'."
     (interactive)
@@ -2611,11 +2609,47 @@ value of COL is additionally set as the new value of `fill-column'."
     (setf fill-column col))
   (move-to-column col t))
 
+(defun rgrep-with-ignored (regexp ignored files dir)
+  (interactive "sREGEXP: \nsIGNORED: \nFILES: \nDIR: ")
+  (let ((grep-find-ignored-directories (append ignored grep-find-ignored-directories)))
+    (rgrep regexp files dir)))
+
 (defun spacemacs-rgrep (regexp)
+  (interactive "sREGEXP: ")
+  (let ((grep-find-ignored-directories (cons ".cache" grep-find-ignored-directories)))
+    (rgrep regexp
+           ".spacemacs* *.el"
+           (expand-file-name user-emacs-directory))))
+
+(defun spacemacs-only-rgrep (regexp)
+  (interactive "sREGEXP: ")
+  (rgrep-with-ignored regexp
+                      '(".cache" "elpa" "private")
+                      ".spacemacs* *.el"
+                      (expand-file-name user-emacs-directory)))
+
+(defun spacemacs-private-rgrep (regexp)
+  (interactive "sREGEXP: ")
+  (rgrep-with-ignored regexp
+                      '(".cache")
+                      ".spacemacs* *.el"
+                      (expand-file-name "private" user-emacs-directory)))
+
+(defun elpa-rgrep (regexp)
   (interactive "sREGEXP: ")
   (rgrep regexp
          ".spacemacs* *.el"
-         (expand-file-name user-emacs-directory)))
+         (expand-file-name "elpa/" user-emacs-directory)))
+
+(defun dired-spacemacs-private-directory ()
+  "Open `dired' in `spacemacs-private-directory'."
+  (interactive)
+  (dired spacemacs-private-directory))
+
+(defun dired-spacemacs-directory ()
+  "Open `dired' in the `user-emacs-directory'."
+  (interactive)
+  (dired user-emacs-directory))
 
 (defun prettyexpand-at-point ()
   "Pretty print macro-expansion of sexp at point.
