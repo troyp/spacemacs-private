@@ -385,6 +385,9 @@ you should place you code here."
     (expand-file-name ".cache/recentf" spacemacs-private-directory)
     "Location of the save-file used by `recentf-mode'.")
 
+  (setq bookmark-default-file (concat-as-file-path spacemacs-private-directory
+                                                   ".cache" "bookmarks"))
+
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
 
