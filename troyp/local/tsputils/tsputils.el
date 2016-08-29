@@ -315,6 +315,17 @@ To ignore intangibility, bind `inhibit-point-motion-hooks' to t."
                  (not (string-prefix-p "." subdir-name)))
         (add-to-list 'load-path subdir)))))
 
+(defmacro define-helm-occur-function (name file)
+  "Define a function that runs helm-occur on a given file."
+  (declare (debug t))
+  (let ((file-expr (format "%S" file)))
+    `(defun ,(intern (concat "helm-occur-" name)) ()
+       ,(concat "Open " file-expr
+                " in a temp buffer and run `helm-occur'.")
+       (interactive)
+       (popwin:find-file (expand-file-name ,file))
+       (helm-occur))))
+
 
 ;; ---------------------------------------------------------------------------
 ;; ,--------------------------,
