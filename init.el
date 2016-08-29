@@ -483,18 +483,6 @@ you should place you code here."
     (message (if evil-symbol-word-search "symbols" "words")))
   (defalias 'evsw 'toggle-evil-symbol-word-search)
 
-  ;; ,----------,
-  ;; | Digraphs |
-  ;; '----------'
-
-  (setq evil-digraphs-table-user
-        '(
-          ((?. ? ) . ?\x2024)    ;; one-dot leader
-          ((?. ?/) . ?\x2026)    ;; (horizontal) ellipsis
-          ((?. ?-) . ?\x30fb)    ;; CJK middle-dot
-          ))
-  (defalias 'digra 'evil-enter-digraphs)  ;; evil-utils
-
   ;; ,--------------,
   ;; | Text Objects |
   ;; '--------------'
@@ -544,6 +532,37 @@ you should place you code here."
 
   (add-hook 'kill-emacs-hook #'my-save-all-undo-history)
   (add-hook 'kill-buffer-hook #'my-save-undo-history)
+
+;; ===============================================================================
+;;                                      _________
+;;                                     |         |
+;;                                     | UNICODE |
+;;                                     |_________|
+
+  ;; ,----------,
+  ;; | Digraphs |
+  ;; '----------'
+
+  (setq evil-digraphs-table-user
+        '(
+          ((?. ? ) . ?\x2024)    ;; one-dot leader
+          ((?. ?/) . ?\x2026)    ;; (horizontal) ellipsis
+          ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
+          ((?. ?-) . ?\x00b7)    ;; middle-dot
+          ))
+  (defalias 'digra 'evil-enter-digraphs)  ;; evil-utils
+
+  ;; TODO: generate digraphs table with unicode names and descriptions
+  (define-helm-occur-function "digraphs"
+    (expand-file-name "docs/evil-digraphs-table.txt"
+                      spacemacs-private-directory))
+
+;; ,-------------,
+;; | Compose Key |
+;; '-------------'
+
+  (define-helm-occur-function "compose"
+    "/usr/share/X11/locale/en_US.UTF-8/Compose")
 
 
 
