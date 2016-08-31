@@ -388,6 +388,10 @@ you should place you code here."
   (setq bookmark-default-file (concat-as-file-path spacemacs-private-directory
                                                    ".cache" "bookmarks"))
 
+  (setq-default evil-lookup-func
+                (defun man-interactive ()
+                  (call-interactively 'man)))
+
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
 
@@ -864,6 +868,7 @@ you should place you code here."
     "f / f"        'sudo-open-file
     "f / e"        'spacemacs/sudo-edit
     "f / b"        'sudo-edit-this-file
+    "f <insert>"   'find-file-clipboard
     ;; "h"            'help-prefix-map
     "h a"          'apropos
     "h f f"        'find-function
