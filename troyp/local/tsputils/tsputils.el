@@ -326,6 +326,10 @@ To ignore intangibility, bind `inhibit-point-motion-hooks' to t."
        (popwin:find-file (expand-file-name ,file))
        (helm-occur))))
 
+(defun find-file-clipboard ()
+  (interactive)
+  (find-file (x-get-clipboard)))
+
 
 ;; ---------------------------------------------------------------------------
 ;; ,--------------------------,
