@@ -657,7 +657,10 @@ you should place you code here."
 
   ;; remove C-S-SPC from cua-global-keymap and bind to just-one-space
   (define-key cua-global-keymap (kbd "C-S-SPC") nil)
+  ;; just-one-space
   (global-set-key (kbd "C-S-SPC") 'just-one-space)
+  ;; This binding is intercepted by UIM
+  ;; Can also use S-M-SPC (transl to M-SPC, which can't be used itself since it's intercepted by KWin)
 
   (global-set-key (kbd "C-M-d") 'scroll-other-window)
   (global-set-key (kbd "C-M-u") 'scroll-other-window-down)
@@ -853,6 +856,7 @@ you should place you code here."
     "b SPC"        'spacemacs/new-empty-buffer
     "b C-b"        'ibuffer
     "b C-e"        'bury-buffer
+    "b C-f"        'buffer-face-set
     "b C-u"        'undo-tree-clear
     "b <insert>"   'buffer-major-mode
     "b <f1>"       'about-emacs
@@ -891,12 +895,12 @@ you should place you code here."
     "o c"          'character-prefix-map
     "o f"          'flycheck-command-map
     "o m"          'modes-prefix-key-map
-    "o v"          'variable-pitch-mode
     "r b"          'bookmark-map
     "R R"          'pcre-multi-occur
     "R r"          'pcre-occur
     "t O"          (def-variable-toggle which-key-show-operator-state-maps)
     "t T"          (def-variable-toggle indent-tabs-mode)
+    "t '"          'variable-pitch-mode
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t C-/"        'evil-search-highlight-persist
@@ -1634,6 +1638,24 @@ you should place you code here."
   (fset 'md-sig-to-list-item
         (fset 'md-sig-to-list-item
               (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([118 69 121 103 118 115 93 105 42 32 escape 69 108 120 97 35 escape 80 16 97 45 escape 118 36 104 201326629 38 63 32 return 45 return] 0 "%d")) arg))))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------,
+  ;; | JSON-Mode |
+  ;; '-----------'
+
+  (spacemacs/set-leader-keys-for-major-mode 'json-mode
+    "ed"            'js-eval-defun
+    "ee"            'js-eval
+    "go"            'js-find-symbol
+    "b"             'json-mode-beautify
+    )
+
+  (which-key-add-major-mode-key-based-replacements 'json-mode
+    ", e"       "eval"
+    ", g"       "find"
+    ", h"       "json-snatcher"
+    )
 
   ;; -------------------------------------------------------------------------------
   ;; ,------,
@@ -2468,6 +2490,25 @@ within the region."
     (destructuring-bind (beg . end) (evil-get-visual-region-or-buffer)
       (delete-duplicate-lines beg end nil t nil t)))
 
+  (defun remove-trailing-space-and-blank-lines (&optional beg end)
+    (interactive
+     (cond ((use-region-p)   (list (region-beginning) (region-end)))
+           (:else            (list (point) (point-max)))))
+    (delete-trailing-whitespace beg end)
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward "\n+" end t)
+        (replace-match "\n" nil nil))))
+
+  (defun remove-trailing-space-and-doubled-blank-lines (&optional beg end)
+    (interactive
+     (cond ((use-region-p)   (list (region-beginning) (region-end)))
+           (:else            (list (point) (point-max)))))
+    (delete-trailing-whitespace beg end)
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward "\n\n+" end t)
+        (replace-match "\n\n" nil nil))))
 
   (defun sudo-edit-this-file ()
     (interactive)
