@@ -757,6 +757,8 @@ you should place you code here."
   ;; 'negative-argument is also on C-M--
   ;; M-- was bound to 'ahs-back-to-start but it doesn't seem to work
   (define-key evil-normal-state-map (kbd "M--") 'negative-argument)
+  ;; fix SPC key after C-u in insert-state
+  (define-key universal-argument-map (kbd " ") 'self-insert-and-exit)
 
   (define-key evil-normal-state-map (kbd "C--") 'spacemacs/evil-numbers-decrease)
   (define-key evil-normal-state-map (kbd "C-=") 'spacemacs/evil-numbers-increase)
