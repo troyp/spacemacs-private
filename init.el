@@ -2070,7 +2070,7 @@ Interactively, acts on the region. Called from lisp, START may be a string."
       (listify-key-sequence (edmacro-parse-keys (buffer-substring start end)))))
 
   (defun simulate-keypress (key)
-    (interactive "%sKey: ")
+    (interactive "sKey: ")
     "Simulate a key press.
 
 Keys are specified using `edmacro-mode' key syntax."
