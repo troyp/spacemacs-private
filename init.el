@@ -2069,22 +2069,27 @@ Interactively, acts on the region. Called from lisp, START may be a string."
         (listify-key-sequence (edmacro-parse-keys start end))
       (listify-key-sequence (edmacro-parse-keys (buffer-substring start end)))))
 
-  (defun simulate-keypress (key)
-    (interactive "sKey: ")
-    "Simulate a key press.
+  (defun simulate-keypress (keys)
+    (interactive "sKeys: ")
+    "Simulate a key press or key sequence.
 
-Keys are specified using `edmacro-mode' key syntax."
+Keys are specified using `edmacro-mode' key syntax.
+Note: when the key sequence represents a completed action, `execute-kbd-macro'
+may be used instead, eg.  (execute-kbd-macro (kbd "C-x o")).
+
+Example: to enter the help prefix and await another keypress...
+    (simulate-keypress "C-h")"
     (setq prefix-arg current-prefix-arg)
-    (setq unread-command-events (read-kbd-event key)))
+    (setq unread-command-events (read-kbd-event keys)))
 
-  (defun define-simulated-keypress (key)
+  (defun define-simulated-keypress (keys)
     "Return a command executing a simulated keypress of KEY.
 
 KEY is specified in `edmacro-mode' format."
     `(lambda ()
        (interactive)
        (setq prefix-arg current-prefix-arg)
-       (setq unread-command-events (read-kbd-event ,key))))
+       (setq unread-command-events (read-kbd-event ,keys))))
 
   (defun key-to-edmacro-format (key)
     "Converts a key to edmacro format (eg  -> C-x C-a).
