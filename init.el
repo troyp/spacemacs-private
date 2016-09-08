@@ -1980,6 +1980,7 @@ See also `multi-occur-in-matching-buffers'."
   ;; ,--------------------------------,
   ;; | Key/Keymap Functions & Aliases |
   ;; '--------------------------------'
+  ;; to get the definition of a key sequence in a keymap: lookup-key
   ;; to show keymap with which-key:  (which-key--show-keymap keymap-name keymap)
   (defalias 'key-vector-to-readable-string 'key-description)
   (defalias 'key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
@@ -2057,6 +2058,33 @@ representation."
                  ((keymapp (eval sym))  (eval sym))
                  (t                     nil))))
       (keymap-parent kmap)))
+
+  (defun read-kbd-event (start &optional end)
+    "Read a string or the region as an event sequence.
+
+The string should represent a sequence of keys in `edmacro-mode' format.
+Interactively, acts on the region. Called from lisp, START may be a string."
+    (interactive "r")
+    (if (stringp start)
+        (listify-key-sequence (edmacro-parse-keys start end))
+      (listify-key-sequence (edmacro-parse-keys (buffer-substring start end)))))
+
+  (defun simulate-keypress (key)
+    (interactive "%sKey: ")
+    "Simulate a key press.
+
+Keys are specified using `edmacro-mode' key syntax."
+    (setq prefix-arg current-prefix-arg)
+    (setq unread-command-events (read-kbd-event key)))
+
+  (defun define-simulated-keypress (key)
+    "Return a command executing a simulated keypress of KEY.
+
+KEY is specified in `edmacro-mode' format."
+    `(lambda ()
+       (interactive)
+       (setq prefix-arg current-prefix-arg)
+       (setq unread-command-events (read-kbd-event ,key))))
 
   (defun key-to-edmacro-format (key)
     "Converts a key to edmacro format (eg  -> C-x C-a).
