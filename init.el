@@ -795,6 +795,8 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
+  (define-key evil-visual-state-map (kbd "C-i") 'evil-insert)    ;; for line and block mode
+  (define-key evil-visual-state-map (kbd "C-S-i") 'evil-append)  ;; for line and block mode
   (evil-visual-replace-visual-bindings)
 
 
