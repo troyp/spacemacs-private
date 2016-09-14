@@ -633,6 +633,8 @@ you should place you code here."
 
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
 
+  (global-set-key [\S-f4] (defun launch-standalone-terminal ()
+                            (async-shell-command "x-terminal-emulator")))
   (global-set-key [\M-f4] 'kill-buffer-and-window)
 
   (global-set-key (kbd "<C-tab>") 'next-multiframe-window)
@@ -916,6 +918,7 @@ you should place you code here."
     "x l U"        'delete-duplicate-lines-nonblank
     "x C-l"        'quick-pcre-align-repeat
     "x N"          'rectangle-number-lines-interactive
+    "x \\"         'shell-command-on-region
     "3"            'spacemacs/enter-ahs-backward
     "8"            'spacemacs/enter-ahs-forward
     "."            'repeat-complex-command
