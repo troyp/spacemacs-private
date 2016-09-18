@@ -915,8 +915,11 @@ you should place you code here."
     "x a '"        'spacemacs/align-repeat-quote
     "x a \""       'spacemacs/align-repeat-double-quote
     "x a -"        'spacemacs/align-repeat-dash
+    "x a #"        'spacemacs/align-repeat-hash
     "x a C-;"      'spacemacs/align-repeat-semicolon-comment
+    "x a C-/"      'spacemacs/align-repeat-slash-comment
     "x a SPC"      'quick-pcre-align-repeat
+    "x a S-SPC"    'quick-pcre-align
     "x l U"        'delete-duplicate-lines-nonblank
     "x C-l"        'quick-pcre-align-repeat
     "x N"          'rectangle-number-lines-interactive
@@ -1904,7 +1907,9 @@ you should place you code here."
   (spacemacs|create-align-repeat-x "quote" "'")
   (spacemacs|create-align-repeat-x "double-quote" "\"")
   (spacemacs|create-align-repeat-x "dash" "-")
+  (spacemacs|create-align-repeat-x "hash" "#" )
   (spacemacs|create-align-repeat-x "semicolon-comment" ";;?" )
+  (spacemacs|create-align-repeat-x "slash-comment" "//" )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
