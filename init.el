@@ -860,6 +860,7 @@ you should place you code here."
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
   (evil-leader/set-key
+    "a ="          'calculator
     "b M"          'switch-to-messages-buffer
     "b S"          'spacemacs/switch-to-scratch-buffer-other-window
     "b W"          'switch-to-warnings-buffer
@@ -1277,6 +1278,12 @@ you should place you code here."
       :mode bookmark-bmenu-mode))
   (add-hook 'bookmark-bmenu-mode-hook 'bookmark-bmenu-mode-init)
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,------------,
+  ;; | Calculator |
+  ;; '------------'
+
+  (evil-set-initial-state 'calculator-mode 'emacs)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
