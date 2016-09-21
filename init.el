@@ -721,6 +721,11 @@ you should place you code here."
     (let ((aya-create-with-newline t))
       (call-interactively 'aya-create)))
 
+  ;; calc: bypass calc-dispatch and bind C-x * directly to calc-dispatch-map
+  ;;       (allow introspection of keybindings)
+  (global-set-key (kbd "C-x *") calc-dispatch-map)
+
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------------,
   ;; | Evil State Key Bindings |
@@ -910,6 +915,7 @@ you should place you code here."
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t C-/"        'evil-search-highlight-persist
+    "t C-'"        (def-variable-toggle fit-frame-inhibit-fitting-flag)
     "w TAB"        'ace-swap-window
     "x a ."        'spacemacs/align-repeat-period
     "x a '"        'spacemacs/align-repeat-quote
