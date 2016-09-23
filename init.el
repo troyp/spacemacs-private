@@ -444,7 +444,7 @@ you should place you code here."
       t
       ))
   (loop for pkg in dotspacemacs-additional-local-packages do
-        (require pkg))
+        (require pkg nil :noerror))
 
   ;; ==============================================================================
   ;;                             *******************
