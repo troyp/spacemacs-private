@@ -11,6 +11,7 @@
 private-data.el
 scratch.el
 README.md
+srecode-map.el
 
 *-README.html
 snippets/README.html
