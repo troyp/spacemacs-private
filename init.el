@@ -34,7 +34,9 @@ values."
      extra-langs
      git
      go
-     haskell
+     (haskell :variables
+              haskell-enable-shm-support t
+              )
      html
      java
      javascript
@@ -388,12 +390,18 @@ you should place you code here."
   (setq bookmark-default-file (concat-as-file-path spacemacs-private-directory
                                                    ".cache" "bookmarks"))
 
+  (setq srecode-map-save-file
+        (concat-as-file-path spacemacs-private-directory "srecode-map.el"))
+
   (setq-default evil-lookup-func
                 (defun man-interactive ()
                   (call-interactively 'man)))
 
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
+
+  ;; follow VC'ed symlinks
+  (setq vc-follow-symlinks t)
 
   ;; CUA RECTANGLE
   (setq cua-enable-cua-keys nil)
@@ -458,6 +466,7 @@ you should place you code here."
   (add-to-list 'auto-mode-alist '("\\.keynavrc" . conf-mode))
   (add-to-list 'auto-mode-alist '("\\.pryrc" . ruby-mode))
   (add-to-list 'auto-mode-alist '("\\.ocamlinit" . tuareg-mode))
+  (add-to-list 'auto-mode-alist '("\\.vimpagerrc" . vimrc-mode))
 
 
   ;; ==============================================================================
@@ -554,7 +563,7 @@ you should place you code here."
           ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
           ((?. ?-) . ?\x00b7)    ;; middle-dot
           ))
-  (defalias 'digra 'evil-enter-digraphs)  ;; evil-utils
+  (defalias 'digra 'evil-enter-digraphs)  ;; tspevil.el
 
   ;; TODO: generate digraphs table with unicode names and descriptions
   (define-helm-occur-function "digraphs"
@@ -720,10 +729,6 @@ you should place you code here."
     (interactive)
     (let ((aya-create-with-newline t))
       (call-interactively 'aya-create)))
-
-  ;; calc: bypass calc-dispatch and bind C-x * directly to calc-dispatch-map
-  ;;       (allow introspection of keybindings)
-  (global-set-key (kbd "C-x *") calc-dispatch-map)
 
 
   ;; -------------------------------------------------------------------------------
@@ -938,6 +943,7 @@ you should place you code here."
     ">"            'evil-shift-right-fine-dispatcher
     "<"            'evil-shift-left-fine-dispatcher
     "|"            'extend-to-column
+    "="            'quick-calc
     "<backtab>"    'switch-to-most-recent-buffer
     "<backspace>"  'kill-this-buffer
     "<delete>"     'kill-buffer-and-window
@@ -1091,12 +1097,15 @@ you should place you code here."
     "C-x RET"      "coding system"
     "C-x ESC"      "repeat-complex-command"
     "C-x @"        "event-apply--modifier"
+    "C-x *"        "calc-dispatch-map"
     "M-g"          "goto-map"
     "M-s"          "search-map"
     "SPC b h"      "*spacemacs*"
     "SPC b s"      "*scratch*"
     "SPC b M"      "*messages*"
     "SPC b <f1>"   "*About GNU Emacs*"
+    "SPC f /"      "sudo"
+    "SPC f '"      "dired"
     "SPC h f"      "find-function"
     "SPC o f"      "flycheck"
     "SPC K"        "keys/keymaps"
@@ -1170,6 +1179,10 @@ you should place you code here."
   (require 'mozc)
   (setq default-input-method "japanese-mozc")
   (setq mozc-candidate-style 'overlay)
+  ;; If Emacs doesn't recognize IM, make s-SPC toggle mozc-mode
+  (global-set-key (kbd "s-SPC") 'mozc-mode)
+  (setcar (cdr (assoc 'mozc-mode minor-mode-alist))
+          "日")
 
 
   ;; ***************
@@ -1277,6 +1290,15 @@ you should place you code here."
     (evilified-state-evilify-map bookmark-bmenu-mode-map
       :mode bookmark-bmenu-mode))
   (add-hook 'bookmark-bmenu-mode-hook 'bookmark-bmenu-mode-init)
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,------,
+  ;; | Calc |
+  ;; '------'
+  ;; calc: bypass calc-dispatch and bind C-x * directly to calc-dispatch-map
+  ;;       (allow introspection of keybindings)
+  (require 'calc)
+  (global-set-key (kbd "C-x *") calc-dispatch-map)
 
   ;; -------------------------------------------------------------------------------
   ;; ,------------,
@@ -1390,6 +1412,8 @@ you should place you code here."
   ;; ,--------------,
   ;; | Haskell-Mode |
   ;; '--------------'
+  ;; structured-haskell-mode - issues with evil:
+  ;;     https://github.com/chrisdone/structured-haskell-mode/issues/81
 
   (eval-after-load "haskell-mode"
     '(progn
@@ -1416,7 +1440,7 @@ you should place you code here."
     `(progn
        (bind-keys :map helm-map
                   ("C-q"        . ace-jump-helm-line-and-select)  ;; was ace-jump-helm-line
-                  ("C-S-q"      . ace-jump-helm-line) 
+                  ("C-S-q"      . ace-jump-helm-line)
                   ("C-0"        . helm-select-action)
                   ("C-)"        . helm-execute-persistent-action)
                   ("C-S-O"      . helm-previous-source)
@@ -1997,7 +2021,16 @@ See also `multi-occur-in-matching-buffers'."
           "Keyboard macro."
           (interactive "p")
           (kmacro-exec-ring-item
-           (quote ("gu$vils=vils=vils=vils=vils= ;;" 0 "%d")) arg)))
+           (quote ("gu$vils=vils=vils=vils=vils= ;;" 0 "%d"))
+           arg)))
+
+  (fset 'just-one-space-before-open-brace
+        (lambda (&optional arg)
+          "Keyboard macro."
+          (interactive "p")
+          (kmacro-exec-ring-item
+           (quote ([102 91 104 134217848 106 117 115 116 45 111 110 101 45 115 112 97 99 101 return 106 1] 0 "%d"))
+           arg)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------------------------------,
@@ -2851,6 +2884,10 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
                    (candidates . ,(current-minor-modes))
                    (action . intern))))
 
+(defun minor-mode-set-lighter (mode lighter)
+  (setcar (cdr (assoc 'mozc-mode minor-mode-alist))
+          lighter))
+
 ;; -------------------------------------------------------------------------------
 
   ;; TODO: write replace-line function.
@@ -2984,7 +3021,8 @@ variable name being but a special case of it)."
 ;; ,-------------------,
 ;; | Load Private Data |
 ;; '-------------------'
-(load "~/.emacs.d/private/private-data.el")
+(when (file-readable-p "~/.emacs.d/private/private-data.el")
+  (load "~/.emacs.d/private/private-data.el"))
 
   )
 
