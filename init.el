@@ -49,6 +49,12 @@ values."
           )
      python
      racket
+     (ranger :variables
+             ranger-show-preview t
+             ranger-cleanup-eagerly t
+             ranger-show-dotfiles t
+             ranger-ignored-extensions '("mkv" "iso" "mp4" "avi")
+             ranger-max-preview-size 10)
      (ruby :variables
            ruby-version-manager 'rvm
            inf-ruby-default-implementation "pry"
