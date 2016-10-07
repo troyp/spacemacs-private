@@ -1,0 +1,3 @@
+[submodule "layer-groups/bb-spacemacs-layers"]
+	path = layer-groups/bb-spacemacs-layers
+	url = https://github.com/TheBB/spacemacs-layers.git
