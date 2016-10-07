@@ -13,7 +13,13 @@ values."
    dotspacemacs-distribution 'spacemacs
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+
+   ;; dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path
+   (list
+    (expand-file-name (file-name-as-directory "private/layer-groups/bb-spacemacs-layers")
+                      user-emacs-directory)
+    )
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
@@ -75,6 +81,8 @@ values."
      (vinegar :variables
               vinegar-reuse-dired-buffer t)
      vimscript
+     ;; LOCAL LAYERS
+     no-dots
      troyp
      )
    ;; List of additional packages that will be installed without being
