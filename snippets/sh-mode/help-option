@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: help-option
+# key: -h
+# --
+if [[ "\$1" =~ ^-h$\|^--help$ ]]; then
+    cat <<EOF
+$0
+EOF
+    shift; fi;
