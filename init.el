@@ -730,6 +730,7 @@ you should place you code here."
              ("n"      . aya-create-snippet-with-newline)
              ("<tab>"  . helm-yas-complete)
              ("y"      . yas-new-snippet)
+             ("v"      . yas-visit-snippet-file)
              )
   (defun aya-create-snippet-with-newline ()
     (interactive)
