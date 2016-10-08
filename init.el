@@ -93,11 +93,6 @@ values."
    '(
      ;; quelpa-use-package
      dired-sort-menu
-     (dired+ :variables
-             diredp-hide-details-initially-flag t
-             diredp-hide-details-propagate-flag t
-             )
-     lacarte
      ;; libraries
      cl-lib-highlight
      (dash            :location (recipe :fetcher github :repo "magnars/dash.el" :files ("dash.el")))
@@ -126,7 +121,10 @@ values."
      ;; Drew Adams Packages
      autofit-frame
      ;; bookmark+
-     column-enforce-mode
+     (dired+ :variables
+             diredp-hide-details-initially-flag t
+             diredp-hide-details-propagate-flag t
+             )
      dired-sort-menu+
      doremi
      doremi-cmd
@@ -135,13 +133,10 @@ values."
      eyedropper
      facemenu+
      faces+
-     firefox-controller
      fit-frame
-     flycheck-package
      font-lock+
      frame-cmds
      frame-fns
-     helm-firefox
      help-fns+
      help-mode+
      help+
@@ -149,20 +144,26 @@ values."
      highlight
      isearch+
      isearch-prop
-     frame-cmds
-     frame-fns
-     mozc
-     move-dup
+     lacarte
      naked
      palette
      replace+
      strings
      thingatpt+
      thumb-frm
-     top-mode
      ucs-cmds
      wid-edit+
      zoom-frm
+     ;; ---------------
+
+     column-enforce-mode
+     (dirtree :local :location "~/.emacs.d/private/local/ye-wenbin/dirtree.el")
+     firefox-controller
+     flycheck-package
+     helm-firefox
+     mozc
+     move-dup
+     top-mode
      )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -467,6 +468,8 @@ you should place you code here."
       ))
   (loop for pkg in dotspacemacs-additional-local-packages do
         (require pkg nil :noerror))
+
+  (use-package dirtree)
 
   ;; ==============================================================================
   ;;                             *******************
