@@ -1983,7 +1983,7 @@ you should place you code here."
   ;; | Align |
   ;; '-------'
 
-  (spacemacs|create-align-repeat-x "period" "." nil t)
+  (spacemacs|create-align-repeat-x "period" "\\." t nil)
   (spacemacs|create-align-repeat-x "quote" "'")
   (spacemacs|create-align-repeat-x "double-quote" "\"")
   (spacemacs|create-align-repeat-x "dash" "-")
