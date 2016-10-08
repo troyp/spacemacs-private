@@ -659,6 +659,8 @@ you should place you code here."
   (bind-key* "M-0" 'universal-argument)
   (bind-key* "<C-tab>" 'next-multiframe-window)
   (bind-key* "<C-S-iso-lefttab>" 'previous-multiframe-window)
+  (bind-key* "<M-delete>" 'kill-this-buffer)
+  (bind-key* "<M-S-delete>" 'kill-buffer-and-window)
   ;; =================================================
 
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
