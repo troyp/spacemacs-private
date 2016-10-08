@@ -655,7 +655,11 @@ you should place you code here."
   ;; | Global Bindings |
   ;; '-----------------'
 
+  ;; ===== High Priority: override mode bindings =====
   (bind-key* "M-0" 'universal-argument)
+  (bind-key* "<C-tab>" 'next-multiframe-window)
+  (bind-key* "<C-S-iso-lefttab>" 'previous-multiframe-window)
+  ;; =================================================
 
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
 
@@ -663,8 +667,6 @@ you should place you code here."
                             (async-shell-command "x-terminal-emulator")))
   (global-set-key [\M-f4] 'kill-buffer-and-window)
 
-  (global-set-key (kbd "<C-tab>") 'next-multiframe-window)
-  (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-multiframe-window)
   ;; change C-x - from 'shrink-window-if-larger-than-buffer to 'fit-window-to-buffer
   (global-set-key (kbd "\C-x -") 'fit-window-to-buffer)
 
