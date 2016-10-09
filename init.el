@@ -912,6 +912,7 @@ you should place you code here."
     "f / e"        'spacemacs/sudo-edit
     "f / b"        'sudo-edit-this-file
     "f <insert>"   'find-file-clipboard
+    "g C-x v"      'vc-prefix-map
     ;; "h"            'help-prefix-map
     "h a"          'apropos
     "h f f"        'find-function
