@@ -953,6 +953,8 @@ you should place you code here."
     "x a #"        'spacemacs/align-repeat-hash
     "x a C-;"      'spacemacs/align-repeat-semicolon-comment
     "x a C-/"      'spacemacs/align-repeat-slash-comment
+    "x a C-'"      'tsp-align-quoted-column
+    "x a C-\""     'tsp-align-double-quoted-column
     "x a SPC"      'quick-pcre-align-repeat
     "x a S-SPC"    'quick-pcre-align
     "x l U"        'delete-duplicate-lines-nonblank
@@ -2898,6 +2900,17 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
                             "\\b"
                             str)))))
         (avy--generic-jump regex arg avy-style)))))
+
+(defun tsp-align-quoted-column (beg end)
+  (interactive "r")
+  (quick-pcre-align-repeat beg end " (?:')")
+  (evil-indent beg end))
+
+(defun tsp-align-double-quoted-column (beg end)
+  (interactive "r")
+  (quick-pcre-align-repeat beg end " (?:\")")
+  (evil-indent beg end))
+
 
 ;; -------------------------------------------------------------------------------
 ;; ,-------------,
