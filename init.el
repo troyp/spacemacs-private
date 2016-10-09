@@ -1376,11 +1376,13 @@ you should place you code here."
         [f2]           'dired-toggle-read-only
         (kbd "H")      'dired-do-hard-link
         (kbd "C-h")    nil
+        (kbd "\"")     'evil-use-register
         )
+
       ;; T is the prefix key for the tags commands
       (which-key-add-major-mode-key-based-replacements 'dired-mode
-        "T"      "tags"
-        "M-+"    "diredp-recursive-map"
+        "T"    "tags"
+        "M-+"  "diredp-recursive-map"
         "y"    "copy--as-kill"
         )
       ;; set function definition of 'dired-mode-map (same as value)
