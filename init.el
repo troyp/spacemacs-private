@@ -1733,21 +1733,20 @@ you should place you code here."
   ;; '-------'
 
 
-  (defun magit-init ()
+  (defun magit-init-fn ()
     (interactive)
     ;; remove C-tab binding which shadows #'next-multiframe-window binding
     ;; replace with C-` binding
     (bind-key "<C-tab>" nil magit-mode-map)
     (bind-keys
      :map magit-mode-map
-     ("<C-tab>" . magit-mode-map)
+     ("<C-tab>" . nil)
      ("<C-`>"   . magit-section-cycle)
-     )
-    )
+     ))
 
-  (eval-after-load 'magit
+  (eval-after-load 'magit-mode
     `(progn
-       (add-hook 'magit-mode-hook 'magit-init)
+       (add-hook 'magit-mode-hook 'magit-init-fn)
        ))
 
   ;; -------------------------------------------------------------------------------
