@@ -427,11 +427,11 @@ you should place you code here."
 
 
   ;; ==============================================================================
-                                ;; ***************
-                                ;; *             *
-                                ;; * ENVIRONMENT *
-                                ;; *             *
-                                ;; ***************
+  ;; ***************
+  ;; *             *
+  ;; * ENVIRONMENT *
+  ;; *             *
+  ;; ***************
 
   (setenv "PATH" (concat "/home/troy/.nvm/versions/node/v0.12.7/bin" ":" (getenv "PATH")))
   (add-to-list 'exec-path "/home/troy/.nvm/versions/node/v0.12.7/bin")
@@ -454,18 +454,18 @@ you should place you code here."
 
   (defvar dotspacemacs-additional-local-packages)
   (setf dotspacemacs-additional-local-packages
-    '(
-      dired+
-      find-func+
-      firefox-protocol
-      help-macro+
-      ibuffer-hydra
-      evil-adjust
-      ;; evil-visual-replace
-      ;; fn
-      ;; ls
-      t
-      ))
+        '(
+          dired+
+          find-func+
+          firefox-protocol
+          help-macro+
+          ibuffer-hydra
+          evil-adjust
+          ;; evil-visual-replace
+          ;; fn
+          ;; ls
+          t
+          ))
   (loop for pkg in dotspacemacs-additional-local-packages do
         (require pkg nil :noerror))
 
@@ -563,11 +563,11 @@ you should place you code here."
   (add-hook 'kill-emacs-hook #'my-save-all-undo-history)
   (add-hook 'kill-buffer-hook #'my-save-undo-history)
 
-;; ===============================================================================
-;;                                      _________
-;;                                     |         |
-;;                                     | UNICODE |
-;;                                     |_________|
+  ;; ===============================================================================
+  ;;                                      _________
+  ;;                                     |         |
+  ;;                                     | UNICODE |
+  ;;                                     |_________|
 
   ;; ,----------,
   ;; | Digraphs |
@@ -587,21 +587,21 @@ you should place you code here."
     (expand-file-name "docs/evil-digraphs-table.txt"
                       spacemacs-private-directory))
 
-;; ,-------------,
-;; | Compose Key |
-;; '-------------'
+  ;; ,-------------,
+  ;; | Compose Key |
+  ;; '-------------'
 
   (define-helm-occur-function "compose"
     "/usr/share/X11/locale/en_US.UTF-8/Compose")
 
 
 
-;; ==============================================================================
-;;                                 ****************
-;;                                 *              *
-;;                                 * KEY-BINDINGS *
-;;                                 *              *
-;;                                 ****************
+  ;; ==============================================================================
+  ;;                                 ****************
+  ;;                                 *              *
+  ;;                                 * KEY-BINDINGS *
+  ;;                                 *              *
+  ;;                                 ****************
 
   (defmacro def-variable-toggle (var)
     (let* ((fname `(concat "toggle-" (symbol-name ',var)))
@@ -853,9 +853,9 @@ you should place you code here."
   (define-key 'evil-motion-close-bracket-prefix-map "b" "t)")
   (define-key 'evil-motion-close-bracket-prefix-map "B" "t(")
 
-;; ,--------------,
-;; | INSERT STATE |
-;; '--------------'
+  ;; ,--------------,
+  ;; | INSERT STATE |
+  ;; '--------------'
   (define-key evil-insert-state-map (kbd "C-S-a") 'evil-paste-last-insertion)
   (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line-or-text)
   (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
@@ -1349,60 +1349,60 @@ you should place you code here."
   ;; wdired-mode :                normal state
 
   (eval-after-load "dired"
-   `(progn
-      (require 'dired+)
+    `(progn
+       (require 'dired+)
 
-      (define-key dired-mode-map (kbd "C-h") nil)
+       (define-key dired-mode-map (kbd "C-h") nil)
 
-      ;; keys
-      (evilified-state-evilify-map dired-mode-map
-        :mode dired-mode
-        :bindings
-        (kbd "c")      'diredp-copy-this-file
-        (kbd "gd")     'dired-hide-details-mode
-        (kbd "gu")     'diredp-up-directory-reuse-dir-buffer
-        (kbd "gw")     'dired-toggle-read-only
-        (kbd "j")      'diredp-next-line
-        (kbd "k")      'diredp-previous-line
-        ;; copy name/path bindings: as in ranger
-        (kbd "yd")     'dired-copy-file-directory-as-kill
-        (kbd "yn")     'dired-copy-filename-as-kill
-        (kbd "yp")     'dired-copy-file-path-as-kill
-        ;; (kbd "{")      'evil-backward-paragraph
-        ;; (kbd "}")      'evil-forward-paragraph
-        (kbd "{")      'dired-prev-subdir
-        (kbd "}")      'dired-next-subdir
-        (kbd "C-n")    'ido-find-file
-        (kbd "M-=")    'dired-create-directory
-        (kbd "M-DEL")  'diredp-up-directory-reuse-dir-buffer
-        [f2]           'dired-toggle-read-only
-        (kbd "H")      'dired-do-hard-link
-        (kbd "C-h")    nil
-        (kbd "\"")     'evil-use-register
-        )
+       ;; keys
+       (evilified-state-evilify-map dired-mode-map
+         :mode dired-mode
+         :bindings
+         (kbd "c")      'diredp-copy-this-file
+         (kbd "gd")     'dired-hide-details-mode
+         (kbd "gu")     'diredp-up-directory-reuse-dir-buffer
+         (kbd "gw")     'dired-toggle-read-only
+         (kbd "j")      'diredp-next-line
+         (kbd "k")      'diredp-previous-line
+         ;; copy name/path bindings: as in ranger
+         (kbd "yd")     'dired-copy-file-directory-as-kill
+         (kbd "yn")     'dired-copy-filename-as-kill
+         (kbd "yp")     'dired-copy-file-path-as-kill
+         ;; (kbd "{")      'evil-backward-paragraph
+         ;; (kbd "}")      'evil-forward-paragraph
+         (kbd "{")      'dired-prev-subdir
+         (kbd "}")      'dired-next-subdir
+         (kbd "C-n")    'ido-find-file
+         (kbd "M-=")    'dired-create-directory
+         (kbd "M-DEL")  'diredp-up-directory-reuse-dir-buffer
+         [f2]           'dired-toggle-read-only
+         (kbd "H")      'dired-do-hard-link
+         (kbd "C-h")    nil
+         (kbd "\"")     'evil-use-register
+         )
 
-      ;; T is the prefix key for the tags commands
-      (which-key-add-major-mode-key-based-replacements 'dired-mode
-        "T"    "tags"
-        "M-+"  "diredp-recursive-map"
-        "y"    "copy--as-kill"
-        )
-      ;; set function definition of 'dired-mode-map (same as value)
-      (fset 'dired-mode-map dired-mode-map)
-      ;; major-mode leader-key
-      (spacemacs/set-leader-keys-for-major-mode 'dired-mode
-        "c"     'dired-mode-map
-        "to"    'dired-omit-mode
-        "tr"    'toggle-diredp-find-file-reuse-dir
-        "v"     'dired-view-file    ;; for discovery - can just use \v
-        "Y"     'diredp-relsymlink-this-file
-        )
-      (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
+       ;; T is the prefix key for the tags commands
+       (which-key-add-major-mode-key-based-replacements 'dired-mode
+         "T"    "tags"
+         "M-+"  "diredp-recursive-map"
+         "y"    "copy--as-kill"
+         )
+       ;; set function definition of 'dired-mode-map (same as value)
+       (fset 'dired-mode-map dired-mode-map)
+       ;; major-mode leader-key
+       (spacemacs/set-leader-keys-for-major-mode 'dired-mode
+         "c"     'dired-mode-map
+         "to"    'dired-omit-mode
+         "tr"    'toggle-diredp-find-file-reuse-dir
+         "v"     'dired-view-file    ;; for discovery - can just use \v
+         "Y"     'diredp-relsymlink-this-file
+         )
+       (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
 
-      ;; wdired-mode
-      (evil-set-initial-state 'wdired-mode 'normal)
-      )
-   )
+       ;; wdired-mode
+       (evil-set-initial-state 'wdired-mode 'normal)
+       )
+    )
 
   (eval-after-load "dired+" `(diredp-toggle-find-file-reuse-dir 1))
   (eval-after-load "dired-sort-menu" `(require 'dired-sort-menu+))
@@ -1498,7 +1498,7 @@ you should place you code here."
     )
 
 
-; -------------------------------------------------------------------------------
+                                        ; -------------------------------------------------------------------------------
   ;; ,--------------,
   ;; | helm-firefox |
   ;; '--------------'
@@ -1559,10 +1559,10 @@ you should place you code here."
   (evil-set-initial-state 'ibuffer-mode 'evilified)
   (eval-after-load 'ibuffer
     `(progn
-      (require 'ibuffer-hydra)
-      (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
-      (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
-      ))
+       (require 'ibuffer-hydra)
+       (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
+       (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
+       ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
@@ -2342,7 +2342,7 @@ temporarily enables it to allow getting help on disabled items and buttons."
   (defun markdown-export-to-html-and-view ()
     (interactive)
     (let ((fname (or (markdown-export-file-name)
-                    (make-temp-file "markdown-output"))))
+                     (make-temp-file "markdown-output"))))
       (browse-file-with-external-application (markdown-export fname))))
 
   ;; REGION-BEGINNING and REGION-END
@@ -2589,9 +2589,9 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
         (line-below-blank-p n)))
 
 
-;; ======================
-;; delete duplicate lines
-;; ======================
+  ;; ======================
+  ;; delete duplicate lines
+  ;; ======================
 
   (defun delete-duplicate-lines-nonblank
       (beg end &optional reverse adjacent delete-blanks interactive)
@@ -2656,10 +2656,10 @@ within the region."
       (find-file f)))
 
 
-;; ================
-;; shift left/right
-;; ================
-;; TODO: non-hackish versions
+  ;; ================
+  ;; shift left/right
+  ;; ================
+  ;; TODO: non-hackish versions
 
   (defun evil-shift-left-fine ()
     (interactive)
@@ -2727,362 +2727,362 @@ Ie., each line is treated as a distinct paragraph."
     (fill-paragraph nil t)
     (replace-string "\n\n" "\n" nil beg end))
 
-;; FIXME: splits the line after region (near start of line); irregular indentation.
-(defun wrap-region-or-comment (beg end)
-  "An interactive function to split lines longer than `fill-column'.
+  ;; FIXME: splits the line after region (near start of line); irregular indentation.
+  (defun wrap-region-or-comment (beg end)
+    "An interactive function to split lines longer than `fill-column'.
 Splits long lines in the region using `fill-paragraph', but never joins lines.
 Ie., each line is treated as a distinct paragraph.
 Comments are first uncommented using `evilnc-comment-or-uncomment-region' before
 wrapping and then re-commented."
-  (interactive "r")
-  (let ((comment? (evilnc--in-comment-p beg)))
-    (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
-    (when comment? (evilnc--comment-or-uncomment-region beg end))
-    (replace-string "\n" "\n\n" nil beg end)
-    (evil-active-region 1)
-    (fill-paragraph nil t)
-    (replace-string "\n\n" "\n" nil beg end)
-    (when comment? (evilnc--comment-or-uncomment-region beg end))))
+    (interactive "r")
+    (let ((comment? (evilnc--in-comment-p beg)))
+      (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+      (when comment? (evilnc--comment-or-uncomment-region beg end))
+      (replace-string "\n" "\n\n" nil beg end)
+      (evil-active-region 1)
+      (fill-paragraph nil t)
+      (replace-string "\n\n" "\n" nil beg end)
+      (when comment? (evilnc--comment-or-uncomment-region beg end))))
 
-(defun helm-yank-symbol-at-point ()
-  "Yank the symbol at point in `helm-current-buffer' into minibuffer."
-  (interactive)
-  (with-helm-current-buffer
-    (let ((sym (symbol-name (symbol-at-point))))
-      (helm-set-pattern (concat helm-pattern sym)))))
+  (defun helm-yank-symbol-at-point ()
+    "Yank the symbol at point in `helm-current-buffer' into minibuffer."
+    (interactive)
+    (with-helm-current-buffer
+      (let ((sym (symbol-name (symbol-at-point))))
+        (helm-set-pattern (concat helm-pattern sym)))))
 
-(defun find-function-other-window-noselect (function)
-  "Display the source of FUNCTION in other window."
-  (interactive (find-function-read))
-  (let ((thiswin (selected-window)))
-    (find-function-other-window function)
-    (select-window thiswin)
-    ))
+  (defun find-function-other-window-noselect (function)
+    "Display the source of FUNCTION in other window."
+    (interactive (find-function-read))
+    (let ((thiswin (selected-window)))
+      (find-function-other-window function)
+      (select-window thiswin)
+      ))
 
-(defun rectangle-number-lines-interactive ()
-  "Insert a column of incrementing numbers in the rectangular region.
+  (defun rectangle-number-lines-interactive ()
+    "Insert a column of incrementing numbers in the rectangular region.
 The command prompts for an initial number and a format string.
 The format string is interpreted as in the `format' function.
 See also `rectangle-number-lines'."
-  (interactive)
-  (let ((current-prefix-arg 4))
-    (call-interactively #'rectangle-number-lines)))
+    (interactive)
+    (let ((current-prefix-arg 4))
+      (call-interactively #'rectangle-number-lines)))
 
-(defun current-mode-and-state()
-  "Display the current `evil-state' and `major-mode' in the minibuffer."
-  (interactive)
-  (let ((s (format "evil-state: %S || major-mode: %S"
-                   evil-state
-                   major-mode)))
-    (message s)))
+  (defun current-mode-and-state()
+    "Display the current `evil-state' and `major-mode' in the minibuffer."
+    (interactive)
+    (let ((s (format "evil-state: %S || major-mode: %S"
+                     evil-state
+                     major-mode)))
+      (message s)))
 
-(defun sprint-keymap (map)
-  (with-temp-buffer
-    (cl-prettyprint map)
-    (replace-ints-with-char (point-min) (point-max))
-    (buffer-string)))
+  (defun sprint-keymap (map)
+    (with-temp-buffer
+      (cl-prettyprint map)
+      (replace-ints-with-char (point-min) (point-max))
+      (buffer-string)))
 
-(defun symbol-or-function-near-point ()
-  (or (when (fboundp 'symbol-nearest-point) (symbol-nearest-point))
-      (function-called-at-point)))
+  (defun symbol-or-function-near-point ()
+    (or (when (fboundp 'symbol-nearest-point) (symbol-nearest-point))
+        (function-called-at-point)))
 
-(defun prettyprint-keymap (map)
-  "Insert a pretty-printed representation of a keymap."
-  (interactive (list
-                (completing-read "keymap: " obarray
-                                 nil nil
-                                 (symbol-name (symbol-or-function-near-point)))))
-  (when (stringp map) (setq map (intern map)))
-  (when (symbolp map) (setq map (eval map)))
-  (move-end-of-line 1)
-  (newline)
-  (insert (sprint-keymap map)))
+  (defun prettyprint-keymap (map)
+    "Insert a pretty-printed representation of a keymap."
+    (interactive (list
+                  (completing-read "keymap: " obarray
+                                   nil nil
+                                   (symbol-name (symbol-or-function-near-point)))))
+    (when (stringp map) (setq map (intern map)))
+    (when (symbolp map) (setq map (eval map)))
+    (move-end-of-line 1)
+    (newline)
+    (insert (sprint-keymap map)))
 
-(defun extend-to-column (&optional col set-fill-column)
-  "Extend line to column COL by adding spaces, if necessary.
+  (defun extend-to-column (&optional col set-fill-column)
+    "Extend line to column COL by adding spaces, if necessary.
 
 Interactively, COL is provided as a prefix argument. If COL is omitted, the
 value of `fill-column' is used.
 
 If SET-FILL-COLUMN is true, or if the prefix argument is negative, the (positive)
 value of COL is additionally set as the new value of `fill-column'."
-  (interactive "p")
-  (when (or (null col)
-            (and (called-interactively-p) (null current-prefix-arg)))
-    (setq col fill-column))
-  (when (and (called-interactively-p) (< col 0))
-    (setq set-fill-column t)
-    (setq col (abs col)))
-  (when set-fill-column
-    (setf fill-column col))
-  (move-to-column col t))
+    (interactive "p")
+    (when (or (null col)
+              (and (called-interactively-p) (null current-prefix-arg)))
+      (setq col fill-column))
+    (when (and (called-interactively-p) (< col 0))
+      (setq set-fill-column t)
+      (setq col (abs col)))
+    (when set-fill-column
+      (setf fill-column col))
+    (move-to-column col t))
 
-(defun rgrep-with-ignored (regexp ignored files dir)
-  (interactive "sREGEXP: \nsIGNORED: \nFILES: \nDIR: ")
-  (let ((grep-find-ignored-directories (append ignored grep-find-ignored-directories)))
-    (rgrep regexp files dir)))
+  (defun rgrep-with-ignored (regexp ignored files dir)
+    (interactive "sREGEXP: \nsIGNORED: \nFILES: \nDIR: ")
+    (let ((grep-find-ignored-directories (append ignored grep-find-ignored-directories)))
+      (rgrep regexp files dir)))
 
-(defun spacemacs-rgrep (regexp)
-  (interactive "sREGEXP: ")
-  (let ((grep-find-ignored-directories (cons ".cache" grep-find-ignored-directories)))
+  (defun spacemacs-rgrep (regexp)
+    (interactive "sREGEXP: ")
+    (let ((grep-find-ignored-directories (cons ".cache" grep-find-ignored-directories)))
+      (rgrep regexp
+             ".spacemacs* *.el"
+             (expand-file-name user-emacs-directory))))
+
+  (defun spacemacs-only-rgrep (regexp)
+    (interactive "sREGEXP: ")
+    (rgrep-with-ignored regexp
+                        '(".cache" "elpa" "private")
+                        ".spacemacs* *.el"
+                        (expand-file-name user-emacs-directory)))
+
+  (defun spacemacs-private-rgrep (regexp)
+    (interactive "sREGEXP: ")
+    (rgrep-with-ignored regexp
+                        '(".cache")
+                        ".spacemacs* *.el"
+                        (expand-file-name "private" user-emacs-directory)))
+
+  (defun elpa-rgrep (regexp)
+    (interactive "sREGEXP: ")
     (rgrep regexp
            ".spacemacs* *.el"
-           (expand-file-name user-emacs-directory))))
+           (expand-file-name "elpa/" user-emacs-directory)))
 
-(defun spacemacs-only-rgrep (regexp)
-  (interactive "sREGEXP: ")
-  (rgrep-with-ignored regexp
-                      '(".cache" "elpa" "private")
-                      ".spacemacs* *.el"
-                      (expand-file-name user-emacs-directory)))
+  (defun dired-spacemacs-private-directory ()
+    "Open `dired' in `spacemacs-private-directory'."
+    (interactive)
+    (dired spacemacs-private-directory))
 
-(defun spacemacs-private-rgrep (regexp)
-  (interactive "sREGEXP: ")
-  (rgrep-with-ignored regexp
-                      '(".cache")
-                      ".spacemacs* *.el"
-                      (expand-file-name "private" user-emacs-directory)))
+  (defun dired-spacemacs-directory ()
+    "Open `dired' in the `user-emacs-directory'."
+    (interactive)
+    (dired user-emacs-directory))
 
-(defun elpa-rgrep (regexp)
-  (interactive "sREGEXP: ")
-  (rgrep regexp
-         ".spacemacs* *.el"
-         (expand-file-name "elpa/" user-emacs-directory)))
-
-(defun dired-spacemacs-private-directory ()
-  "Open `dired' in `spacemacs-private-directory'."
-  (interactive)
-  (dired spacemacs-private-directory))
-
-(defun dired-spacemacs-directory ()
-  "Open `dired' in the `user-emacs-directory'."
-  (interactive)
-  (dired user-emacs-directory))
-
-(defun prettyexpand-at-point ()
-  "Pretty print macro-expansion of sexp at point.
+  (defun prettyexpand-at-point ()
+    "Pretty print macro-expansion of sexp at point.
 
 Inserts the expansion on a new line at the end of the sexp."
-  (interactive)
-  (let ((sexp (sexp-at-point)))
-    (forward-sexp)
-    (newline)
-    (insert (cl-prettyexpand sexp))))
+    (interactive)
+    (let ((sexp (sexp-at-point)))
+      (forward-sexp)
+      (newline)
+      (insert (cl-prettyexpand sexp))))
 
-(defun describe-bindings-orig ()
-  (interactive)
-  (let ((helm-descbinds-mode? helm-descbinds-mode))
-    (helm-descbinds-mode 0)
-    (describe-bindings)
-    (when helm-descbinds-mode? (helm-descbinds-mode 1))))
+  (defun describe-bindings-orig ()
+    (interactive)
+    (let ((helm-descbinds-mode? helm-descbinds-mode))
+      (helm-descbinds-mode 0)
+      (describe-bindings)
+      (when helm-descbinds-mode? (helm-descbinds-mode 1))))
 
-(defun avy-goto-form-feed ()
-  (interactive)
-  (avy-goto-subword-0 1 (lambda () (= 12 (char-after)))))
+  (defun avy-goto-form-feed ()
+    (interactive)
+    (avy-goto-subword-0 1 (lambda () (= 12 (char-after)))))
 
-;; redefine - make avy work with form-feed
-(defun avy-goto-word-1 (char &optional arg)
-  "Jump to the currently visible CHAR at a word start.
+  ;; redefine - make avy work with form-feed
+  (defun avy-goto-word-1 (char &optional arg)
+    "Jump to the currently visible CHAR at a word start.
 The window scope is determined by `avy-all-windows' (ARG negates it)."
-  (interactive (list (read-char "char: " t)
-                     current-prefix-arg))
-  (if (= char 12)
-      (avy-goto-subword-0 1 (lambda () (= 12 (char-after))))
-    (avy-with avy-goto-word-1
-      (let* ((str (string char))
-             (regex (cond ((string= str ".")
-                           "\\.")
-                          ((and avy-word-punc-regexp
-                                (string-match avy-word-punc-regexp str))
-                           (regexp-quote str))
-                          (t
-                           (concat
-                            "\\b"
-                            str)))))
-        (avy--generic-jump regex arg avy-style)))))
+    (interactive (list (read-char "char: " t)
+                       current-prefix-arg))
+    (if (= char 12)
+        (avy-goto-subword-0 1 (lambda () (= 12 (char-after))))
+      (avy-with avy-goto-word-1
+        (let* ((str (string char))
+               (regex (cond ((string= str ".")
+                             "\\.")
+                            ((and avy-word-punc-regexp
+                                  (string-match avy-word-punc-regexp str))
+                             (regexp-quote str))
+                            (t
+                             (concat
+                              "\\b"
+                              str)))))
+          (avy--generic-jump regex arg avy-style)))))
 
-(defun tsp-align-quoted-column (beg end)
-  (interactive "r")
-  (quick-pcre-align-repeat beg end " (?:')")
-  (evil-indent beg end))
+  (defun tsp-align-quoted-column (beg end)
+    (interactive "r")
+    (quick-pcre-align-repeat beg end " (?:')")
+    (evil-indent beg end))
 
-(defun tsp-align-double-quoted-column (beg end)
-  (interactive "r")
-  (quick-pcre-align-repeat beg end " (?:\")")
-  (evil-indent beg end))
+  (defun tsp-align-double-quoted-column (beg end)
+    (interactive "r")
+    (quick-pcre-align-repeat beg end " (?:\")")
+    (evil-indent beg end))
 
 
-;; -------------------------------------------------------------------------------
-;; ,-------------,
-;; | Minor Modes |
-;; '-------------'
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------------,
+  ;; | Minor Modes |
+  ;; '-------------'
 
-(defun current-minor-modes ()
-  (--filter (and (boundp it) (eval it))
-            minor-mode-list))
+  (defun current-minor-modes ()
+    (--filter (and (boundp it) (eval it))
+              minor-mode-list))
 
-(defun add-minor-mode-menu ()
-  (interactive)
-  (defvar minor-mode-menu (make-sparse-keymap "Minor Modes"))
-  (define-key-after
-    global-map
-    [menu-bar minor-modes]
-    (cons "Minor Modes" minor-mode-menu)
-    'Perspectives)
-  (dolist (mmode (current-minor-modes))
-    (eval `(define-key minor-mode-menu [,mmode] '(menu-item ,(symbol-name mmode) ,mmode :help ,(format "Toggle %S" mmode))))))
+  (defun add-minor-mode-menu ()
+    (interactive)
+    (defvar minor-mode-menu (make-sparse-keymap "Minor Modes"))
+    (define-key-after
+      global-map
+      [menu-bar minor-modes]
+      (cons "Minor Modes" minor-mode-menu)
+      'Perspectives)
+    (dolist (mmode (current-minor-modes))
+      (eval `(define-key minor-mode-menu [,mmode] '(menu-item ,(symbol-name mmode) ,mmode :help ,(format "Toggle %S" mmode))))))
 
-(defun helm-describe-minor-modes ()
-  (interactive)
-  (helm :sources `((name . "minor modes")
-                   (candidates . ,(current-minor-modes))
-                   (action . describe-function))))
+  (defun helm-describe-minor-modes ()
+    (interactive)
+    (helm :sources `((name . "minor modes")
+                     (candidates . ,(current-minor-modes))
+                     (action . describe-function))))
 
-(defun helm-choose-minor-mode ()
-  (interactive)
-  (helm :sources `((name . "minor modes")
-                   (candidates . ,(current-minor-modes))
-                   (action . intern))))
+  (defun helm-choose-minor-mode ()
+    (interactive)
+    (helm :sources `((name . "minor modes")
+                     (candidates . ,(current-minor-modes))
+                     (action . intern))))
 
-(defun minor-mode-set-lighter (mode lighter)
-  (setcar (cdr (assoc 'mozc-mode minor-mode-alist))
-          lighter))
+  (defun minor-mode-set-lighter (mode lighter)
+    (setcar (cdr (assoc 'mozc-mode minor-mode-alist))
+            lighter))
 
-;; -------------------------------------------------------------------------------
+  ;; -------------------------------------------------------------------------------
 
   ;; TODO: write replace-line function.
 
-;; -------------------------------------------------------------------------------
-;; ,-----------------------,
-;; | Temporary Workarounds |
-;; '-----------------------'
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------------------,
+  ;; | Temporary Workarounds |
+  ;; '-----------------------'
 
-;; ==================================
-;; fix deprecated 'avy--with-avy-keys
-;; ==================================
-(eval-after-load "avy"
-  '(when (and (funboundp 'avy--with-avy-keys)
-              (fboundp   'avy-with))
-     (defalias 'avy--with-avy-keys 'avy-with)))
+  ;; ==================================
+  ;; fix deprecated 'avy--with-avy-keys
+  ;; ==================================
+  (eval-after-load "avy"
+    '(when (and (funboundp 'avy--with-avy-keys)
+                (fboundp   'avy-with))
+       (defalias 'avy--with-avy-keys 'avy-with)))
 
 
-;; ==========================================================
-;; describe-symbol command taken from emacs 25 sources (GPL3)
-;; ==========================================================
-(global-set-key (kbd "C-h y") 'describe-symbol)
+  ;; ==========================================================
+  ;; describe-symbol command taken from emacs 25 sources (GPL3)
+  ;; ==========================================================
+  (global-set-key (kbd "C-h y") 'describe-symbol)
 
 ;;;###autoload
-(defun describe-symbol (symbol &optional buffer frame)
-  "Display the full documentation of SYMBOL.
+  (defun describe-symbol (symbol &optional buffer frame)
+    "Display the full documentation of SYMBOL.
 Will show the info of SYMBOL as a function, variable, and/or face."
-  (interactive
-   ;; FIXME: also let the user enter a face name.
-   (let* ((v-or-f (variable-at-point))
-          (found (symbolp v-or-f))
-          (v-or-f (if found v-or-f (function-called-at-point)))
-          (found (or found v-or-f))
-          (enable-recursive-minibuffers t)
-          val)
-     (setq val (completing-read (if found (format "Describe symbol (default %s): " v-or-f)
-                                  "Describe symbol: ")
-                                obarray
-                                (lambda (vv) (cl-some (lambda (x) (funcall (nth 1 x) vv))
-                                                      describe-symbol-backends))
-                                t
-                                nil
-                                nil
-                                (if found (symbol-name v-or-f))))
-     (list (if (equal val "")
-               v-or-f (intern val)))))
-  (if (not (symbolp symbol))
-      (user-error "You didn't specify a function or variable"))
-  (unless (buffer-live-p buffer) (setq buffer (current-buffer)))
-  (unless (frame-live-p frame) (setq frame (selected-frame)))
-  (with-current-buffer (help-buffer)
-    ;; Push the previous item on the stack before clobbering the output buffer.
-    (help-setup-xref nil nil)
-    (let* ((docs
-            (nreverse
-             (delq nil
-                   (mapcar (pcase-lambda (`(,name ,testfn ,descfn))
-                                         (when (funcall testfn symbol)
-                                           ;; Don't record the current entry in the stack.
-                                           (setq help-xref-stack-item nil)
-                                           (cons name
-                                                 (funcall descfn symbol buffer frame))))
-                           describe-symbol-backends))))
-           (single (null (cdr docs))))
-      (while (cdr docs)
-        (goto-char (point-min))
-        (let ((inhibit-read-only t)
-              (name (caar docs))        ;Name of doc currently at BOB.
-              (doc (cdr (cadr docs))))  ;Doc to add at BOB.
-          (insert doc)
-          (delete-region (point) (progn (skip-chars-backward " \t\n") (point)))
-          (insert "\n\n"
-                  (eval-when-compile
-                    (propertize "\n" 'face '(:height 0.1 :inverse-video t)))
-                  "\n")
-          (when name
-            (insert (symbol-name symbol)
-                    " is also a " name "." "\n\n")))
-        (setq docs (cdr docs)))
-      (unless single
-        ;; Don't record the `describe-variable' item in the stack.
-        (setq help-xref-stack-item nil)
-        (help-setup-xref (list #'describe-symbol symbol) nil))
-      (goto-char (point-min)))))
+    (interactive
+     ;; FIXME: also let the user enter a face name.
+     (let* ((v-or-f (variable-at-point))
+            (found (symbolp v-or-f))
+            (v-or-f (if found v-or-f (function-called-at-point)))
+            (found (or found v-or-f))
+            (enable-recursive-minibuffers t)
+            val)
+       (setq val (completing-read (if found (format "Describe symbol (default %s): " v-or-f)
+                                    "Describe symbol: ")
+                                  obarray
+                                  (lambda (vv) (cl-some (lambda (x) (funcall (nth 1 x) vv))
+                                                        describe-symbol-backends))
+                                  t
+                                  nil
+                                  nil
+                                  (if found (symbol-name v-or-f))))
+       (list (if (equal val "")
+                 v-or-f (intern val)))))
+    (if (not (symbolp symbol))
+        (user-error "You didn't specify a function or variable"))
+    (unless (buffer-live-p buffer) (setq buffer (current-buffer)))
+    (unless (frame-live-p frame) (setq frame (selected-frame)))
+    (with-current-buffer (help-buffer)
+      ;; Push the previous item on the stack before clobbering the output buffer.
+      (help-setup-xref nil nil)
+      (let* ((docs
+              (nreverse
+               (delq nil
+                     (mapcar (pcase-lambda (`(,name ,testfn ,descfn))
+                               (when (funcall testfn symbol)
+                                 ;; Don't record the current entry in the stack.
+                                 (setq help-xref-stack-item nil)
+                                 (cons name
+                                       (funcall descfn symbol buffer frame))))
+                             describe-symbol-backends))))
+             (single (null (cdr docs))))
+        (while (cdr docs)
+          (goto-char (point-min))
+          (let ((inhibit-read-only t)
+                (name (caar docs))        ;Name of doc currently at BOB.
+                (doc (cdr (cadr docs))))  ;Doc to add at BOB.
+            (insert doc)
+            (delete-region (point) (progn (skip-chars-backward " \t\n") (point)))
+            (insert "\n\n"
+                    (eval-when-compile
+                      (propertize "\n" 'face '(:height 0.1 :inverse-video t)))
+                    "\n")
+            (when name
+              (insert (symbol-name symbol)
+                      " is also a " name "." "\n\n")))
+          (setq docs (cdr docs)))
+        (unless single
+          ;; Don't record the `describe-variable' item in the stack.
+          (setq help-xref-stack-item nil)
+          (help-setup-xref (list #'describe-symbol symbol) nil))
+        (goto-char (point-min)))))
 
-(defvar describe-symbol-backends
-  `((nil ,#'fboundp ,(lambda (s _b _f) (describe-function s)))
-    ("face" ,#'facep ,(lambda (s _b _f) (describe-face s)))
-    (nil
-     ,(lambda (symbol)
-        (or (and (boundp symbol) (not (keywordp symbol)))
-            (get symbol 'variable-documentation)))
-     ,#'describe-variable)))
+  (defvar describe-symbol-backends
+    `((nil ,#'fboundp ,(lambda (s _b _f) (describe-function s)))
+      ("face" ,#'facep ,(lambda (s _b _f) (describe-face s)))
+      (nil
+       ,(lambda (symbol)
+          (or (and (boundp symbol) (not (keywordp symbol)))
+              (get symbol 'variable-documentation)))
+       ,#'describe-variable)))
 
 ;;;###autoload
-(defmacro pcase-lambda (lambda-list &rest body)
-  "Like `lambda' but allow each argument to be a pattern.
+  (defmacro pcase-lambda (lambda-list &rest body)
+    "Like `lambda' but allow each argument to be a pattern.
 I.e. accepts the usual &optional and &rest keywords, but every
 formal argument can be any pattern accepted by `pcase' (a mere
 variable name being but a special case of it)."
-  (declare (doc-string 2) (indent defun)
-           (debug ((&rest pcase-PAT) body)))
-  (let* ((bindings ())
-         (parsed-body (macroexp-parse-body body))
-         (args (mapcar (lambda (pat)
-                         (if (symbolp pat)
-                             ;; Simple vars and &rest/&optional are just passed
-                             ;; through unchanged.
-                             pat
-                           (let ((arg (make-symbol
-                                       (format "arg%s" (length bindings)))))
-                             (push `(,pat ,arg) bindings)
-                             arg)))
-                       lambda-list)))
-    `(lambda ,args ,@(car parsed-body)
-       (pcase-let* ,(nreverse bindings) ,@(cdr parsed-body)))))
+    (declare (doc-string 2) (indent defun)
+             (debug ((&rest pcase-PAT) body)))
+    (let* ((bindings ())
+           (parsed-body (macroexp-parse-body body))
+           (args (mapcar (lambda (pat)
+                           (if (symbolp pat)
+                               ;; Simple vars and &rest/&optional are just passed
+                               ;; through unchanged.
+                               pat
+                             (let ((arg (make-symbol
+                                         (format "arg%s" (length bindings)))))
+                               (push `(,pat ,arg) bindings)
+                               arg)))
+                         lambda-list)))
+      `(lambda ,args ,@(car parsed-body)
+         (pcase-let* ,(nreverse bindings) ,@(cdr parsed-body)))))
 
 ;;;###autoload
-(defun macroexp-parse-body (body)
-  "Parse a function BODY into (DECLARATIONS . EXPS)."
-  (let ((decls ()))
-    (while (and (cdr body)
-                (let ((e (car body)))
-                  (or (stringp e)
-                      (memq (car-safe e)
-                            '(:documentation declare interactive cl-declare)))))
-      (push (pop body) decls))
-    (cons (nreverse decls) body)))
+  (defun macroexp-parse-body (body)
+    "Parse a function BODY into (DECLARATIONS . EXPS)."
+    (let ((decls ()))
+      (while (and (cdr body)
+                  (let ((e (car body)))
+                    (or (stringp e)
+                        (memq (car-safe e)
+                              '(:documentation declare interactive cl-declare)))))
+        (push (pop body) decls))
+      (cons (nreverse decls) body)))
 
-;; -------------------------------------------------------------------------------
-;; ,-------------------,
-;; | Load Private Data |
-;; '-------------------'
-(when (file-readable-p "~/.emacs.d/private/private-data.el")
-  (load "~/.emacs.d/private/private-data.el"))
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------------------,
+  ;; | Load Private Data |
+  ;; '-------------------'
+  (when (file-readable-p "~/.emacs.d/private/private-data.el")
+    (load "~/.emacs.d/private/private-data.el"))
 
   )
 
