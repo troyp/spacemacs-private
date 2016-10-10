@@ -17,8 +17,8 @@ values."
    ;; dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layer-path
    (list
-    (expand-file-name (file-name-as-directory "private/layer-groups/bb-spacemacs-layers")
-                      user-emacs-directory)
+    (expand-file-name (file-name-as-directory "private/layers/") user-emacs-directory)
+    (expand-file-name (file-name-as-directory "private/layer-groups/") user-emacs-directory)
     )
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
