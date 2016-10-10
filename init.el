@@ -1201,6 +1201,7 @@ you should place you code here."
   ;; ,------,
   ;; | Mozc |
   ;; '------'
+  ;; Note: requires mozc_emacs_helper program -- debian pkg emacs-mozc-bin
   (require 'mozc)
   (setq default-input-method "japanese-mozc")
   (setq mozc-candidate-style 'overlay)
