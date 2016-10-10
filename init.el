@@ -1355,7 +1355,13 @@ you should place you code here."
 
        (define-key dired-mode-map (kbd "C-h") nil)
 
-       ;; keys
+       ;; keys: dired-mode-map
+       (bind-keys
+        :map dired-mode-map
+        ("q" . tsp-quit-window-kill)
+        )
+
+       ;; keys: evilified-state
        (evilified-state-evilify-map dired-mode-map
          :mode dired-mode
          :bindings
@@ -2916,6 +2922,10 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
     (interactive "r")
     (quick-pcre-align-repeat beg end " (?:\")")
     (evil-indent beg end))
+
+  (defun tsp-quit-window-kill (&optional bury window)
+    (interactive "P")
+    (quit-window (not bury) window))
 
 
   ;; -------------------------------------------------------------------------------
