@@ -1403,6 +1403,9 @@ you should place you code here."
          "tr"    'toggle-diredp-find-file-reuse-dir
          "v"     'dired-view-file    ;; for discovery - can just use \v
          "Y"     'diredp-relsymlink-this-file
+         "x"     'tsp-dired-cut-or-copy-files
+         "p"     'tsp-dired-copy-files-here
+         "r"     'tsp-dired-move-files-here
          )
        (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
 
@@ -1429,6 +1432,35 @@ you should place you code here."
       "q"   'View-quit
       ))
   (add-hook 'view-mode-hook #'view-mode-init)
+
+  (defvar tsp-dired-files-to-move-or-copy '()
+    "Stores a list of files to be moved or copied by tsp-dired-*-files-here
+ commands.")
+
+  (defun tsp-dired-cut-or-copy-files (append)
+    (interactive "P")
+    (let ((files (dired-get-marked-files)))
+      (if append
+          (dolist (f files)
+            (add-to-list tsp-dired-files-to-move-or-copy f))
+        (setq tsp-dired-files-to-move-or-copy files))))
+
+  (defun tsp-dired-copy-files-here
+      (&optional overwrite
+                 keep-time preserve-uid-gid preserve-permissions)
+    (interactive "P")
+    (dolist (f tsp-dired-files-to-move-or-copy)
+      (let ((newpath (concat (dired-current-directory)
+                             (file-name-nondirectory f))))
+        (copy-file f newpath overwrite
+                   keep-time preserve-uid-gid preserve-permissions))))
+
+  (defun tsp-dired-move-files-here (&optional overwrite)
+    (interactive "P")
+    (dolist (f tsp-dired-files-to-move-or-copy)
+      (let ((newpath (concat (dired-current-directory)
+                             (file-name-nondirectory f))))
+        (rename-file f newpath overwrite))))
 
 
   ;; -------------------------------------------------------------------------------
