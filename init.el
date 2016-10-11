@@ -1876,10 +1876,12 @@ you should place you code here."
     (unbind-key "<C-tab>" org-mode-map)
     (bind-keys
      :map org-mode-map
-     ("<tab>" . org-next-link)
-     ("<S-iso-lefttab>" . org-previous-link)
-     )
-    )
+     ("<tab>" . org-cycle)
+     ("<S-iso-lefttab>" . nil)
+     ("<M-n>" . org-next-link)
+     ("<M-p>" . org-previous-link)
+     ("<C-c><C-v>" . tsp-org-view-as-html)
+     ))
 
   (eval-after-load 'org
     `(progn
@@ -1904,6 +1906,20 @@ you should place you code here."
     "<S-tab>"  'org-shifttab
     )
 
+  (eval-after-load 'ob-keys
+    `(progn
+       (spacemacs/set-leader-keys-for-major-mode 'org-mode
+         "B"        org-babel-map      ;; originally on <C-c><C-v> prefix
+         )))
+
+  (which-key-add-major-mode-key-based-replacements 'org-mode
+    ", g"  "goto"
+    ", i"  "insert"
+    ", S"  "subtree"
+    ", t"  "table"
+    ", x"  "text style"
+    ", B"  "org-babel"
+    )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
