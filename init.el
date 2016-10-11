@@ -82,6 +82,7 @@ values."
               vinegar-reuse-dired-buffer t)
      vimscript
      ;; LOCAL LAYERS
+     drag-n-drop
      no-dots
      troyp
      )
