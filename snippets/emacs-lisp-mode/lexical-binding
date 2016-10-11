@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: lexical binding
+# key: lex
+# --
+`(when (not
+  (let* ((fontfaces (get-text-property (max 1 (- (point) 1)) 'face))
+               (fontfaceslist (if (listp fontfaces) fontfaces
+                                (list fontfaces))))
+          (or (memq 'font-lock-comment-face           fontfaceslist)
+              (memq 'font-lock-comment-delimiter-face fontfaceslist))))
+   (concat comment-start comment-start comment-padding))`     -*- lexical-binding: t -*-
