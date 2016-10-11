@@ -865,6 +865,7 @@ you should place you code here."
   (define-key evil-insert-state-map (kbd "C-S-l") 'backward-delete-char)
   (define-key evil-insert-state-map (kbd "C-S-k") 'kill-line)
   (define-key evil-insert-state-map (kbd "C-.") 'yas-expand)
+  (define-key evil-insert-state-map (kbd "M-?") 'dabbrev-expand)
   (define-key evil-insert-state-map (kbd "C-n") 'next-line)
   (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
   ;; (define-key evil-insert-state-map (kbd "C-M-SPC") 'hippie-expand)
