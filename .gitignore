@@ -18,4 +18,6 @@ snippets/README.html
 local/README.html
 local/evil-visual-replace
 repos/
+layers/*/README.html
+
 
