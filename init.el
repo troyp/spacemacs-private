@@ -864,7 +864,7 @@ you should place you code here."
   (define-key evil-insert-state-map (kbd "C-l") 'delete-char)
   (define-key evil-insert-state-map (kbd "C-S-l") 'backward-delete-char)
   (define-key evil-insert-state-map (kbd "C-S-k") 'kill-line)
-  (define-key evil-insert-state-map (kbd "C-.") 'yas-expand)
+  (define-key evil-insert-state-map (kbd "C-.") 'tsp-yas-expand)
   (define-key evil-insert-state-map (kbd "M-?") 'dabbrev-expand)
   (define-key evil-insert-state-map (kbd "C-n") 'next-line)
   (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
@@ -2045,6 +2045,25 @@ you should place you code here."
     (list (web-mode-element-beginning-position (point)) (+ 1 (web-mode-element-end-position (point)))))
   (define-key evil-inner-text-objects-map "e" 'evil-inner-element)
   (define-key evil-outer-text-objects-map "e" 'evil-outer-element)
+
+   ;; -------------------------------------------------------------------------------
+   ;; ,-----------,
+   ;; | Yasnippet |
+   ;; '-----------'
+
+   (defun tsp-yas-expand (&optional field)
+      "Expand a snippet before point. Simplified version of `yas-expand'."
+      (interactive)
+      (setq yas--condition-cache-timestamp (current-time))
+      (let ((templates-and-pos (yas--templates-for-key-at-point)))
+         (if templates-and-pos
+            (yas--expand-or-prompt-for-template
+               (nth 0 templates-and-pos)
+               ;; Delete snippet key and active region when expanding.
+               (min (if (use-region-p) (region-beginning) most-positive-fixnum)
+                  (nth 1 templates-and-pos))
+               (max (if (use-region-p) (region-end) most-negative-fixnum)
+                  (nth 2 templates-and-pos))))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
