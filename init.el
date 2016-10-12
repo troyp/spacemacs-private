@@ -112,13 +112,13 @@ values."
      ;; (firefox-protocol :location local)
      ;; ;; My Local
      ;; (ibuffer-hydra :location local)
-     ;; (evil-adjust :location local)
      ;; (t :location local)
 
      ;; My Packages
      evil-visual-replace
      (fn :location (recipe :fetcher github :repo "troyp/fn.el" :files ("fn.el")))
      (ls :location (recipe :fetcher github :repo "troyp/ls.el" :files ("ls.el")))
+     (evil-adjust :location local)
      ;; Drew Adams Packages
      autofit-frame
      ;; bookmark+
@@ -461,7 +461,7 @@ you should place you code here."
           firefox-protocol
           help-macro+
           ibuffer-hydra
-          evil-adjust
+          ;; evil-adjust
           ;; evil-visual-replace
           ;; fn
           ;; ls
@@ -1804,10 +1804,6 @@ you should place you code here."
   ;; | Lisp |
   ;; '------'
 
-  (require 'evil-adjust)
-  (define-key lisp-interaction-mode-map
-    [remap eval-print-last-sexp] 'evil-eval-print-last-sexp)
-
   (bind-keys :map spacemacs-emacs-lisp-mode-map
              ("e D"    . eval-instrument-defun)
              ("e p"    . eval-print-last-sexp)
@@ -1831,7 +1827,12 @@ you should place you code here."
     ", <f3>"      "kmacro"
     )
 
-  ;; =====SWITCH TO EVIL LISP STATE=====
+  ;; ===== EVIL-ADJUST =====
+
+  (require 'evil-adjust)
+  (evil-adjust)
+
+  ;; ===== SWITCH TO EVIL LISP STATE =====
 
   (define-key evil-lisp-state-map "," spacemacs-emacs-lisp-mode-map)
   ;; (define-key evil-lisp-state-map "." nil) ;; available
