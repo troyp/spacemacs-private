@@ -118,7 +118,7 @@ values."
      evil-visual-replace
      (fn :location (recipe :fetcher github :repo "troyp/fn.el" :files ("fn.el")))
      (ls :location (recipe :fetcher github :repo "troyp/ls.el" :files ("ls.el")))
-     (evil-adjust :location local)
+     (evil-adjust :location (recipe :fetcher github :repo "troyp/evil-adjust"))
      ;; Drew Adams Packages
      autofit-frame
      ;; bookmark+
@@ -458,10 +458,6 @@ you should place you code here."
   (add-to-load-path "~/.emacs.d/private/local/")
   (add-to-load-path "~/.emacs.d/private/local/firefox-protocol")
   ;; MY PACKAGES
-  ;; (add-to-load-path "~/.emacs.d/private/repos/evil-visual-replace")
-  ;; (add-to-load-path "~/.emacs.d/private/repos/fn")
-  ;; (add-to-load-path "~/.emacs.d/private/repos/ls")
-  (add-to-load-path "~/.emacs.d/private/local/evil-adjust")
   (add-to-load-path "~/.emacs.d/private/local/t")
 
   (defvar dotspacemacs-additional-local-packages)
@@ -472,10 +468,6 @@ you should place you code here."
           firefox-protocol
           help-macro+
           ibuffer-hydra
-          ;; evil-adjust
-          ;; evil-visual-replace
-          ;; fn
-          ;; ls
           t
           ))
   (loop for pkg in dotspacemacs-additional-local-packages do
