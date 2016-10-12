@@ -53,17 +53,63 @@ Errors start the debugger unless an argument of `nil' is passed for
                  ))
       (otherwise (eval-print-last-sexp arg))
       ))
+
+  (defun evil-adjust-eval-last-sexp (&optional arg)
+    "Evaluate the sexp before point and print it in the echo area.
 
+This function is a wrapper around `eval-last-sexp' which corrects for cursor
+position in normal/visual states when `evil-move-cursor-back' is set to `t'
+(as by default).
+
+Long output is truncated. See the variables `eval-expression-print-length' and
+`eval-expression-print-level'.
+A prefix argument of 0 inhibits truncation and prints integers with additional
+octal, hexadecimal and character representations, in the format: 1 (#o1, #x1,
+?\C-a).
+
+Errors start the debugger unless an argument of `nil' is passed for
+`eval-expression-debug-on-error'."
+    (interactive "P")
+    (cl-case evil-state
+      ('normal (progn
+                 (evil-append 1)
+                 (eval-last-sexp arg)
+                 (evil-normal-state)
+                 ))
+      ('visual (progn
+                 (evil-append 1)
+                 (eval-last-sexp arg)
+                 (evil-visual-restore)
+                 ))
+      (otherwise (eval-last-sexp arg))
+      ))
+
+(defun evil-adjust-emacs25-p ()
+  (let ((case-fold-search t))
+    (string-match-p (regexp-quote "Emacs 25.")
+                    (emacs-version))))
+
 (defun evil-adjust ()
   "Initialize evil adjustments.
+
+Remaps `eval-print-last-sexp' to `evil-adjust-eval-print-last-sexp'.
+In Emacs 25, additionally remaps `eval-last-sexp' to `evil-adjust-eval-last-sexp'.
 
 This function must be called after the variable `evil-move-cursor-back' is set."
   (interactive)
   (when evil-move-cursor-back
     (define-key lisp-interaction-mode-map
-      [remap eval-print-last-sexp] 'evil-eval-print-last-sexp)
-    ))
-
+      [remap eval-print-last-sexp]
+      'evil-adjust-eval-print-last-sexp))
+  (when (and (evil-adjust-emacs25-p)
+             evil-move-cursor-back)
+    (define-key emacs-lisp-mode-map
+      [remap eval-last-sexp]
+      'evil-adjust-eval-last-sexp)
+    (define-key lisp-interaction-mode-map
+      [remap eval-last-sexp]
+      'evil-adjust-eval-last-sexp)))
+
 (provide 'evil-adjust)
 
 ;;; evil-adjust ends here
