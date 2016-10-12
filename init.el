@@ -928,6 +928,7 @@ you should place you code here."
     "g C-x v"      'vc-prefix-map
     ;; "h"            'help-prefix-map
     "h a"          'apropos
+    "h d C-b"      'describe-personal-keybindings
     "h f f"        'find-function
     "h f k"        'find-function-on-key
     "h f h"        'describe-function
@@ -937,11 +938,11 @@ you should place you code here."
     "h f ."        'find-function-at-point
     "h w"          'help-download-prefix-map
     "h ."          'count-words
+    "h 1"          'evil-goto-definition
     "h C-m"        'lacarte-execute-menu-command
+    "h C-y"        'tsp-info-goto-node
     "h C-/"        'evil-search-highlight-persist-remove-all
     "h C-?"        'evil-search-highlight-restore
-    "h d C-b"      'describe-personal-keybindings
-    "h 1"          'evil-goto-definition
     ;; "h <f1>"       'help-map
     "i -"          'tiny-expand
     "o a"          'asciiheadings-prefix-key-map
@@ -3008,6 +3009,22 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
     (interactive "P")
     (quit-window (not bury) window))
 
+  (defun tsp-info-goto-node (s)
+    "Visit a node in a given info manual.
+
+The manual and node are entered in the format:
+    (manual) node
+The node is chosen via `helm'. Optionally, a node pattern can be given alone."
+    (interactive "s(manual) node: ")
+    (let ((regexp "\\((\\(.*\\)) \\)?\\(.*\\)"))
+      (string-match regexp s)
+      (let ((manual (match-string-no-properties 2 s))
+            (node   (match-string-no-properties 3 s)))
+        (Info-directory)
+        (when manual (Info-menu manual))
+        (helm :sources helm-info-default-sources
+              :input   node
+              :buffer  "*helm info*"))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
