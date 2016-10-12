@@ -437,6 +437,17 @@ you should place you code here."
   (setenv "PATH" (concat "/home/troy/.nvm/versions/node/v0.12.7/bin" ":" (getenv "PATH")))
   (add-to-list 'exec-path "/home/troy/.nvm/versions/node/v0.12.7/bin")
 
+  ;; Info directories
+  (let ((extra-Info-dirs
+         (list
+           ;; "/usr/share/info/emacs-24"
+          (concat source-directory "info")
+          "/usr/share/info/"
+          "/opt/info/"
+          )))
+    (dolist (dir extra-Info-dirs)
+      (add-to-list 'Info-directory-list dir)))
+
   ;; ==============================================================================
   ;;                       *****************************
   ;;                       *                           *
