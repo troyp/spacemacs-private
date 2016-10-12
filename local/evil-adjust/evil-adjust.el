@@ -21,11 +21,21 @@
 
 ;;; Commentary:
 
-;;
+;; This package compensates for annoying off-by-one incompatibilities between
+;; `evil-normal-state' and lisp modes.
+
+;; When using `lisp-interaction-mode' in `evil-normal-state', one cannot use
+;; C-x C-j (`eval-print-last-sexp') on the last character of a sexp, since
+;; Emacs thinks the cursor is one space back.
+
+;; With Emacs 25, a similar issue occurs additionally in both `emacs-lisp-mode'
+;; and lisp-interaction-mode when using C-x C-e (`eval-last-sexp').
+;; This package adjusts for these issues by remapping the affected functions to
+;; evil-adjust wrappers.
 
 ;;; Code:
-
-  (defun evil-eval-print-last-sexp (&optional arg)
+
+  (defun evil-adjust-eval-print-last-sexp (&optional arg)
     "Evaluate the sexp before point and print it on a new line.
 
 This function is a wrapper around `eval-print-last-sexp' which corrects for
