@@ -701,8 +701,8 @@ you should place you code here."
   (global-set-key "\C-a" 'move-beginning-of-line-or-text)    ;; troyp/utils.el
   (global-set-key (kbd "<S-return>") 'open-line-below)       ;; troyp/utils.el
   (global-set-key (kbd "<C-S-return>") 'open-line-above)     ;; troyp/utils.el
-  (global-set-key [\C-\S-down] 'spacemacs//move-text-move-text-down-J)
-  (global-set-key [\C-\S-up] 'spacemacs//move-text-move-text-up-K)
+  (global-set-key [\C-\S-down] 'move-text-down)
+  (global-set-key [\C-\S-up]   'move-text-up)
 
   ;; remove C-S-SPC from cua-global-keymap and bind to just-one-space
   (define-key cua-global-keymap (kbd "C-S-SPC") nil)
