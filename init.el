@@ -530,13 +530,22 @@ you should place you code here."
   (evil-define-text-object evil-outer-line (count &optional beg end type)
     (list (line-beginning-position) (line-end-position)))
   (evil-define-text-object evil-inner-defun (count &optional beg end type)
+    "operates on the top-level sexp around point."
     (save-excursion
       (mark-defun)
-      (list (point) (mark))))
+      (list (+ (point) 2)
+            (- (mark) 2))))
+  (evil-define-text-object evil-outer-defun (count &optional beg end type)
+    "operates on the top-level sexp around point."
+    (save-excursion
+      (mark-defun)
+      (list (+ (point) 1)
+            (- (mark) 1))))
 
   (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
   (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
   (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
+  (define-key evil-outer-text-objects-map "d" 'evil-outer-defun)
 
   ;; ,-----------,
   ;; | Undo Tree |
