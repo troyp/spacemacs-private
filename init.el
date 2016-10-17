@@ -44,6 +44,7 @@ values."
               haskell-enable-shm-support t
               )
      html
+     ;; ivy
      java
      javascript
      lua
