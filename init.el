@@ -934,13 +934,13 @@ you should place you code here."
     ;; "h"            'help-prefix-map
     "h a"          'apropos
     "h d C-b"      'describe-personal-keybindings
-    "h f f"        'find-function
-    "h f k"        'find-function-on-key
-    "h f h"        'describe-function
-    "h f w"        'find-function-other-window
-    "h f W"        'find-function-other-window-noselect
-    "h f 5"        'find-function-other-frame
-    "h f ."        'find-function-at-point
+    "h / f"        'find-function
+    "h / k"        'find-function-on-key
+    "h / h"        'describe-function
+    "h / w"        'find-function-other-window
+    "h / W"        'find-function-other-window-noselect
+    "h / 5"        'find-function-other-frame
+    "h / ."        'find-function-at-point
     "h w"          'help-download-prefix-map
     "h ."          'count-words
     "h 1"          'evil-goto-definition
@@ -1150,7 +1150,7 @@ you should place you code here."
     "SPC b <f1>"   "*About GNU Emacs*"
     "SPC f /"      "sudo"
     "SPC f '"      "dired"
-    "SPC h f"      "find-function"
+    "SPC h /"      "find-function"
     "SPC o f"      "flycheck"
     "SPC K"        "keys/keymaps"
     "SPC X"        "structured text"
