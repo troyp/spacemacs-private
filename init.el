@@ -678,6 +678,8 @@ you should place you code here."
   (bind-key* "<M-S-delete>" 'kill-buffer-and-window)
   ;; =================================================
 
+  (global-set-key (kbd "C-h y") 'describe-symbol)
+
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
 
   (global-set-key [\S-f4] (defun tsp-launch-standalone-terminal () (interactive)
