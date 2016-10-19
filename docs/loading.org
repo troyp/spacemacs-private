@@ -1,0 +1,352 @@
+Emacs packages, features, files, layers, extensions, auto-loading, =require=,
+=provide=, =use-package=... All these terms getting you confused? Let's clear up
+a few things.
+
+* Files
+Emacs files contains code that can be evaluated. When evaluated, the functions,
+macros and modes defined in that file become available to the current Emacs
+session. Henceforth, this will be termed as /loading/ a file.
+
+One major problem is to ensure that all the correct files are loaded, and in the
+proper order. Another issue is to ensure that not too many files are loaded
+immediately. This causes startup to take too long. Instead, we want to make sure
+that files are loaded only as needed, and not all at once.
+
+This tutorial will show you how this is done in Spacemacs, and it will clarify
+all the terms above.
+
+** Loading a file
+The simplest way to load a file is to call =load-file=.
+
+#+begin_src emacs-lisp
+  (load-file "~/elisp/foo.el")
+#+end_src
+
+This is as primitive as it comes. The path must be exact, and it does not have
+to be in the Emacs load path (we'll get to that later). It will not look for a
+byte-compiled =.elc= file. It will simply load exactly what you tell it to.
+
+* Features
+A better way to load what you need is to use /features/. A feature is a symbol
+that typically has the same name as the file it resides in. Let us say you have
+the following contents in a file called =my-feature.el=.
+
+#+begin_src emacs-lisp
+  ;; Your code goes here
+  ;; ...
+
+  (provide 'my-feature)
+#+end_src
+
+To have Emacs load this file, call =require=, as such:
+
+#+begin_src emacs-lisp
+  (require 'my-feature)
+#+end_src
+
+This checks whether the feature =my-feature= has already been loaded. If not,
+it looks for a file called =my-feature.el=, =my-feature.elc= or some such. If it
+finds such a file, it will load it. When the call to =provide= is evaluated, the
+feature is added to the list of loaded features, so that subsequent calls to
+=require= will do nothing.
+
+This will cause an error if no such file can be found.
+
+The file =my-feature.el= may very well contain other calls to =require=, and in
+fact this is quite a common way to ensure that dependencies are loaded before
+your code runs.
+
+** The load path
+When loaded using =require=, Emacs looks for files in its /load path/. This is
+nothing more than a list of paths where elisp files can be found, and you can
+inspect it through =SPC h d v load-path= in Spacemacs. To add to the load path,
+simply push to this list, e.g.
+
+#+begin_src emacs-lisp
+  (push "/some/path/" load-path)
+#+end_src
+
+* Auto-loading
+Calling =require= is nothing more than a more convenient way of calling
+=load-file=. It solves the problem of ensuring that files are loaded in the
+correct order, but a long list of calls to =require= at startup would still
+cause Emacs to take for ever to load.
+
+Emacs uses auto-loading to solve this problem. When a function is registered as
+auto-loading, an "empty" definition is provided. When that function is called,
+the file that provides the function is immediately loaded (along with all its
+required features). Finally, the "empty" function is substituted with the real
+one and called normally. The end user will see only a slight delay when first
+calling the function, while subsequent calls to that function (or any other
+function loaded as part of the same procedure) will be as quick as normal.
+
+To register a function as auto-loadable, we call =autoload=:
+
+#+begin_src emacs-lisp
+  (autoload 'some-function "some-file")
+#+end_src
+
+This instructs Emacs that whenever =some-function= is called, load
+=some-file.el= first, and then proceed.
+
+After evaluating the above code, you can try to inspect =some-function= by doing
+=SPC h d f some-function=. It will say it's an auto-loaded function, and that
+nothing else is known about it until it is loaded. The call to =autoload= can
+optionally include more information, such as a doc-string, whether the function
+can be called interactively, and so on. This provides more information to the
+end-user without her having to actually load the file first.
+
+Open your =elpa= directory, go to =helm= and look at the file
+=helm-autoloads.el=. This provides all the auto-loads for all the files in Helm.
+However, this file is not written by hand. Instead, it is automatically
+generated from "magic" comments in the source code of Helm. They look like this:
+
+#+begin_src emacs-lisp
+  ;;;###autoload
+  (defun my-function ()
+    ;; Source code...
+    )
+#+end_src
+
+The magic comment =;;;###autoload= instructs Emacs that the following definition
+should be auto-loaded. This automatically generates an appropriate call to
+=autoload=.
+
+Things that can be auto-loaded generally involve anything "definable", such as
+functions, macros, major or minor modes, groups, classes, and so on.
+
+Magic comments also work on other things, such as variable definitions
+(=defvar=), but in that case, the definition is just copied verbatim into the
+auto-loading file. For example, this code will load Helm on startup, long before
+your file is actually evaluated, probably not what was intended:
+
+#+begin_src emacs-lisp
+  ;;;###autoload
+  (require 'helm)
+#+end_src
+
+It is the responsibility of the package authors to ensure that their package can
+be appropriately auto-loaded, and most packages do this quite well.
+
+Spacemacs makes thorough use of auto-loading. Almost everything in Spacemacs is
+loaded when needed instead of right away.
+
+* Packages and extensions
+In Spacemacs parlance, packages and extensions are two names for the same thing:
+a collection of source files that provide functionality. It is not precisely the
+same thing as a /feature/, since packages may contain several source files
+providing a feature each. For example, Helm provides features such as =helm=,
+=helm-files=, =helm-help= etc. This is a common pattern: typically you can
+expect to load /all/ of Helm upon invocation of
+
+#+begin_src emacs-lisp
+  (require 'helm)
+#+end_src
+
+or to load just the parts you need upon calling
+
+#+begin_src emacs-lisp
+  (require 'helm-files)
+#+end_src
+
+The difference is that a package can be installed from a package repository on
+the internet (ELPA, MELPA, etc.) while an extension is a collection of files on
+the hard drive. In all other respects, packages and extensions are the same
+exact things.
+
+* Use-package
+Use-package is a /package/ that provides a very useful macro called
+=use-package=. Spacemacs uses it to set up the loading of packages and
+extensions.
+
+The documentation for =use-package= can be found [[https://github.com/jwiegley/use-package][here]]. Some examples follow.
+
+#+begin_src emacs-lisp
+  (use-package helm)
+#+end_src
+
+This simply loads Helm, not much more than a call to =require= does.
+
+#+begin_src emacs-lisp
+  (use-package helm
+    :defer t)
+#+end_src
+
+This defers the loading of Helm using the auto-load facility and the auto-load
+commands provided by the Helm source code.
+
+#+begin_src emacs-lisp
+  (use-package helm
+    :defer t
+    :init
+    ;; Code to execute before Helm is loaded
+    :config
+    ;; Code to execute after Helm is loaded
+    )
+#+end_src
+
+This form includes code to execute before and after Helm is loaded. The =:init=
+section can be executed immediately, but since Helm is deferred, the =:config=
+section is not executed until after loading, if ever.
+
+#+begin_src emacs-lisp
+  (use-package helm
+    :commands (helm-find-files helm-M-x))
+#+end_src
+
+This creates auto-load references for additional commands, if you find that the
+package author has been slacking.
+
+#+begin_src emacs-lisp
+  (use-package ruby-mode
+    :mode "\\.rb\\'")
+#+end_src
+
+For packages that provide major modes, you can associate file extensions to that
+mode by using the =:mode= keyword. This adds an entry to =auto-mode-alist= and
+an auto-load for =ruby-mode=. Typically this is not required, as =ruby-mode=
+should already be auto-loadable, and the package should associate Ruby files
+with itself already.
+
+Use-package supports heaps of useful keywords. Look at the [[https://github.com/jwiegley/use-package][documentation]] for
+more.
+
+* Layers
+Almost all packages and extensions in Spacemacs are organized in layers. When
+loading a layer, Spacemacs looks for two files called =packages.el= and
+=extensions.el= in your layer directory. They should define the following
+variables:
+
+- =<layer>-pre-extensions= :: a list of extensions to include /before/ packages.
+- =<layer>-packages= :: a list of packages to include.
+- =<layer>-post-extensions= :: a list of extensions to include /after/ packages.
+- =<layer>-excluded-packages= :: a list of packages to /exclude/, even if other
+     layers include them.
+
+I use the term "include" here because the packages and extensions are not
+necessarily /loaded/.
+
+Additionally, the source code for each extension should be located within the
+directory =<layer>/extensions/<extension>/=. Spacemacs will take care of adding
+this directory to the load path for you, so that you may call =use-package= as
+you normally would with a package.
+
+For each package or extension, Spacemacs looks for functions with these names,
+and calls them in the given order.
+
+- =<layer>/pre-init-<package>=
+- =<layer>/init-<package>=
+- =<layer>/post-init-<package>=
+
+Typically, each package is "owned" by a single layer, even though many other
+layers may use it. The layer that "owns" the package provides the =init=
+function, while the other layers use the =pre-init= and (more normally) the
+=post-init= functions.
+
+For Spacemacs to install a package, it /must/ be included by an enabled layer,
+and there /must/ be at least one =init= function defined for it. If a package
+has only =pre-init= or =post-init= functions defined for it, but no =init=
+function, it will not be installed, and none of those functions will be called.
+
+Best practices dictate that only one layer should "own" a package, and so there
+will only be one =init= function for each package.
+
+** Case study: auto-completion
+Spacemacs provides a layer called =auto-completion= which provides
+auto-completion features in many modes. It does this using the package
+=company=. This layer "owns" the =company= package, so it defines a function
+called =auto-completion/init-company=.
+
+When a user enables the =auto-completion= layer, Spacemacs locates it and finds
+=company= in the list of packages. Provided that =company= is not excluded,
+either by the user or another layer, Spacemacs then locates and runs the =init=
+function for =company=. This function includes a call to =use-package= that sets
+up the basic configuration.
+
+However, auto-completion is a two-horse game. By its very nature, it is specific
+to the major mode in question. It is pointless to expect the =auto-completion=
+layer to include configuration for each conceivable major mode, and equally
+futile to expect each programming language layer (python, ruby, etc.) to fully
+configure =company= on their own.
+
+This is solved using the =post-init= functions. The Python layer, for example,
+includes the =company= package and defines a function called
+=python/post-init-company=. This function is called after
+=auto-completion/init-company=, but it is not called if
+
+- the =auto-completion= layer is not enabled, in which case no =init= function
+  for =company= will be found, or
+- the =company= package is excluded either by the user or another layer
+
+As such, =python/post-init-company= is the only safe place to put configuration
+related to =company= in Python mode.
+
+If the Python layer had defined an =init= function for =company=, that package
+would have been installed even if the =auto-completion= layer had been disabled,
+which is not what we want.
+
+Spacemacs provides a couple of additional useful functions you can use to check
+whether other layers or packages are included.
+
+- =configuration-layer/layer-usedp= :: check if a layer is enabled
+- =configuration-layer/package-usedp= :: check if a package is or will be installed
+
+These are useful in some cases, but usually you can get the desired result just
+by using =post-init= functions.
+
+* Best practices
+If you follow these rules, your layer should be okay. They can be broken if you
+know what you are doing.
+
+** Package ownership
+Each package should be owned by one layer only. The layer that owns the
+package should define its =init= function. Other layers should rely on
+=pre-init= or =post-init= functions.
+
+** Localize your configuration
+Each function can only assume the existence of one package. With some
+exceptions, the =pre-init=, =init= and =post-init= functions can /only/
+configure exactly the package they are defined for. Since the user can exclude
+an arbitrary set of packages, there is no /a priori/ safe way to assume that
+another package is included. Use =configuration-layer/package-usedp= if you
+must.
+
+** Don't assume a fixed order
+No load sequence can be assumed. You cannot assume that your =init= function
+for one package is always called before or after the =init= function for another
+package. If you find yourself needing something like this, you should use
+=pre-init= or =post-init= functions, possibly also
+=configuration-layer/package-usedp=.
+
+** No require
+Do not use require. If you find yourself using =require=, you are almost
+certainly doing something wrong. Packages in Spacemacs should be loaded through
+auto-loading, and not explicitly by you. Calls to =require= in package init
+functions will cause a package to be loaded upon startup. Code in an =:init=
+block of =use-package= should not cause anything to be loaded, either. If you
+need a =require= in a =:config= block, that is a sign that some other package is
+missing appropriate auto-loads.
+
+** Auto-load everything
+Defer everything. You should have a very good reason not to defer the loading
+of a package.
+
+* Hints
+** Use-package hooks
+Spacemacs includes a macro for adding more code to the =:init= or =:config=
+blocks of a call to =use-package=, after the fact. This is useful for =pre-init=
+or =post-init= functions to "inject" code into the =use-package= call of the
+=init= function.
+
+#+begin_src emacs-lisp
+  (spacemacs|use-package-add-hook helm
+    :pre-init
+    ;; Code
+    :post-init
+    ;; Code
+    :pre-config
+    ;; Code
+    :post-config
+    ;; Code
+    )
+#+end_src
