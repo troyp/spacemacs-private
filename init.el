@@ -790,7 +790,8 @@ you should place you code here."
 
   (bind-key* "C-M-x" 'helm-eval-expression-with-eldoc)
 
-  (bind-key "C-c /" 'google-this-mode-submap)
+  (use-package google-this :bind-keymap ("C-c /" . google-this-mode-submap))
+
   (bind-keys :map help-map
              ("C-k" . find-function-on-key)
              )
@@ -1569,46 +1570,50 @@ you should place you code here."
   ;; | helm-mode |
   ;; '-----------'
 
-  (defun helm-switch-to-mini ()
-    (interactive)
-    (helm-run-after-exit #'helm-mini))
-
-  (eval-after-load "helm-mode"
-    `(progn
-       (bind-keys :map helm-map
-                  ("C-q"        . ace-jump-helm-line-and-select)  ;; was ace-jump-helm-line
-                  ("C-S-q"      . ace-jump-helm-line)
-                  ("C-0"        . helm-select-action)
-                  ("C-)"        . helm-execute-persistent-action)
-                  ("C-S-O"      . helm-previous-source)
-                  ("C-S-W"      . helm-yank-symbol-at-point)
-                  ("M-m"        . spacemacs-cmds)
-                  ("C-u"        . helm-delete-minibuffer-contents)
-                  ("C-,"        . helm-switch-to-mini)
-                  ("<f5>"       . nil)
-                  ("<f9>"       . spacemacs/helm-navigation-micro-state)
-                  ("<f11>"      . nil)
-                  ("<escape>"   . evil-evilified-state)
-                  ("<S-escape>" . evil-normal-state)
-                  )
-
-       (evilified-state-evilify-map helm-map
-         :mode helm-mode
-         :bindings
-         "j"           'helm-next-line
-         "k"           'helm-previous-line
-         "i"           'evil-insert
-         "a"           'evil-append
-         [escape]      'keyboard-escape-quit
-         [S-escape]    'evil-normal-state
-         )))
-
-  (spacemacs/set-leader-keys-for-major-mode 'helm-major-mode
-    "tm"    'helm-toggle-all-marks
+  (use-package helm-mode
+    ;;
+    :init
+    (defun helm-switch-to-mini ()
+      (interactive)
+      (helm-run-after-exit #'helm-mini))
+    ;;
+    :bind (:map helm-map
+                ("C-q"        . ace-jump-helm-line-and-select)  ;; was ace-jump-helm-line
+                ("C-S-q"      . ace-jump-helm-line)
+                ("C-0"        . helm-select-action)
+                ("C-)"        . helm-execute-persistent-action)
+                ("C-S-O"      . helm-previous-source)
+                ("C-S-W"      . helm-yank-symbol-at-point)
+                ("C-u"        . helm-delete-minibuffer-contents)
+                ("C-,"        . helm-switch-to-mini)
+                ("<f5>"       . nil)
+                ("<f11>"      . nil)
+                ("<escape>"   . evil-evilified-state)
+                ("<S-escape>" . evil-normal-state)
+                ("<f9>"       . spacemacs/helm-navigation-transient-state/body)
+                )
+    ;;
+    :config
+    (evilified-state-evilify-map helm-map
+      :mode helm-mode
+      :bindings
+      "j"           'helm-next-line
+      "k"           'helm-previous-line
+      "i"           'evil-insert
+      "a"           'evil-append
+      [escape]      'keyboard-escape-quit
+      [S-escape]    'evil-normal-state
+      )
+    (spacemacs/set-leader-keys-for-major-mode 'helm-major-mode
+      "tm"    'helm-toggle-all-marks)
+    (define-keys helm-map
+      (kbd "M-RET")  spacemacs-helm-major-mode-map
+      (kbd "M-m")    spacemacs-cmds
+      (kbd "S-SPC")  spacemacs-cmds
+      )
     )
 
-
-                                        ; -------------------------------------------------------------------------------
+  ;; -------------------------------------------------------------------------------
   ;; ,--------------,
   ;; | helm-firefox |
   ;; '--------------'
