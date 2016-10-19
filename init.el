@@ -791,6 +791,9 @@ you should place you code here."
   (bind-key* "C-M-x" 'helm-eval-expression-with-eldoc)
 
   (bind-key "C-c /" 'google-this-mode-submap)
+  (bind-keys :map help-map
+             ("C-k" . find-function-on-key)
+             )
 
   (bind-keys :map global-map
              :prefix-map snippets-prefix-map
@@ -976,15 +979,9 @@ you should place you code here."
     ;; "h"            'help-prefix-map
     "h a"          'apropos
     "h d C-b"      'describe-personal-keybindings
-    "h / f"        'find-function
-    "h / k"        'find-function-on-key
-    "h / h"        'describe-function
-    "h / w"        'find-function-other-window
-    "h / W"        'find-function-other-window-noselect
-    "h / 5"        'find-function-other-frame
-    "h / ."        'find-function-at-point
     "h w"          'help-download-prefix-map
     "h ."          'count-words
+    "h /"          'find-function-prefix-map
     "h 1"          'evil-goto-definition
     "h C-m"        'lacarte-execute-menu-command
     "h C-y"        'tsp-info-goto-node
@@ -1084,6 +1081,19 @@ you should place you code here."
              :prefix-docstring "Commands dealing with follow-mode."
              ("f"   . follow-delete-other-windows-and-split)
              ("SPC" . follow-mode)
+             )
+
+  (bind-keys :map spacemacs-cmds
+             :prefix-map find-function-prefix-map
+             :menu-name "find-function-"
+             :prefix "h /"
+             ("f" . find-function)
+             ("k" . find-function-on-key)
+             ("h" . describe-function)
+             ("w" . find-function-other-window)
+             ("W" . find-function-other-window-noselect)
+             ("5" . find-function-other-frame)
+             ("." . find-function-at-point)
              )
 
   (bind-keys :map spacemacs-cmds
