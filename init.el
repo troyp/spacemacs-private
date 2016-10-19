@@ -1755,7 +1755,7 @@ you should place you code here."
          (kbd ",")   'spacemacs-Info-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
-       (define-key Info-mode-map
+       (define-keys Info-mode-map
          (kbd "M-RET") 'spacemacs-Info-mode-map
          (kbd "M-;")   'evil-repeat-find-char-reverse
          )
@@ -3141,7 +3141,7 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
 
   )
 
-
+
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
