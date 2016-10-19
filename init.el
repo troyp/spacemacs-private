@@ -119,7 +119,9 @@ values."
      (dash-functional :location (recipe :fetcher github :repo "magnars/dash.el" :files ("dash-functional.el")))
      diff-hl
      f
+     general
      google-this
+     ivy
      names
      s
      tiny
