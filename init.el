@@ -565,6 +565,7 @@ you should place you code here."
 
   (spacemacs|define-text-object "." "dot" "." ".")
   (spacemacs|define-text-object "h" "helplink" "`" "'")
+  (spacemacs|define-text-object "q" "curlquote" "‘" "’")
 
   (evil-define-text-object evil-inner-line (count &optional beg end type)
     (list (line-visible-beginning-position) (+ 1 (line-visible-end-position))))
