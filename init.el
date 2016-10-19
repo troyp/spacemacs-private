@@ -1769,6 +1769,12 @@ you should place you code here."
   (define-key isearch-mode-map (kbd "C-'") 'avy-isearch)
   (define-key isearch-mode-map (kbd "C-\"") 'helm-swoop)
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,--------------,
+  ;; | Indent-Guide |
+  ;; '--------------'
+
+  (setq indent-guide-recursive t)
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
