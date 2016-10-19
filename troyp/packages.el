@@ -29,13 +29,13 @@
 
 ;;; Code:
 
-(defconst troyp-packages
+(defvar troyp-packages
   '(
-    (tsputils            :location local)
-    (asciiheadings       :location local)
-    (mode-ring           :location local)
-    (tspevil             :location local)
-    (tsplib              :location local)
+    (tsputils      :location local)
+    (asciiheadings :location local)
+    (mode-ring     :location local)
+    (tspevil       :location local)
+    (tsplib        :location local)
     )
   "The list of Lisp packages required by the troyp layer.
 
@@ -65,10 +65,10 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format"
   )
 
-(defun troyp/init-asciiheadings       () (use-package asciiheadings       :init :after tsputils))
-(defun troyp/init-mode-ring           () (use-package mode-ring           :init))
-(defun troyp/init-tspevil             () (use-package tspevil             :init))
-(defun troyp/init-tsputils            () (use-package tsputils            :init))
-(defun troyp/init-tsplib              () (use-package tsplib              :init))
+(defun troyp/init-asciiheadings () (use-package asciiheadings :init :after tsputils))
+(defun troyp/init-mode-ring     () (use-package mode-ring     :init))
+(defun troyp/init-tspevil       () (use-package tspevil       :init))
+(defun troyp/init-tsputils      () (use-package tsputils      :init))
+(defun troyp/init-tsplib        () (use-package tsplib        :init))
 
 ;;; packages.el ends here
