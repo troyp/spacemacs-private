@@ -1907,6 +1907,13 @@ you should place you code here."
     ", <f3>"      "kmacro"
     )
 
+  (defun emacs-lisp-init-fn ()
+    (interactive)
+    ;; set tab-width to 8 to make GNU sources readable
+    (setq tab-width 8)
+    )
+  (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-init-fn)
+
   ;; ===== EVIL-ADJUST =====
 
   (require 'evil-adjust)
