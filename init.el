@@ -1001,8 +1001,8 @@ you should place you code here."
     "o f"          'flycheck-command-map
     "o m"          'modes-prefix-key-map
     "r b"          'bookmark-map
-    "R R"          'pcre-multi-occur
-    "R r"          'pcre-occur
+    "s R R"          'pcre-multi-occur
+    "s R r"          'pcre-occur
     "t O"          (def-variable-toggle which-key-show-operator-state-maps)
     "t T"          (def-variable-toggle indent-tabs-mode)
     "t '"          'variable-pitch-mode
