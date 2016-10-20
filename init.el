@@ -595,36 +595,6 @@ you should place you code here."
   (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
   (define-key evil-outer-text-objects-map "d" 'evil-outer-defun)
 
-  ;; ,-----------,
-  ;; | Undo Tree |
-  ;; '-----------'
-
-  (setq evil-want-fine-undo "No")
-
-  (setq undo-tree-history-directory-alist
-        (let ((undohistdir (concat spacemacs-private-directory ".undo-tree-history/")))
-          `((".*" . ,undohistdir))))
-  (setq undo-tree-auto-save-history t)
-
-  ;; Attempt to prevent undo-tree history corruption...
-  ;; https://github.com/syl20bnr/spacemacs/issues/774#issuecomment-194527210
-  (defun my-save-undo-history ()
-    (when (and (boundp 'undo-tree-mode)
-               undo-tree-mode
-               buffer-file-name
-               (file-writable-p buffer-file-name)
-               (not (eq buffer-undo-list t))
-               (not revert-buffer-in-progress-p))
-      (undo-tree-save-history nil t)))
-
-  (defun my-save-all-undo-history ()
-    (dolist (buffer (buffer-list))
-      (with-current-buffer buffer
-        (my-save-undo-history))))
-
-  (add-hook 'kill-emacs-hook #'my-save-all-undo-history)
-  (add-hook 'kill-buffer-hook #'my-save-undo-history)
-
   ;; ===============================================================================
   ;;                                      _________
   ;;                                     |         |
@@ -2037,6 +2007,43 @@ you should place you code here."
     )
 
   ;; -------------------------------------------------------------------------------
+  ;; ,-----------,
+  ;; | Undo Tree |
+  ;; '-----------'
+  (setq undo-tree-git-repo "http://www.dr-qubit.org/git/undo-tree.git")
+
+  (setq evil-want-fine-undo "No")
+
+  (setq undo-tree-history-directory-alist
+        (let ((undohistdir (concat spacemacs-private-directory ".undo-tree-history/")))
+          `((".*" . ,undohistdir))))
+  (setq undo-tree-auto-save-history t)
+
+  ;; Attempt to prevent undo-tree history corruption...
+  ;; https://github.com/syl20bnr/spacemacs/issues/774#issuecomment-194527210
+  (defun my-save-undo-history ()
+    (when (and (boundp 'undo-tree-mode)
+               undo-tree-mode
+               buffer-file-name
+               (file-writable-p buffer-file-name)
+               (not (eq buffer-undo-list t))
+               (not revert-buffer-in-progress-p))
+      (undo-tree-save-history nil t)))
+
+  (defun my-save-all-undo-history ()
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (my-save-undo-history))))
+
+  (add-hook 'kill-emacs-hook #'my-save-all-undo-history)
+  (add-hook 'kill-buffer-hook #'my-save-undo-history)
+
+  (defun undo-tree-clear ()
+    (interactive)
+    (setq buffer-undo-tree nil))
+
+
+  ;; -------------------------------------------------------------------------------
   ;; ,---------------------------,
   ;; | Undo-Tree-Visualizer-Mode |
   ;; '---------------------------'
@@ -2698,10 +2705,6 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
       (while (< (point) end)
         (evil-upcase (point) (+ 1 (point)))
         (evil-forward-word-begin))))
-
-  (defun undo-tree-clear ()
-    (interactive)
-    (setq buffer-undo-tree nil))
 
   (defun insert-pp (object)
     "`insert' the pretty-printed representation of OBJECT into current buffer. See `pp'."
