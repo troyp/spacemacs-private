@@ -28,6 +28,11 @@
 ;;; Code:
 
 
+(defun troyp-proper-list-p (x)
+  (loop for rest on x
+        by 'cdr
+        while (consp rest)
+        finally return (not rest)))
 
 
 (provide 'tsplib-pure)
