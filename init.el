@@ -405,6 +405,9 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  ;;
+  ;; Source directory
+  (setq source-directory "/opt/emacs25/src")
   )
 
 
@@ -478,6 +481,9 @@ you should place you code here."
 
   (setenv "PATH" (concat "/home/troy/.nvm/versions/node/v0.12.7/bin" ":" (getenv "PATH")))
   (add-to-list 'exec-path "/home/troy/.nvm/versions/node/v0.12.7/bin")
+
+  ;; C Source Directories
+  (setq find-function-C-source-directory "/opt/emacs25/src")
 
   ;; Info directories
   (let ((extra-Info-dirs
