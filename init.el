@@ -23,8 +23,8 @@ values."
    ;; dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layer-path
    (list
-    (concat "private/layers/" user-emacs-directory)
-    (concat "private/layer-groups/" user-emacs-directory)
+    (concat user-emacs-directory "private/layers/")
+    (concat user-emacs-directory "private/layer-groups/")
     )
 
    ;; -------------------------------------------------------------------------------
