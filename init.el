@@ -111,9 +111,9 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages
    '(
-     ;; quelpa-use-package
-     dired-sort-menu
+     ;; ---------
      ;; libraries
+     ;; ---------
      cl-lib-highlight
      (dash            :location (recipe :fetcher github :repo "magnars/dash.el" :files ("dash.el")))
      (dash-functional :location (recipe :fetcher github :repo "magnars/dash.el" :files ("dash-functional.el")))
@@ -125,7 +125,6 @@ values."
      names
      s
      tiny
-
      ;; TODO: work out why local packages aren't working
      ;; ;; Local
      ;; (dired+ :location local)
@@ -134,13 +133,22 @@ values."
      ;; ;; My Local
      ;; (ibuffer-hydra :location local)
      ;; (t :location local)
-
+     ;; ----------------------------------------------------------------------
+     ;; -----------
      ;; My Packages
+     ;; -----------
      evil-visual-replace
      (fn :location (recipe :fetcher github :repo "troyp/fn.el" :files ("fn.el")))
      (ls :location (recipe :fetcher github :repo "troyp/ls.el" :files ("ls.el")))
      (evil-adjust :location (recipe :fetcher github :repo "troyp/evil-adjust"))
+     ;; --------
+     ;; My Forks
+     ;; --------
+     (undo-tree :location (recipe :fetcher github :repo "troyp/undo-tree.el"))
+     ;; ----------------------------------------------------------------------
+     ;; -------------------
      ;; Drew Adams Packages
+     ;; -------------------
      autofit-frame
      ;; bookmark+
      (dired+ :variables
@@ -148,36 +156,32 @@ values."
              diredp-hide-details-propagate-flag t
              )
      dired-sort-menu+
-     doremi
-     doremi-cmd
-     doremi-frm
-     doremi-mac
+     doremi doremi-cmd doremi-frm doremi-mac
      eyedropper
      facemenu+
      faces+
      fit-frame
      font-lock+
-     frame-cmds
-     frame-fns
-     help-fns+
-     help-mode+
-     help+
+     frame-cmds frame-fns
+     help-fns+ help-mode+ help+
      hexrgb
      highlight
-     isearch+
-     isearch-prop
+     isearch+ isearch-prop
      lacarte
      naked
      palette
-     replace+
-     strings
+     replace+ strings
      thingatpt+
      thumb-frm
      ucs-cmds
      wid-edit+
      zoom-frm
-     ;; ---------------
-
+     ;; ----------------------------------------------------------------------
+     ;; --------------
+     ;; other packages
+     ;; --------------
+     ;; quelpa-use-package
+     dired-sort-menu
      column-enforce-mode
      (dirtree :local :location "~/.emacs.d/private/local/ye-wenbin/dirtree.el")
      firefox-controller
