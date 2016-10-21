@@ -434,6 +434,7 @@ you should place you code here."
   ;; (setq-default tab-always-indent t)
   (global-linum-mode)
   (menu-bar-mode)
+  (scroll-bar-mode)
   (minibuffer-depth-indicate-mode 1)
   (setq evil-search-highlight-persist nil)
 
