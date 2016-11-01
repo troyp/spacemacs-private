@@ -3193,9 +3193,14 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
   ;; '-----------------------'
-  (when (file-readable-p "~/.emacs.d/private/workarounds.el")
-    (load "~/.emacs.d/private/workarounds.el"))
-
+  (defun workarounds()
+    (interactive)
+    (when (file-readable-p "~/.emacs.d/private/local/workarounds.el")
+      (load "~/.emacs.d/private/local/workarounds.el")))
+  (eval-after-load "move-text.el"
+    `(progn
+       (undefun 'move-text--last-line-is-just-newline)
+       (workarounds)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------,
