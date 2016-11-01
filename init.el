@@ -493,6 +493,17 @@ you should place you code here."
   ;; ANY KEYS
   (setq avy-keys (list 97 115 100 102 106 107 108 59))
 
+  ;; global-hl-line
+  (require 'color)
+  (defun auto-set-hl-line-face ()
+    "Set `hl-line' face to slightly darker than default background."
+    (set-face-attribute 'hl-line
+                        nil    ;; all frames
+                        :foreground nil
+                        :background (color-darken-name (face-background 'default nil 'default)
+                                                       20)
+                        ))
+  (add-hook 'global-hl-line-mode-hook 'auto-set-hl-line-face)
 
   ;; ==============================================================================
   ;; ***************
