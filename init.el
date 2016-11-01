@@ -52,6 +52,7 @@ values."
      extra-langs
      git
      go
+     graphviz
      (haskell :variables
               haskell-enable-shm-support t
               )
@@ -78,6 +79,7 @@ values."
            ruby-version-manager 'rvm
            inf-ruby-default-implementation "pry"
            )
+     rust
      scala
      scheme
      (shell :variables
@@ -169,6 +171,7 @@ values."
      isearch+ isearch-prop
      lacarte
      naked
+     nim-mode
      palette
      replace+ strings
      thingatpt+
@@ -189,6 +192,7 @@ values."
      helm-firefox
      mozc
      move-dup
+     nameless
      top-mode
      )
 
@@ -263,7 +267,15 @@ values."
                          solarized-light
                          leuven
                          monokai
-                         zenburn)
+                         zenburn
+                         moe-light
+                         soothe
+                         afternoon
+                         alect-black
+                         alect-light
+                         sanityinc-tomorrow-blue
+                         sanityinc-tomorrow-eighties
+                         )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
@@ -412,6 +424,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;;
   ;; Source directory
   (setq source-directory "/opt/emacs25/src")
+  (add-to-list 'custom-theme-load-path (concat user-emacs-directory "private/themes/"))
   )
 
 
