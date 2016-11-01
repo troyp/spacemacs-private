@@ -996,6 +996,7 @@ you should place you code here."
     "t '"          'variable-pitch-mode
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
+    "t :"          'nameless-mode
     "t C-/"        'evil-search-highlight-persist
     "t C-'"        (def-variable-toggle fit-frame-inhibit-fitting-flag)
     "w TAB"        'ace-swap-window
@@ -1275,6 +1276,15 @@ you should place you code here."
   (global-set-key (kbd "s-SPC") 'mozc-mode)
   (setcar (cdr (assoc 'mozc-mode minor-mode-alist))
           "日")
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------,
+  ;; | Nameless |
+  ;; '----------'
+  (use-package nameless
+    :config
+    (setq nameless-private-prefix t)
+    )
 
 
   ;; ***************
