@@ -1987,8 +1987,17 @@ you should place you code here."
      ("<S-iso-lefttab>" . nil)
      ("<M-n>" . org-next-link)
      ("<M-p>" . org-previous-link)
-     ("<C-c><C-v>" . tsp-org-view-as-html)
-     ))
+     ("<C-c><C-v>" . tsp-org-view-as-html))
+    (evil-define-key 'normal org-mode-map
+      (kbd "-")    'dired-jump
+      (kbd "g -")  'org-cycle-list-bullet)
+    )
+
+  ;; (evil-define-keymap my/org-map
+  ;;   "My org-mode bindings."
+  ;;   :mode org-mode
+  ;;   (kbd "-")    'dired-jump
+  ;;   (kbd "g -")  'org-cycle-list-bullet)
 
   (eval-after-load 'org
     `(progn
