@@ -485,6 +485,10 @@ you should place you code here."
   ;; CUA RECTANGLE
   (setq cua-enable-cua-keys nil)
   (cua-mode t)
+  ;; stop cua breaking C-x C-x in visual-line selections
+  (add-hook 'cua-mode-hook
+            (fn: define-key cua-global-keymap [remap exchange-point-and-mark] nil))
+  (define-key cua-global-keymap [remap exchange-point-and-mark] nil)
 
   ;; ANY KEYS
   (setq avy-keys (list 97 115 100 102 106 107 108 59))
