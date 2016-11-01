@@ -2121,19 +2121,19 @@ you should place you code here."
 
   (eval-after-load "undo-tree-visualizer-mode"
     '(progn
-       (evil-define-key 'normal' undo-tree-visualizer-mode-map
+       (evil-define-key 'normal undo-tree-visualizer-mode-map
          (kbd ",")   'spacemacs-undo-tree-visualizer-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
-       (evil-define-key 'visual' undo-tree-visualizer-mode-map
+       (evil-define-key 'visual undo-tree-visualizer-mode-map
          (kbd ",")   'spacemacs-undo-tree-visualizer-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
-       (evil-define-key 'motion' undo-tree-visualizer-mode-map
+       (evil-define-key 'motion undo-tree-visualizer-mode-map
          (kbd ",")   'spacemacs-undo-tree-visualizer-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
-       (evil-define-key 'evilified-state' undo-tree-visualizer-mode-map
+       (evil-define-key 'evilified-state undo-tree-visualizer-mode-map
          (kbd ",")   'spacemacs-undo-tree-visualizer-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
