@@ -15,8 +15,9 @@ srecode-map.el
 
 *-README.html
 snippets/README.html
-local/README.html
 local/evil-visual-replace
+local/README.html
+local/testpkg.el
 repos/
 layers/*/README.html
 
