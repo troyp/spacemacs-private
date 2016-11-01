@@ -1,3 +1,9 @@
 [submodule "layer-groups/bb-spacemacs-layers"]
 	path = layer-groups/bb-spacemacs-layers
 	url = https://github.com/TheBB/spacemacs-layers.git
+[submodule "docs/flycheck.wiki"]
+	path = docs/flycheck.wiki
+	url = https://github.com/flycheck/flycheck.wiki.git
+[submodule "docs/spacemacs.wiki"]
+	path = docs/spacemacs.wiki
+	url = https://github.com/syl20bnr/spacemacs.wiki.git
