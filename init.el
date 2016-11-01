@@ -1014,6 +1014,7 @@ you should place you code here."
     "t :"          'nameless-mode
     "t C-/"        'evil-search-highlight-persist
     "t C-'"        (def-variable-toggle fit-frame-inhibit-fitting-flag)
+    "T |"          'scroll-bar-mode
     "w TAB"        'ace-swap-window
     "x a ."        'spacemacs/align-repeat-period
     "x a '"        'spacemacs/align-repeat-quote
@@ -1906,8 +1907,10 @@ you should place you code here."
   (bind-keys :map spacemacs-emacs-lisp-mode-map
              ("e D"    . eval-instrument-defun)
              ("e p"    . eval-print-last-sexp)
+             ("e j"   . eval-prettyprint-last-sexp)
              ("e RET"  . eval-replace-last-sexp)
              ("t i"    . ert-run-tests-interactively)
+             ("x"     . prettyexpand-at-point)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
              )
