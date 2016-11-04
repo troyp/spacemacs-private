@@ -21,11 +21,6 @@ values."
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
 
    ;; dotspacemacs-configuration-layer-path '()
-   dotspacemacs-configuration-layer-path
-   (list
-    (concat user-emacs-directory "private/layers/")
-    (concat user-emacs-directory "private/layer-groups/")
-    )
 
    ;; -------------------------------------------------------------------------------
    ;; ,----------------------,
