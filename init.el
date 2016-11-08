@@ -3182,6 +3182,14 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
               :input   node
               :buffer  "*helm info*"))))
 
+  (defun my-variable-make-local-and-toggle (sym)
+    "Make a variable buffer-local and toggle"
+    (interactive "SVariable: ")
+    (let ((new-value (not (and (boundp sym) (eval sym)))))
+      (when (not (local-variable-p sym)) (make-local-variable sym))
+      (set sym new-value)
+      (message (format "%S: %S" sym new-value))))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
