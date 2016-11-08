@@ -849,7 +849,6 @@ you should place you code here."
   ;; [r and ]r move to beginning and end of region
   (define-key evil-normal-state-map (kbd "[r") 'evil-visual-jump-to-region-beginning)
   (define-key evil-normal-state-map (kbd "]r") 'evil-visual-jump-to-region-end)
-  (define-key evil-normal-state-map (kbd "M-RET RET") 'lisp-state-toggle-lisp-state)
   ;; evil-symbol-word-search
   (define-key evil-normal-state-map (kbd "C-*") 'toggle-evil-symbol-word-search)
 
@@ -1900,21 +1899,23 @@ you should place you code here."
   (bind-keys :map spacemacs-emacs-lisp-mode-map
              ("e D"    . eval-instrument-defun)
              ("e p"    . eval-print-last-sexp)
-             ("e j"   . eval-prettyprint-last-sexp)
+             ("e j"    . eval-prettyprint-last-sexp)
              ("e RET"  . eval-replace-last-sexp)
              ("t i"    . ert-run-tests-interactively)
-             ("x"     . prettyexpand-at-point)
+             ("x"      . prettyexpand-at-point)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
+             ("RET"    . lisp-state-toggle-lisp-state)
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
              ("e D"    . eval-instrument-defun)
-             ("e RET" . eval-replace-last-sexp)
-             ("e j"   . eval-prettyprint-last-sexp)
-             ("j"     . eval-prettyprint-last-sexp)
-             ("x"     . prettyexpand-at-point)
+             ("e RET"  . eval-replace-last-sexp)
+             ("e j"    . eval-prettyprint-last-sexp)
+             ("j"      . eval-prettyprint-last-sexp)
+             ("x"      . prettyexpand-at-point)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
+             ("RET"    . lisp-state-toggle-lisp-state)
              )
 
   (which-key-add-major-mode-key-based-replacements 'emacs-lisp-mode
