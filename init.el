@@ -925,7 +925,7 @@ you should place you code here."
   (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line-or-text)
   (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
   (define-key evil-insert-state-map (kbd "C-S-y") 'evil-copy-from-below)
-  (define-key evil-insert-state-map (kbd "C-l") 'delete-char)
+  (define-key evil-insert-state-map (kbd "C-l") 'delete-forward-char)
   (define-key evil-insert-state-map (kbd "C-S-l") 'backward-delete-char)
   (define-key evil-insert-state-map (kbd "C-S-k") 'kill-line)
   (define-key evil-insert-state-map (kbd "C-.") 'tsp-yas-expand)
