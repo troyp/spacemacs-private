@@ -1937,8 +1937,13 @@ you should place you code here."
 
   ;; ===== SWITCH TO EVIL LISP STATE =====
 
-  (define-key evil-lisp-state-map "," spacemacs-emacs-lisp-mode-map)
   ;; (define-key evil-lisp-state-map "." nil) ;; available
+
+  (bind-keys :map evil-lisp-state-map
+             ("x"   . evil-delete-char)
+             (","   . spacemacs-emacs-lisp-mode-map)
+             ("C-o" . evil-execute-in-normal-state)
+             )
 
 
   ;; -------------------------------------------------------------------------------
