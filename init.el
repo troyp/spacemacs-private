@@ -1004,6 +1004,7 @@ you should place you code here."
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t :"          'nameless-mode
+    "t C-s"        'my-undo-auto-save-make-local-and-toggle
     "t C-/"        'evil-search-highlight-persist
     "t C-'"        (def-variable-toggle fit-frame-inhibit-fitting-flag)
     "T |"          'scroll-bar-mode
@@ -3189,6 +3190,11 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
       (when (not (local-variable-p sym)) (make-local-variable sym))
       (set sym new-value)
       (message (format "%S: %S" sym new-value))))
+
+  (defun my-undo-auto-save-make-local-and-toggle ()
+    "Make `undo-tree-auto-save-history' buffer-local and toggle"
+    (interactive)
+    (my-variable-make-local-and-toggle 'undo-tree-auto-save-history))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
