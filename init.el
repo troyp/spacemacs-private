@@ -2070,12 +2070,35 @@ you should place you code here."
 
   (setq undo-tree-history-directory-alist
         (let ((undohistdir (concat spacemacs-private-directory ".undo-tree-history/")))
-          `((".*" . ,undohistdir))))
+          `(("/home/.*/.emacs.d.*" . nil)
+            ("/home/.*/code/.*"    . nil)
+            ("."                   . ,undohistdir))))
+
+
+  ;; bind-keys to undo-tree register functions even when undo-tree-mode is off
+  (bind-keys :map global-map
+             ("C-x r u" .undo-tree-save-state-to-register)
+             ("C-x r U" .undo-tree-restore-state-from-register)
+            )
+
+  (defun undo-tree-clear ()
+    (interactive)
+    (setq buffer-undo-tree nil))
+
+  ;; =====UNDO-TREE-AUTO-SAVE-HISTORY=====
+  ;; Causes undo-tree corruption
+
+  ;; single-directory case (entire path converted to filename):
+  ;;     undo-tree save file names crash zsh entirely. Bash doesn't crash, but
+  ;;     can't seem to handle them either.
+  ;;     Dired also breaks.
+
   (setq undo-tree-auto-save-history t)
 
   ;; Attempt to prevent undo-tree history corruption...
   ;; https://github.com/syl20bnr/spacemacs/issues/774#issuecomment-194527210
   (defun my-save-undo-history ()
+    (interactive)
     (when (and (boundp 'undo-tree-mode)
                undo-tree-mode
                buffer-file-name
@@ -2083,18 +2106,13 @@ you should place you code here."
                (not (eq buffer-undo-list t))
                (not revert-buffer-in-progress-p))
       (undo-tree-save-history nil t)))
-
   (defun my-save-all-undo-history ()
+    (interactive)
     (dolist (buffer (buffer-list))
       (with-current-buffer buffer
         (my-save-undo-history))))
-
-  (add-hook 'kill-emacs-hook #'my-save-all-undo-history)
-  (add-hook 'kill-buffer-hook #'my-save-undo-history)
-
-  (defun undo-tree-clear ()
-    (interactive)
-    (setq buffer-undo-tree nil))
+  ;; (add-hook 'kill-emacs-hook #'my-save-all-undo-history)
+  ;; (add-hook 'kill-buffer-hook #'my-save-undo-history)
 
 
   ;; -------------------------------------------------------------------------------
