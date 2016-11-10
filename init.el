@@ -1011,6 +1011,7 @@ you should place you code here."
     "t C-s"        'my-undo-auto-save-make-local-and-toggle
     "t C-/"        'evil-search-highlight-persist
     "t C-'"        (def-variable-toggle fit-frame-inhibit-fitting-flag)
+    "t C-SPC"      'evil-mc-mode
     "T |"          'scroll-bar-mode
     "w TAB"        'ace-swap-window
     "x a ."        'spacemacs/align-repeat-period
