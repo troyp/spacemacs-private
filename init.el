@@ -1429,7 +1429,11 @@ you should place you code here."
     (dired-copy-filename-as-kill 0))
   (defun dired-copy-file-directory-as-kill ()
     (interactive)
-    (file-name-directory (dired-copy-file-path-as-kill)))
+    (let ((dir (file-name-directory (dired-copy-file-path-as-kill))))
+      (if (eq last-command 'kill-region)
+          (kill-append dir nil)
+        (kill-new dir))
+      (message "%s" dir)))
 
   ;; INITIAL STATE:
   ;; dired-mode  :   (customized) evilified state
