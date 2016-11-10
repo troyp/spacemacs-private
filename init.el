@@ -2076,9 +2076,9 @@ you should place you code here."
 
   (setq undo-tree-history-directory-alist
         (let ((undohistdir (concat spacemacs-private-directory ".undo-tree-history/")))
-          `(("/home/.*/.emacs.d.*" . nil)
-            ("/home/.*/code/.*"    . nil)
-            ("."                   . ,undohistdir))))
+          `(("/home/.*/.emacs.d.*/private/.*" . nil)
+            ("/home/.*/code/.*"               . nil)
+            ("."                              . ,undohistdir))))
 
 
   ;; bind-keys to undo-tree register functions even when undo-tree-mode is off
@@ -2093,11 +2093,6 @@ you should place you code here."
 
   ;; =====UNDO-TREE-AUTO-SAVE-HISTORY=====
   ;; Causes undo-tree corruption
-
-  ;; single-directory case (entire path converted to filename):
-  ;;     undo-tree save file names crash zsh entirely. Bash doesn't crash, but
-  ;;     can't seem to handle them either.
-  ;;     Dired also breaks.
 
   (setq undo-tree-auto-save-history t)
 
