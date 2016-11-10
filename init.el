@@ -1029,6 +1029,9 @@ you should place you code here."
     "x C-l"        'quick-pcre-align-repeat
     "x N"          'rectangle-number-lines-interactive
     "x \\"         'shell-command-on-region
+    "z +"          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
+    "z ="          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
+    "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
     "3"            'spacemacs/enter-ahs-backward
     "8"            'spacemacs/enter-ahs-forward
     "."            'repeat-complex-command
