@@ -670,7 +670,8 @@ you should place you code here."
       `(defun ,fsym ()
          "Defined with `def-variable-toggle'."
          (interactive)
-         (setq ,var (not ,var)))))
+         (setq ,var (not ,var))
+         (message "%S is %s" ',var (if ,var "enabled" "disabled")))))
 
   ;; ,----------------------,
   ;; | Keybinding Functions |
