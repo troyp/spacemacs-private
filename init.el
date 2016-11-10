@@ -3132,27 +3132,6 @@ Inserts the expansion on a new line at the end of the sexp."
     (interactive)
     (avy-goto-subword-0 1 (lambda () (= 12 (char-after)))))
 
-  ;; redefine - make avy work with form-feed
-  (defun avy-goto-word-1 (char &optional arg)
-    "Jump to the currently visible CHAR at a word start.
-The window scope is determined by `avy-all-windows' (ARG negates it)."
-    (interactive (list (read-char "char: " t)
-                       current-prefix-arg))
-    (if (= char 12)
-        (avy-goto-subword-0 1 (lambda () (= 12 (char-after))))
-      (avy-with avy-goto-word-1
-        (let* ((str (string char))
-               (regex (cond ((string= str ".")
-                             "\\.")
-                            ((and avy-word-punc-regexp
-                                  (string-match avy-word-punc-regexp str))
-                             (regexp-quote str))
-                            (t
-                             (concat
-                              "\\b"
-                              str)))))
-          (avy--generic-jump regex arg avy-style)))))
-
   (defun tsp-align-quoted-column (beg end)
     (interactive "r")
     (quick-pcre-align-repeat beg end " (?:')")
