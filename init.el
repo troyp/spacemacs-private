@@ -180,6 +180,7 @@ values."
      ;; other packages
      ;; --------------
      ;; quelpa-use-package
+     company-quickhelp
      dired-sort-menu
      column-enforce-mode
      (dirtree :local :location "~/.emacs.d/private/local/ye-wenbin/dirtree.el")
@@ -3176,6 +3177,8 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
     "Make `undo-tree-auto-save-history' buffer-local and toggle"
     (interactive)
     (my-variable-make-local-and-toggle 'undo-tree-auto-save-history))
+
+  (def-variable-toggle company-quickhelp-mode)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
