@@ -976,6 +976,7 @@ you should place you code here."
     "f / f"        'sudo-open-file
     "f / e"        'spacemacs/sudo-edit
     "f / b"        'sudo-edit-this-file
+    "f C-."        'find-file-at-point
     "f <insert>"   'find-file-clipboard
     "g C-x v"      'vc-prefix-map
     ;; "h"            'help-prefix-map
