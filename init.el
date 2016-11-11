@@ -1183,6 +1183,9 @@ you should place you code here."
              )
 
   (which-key-add-key-based-replacements
+    "z RET"        "macro: z t ^"
+    "z <left>"     "macro: z h"
+    "z <right>"     "macro: z l"
     "C-x a"        "abbrev"
     "C-x n"        "narrow"
     "C-x r"        "rectangle/register/bookmark"
