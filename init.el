@@ -509,8 +509,9 @@ you should place you code here."
   ;; *             *
   ;; ***************
 
-  (setenv "PATH" (concat "/home/troy/.nvm/versions/node/v0.12.7/bin" ":" (getenv "PATH")))
-  (add-to-list 'exec-path "/home/troy/.nvm/versions/node/v0.12.7/bin")
+  ;; (setenv "PATH" (concat "/home/troy/.nvm/versions/node/v0.12.7/bin" ":" (getenv "PATH")))
+  ;; (add-to-list 'exec-path "/home/troy/.nvm/versions/node/v0.12.7/bin")
+
   ;; disable warning about setting PATH in .zshrc
   (setq exec-path-from-shell-check-startup-files nil)
 
