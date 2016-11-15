@@ -181,7 +181,6 @@ values."
      ;; other packages
      ;; --------------
      ;; quelpa-use-package
-     company-quickhelp
      dired-sort-menu
      column-enforce-mode
      (dirtree :local :location "~/.emacs.d/private/local/ye-wenbin/dirtree.el")
