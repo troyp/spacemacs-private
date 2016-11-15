@@ -955,7 +955,7 @@ you should place you code here."
   ;; '----------------------'
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
-  (evil-leader/set-key
+  (spacemacs/set-leader-keys
     "a ="          'calculator
     "b M"          'switch-to-messages-buffer
     "b S"          'spacemacs/switch-to-scratch-buffer-other-window
