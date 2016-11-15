@@ -1043,6 +1043,7 @@ you should place you code here."
     "<"            'evil-shift-left-fine-dispatcher
     "|"            'extend-to-column
     "="            'quick-calc
+    "SPC"          'avy-goto-char-timer
     "<backtab>"    'switch-to-most-recent-buffer
     "<backspace>"  'kill-this-buffer
     "<delete>"     'kill-buffer-and-window
