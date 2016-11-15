@@ -1041,7 +1041,8 @@ you should place you code here."
     "<"            'evil-shift-left-fine-dispatcher
     "|"            'extend-to-column
     "="            'quick-calc
-    "SPC"          'avy-goto-char-timer
+    "S-SPC"        'avy-goto-char-timer
+    "SPC"          'avy-goto-char
     "<backtab>"    'switch-to-most-recent-buffer
     "<backspace>"  'kill-this-buffer
     "<delete>"     'kill-buffer-and-window
