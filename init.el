@@ -839,8 +839,6 @@ you should place you code here."
 
   ;; when rebinding them for normal-state, rebind for evilified-state also
   (define-key evil-normal-state-map [delete] 'kill-this-buffer)
-  (defun insert-space () (interactive) (insert ? ))
-  (define-key evil-normal-state-map (kbd "S-SPC") 'insert-space)
   ;; shift reverses C-d (-scroll-down) and C-o (-jump-backward)
   (define-key evil-normal-state-map (kbd "C-S-d") 'evil-scroll-up)
   (define-key evil-normal-state-map (kbd "C-S-o") 'evil-jump-forward)
