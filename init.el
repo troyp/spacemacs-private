@@ -725,6 +725,9 @@ you should place you code here."
   (bind-key* "<C-S-iso-lefttab>" 'previous-multiframe-window)
   (bind-key* "<M-delete>" 'kill-this-buffer)
   (bind-key* "<M-S-delete>" 'kill-buffer-and-window)
+  (bind-key* "C-:" 'spacemacs/smex)
+  (bind-key* "M-X" 'spacemacs/smex)
+  (bind-key* "M-x" 'helm-M-x)
   ;; =================================================
 
   (global-set-key (kbd "C-h y") 'describe-symbol)
