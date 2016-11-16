@@ -2046,6 +2046,9 @@ you should place you code here."
     "<C-tab>"  'org-force-cycle-archived
     "<tab>"    'org-cycle
     "<S-tab>"  'org-shifttab
+    "h h"      'helm-org-in-buffer-headings
+    "h 1"      'my/helm-org-in-buffer-h1
+    "h 2"      'my/helm-org-in-buffer-h2
     )
 
   (eval-after-load 'ob-keys
@@ -2062,6 +2065,30 @@ you should place you code here."
     ", x"  "text style"
     ", B"  "org-babel"
     )
+
+  ;; modified from helm-org.el source: GPL3
+  (defun my/helm-org-in-buffer-h1 ()
+    "Preconfigured helm for org buffer level 1 headings."
+    (interactive)
+    (let (helm-org-show-filename helm-org-format-outline-path)
+      (helm :sources (helm-source-org-headings-for-files
+                      (list (current-buffer)))
+            :candidate-number-limit 99999
+            :input "^\\*\\  "
+            :preselect (helm-org-in-buffer-preselect)
+            :truncate-lines helm-org-truncate-lines
+            :buffer "*helm org inbuffer*")))
+  (defun my/helm-org-in-buffer-h2 ()
+    "Preconfigured helm for org buffer level 2 headings."
+    (interactive)
+    (let (helm-org-show-filename helm-org-format-outline-path)
+      (helm :sources (helm-source-org-headings-for-files
+                      (list (current-buffer)))
+            :candidate-number-limit 99999
+            :input "^\\*\\*\\  "
+            :preselect (helm-org-in-buffer-preselect)
+            :truncate-lines helm-org-truncate-lines
+            :buffer "*helm org inbuffer*")))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
