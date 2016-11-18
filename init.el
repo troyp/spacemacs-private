@@ -2388,10 +2388,34 @@ See also `multi-occur-in-matching-buffers'."
   ;; to get the definition of a key sequence in a keymap: lookup-key
   ;; to show keymap with which-key:  (which-key--show-keymap keymap-name keymap)
   (defalias 'key-vector-to-readable-string 'key-description)
+  ;; WARNING: key-description is described as an *approximate* inverse to kbd.
   (defalias 'key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
   (defalias 'key-input-to-vector 'read-key-sequence-vector)
   (defalias 'key-input-to-string 'read-key-sequence)
   (defun key-readable-string-to-vector (keystr) (edmacro-parse-keys keystr t))
+
+  (defun read-key-insert-vector ()
+    "Read a keystroke and insert as a vector."
+    (interactive)
+    (cl-prettyprint (read-key-sequence-vector "")))
+
+  (defun read-key-insert-readable-string (arg)
+    "Read a keystroke and insert as an edmacro-style string.
+
+    If a prefix argument is supplied, the double quotes are omitted."
+    (interactive "P")
+    (if arg
+        (insert (key-description (read-key-sequence-vector "")))
+      (insert ?" (key-description (read-key-sequence-vector "")) ?")))
+
+  (defun read-key-insert-string (arg)
+    "Read a keystroke and insert as a string.
+
+    If a prefix argument is supplied, the double quotes are omitted."
+    (interactive "P")
+    (if arg
+        (insert (read-key-sequence ""))
+      (insert ?" (read-key-sequence "") ?")))
 
   (defun lookup-key-interactive (keymap key)
     (interactive
