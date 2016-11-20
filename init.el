@@ -1012,7 +1012,7 @@ you should place you code here."
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t :"          'nameless-mode
-    "t C-s"        'my-undo-auto-save-make-local-and-toggle
+    "t C-s"        'my/undo-auto-save-make-local-and-toggle
     "t C-/"        'evil-search-highlight-persist
     "t C-'"        (def-variable-toggle fit-frame-inhibit-fitting-flag)
     "t C-SPC"      'evil-mc-mode
@@ -2143,7 +2143,7 @@ you should place you code here."
 
   ;; Attempt to prevent undo-tree history corruption...
   ;; https://github.com/syl20bnr/spacemacs/issues/774#issuecomment-194527210
-  (defun my-save-undo-history ()
+  (defun my/save-undo-history ()
     (interactive)
     (when (and (boundp 'undo-tree-mode)
                undo-tree-mode
@@ -2152,13 +2152,13 @@ you should place you code here."
                (not (eq buffer-undo-list t))
                (not revert-buffer-in-progress-p))
       (undo-tree-save-history nil t)))
-  (defun my-save-all-undo-history ()
+  (defun my/save-all-undo-history ()
     (interactive)
     (dolist (buffer (buffer-list))
       (with-current-buffer buffer
-        (my-save-undo-history))))
-  ;; (add-hook 'kill-emacs-hook #'my-save-all-undo-history)
-  ;; (add-hook 'kill-buffer-hook #'my-save-undo-history)
+        (my/save-undo-history))))
+  ;; (add-hook 'kill-emacs-hook #'my/save-all-undo-history)
+  ;; (add-hook 'kill-buffer-hook #'my/save-undo-history)
 
 
   ;; -------------------------------------------------------------------------------
@@ -3231,7 +3231,7 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
               :input   node
               :buffer  "*helm info*"))))
 
-  (defun my-variable-make-local-and-toggle (sym)
+  (defun my/variable-make-local-and-toggle (sym)
     "Make a variable buffer-local and toggle"
     (interactive "SVariable: ")
     (let ((new-value (not (and (boundp sym) (eval sym)))))
@@ -3239,10 +3239,10 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
       (set sym new-value)
       (message (format "%S: %S" sym new-value))))
 
-  (defun my-undo-auto-save-make-local-and-toggle ()
+  (defun my/undo-auto-save-make-local-and-toggle ()
     "Make `undo-tree-auto-save-history' buffer-local and toggle"
     (interactive)
-    (my-variable-make-local-and-toggle 'undo-tree-auto-save-history))
+    (my/variable-make-local-and-toggle 'undo-tree-auto-save-history))
 
   (def-variable-toggle company-quickhelp-mode)
 
