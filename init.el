@@ -3246,6 +3246,21 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
 
   (def-variable-toggle company-quickhelp-mode)
 
+  (defun my/shell-command-process-region-as-file (command)
+    "Process the region as a file with COMMAND and replace with output.
+
+The command should use %s to represent the filename. If the region is not
+active, the entire buffer is processed."
+    (interactive
+     (list (read-shell-command "run on current file: ")))
+    (let ((curbuf    (current-buffer))
+          (beg       (if (region-active-p) (point) (point-min)))
+          (end       (if (region-active-p) (mark) (point-max)))
+          (tmpfile   (make-temp-file "process-region")))
+      (append-to-file (buffer-substring beg end) nil tmpfile)
+      (delete-region beg end)
+      (shell-command (format command tmpfile) 0)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
