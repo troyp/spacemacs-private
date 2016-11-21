@@ -620,28 +620,6 @@ otherwise is equal to 'align-default-spacing."
 	(buffer-face-mode))
 	(setq buffer-face-mode-face (list :family prev-buffer-face-mode-face)))
 
-;; modified from Emacs source: GPL3
-(defun shell-command-replace-region
-    (START END COMMAND &optional OUTPUT-BUFFER REPLACE ERROR-BUFFER DISPLAY-ERROR-BUFFER)
-  "A version of shell-command-on-region which automatically operates on the current buffer"
-  (interactive (let (string)
-		 (unless (mark)
-		   (error "The mark is not set now, so there is no region"))
-		 ;; Do this before calling region-beginning
-		 ;; and region-end, in case subprocess output
-		 ;; relocates them while we are in the minibuffer.
-		 (setq string (read-shell-command "Shell command on region: "))
-		 ;; call-interactively recognizes region-beginning and
-		 ;; region-end specially, leaving them in the history.
-		 (list (region-beginning) (region-end)
-		       string
-               t
-               t
-		       shell-command-default-error-buffer
-		       t)))
-  (shell-command-on-region START END COMMAND OUTPUT-BUFFER REPLACE
-                           ERROR-BUFFER DISPLAY-ERROR-BUFFER))
-
 ;; Set path correctly.
 (defun sync-path ()
   (interactive)
