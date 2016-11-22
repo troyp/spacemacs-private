@@ -3262,7 +3262,7 @@ active, the entire buffer is processed."
       (shell-command (format command tmpfile) 0)))
 
 (defun my/shell-command-replace-region
-  (start end command &optional output-buffer replace error-buffer display-error-buffer)
+  (start end command &optional output-buffer error-buffer display-error-buffer)
   "Process the region as input with COMMAND and replace with output.
 
 The command should use %s to represent the filename. If the region is not
@@ -3272,12 +3272,11 @@ active, the entire buffer is processed."
          (if (region-active-p) (region-end) (point-max))
          (read-shell-command "run shell command: ")
          t
-         t
          shell-command-default-error-buffer
          t))
   (let ((curbuf    (current-buffer))
         (tmpfile   (make-temp-file "process-region")))
-    (shell-command-on-region start end command output-buffer replace
+    (shell-command-on-region start end command output-buffer t
                              error-buffer display-error-buffer)))
 
   ;; -------------------------------------------------------------------------------
