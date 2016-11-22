@@ -3149,14 +3149,14 @@ value of COL is additionally set as the new value of `fill-column'."
     (let ((grep-find-ignored-directories (cons ".cache" grep-find-ignored-directories)))
       (rgrep regexp
              ".spacemacs* *.el"
-             (expand-file-name user-emacs-directory))))
+             (directory-file-name (expand-file-name user-emacs-directory)))))
 
   (defun spacemacs-only-rgrep (regexp)
     (interactive "sREGEXP: ")
     (rgrep-with-ignored regexp
                         '(".cache" "elpa" "private")
                         ".spacemacs* *.el"
-                        (expand-file-name user-emacs-directory)))
+                        (directory-file-name (expand-file-name user-emacs-directory))))
 
   (defun spacemacs-private-rgrep (regexp)
     (interactive "sREGEXP: ")
@@ -3169,7 +3169,7 @@ value of COL is additionally set as the new value of `fill-column'."
     (interactive "sREGEXP: ")
     (rgrep regexp
            ".spacemacs* *.el"
-           (expand-file-name "elpa/" user-emacs-directory)))
+           (directory-file-name (expand-file-name "elpa/" user-emacs-directory))))
 
   (defun dired-spacemacs-private-directory ()
     "Open `dired' in `spacemacs-private-directory'."
