@@ -726,7 +726,7 @@ you should place you code here."
   (bind-key* "M-0" 'universal-argument)
   (bind-key* "<C-tab>" 'next-multiframe-window)
   (bind-key* "<C-S-iso-lefttab>" 'previous-multiframe-window)
-  (bind-key* "<M-delete>" 'kill-this-buffer)
+  (bind-key* "<M-delete>" 'my/kill-buffer-quit-help)
   (bind-key* "<M-S-delete>" 'kill-buffer-and-window)
   (bind-key* "C-:" 'spacemacs/smex)
   (bind-key* "M-X" 'spacemacs/smex)
@@ -3282,6 +3282,19 @@ active, the entire buffer is processed."
         (tmpfile   (make-temp-file "process-region")))
     (shell-command-on-region start end command output-buffer t
                              error-buffer display-error-buffer)))
+
+(defun my/kill-buffer-quit-help ()
+  "Kill the current buffer, close its window, and quit the help buffer."
+  (interactive)
+  (kill-buffer-and-window)
+  (quit-window nil (get-buffer-window "*Help*")))
+
+(defun my/delete-window-ace-move-buffer ()
+  (interactive)
+  (let ((b (current-buffer))
+        (w (aw-select "move to window:")))
+    (delete-window)
+    (set-window-buffer w b)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
