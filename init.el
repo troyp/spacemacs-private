@@ -3289,8 +3289,11 @@ active, the entire buffer is processed."
   (kill-buffer-and-window)
   (quit-window nil (get-buffer-window "*Help*")))
 
+;; TODO: find out how to identify active window before minibuffer entry
+;;       so this can be called with M-x
 (defun my/delete-window-ace-move-buffer ()
   (interactive)
+  (require 'ace-window)
   (let ((b (current-buffer))
         (w (aw-select "move to window:")))
     (delete-window)
