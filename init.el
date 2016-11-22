@@ -3296,6 +3296,10 @@ active, the entire buffer is processed."
     (delete-window)
     (set-window-buffer w b)))
 
+(defun my/web-mode-normalize-html ()
+  (interactive)
+  (my/shell-command-process-region-as-file "hxnormalize '%s'"))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
