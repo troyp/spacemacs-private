@@ -3268,7 +3268,7 @@ acts on the region if active, or else the entire buffer."
       (shell-command (format command tmpfile) output-buffer error-buffer)))
 
 (defun my/shell-command-replace-region
-  (start end command &optional output-buffer error-buffer display-error-buffer)
+  (start end command &optional error-buffer display-error-buffer)
   "Process the region as input with COMMAND and replace with output.
 
 The command should use %s to represent the filename. If the region is not
@@ -3277,12 +3277,10 @@ active, the entire buffer is processed."
    (list (if (region-active-p) (region-beginning) (point-min))
          (if (region-active-p) (region-end) (point-max))
          (read-shell-command "run shell command: ")
-         t
          shell-command-default-error-buffer
          t))
-  (let ((curbuf    (current-buffer))
-        (tmpfile   (make-temp-file "process-region")))
-    (shell-command-on-region start end command output-buffer t
+  (let ((curbuf  (current-buffer)))
+    (shell-command-on-region start end command t t
                              error-buffer display-error-buffer)))
 
 (defun my/kill-buffer-quit-help ()
