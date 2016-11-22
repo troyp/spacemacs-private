@@ -3303,6 +3303,33 @@ active, the entire buffer is processed."
   (interactive)
   (my/shell-command-process-region-as-file "hxnormalize '%s'"))
 
+(evil-define-command my/evil-shell-command-replace-region
+  (start end type command &optional error-buffer display-error-buffer)
+  "Process the region as input with COMMAND and replace with output.
+
+The command should use %s to represent the filename. If the region is not
+active, the entire buffer is processed."
+  (interactive
+   (let ((selection (evil-visual-range)))
+     (list
+      (if (evil-visual-state-p) (nth 0 selection) (point-min))
+      (if (evil-visual-state-p) (nth 1 selection) (point-max))
+      (if (evil-visual-state-p) (nth 2 selection) "inclusive")
+      (read-shell-command "run shell command: ")
+      shell-command-default-error-buffer
+      t)))
+  (let ((curbuf    (current-buffer))
+        (tempbuf   (generate-new-buffer "*evil-shell-command-replace-region*")))
+    (evil-yank start end type)
+    (with-temp-buffer
+      (evil-paste-before 1)
+      (shell-command-on-region (point-min) (point-max) command t t
+                               error-buffer display-error-buffer)
+      (evil-visual-select (point-min) (point-max) type)
+      (evil-yank (point-min) (point-max) type))
+    (evil-visual-restore)
+    (evil-visual-paste 1)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
