@@ -900,6 +900,7 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
+  (define-key evil-visual-state-map (kbd "o") 'evil-visual-rotate)
   (evil-visual-replace-visual-bindings)
 
 
@@ -1018,6 +1019,7 @@ you should place you code here."
     "t C-SPC"      'evil-mc-mode
     "T |"          'scroll-bar-mode
     "w TAB"        'ace-swap-window
+    "w DEL"        'my/delete-window-ace-move-buffer
     "x a ."        'spacemacs/align-repeat-period
     "x a '"        'spacemacs/align-repeat-quote
     "x a \""       'spacemacs/align-repeat-double-quote
@@ -1047,7 +1049,7 @@ you should place you code here."
     "S-SPC"        'avy-goto-char-timer
     "SPC"          'avy-goto-char
     "<backtab>"    'switch-to-most-recent-buffer
-    "<backspace>"  'kill-this-buffer
+    ;; "<backspace>"  'kill-this-buffer
     "<delete>"     'kill-buffer-and-window
     "<return>"     'helm-buffers-list
     "<f3>"         'kmacro-keymap
