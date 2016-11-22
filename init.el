@@ -3246,20 +3246,24 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
 
   (def-variable-toggle company-quickhelp-mode)
 
-  (defun my/shell-command-process-region-as-file (command)
+  (defun my/shell-command-process-region-as-file
+      (start end command &optional output-buffer error-buffer)
     "Process the region as a file with COMMAND and replace with output.
 
-The command should use %s to represent the filename. If the region is not
-active, the entire buffer is processed."
+The command should use %s to represent the filename. When called interactively,
+acts on the region if active, or else the entire buffer."
     (interactive
-     (list (read-shell-command "run on current file: ")))
-    (let ((curbuf    (current-buffer))
-          (beg       (if (region-active-p) (point) (point-min)))
-          (end       (if (region-active-p) (mark) (point-max)))
-          (tmpfile   (make-temp-file "process-region")))
-      (append-to-file (buffer-substring beg end) nil tmpfile)
-      (delete-region beg end)
-      (shell-command (format command tmpfile) 0)))
+     (list (if (region-active-p) (region-beginning) (point-min))
+           (if (region-active-p) (region-end) (point-max))
+           (read-shell-command "run on current file: ")
+           0
+           shell-command-default-error-buffer))
+    (let ((curbuf   (current-buffer))
+          (tmpfile  (make-temp-file "process-region")))
+      (append-to-file (buffer-substring start end) nil tmpfile)
+      (when (and output-buffer (not (bufferp output-buffer)))
+        (delete-region start end))
+      (shell-command (format command tmpfile) output-buffer error-buffer)))
 
 (defun my/shell-command-replace-region
   (start end command &optional output-buffer error-buffer display-error-buffer)
