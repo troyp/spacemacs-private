@@ -137,6 +137,7 @@ values."
      ;; My Packages
      ;; -----------
      evil-visual-replace
+     ;; (evil-visual-replace :local :location "~/.emacs.d/private/repos/evil-visual-replace/evil-visual-replace.el")
      (fn :location (recipe :fetcher github :repo "troyp/fn.el" :files ("fn.el")))
      (ls :location (recipe :fetcher github :repo "troyp/ls.el" :files ("ls.el")))
      (evil-adjust :location (recipe :fetcher github :repo "troyp/evil-adjust"))
@@ -737,8 +738,8 @@ you should place you code here."
 
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
 
-  (global-set-key [\S-f4] (defun tsp-launch-standalone-terminal () (interactive)
-                                 (start-process "terminal" nil "x-terminal-emulator")))
+  (global-set-key [\S-f4] my/launch-standalone-terminal)
+
   (global-set-key [\M-f4] 'kill-buffer-and-window)
 
   ;; change C-x - from 'shrink-window-if-larger-than-buffer to 'fit-window-to-buffer
@@ -3356,6 +3357,25 @@ active, the entire buffer is processed."
                                                 (when (region-active-p) (max (point) (mark)))
                                                 t)
                     (replace-match (concat (match-string 1) (upcase (match-string 2)))))))
+
+;; NOTE:
+;; when terminal is opened *starting* in a git repo with changes, attempting to use
+;; completion kills the shell (ZSH segfaults).
+;; - This also happens with call-process and with emacs's ansi-term and multiterm
+;; - changing ZSH theme doesn't fix this
+;; - also happens when setting initial directory with
+;;   (start-process "terminal" nil "roxterm" "-d" "DIR")
+;; - also happens if you start a subshell from the initial shell
+(defun my/launch-standalone-terminal ()
+  "Launch an external terminal emulator in the current directory.
+
+   With a prefix-argument, launch in spacemacs private directory."
+  (interactive)
+  (if current-prefix-arg
+      (start-process "terminal" nil "x-terminal-emulator"
+                     "-d" (expand-file-name (file-name-as-directory "private")
+                                            user-emacs-directory))
+    (start-process "terminal" nil "x-terminal-emulator")))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
