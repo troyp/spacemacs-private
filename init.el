@@ -1019,7 +1019,7 @@ you should place you code here."
     "t C-SPC"      'evil-mc-mode
     "T |"          'scroll-bar-mode
     "w TAB"        'ace-swap-window
-    "w DEL"        'my/delete-window-ace-move-buffer
+    "w DEL"        'my/delete-window-ace-move-buffer-quit-help
     "x a ."        'spacemacs/align-repeat-period
     "x a '"        'spacemacs/align-repeat-quote
     "x a \""       'spacemacs/align-repeat-double-quote
@@ -3283,26 +3283,6 @@ active, the entire buffer is processed."
     (shell-command-on-region start end command t t
                              error-buffer display-error-buffer)))
 
-(defun my/kill-buffer-quit-help ()
-  "Kill the current buffer, close its window, and quit the help buffer."
-  (interactive)
-  (kill-buffer-and-window)
-  (quit-window nil (get-buffer-window "*Help*")))
-
-;; TODO: find out how to identify active window before minibuffer entry
-;;       so this can be called with M-x
-(defun my/delete-window-ace-move-buffer ()
-  (interactive)
-  (require 'ace-window)
-  (let ((b (current-buffer))
-        (w (aw-select "move to window:")))
-    (delete-window)
-    (set-window-buffer w b)))
-
-(defun my/web-mode-normalize-html ()
-  (interactive)
-  (my/shell-command-process-region-as-file "hxnormalize '%s'"))
-
 (evil-define-command my/evil-shell-command-replace-region
   (start end type command &optional error-buffer display-error-buffer)
   "Process the region as input with COMMAND and replace with output.
@@ -3329,6 +3309,53 @@ active, the entire buffer is processed."
       (evil-yank (point-min) (point-max) type))
     (evil-visual-restore)
     (evil-visual-paste 1)))
+
+(defun my/kill-buffer-quit-help ()
+  "Kill the current buffer, close its window, and quit the help buffer."
+  (interactive)
+  (kill-buffer-and-window)
+  (quit-window nil (get-buffer-window "*Help*")))
+
+;; TODO: find out how to identify active window before minibuffer entry
+;;       so this can be called with M-x
+(defun my/delete-window-ace-move-buffer ()
+  (interactive)
+  (require 'ace-window)
+  (let ((b (current-buffer))
+        (w (aw-select "move to window:")))
+    (delete-window)
+    (set-window-buffer w b)))
+
+(defun my/delete-window-ace-move-buffer-quit-help ()
+  (interactive)
+  (require 'ace-window)
+  (let ((b (current-buffer))
+        (w (aw-select "move to window:")))
+    (quit-window nil (get-buffer-window "*Help*"))
+    (delete-window)
+    (set-window-buffer w b)))
+
+(defun my/web-mode-normalize-html ()
+  (interactive)
+  (my/shell-command-process-region-as-file "hxnormalize '%s'"))
+
+(defun my/underscore-to-camelcase()
+  (interactive)
+  (save-excursion (when (< (mark) (point))
+                    (exchange-point-and-mark))
+                  (while (search-forward-regexp (pcre-to-elisp/cached "([a-zA-Z0-9])_([a-zA-Z0-9])")
+                                                (when (region-active-p) (max (point) (mark)))
+                                                t)
+                    (replace-match (concat (match-string 1) (upcase (match-string 2)))))))
+
+(defun my/dash-to-camelcase()
+  (interactive)
+  (save-excursion (when (< (mark) (point))
+                    (exchange-point-and-mark))
+                  (while (search-forward-regexp (pcre-to-elisp/cached "(\\w)-(\\w)")
+                                                (when (region-active-p) (max (point) (mark)))
+                                                t)
+                    (replace-match (concat (match-string 1) (upcase (match-string 2)))))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
