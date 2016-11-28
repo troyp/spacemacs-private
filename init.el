@@ -1001,6 +1001,7 @@ you should place you code here."
     "h C-?"        'evil-search-highlight-restore
     ;; "h <f1>"       'help-map
     "i -"          'tiny-expand
+    "m <f10>"      'my/menu-execute/lambda-l-and-exit
     "o a"          'asciiheadings-prefix-key-map
     "o c"          'character-prefix-map
     "o f"          'flycheck-command-map
@@ -1055,6 +1056,7 @@ you should place you code here."
     "<return>"     'helm-buffers-list
     "<f3>"         'kmacro-keymap
     "<f5>"         'spacemacs/safe-revert-buffer
+    "<f10>"        'my/menu-execute/lambda-a-and-exit
     "C-l"          'quick-pcre-align-repeat
     "C-v"          'evil-cua-toggle
     "C-w"          'delete-frame
@@ -3382,6 +3384,25 @@ active, the entire buffer is processed."
   (declare (debug 'body))
   `(let ((helm-candidate-number-limit nil))
      ,forms))
+
+(defun my/execute-menu-command ()
+  (interactive)
+  (let ((helm-candidate-number-limit nil))
+    (lacarte-execute-menu-command '(local minor global))))
+
+(defun my/execute-command ()
+  (interactive)
+  (let ((helm-candidate-number-limit nil))
+    (lacarte-execute-command '(local minor global))))
+
+(defhydra my/menu-execute (global-map "C-x <f10>" :color blue :columns 1)
+  "Choose from local minor or global commands"
+  ("l" (no-helm-limit (lacarte-execute-menu-command '(local)))  "local")
+  ("m" (no-helm-limit (lacarte-execute-menu-command '(minor)))  "minor")
+  ("g" (no-helm-limit (lacarte-execute-menu-command '(global))) "global")
+  ("a" (no-helm-limit (lacarte-execute-menu-command '(local minor global))) "all")
+  ("ESC" nil "abort"))
+(global-set-key (kbd "C-x <f10>") 'my/menu-execute/body)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
