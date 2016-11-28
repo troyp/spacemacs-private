@@ -3377,6 +3377,12 @@ active, the entire buffer is processed."
                                             user-emacs-directory))
     (start-process "terminal" nil "x-terminal-emulator")))
 
+(defmacro no-helm-limit (&optional forms)
+  "Execute FORMS without any `helm-candidate-number-limit' in effect."
+  (declare (debug 'body))
+  `(let ((helm-candidate-number-limit nil))
+     ,forms))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
