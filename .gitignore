@@ -10,6 +10,8 @@
 .undo-tree-history
 private-data.el
 scratch.el
+working.el
+notes.el
 README.md
 srecode-map.el
 
