@@ -400,6 +400,7 @@ inserts a divider followed by a rectangular heading."
 (define-key 'asciiheadings-prefix-key-map   "S"  'rh-section-comment)
 (define-key 'asciiheadings-prefix-key-map   "s"  'srh-section-comment)
 (define-key 'asciiheadings-prefix-key-map   "="  'banner-heading-comment-current-line)
+(define-key 'asciiheadings-prefix-key-map   "-"  'comment-bar-heading-5=)
 
 ;; -----------------------------------------------------------------------------
 
