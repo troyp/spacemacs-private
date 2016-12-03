@@ -365,6 +365,19 @@ inserts a divider followed by a rectangular heading."
   (next-line)
   (pop-mark))
 
+;; -------------------------------------------------------------------------------
+;; ,--------------,
+;; | Bar Headings |
+;; '--------------'
+
+(fset 'comment-bar-heading-5=
+      (lambda (&optional arg)
+        "Keyboard macro."
+        (interactive "p")
+        (kmacro-exec-ring-item
+         (quote ("gu$vils=vils=vils=vils=vils= ;;" 0 "%d"))
+         arg)))
+
 ;; -----------------------------------------------------------------------------
 
 (define-prefix-command 'asciiheadings-prefix-key-map)

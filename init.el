@@ -2370,14 +2370,6 @@ See also `multi-occur-in-matching-buffers'."
 
   (fset 'switch-to-most-recent-buffer [?\C-x ?b return])
 
-  (fset 'comment-bar-heading-5=
-        (lambda (&optional arg)
-          "Keyboard macro."
-          (interactive "p")
-          (kmacro-exec-ring-item
-           (quote ("gu$vils=vils=vils=vils=vils= ;;" 0 "%d"))
-           arg)))
-
   (fset 'just-one-space-before-open-brace
         (lambda (&optional arg)
           "Keyboard macro."
