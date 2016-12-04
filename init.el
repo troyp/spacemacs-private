@@ -876,6 +876,9 @@ you should place you code here."
   ;; insert at WORD beginning
   (define-key evil-normal-state-map (kbd "M-B") 'evil-insert-at-WORD-beginning)
 
+  ;; evil-window: C-w C-w to swap windows
+  (bind-key "C-w" #'my/window-swap-with-next evil-window-map)
+
   ;; ,-----------------,
   ;; | EVILIFIED STATE |
   ;; '-----------------'
@@ -3417,6 +3420,16 @@ active, the entire buffer is processed."
     (gethash
      (or frame (selected-frame))
      window-numbering-table))))
+
+(defun my/window-swap-with-next ()
+  (interactive)
+  (let* ((ws (my/frame-windows))
+         (w1 (selected-window))
+         (w2 (if (equal (aref ws 1) ws)
+                 (aref ws 2)
+               (aref ws 1))))
+    (message "(my/swap-windows %S %S)" w1 w2)
+    (my/swap-windows w1 w2)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
