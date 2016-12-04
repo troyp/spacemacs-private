@@ -751,6 +751,11 @@ you should place you code here."
                   (lambda () (interactive) (scroll-other-window 1)))
   (global-set-key (kbd "C-S-k")
                   (lambda () (interactive) (scroll-other-window-down 1)))
+  (global-set-key (kbd "C-M-d") 'scroll-other-window)
+  (global-set-key (kbd "C-M-u") 'scroll-other-window-down)
+  (global-set-key (kbd "C-M-S-d") 'scroll-other-window-down)
+  (global-set-key (kbd "M-J") 'scroll-up-line)
+  (global-set-key (kbd "M-K") 'scroll-down-line)
 
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
@@ -766,12 +771,6 @@ you should place you code here."
   (global-set-key (kbd "C-S-SPC") 'just-one-space)
   ;; This binding is intercepted by UIM
   ;; Can also use S-M-SPC (transl to M-SPC, which can't be used itself since it's intercepted by KWin)
-
-  (global-set-key (kbd "C-M-d") 'scroll-other-window)
-  (global-set-key (kbd "C-M-u") 'scroll-other-window-down)
-  (global-set-key (kbd "C-M-S-d") 'scroll-other-window-down)
-  (global-set-key (kbd "M-J") 'scroll-up-line)
-  (global-set-key (kbd "M-K") 'scroll-down-line)
 
   (global-set-key [\C-f10] 'menu-bar-mode)
   (global-set-key [\M-f12] 'shell-pop)
