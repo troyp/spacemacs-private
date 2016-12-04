@@ -3327,7 +3327,8 @@ active, the entire buffer is processed."
   (let ((b (current-buffer))
         (w (aw-select "move to window:")))
     (delete-window)
-    (set-window-buffer w b)))
+    (set-window-buffer w b)
+    (select-window w)))
 
 (defun my/delete-window-ace-move-buffer-quit-help ()
   (interactive)
