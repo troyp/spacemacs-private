@@ -3404,6 +3404,20 @@ active, the entire buffer is processed."
   ("ESC" nil "abort"))
 (global-set-key (kbd "C-x <f10>") 'my/menu-execute/body)
 
+(defun my/swap-windows (w1 w2)
+  (let ((b1 (window-buffer w1))
+        (b2 (window-buffer w2)))
+    (set-window-buffer w1 b2)
+    (set-window-buffer w2 b1)))
+
+(defun my/frame-windows (&optional frame)
+  (cl-remove
+   nil
+   (car
+    (gethash
+     (or frame (selected-frame))
+     window-numbering-table))))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
