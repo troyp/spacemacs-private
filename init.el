@@ -649,9 +649,11 @@ you should place you code here."
   (defalias 'digra 'evil-enter-digraphs)  ;; tspevil.el
 
   ;; TODO: generate digraphs table with unicode names and descriptions
-  (define-helm-occur-function "digraphs"
-    (expand-file-name "docs/evil-digraphs-table.txt"
-                      spacemacs-private-directory))
+  (defun helm-occur-digraphs ()
+    (interactive)
+    (evil-ex-show-digraphs)
+    (helm-occur))
+
 
   ;; ,-------------,
   ;; | Compose Key |
