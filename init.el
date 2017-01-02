@@ -3467,6 +3467,13 @@ active, the entire buffer is processed."
     (my/swap-windows w1 w2)))
 
 (defun my/copy-matching-lines (regexp &optional unique-buffer append-results)
+  "Copy lines containing a match for REGEXP and display in a new buffer.
+
+If UNIQUE-BUFFER is non-nil, a new *copy-matching* buffer is used, even if one
+already exists. If APPEND-RESULTS is non-nil, the results are appended to the
+results already in the *copy-matching* buffer. The combined results are then
+displayed and copied to the kill-ring. Note that APPEND-RESULTS is redundant if
+UNIQUE-BUFFER is non-nil."
   (interactive "sCopy lines containing a match for regexp: ")
   (let ((min (if (region-active-p) (region-beginning) (point-min)))
         (max (if (region-active-p) (region-end) nil))
@@ -3490,6 +3497,13 @@ active, the entire buffer is processed."
         (help-mode)))))
 
 (defun my/copy-non-matching-lines (regexp &optional unique-buffer append-results)
+  "Copy lines not containing a match for REGEXP and display in a new buffer.
+
+If UNIQUE-BUFFER is non-nil, a new *copy-matching* buffer is used, even if one
+already exists. If APPEND-RESULTS is non-nil, the results are appended to the
+results already in the *copy-matching* buffer. The combined results are then
+displayed and copied to the kill-ring. Note that APPEND-RESULTS is redundant if
+UNIQUE-BUFFER is non-nil."
   (interactive "sCopy all lines except those containing a match for regexp: ")
   (let ((min (if (region-active-p) (region-beginning) (point-min)))
         (max (if (region-active-p) (region-end) (point-max)))
