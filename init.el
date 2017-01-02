@@ -1189,6 +1189,18 @@ you should place you code here."
              ("s" . dired-mark-files-regexp)
              )
 
+  (bind-keys :map spacemacs-cmds
+             :prefix-map match-lines-map
+             :menu-name "match lines"
+             :prefix "s L"
+             :prefix-docstring "Commands matching lines against a pattern."
+             ("m" . keep-lines)
+             ("n" . flush-lines)
+             ("c" . how-many)
+             ("h" . highlight-lines-matching-regexp)
+             ("y" . my/copy-matching-lines)
+             )
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------------,
   ;; | which-key Configuration |
@@ -3452,6 +3464,29 @@ active, the entire buffer is processed."
                (aref ws 1))))
     (message "(my/swap-windows %S %S)" w1 w2)
     (my/swap-windows w1 w2)))
+
+(defun my/copy-matching-lines (regexp &optional unique-buffer append-results)
+  (interactive "sCopy lines containing a match for regexp: ")
+  (let ((min (if (region-active-p) (region-beginning) (point-min)))
+        (max (if (region-active-p) (region-end) nil))
+        (resultbuf (get-buffer-create (if unique-buffer
+                                          (gensym "*copy-matching*")
+                                        "*copy-matching*"))))
+    (with-current-buffer resultbuf
+      (read-only-mode 0)
+      (if append-results
+          (goto-char (point-max))
+        (erase-buffer)))
+    (save-excursion
+      (save-match-data
+        (goto-char min)
+        (while (re-search-forward regexp max t)
+          (let ((line (buffer-substring (line-beginning-position 1)
+                                        (line-beginning-position 2))))
+            (with-current-buffer resultbuf (insert line))))
+        (pop-to-buffer resultbuf)
+        (kill-ring-save (point-min) (point-max))
+        (help-mode)))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
