@@ -853,6 +853,9 @@ you should place you code here."
   ;; reverse gu and gU
   (define-key evil-normal-state-map (kbd "gu") 'evil-upcase)
   (define-key evil-normal-state-map (kbd "gU") 'evil-downcase)
+  ;; centre after n, N
+  (define-key evil-normal-state-map (kbd "n") 'my/evil-search-next-and-center)
+  (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center)
   ;; provide evil-repeat-find-char-reverse binding
   (define-key evil-normal-state-map (kbd "M-;") 'evil-repeat-find-char-reverse)
   ;; [r and ]r move to beginning and end of region
@@ -3309,6 +3312,22 @@ active, the entire buffer is processed."
       (evil-yank (point-min) (point-max) type))
     (evil-visual-restore)
     (evil-visual-paste 1)))
+
+(evil-define-motion my/evil-search-previous-and-center (count)
+  "Repeat the last search and center."
+  :jump t
+  :type exclusive
+  :keep-visual t
+  (evil-search-previous count)
+  (evil-scroll-line-to-center nil))
+
+(evil-define-motion my/evil-search-next-and-center (count)
+  "Repeat the last search and center."
+  :jump t
+  :type exclusive
+  :keep-visual t
+  (evil-search-next count)
+  (evil-scroll-line-to-center nil))
 
 (defun my/kill-buffer-quit-help ()
   "Kill the current buffer, close its window, and quit the help buffer."
