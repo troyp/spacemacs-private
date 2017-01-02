@@ -3531,6 +3531,36 @@ UNIQUE-BUFFER is non-nil."
         (kill-ring-save (point-min) (point-max))
         (help-mode)))))
 
+(defmacro dolines (spec &rest body)
+  "Iterate through the (visible) lines of the current buffer.
+
+SPEC is an optional list of loop variable names (NVAR LINEVAR). NVAR, if
+specified, contains the number of the current line. LINEVAR, if specified,
+contains the text of the current line. BODY is one or more sexps to execute for
+each line."
+  (declare (indent 1))
+  (let ((min      (if (region-active-p) (region-beginning) (point-min)))
+        (max      (if (region-active-p) (region-end) (point-max)))
+        (nvar     (car spec))
+        (linevar  (cadr spec))
+        (vardefs  nil))
+    (when linevar
+      (push `(setf ,linevar (buffer-substring (line-beginning-position)
+                                              (line-end-position)))
+            vardefs))
+    (when nvar
+      (push `(setf ,nvar (line-number-at-pos (point)))
+            vardefs))
+    `(progn
+      (goto-char ,min)
+      (while (< (line-end-position) ,max)
+        ;; set loop variables
+        ,@vardefs
+         ;; process
+        ,@body
+        ;; increment
+        (beginning-of-line 2)))))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
