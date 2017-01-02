@@ -1199,6 +1199,7 @@ you should place you code here."
              ("c" . how-many)
              ("h" . highlight-lines-matching-regexp)
              ("y" . my/copy-matching-lines)
+             ("Y" . my/copy-non-matching-lines)
              )
 
   ;; -------------------------------------------------------------------------------
@@ -3484,6 +3485,34 @@ active, the entire buffer is processed."
           (let ((line (buffer-substring (line-beginning-position 1)
                                         (line-beginning-position 2))))
             (with-current-buffer resultbuf (insert line))))
+        (pop-to-buffer resultbuf)
+        (kill-ring-save (point-min) (point-max))
+        (help-mode)))))
+
+(defun my/copy-non-matching-lines (regexp &optional unique-buffer append-results)
+  (interactive "sCopy all lines except those containing a match for regexp: ")
+  (let ((min (if (region-active-p) (region-beginning) (point-min)))
+        (max (if (region-active-p) (region-end) (point-max)))
+        (searchbuf (current-buffer))
+        (resultbuf (get-buffer-create (if unique-buffer
+                                          (gensym "*copy-matching*")
+                                        "*copy-matching*"))))
+    (with-current-buffer resultbuf
+      (read-only-mode 0)
+      (if append-results
+          (goto-char (point-max))
+        (erase-buffer)))
+    (save-excursion
+      (save-match-data
+        (goto-char min)
+        (unless (bolp) (forward-line))
+        (while (< (point) max)
+          (let ((line (buffer-substring (point) (line-end-position))))
+            (when (not (string-match-p regexp line))
+              (with-current-buffer resultbuf
+                (insert line)
+                (newline))))
+          (forward-line))
         (pop-to-buffer resultbuf)
         (kill-ring-save (point-min) (point-max))
         (help-mode)))))
