@@ -936,17 +936,23 @@ you should place you code here."
   ;; ,--------------,
   ;; | INSERT STATE |
   ;; '--------------'
+  ;; define bindings for shift-right/left-line: frees C-d, C-t:
+  (define-key evil-insert-state-map (kbd "S-<tab>")       'evil-shift-right-line)
+  (define-key evil-insert-state-map (kbd "S-<backspace>") 'evil-shift-left-line)
+  (define-key evil-insert-state-map (kbd "C-d")   'delete-forward-char)
+  (define-key evil-insert-state-map (kbd "C-l")   'delete-forward-char)
+  (define-key evil-insert-state-map (kbd "C-t")   'transpose-chars)
   (define-key evil-insert-state-map (kbd "C-S-a") 'evil-paste-last-insertion)
-  (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line-or-text)
-  (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
+  (define-key evil-insert-state-map (kbd "C-a")   'move-beginning-of-line-or-text)
+  (define-key evil-insert-state-map (kbd "C-e")   'end-of-line)
   (define-key evil-insert-state-map (kbd "C-S-y") 'evil-copy-from-below)
-  (define-key evil-insert-state-map (kbd "C-l") 'delete-forward-char)
   (define-key evil-insert-state-map (kbd "C-S-l") 'backward-delete-char)
   (define-key evil-insert-state-map (kbd "C-S-k") 'kill-line)
-  (define-key evil-insert-state-map (kbd "C-.") 'tsp-yas-expand)
-  (define-key evil-insert-state-map (kbd "M-?") 'dabbrev-expand)
-  (define-key evil-insert-state-map (kbd "C-n") 'next-line)
-  (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
+  (define-key evil-insert-state-map (kbd "C-.")   'tsp-yas-expand)
+  (define-key evil-insert-state-map (kbd "M-?")   'dabbrev-expand)
+  (define-key evil-insert-state-map (kbd "C-n")   'next-line)
+  (define-key evil-insert-state-map (kbd "C-p")   'previous-line)
+
   ;; (define-key evil-insert-state-map (kbd "C-M-SPC") 'hippie-expand)
 
   ;; unicode insertion
