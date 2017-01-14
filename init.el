@@ -1183,7 +1183,7 @@ you should place you code here."
              ("b"   . ediff-buffers)
              ("3"   . ediff-buffers3)
              )
-  (bind-keys :map diff-prefix-map
+  (bind-keys :map diff-prefix
              :prefix-map merge-prefix
              :menu-name "merge"
              :prefix "m"
