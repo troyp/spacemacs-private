@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: FIXME
+# key: fix
+# --
+`(if (string= comment-start ";") ";;" comment-start)` FIXME: $0

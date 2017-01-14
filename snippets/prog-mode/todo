@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: TODO
+# key: t
+# --
+`(if (string= comment-start ";") ";;" comment-start)` TODO: $0
