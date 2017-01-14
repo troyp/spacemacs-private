@@ -1738,6 +1738,18 @@ you should place you code here."
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
+  ;; | Hy-Mode |
+  ;; '---------'
+
+  (which-key-add-major-mode-key-based-replacements 'hy-mode
+    "SPC m s"    "evaluate"
+    ", s"        "evaluate"
+    "SPC m V"    "pyvenv"
+    ", V"        "pyvenv"
+    )
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
   ;; | ibuffer |
   ;; '---------'
 
