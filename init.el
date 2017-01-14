@@ -1474,6 +1474,8 @@ you should place you code here."
   ;; | Dired |
   ;; '-------'
 
+  (setq wdired-use-dired-vertical-movement 'sometimes)
+
   (defun dired-copy-file-path-as-kill ()
     (interactive)
     (dired-copy-filename-as-kill 0))
