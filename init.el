@@ -1173,6 +1173,33 @@ you should place you code here."
              ("f b" . helm-firefox-bookmarks)
              )
 
+  ;; =====DIFF PREFIX MAP=====
+  (bind-keys :map spacemacs-cmds
+             :prefix-map diff-prefix
+             :menu-name "diff"
+             :prefix "&"
+             :prefix-docstring "Diff commands."
+             ("f"   . diff-buffer-with-file)
+             ("b"   . ediff-buffers)
+             ("3"   . ediff-buffers3)
+             )
+  (bind-keys :map diff-prefix-map
+             :prefix-map merge-prefix
+             :menu-name "merge"
+             :prefix "m"
+             :prefix-docstring "Merge commands."
+             ("m" . ediff-merge-files)
+             ("M" . ediff-merge-files-with-ancestor)
+             ("b" . ediff-merge-buffers)
+             ("B" . ediff-merge-buffers-with-ancestor)
+             ("d" . ediff-merge-directories)
+             ("D" . ediff-merge-directories-with-ancestor)
+             )
+  (which-key-add-key-based-replacements
+    "SPC &"    "diff"
+    "SPC & m"  "merge"
+    )
+
   (bind-keys :map spacemacs-cmds
              :prefix-map modes-prefix-key-map
              :prefix "o m"
