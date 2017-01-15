@@ -522,7 +522,7 @@ you should place you code here."
   ;; Info directories
   (let ((extra-Info-dirs
          (list
-           ;; "/usr/share/info/emacs-24"
+          ;; "/usr/share/info/emacs-24"
           (concat source-directory "info")
           "/usr/share/info/"
           "/opt/info/"
@@ -2203,7 +2203,7 @@ you should place you code here."
   (bind-keys :map global-map
              ("C-x r u" .undo-tree-save-state-to-register)
              ("C-x r U" .undo-tree-restore-state-from-register)
-            )
+             )
 
   (defun undo-tree-clear ()
     (interactive)
@@ -2338,24 +2338,24 @@ you should place you code here."
   (define-key evil-inner-text-objects-map "e" 'evil-inner-element)
   (define-key evil-outer-text-objects-map "e" 'evil-outer-element)
 
-   ;; -------------------------------------------------------------------------------
-   ;; ,-----------,
-   ;; | Yasnippet |
-   ;; '-----------'
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------,
+  ;; | Yasnippet |
+  ;; '-----------'
 
-   (defun tsp-yas-expand (&optional field)
-      "Expand a snippet before point. Simplified version of `yas-expand'."
-      (interactive)
-      (setq yas--condition-cache-timestamp (current-time))
-      (let ((templates-and-pos (yas--templates-for-key-at-point)))
-         (if templates-and-pos
-            (yas--expand-or-prompt-for-template
-               (nth 0 templates-and-pos)
-               ;; Delete snippet key and active region when expanding.
-               (min (if (use-region-p) (region-beginning) most-positive-fixnum)
-                  (nth 1 templates-and-pos))
-               (max (if (use-region-p) (region-end) most-negative-fixnum)
-                  (nth 2 templates-and-pos))))))
+  (defun tsp-yas-expand (&optional field)
+    "Expand a snippet before point. Simplified version of `yas-expand'."
+    (interactive)
+    (setq yas--condition-cache-timestamp (current-time))
+    (let ((templates-and-pos (yas--templates-for-key-at-point)))
+      (if templates-and-pos
+          (yas--expand-or-prompt-for-template
+           (nth 0 templates-and-pos)
+           ;; Delete snippet key and active region when expanding.
+           (min (if (use-region-p) (region-beginning) most-positive-fixnum)
+                (nth 1 templates-and-pos))
+           (max (if (use-region-p) (region-end) most-negative-fixnum)
+                (nth 2 templates-and-pos))))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
@@ -3330,283 +3330,284 @@ acts on the region if active, or else the entire buffer."
         (delete-region start end))
       (shell-command (format command tmpfile) output-buffer error-buffer)))
 
-(defun my/shell-command-replace-region
-  (start end command &optional error-buffer display-error-buffer)
-  "Process the region as input with COMMAND and replace with output.
+  (defun my/shell-command-replace-region
+      (start end command &optional error-buffer display-error-buffer)
+    "Process the region as input with COMMAND and replace with output.
 
 The command should use %s to represent the filename. If the region is not
 active, the entire buffer is processed."
-  (interactive
-   (list (if (region-active-p) (region-beginning) (point-min))
-         (if (region-active-p) (region-end) (point-max))
-         (read-shell-command "run shell command: ")
-         shell-command-default-error-buffer
-         t))
-  (let ((curbuf  (current-buffer)))
-    (shell-command-on-region start end command t t
-                             error-buffer display-error-buffer)))
+    (interactive
+     (list (if (region-active-p) (region-beginning) (point-min))
+           (if (region-active-p) (region-end) (point-max))
+           (read-shell-command "run shell command: ")
+           shell-command-default-error-buffer
+           t))
+    (let ((curbuf  (current-buffer)))
+      (shell-command-on-region start end command t t
+                               error-buffer display-error-buffer)))
 
-(evil-define-command my/evil-shell-command-replace-region
-  (start end type command &optional error-buffer display-error-buffer)
-  "Process the region as input with COMMAND and replace with output.
+  (evil-define-command my/evil-shell-command-replace-region
+    (start end type command &optional error-buffer display-error-buffer)
+    "Process the region as input with COMMAND and replace with output.
 
 The command should use %s to represent the filename. If the region is not
 active, the entire buffer is processed."
-  (interactive
-   (let ((selection (evil-visual-range)))
-     (list
-      (if (evil-visual-state-p) (nth 0 selection) (point-min))
-      (if (evil-visual-state-p) (nth 1 selection) (point-max))
-      (if (evil-visual-state-p) (nth 2 selection) "inclusive")
-      (read-shell-command "run shell command: ")
-      shell-command-default-error-buffer
-      t)))
-  (let ((curbuf    (current-buffer))
-        (tempbuf   (generate-new-buffer "*evil-shell-command-replace-region*")))
-    (evil-yank start end type)
-    (with-temp-buffer
-      (evil-paste-before 1)
-      (shell-command-on-region (point-min) (point-max) command t t
-                               error-buffer display-error-buffer)
-      (evil-visual-select (point-min) (point-max) type)
-      (evil-yank (point-min) (point-max) type))
-    (evil-visual-restore)
-    (evil-visual-paste 1)))
+    (interactive
+     (let ((selection (evil-visual-range)))
+       (list
+        (if (evil-visual-state-p) (nth 0 selection) (point-min))
+        (if (evil-visual-state-p) (nth 1 selection) (point-max))
+        (if (evil-visual-state-p) (nth 2 selection) "inclusive")
+        (read-shell-command "run shell command: ")
+        shell-command-default-error-buffer
+        t)))
+    (let ((curbuf    (current-buffer))
+          (tempbuf   (generate-new-buffer "*evil-shell-command-replace-region*")))
+      (evil-yank start end type)
+      (with-temp-buffer
+        (evil-paste-before 1)
+        (shell-command-on-region (point-min) (point-max) command t t
+                                 error-buffer display-error-buffer)
+        (evil-visual-select (point-min) (point-max) type)
+        (evil-yank (point-min) (point-max) type))
+      (evil-visual-restore)
+      (evil-visual-paste 1)))
 
-(evil-define-motion my/evil-search-previous-and-center (count)
-  "Repeat the last search and center."
-  :jump t
-  :type exclusive
-  :keep-visual t
-  (evil-search-previous count)
-  (evil-scroll-line-to-center nil))
+  (evil-define-motion my/evil-search-previous-and-center (count)
+    "Repeat the last search and center."
+    :jump t
+    :type exclusive
+    :keep-visual t
+    (evil-search-previous count)
+    (evil-scroll-line-to-center nil))
 
-(evil-define-motion my/evil-search-next-and-center (count)
-  "Repeat the last search and center."
-  :jump t
-  :type exclusive
-  :keep-visual t
-  (evil-search-next count)
-  (evil-scroll-line-to-center nil))
+  (evil-define-motion my/evil-search-next-and-center (count)
+    "Repeat the last search and center."
+    :jump t
+    :type exclusive
+    :keep-visual t
+    (evil-search-next count)
+    (evil-scroll-line-to-center nil))
 
-(defun my/kill-buffer-quit-help ()
-  "Kill the current buffer, close its window, and quit the help buffer."
-  (interactive)
-  (kill-buffer-and-window)
-  (quit-window nil (get-buffer-window "*Help*")))
+  (defun my/kill-buffer-quit-help ()
+    "Kill the current buffer, close its window, and quit the help buffer."
+    (interactive)
+    (kill-buffer-and-window)
+    (quit-window nil (get-buffer-window "*Help*")))
 
-;; TODO: find out how to identify active window before minibuffer entry
-;;       so this can be called with M-x
-(defun my/delete-window-ace-move-buffer ()
-  (interactive)
-  (require 'ace-window)
-  (let ((b (current-buffer))
-        (w (aw-select "move to window:")))
-    (delete-window)
-    (set-window-buffer w b)))
+  ;; TODO: find out how to identify active window before minibuffer entry
+  ;;       so this can be called with M-x
+  (defun my/delete-window-ace-move-buffer ()
+    (interactive)
+    (require 'ace-window)
+    (let ((b (current-buffer))
+          (w (aw-select "move to window:")))
+      (delete-window)
+      (set-window-buffer w b)))
 
-(defun my/delete-window-ace-move-buffer-select ()
-  (interactive)
-  (require 'ace-window)
-  (let ((b (current-buffer))
-        (w (aw-select "move to window:")))
-    (delete-window)
-    (set-window-buffer w b)
-    (select-window w)))
+  (defun my/delete-window-ace-move-buffer-select ()
+    (interactive)
+    (require 'ace-window)
+    (let ((b (current-buffer))
+          (w (aw-select "move to window:")))
+      (delete-window)
+      (set-window-buffer w b)
+      (select-window w)))
 
-(defun my/delete-window-ace-move-buffer-quit-help ()
-  (interactive)
-  (require 'ace-window)
-  (let ((b (current-buffer))
-        (w (aw-select "move to window:")))
-    (quit-window nil (get-buffer-window "*Help*"))
-    (delete-window)
-    (set-window-buffer w b)))
+  (defun my/delete-window-ace-move-buffer-quit-help ()
+    (interactive)
+    (require 'ace-window)
+    (let ((b (current-buffer))
+          (w (aw-select "move to window:")))
+      (quit-window nil (get-buffer-window "*Help*"))
+      (delete-window)
+      (set-window-buffer w b)))
 
-(defun my/web-mode-normalize-html ()
-  (interactive)
-  (my/shell-command-process-region-as-file "hxnormalize '%s'"))
+  (defun my/web-mode-normalize-html ()
+    (interactive)
+    (my/shell-command-process-region-as-file "hxnormalize '%s'"))
 
-(defun my/underscore-to-camelcase()
-  (interactive)
-  (save-excursion (when (< (mark) (point))
-                    (exchange-point-and-mark))
-                  (while (search-forward-regexp (pcre-to-elisp/cached "([a-zA-Z0-9])_([a-zA-Z0-9])")
-                                                (when (region-active-p) (max (point) (mark)))
-                                                t)
-                    (replace-match (concat (match-string 1) (upcase (match-string 2)))))))
+  (defun my/underscore-to-camelcase()
+    (interactive)
+    (save-excursion (when (< (mark) (point))
+                      (exchange-point-and-mark))
+                    (while (search-forward-regexp (pcre-to-elisp/cached "([a-zA-Z0-9])_([a-zA-Z0-9])")
+                                                  (when (region-active-p) (max (point) (mark)))
+                                                  t)
+                      (replace-match (concat (match-string 1) (upcase (match-string 2)))))))
 
-(defun my/dash-to-camelcase()
-  (interactive)
-  (save-excursion (when (< (mark) (point))
-                    (exchange-point-and-mark))
-                  (while (search-forward-regexp (pcre-to-elisp/cached "(\\w)-(\\w)")
-                                                (when (region-active-p) (max (point) (mark)))
-                                                t)
-                    (replace-match (concat (match-string 1) (upcase (match-string 2)))))))
+  (defun my/dash-to-camelcase()
+    (interactive)
+    (save-excursion (when (< (mark) (point))
+                      (exchange-point-and-mark))
+                    (while (search-forward-regexp (pcre-to-elisp/cached "(\\w)-(\\w)")
+                                                  (when (region-active-p) (max (point) (mark)))
+                                                  t)
+                      (replace-match (concat (match-string 1) (upcase (match-string 2)))))))
 
-;; NOTE:
-;; when terminal is opened *starting* in a git repo with changes, attempting to use
-;; completion kills the shell (ZSH segfaults).
-;; - This also happens with call-process and with emacs's ansi-term and multiterm
-;; - changing ZSH theme doesn't fix this
-;; - also happens when setting initial directory with
-;;   (start-process "terminal" nil "roxterm" "-d" "DIR")
-;; - also happens if you start a subshell from the initial shell
-(defun my/launch-standalone-terminal ()
-  "Launch an external terminal emulator in the current directory.
+  ;; NOTE:
+  ;; when terminal is opened *starting* in a git repo with changes, attempting to use
+  ;; completion kills the shell (ZSH segfaults).
+  ;; - This also happens with call-process and with emacs's ansi-term and multiterm
+  ;; - changing ZSH theme doesn't fix this
+  ;; - also happens when setting initial directory with
+  ;;   (start-process "terminal" nil "roxterm" "-d" "DIR")
+  ;; - also happens if you start a subshell from the initial shell
+  (defun my/launch-standalone-terminal ()
+    "Launch an external terminal emulator in the current directory.
 
    With a prefix-argument, launch in spacemacs private directory."
-  (interactive)
-  (if current-prefix-arg
-      (start-process "terminal" nil "x-terminal-emulator"
-                     "-d" (expand-file-name (file-name-as-directory "private")
-                                            user-emacs-directory))
-    (start-process "terminal" nil "x-terminal-emulator")))
+    (interactive)
+    (if current-prefix-arg
+        (start-process "terminal" nil "x-terminal-emulator"
+                       "-d" (expand-file-name (file-name-as-directory "private")
+                                              user-emacs-directory))
+      (start-process "terminal" nil "x-terminal-emulator")))
 
-(defmacro no-helm-limit (&optional forms)
-  "Execute FORMS without any `helm-candidate-number-limit' in effect."
-  (declare (debug 'body))
-  `(let ((helm-candidate-number-limit nil))
-     ,forms))
+  (defmacro no-helm-limit (&optional forms)
+    "Execute FORMS without any `helm-candidate-number-limit' in effect."
+    (declare (debug 'body))
+    `(let ((helm-candidate-number-limit nil))
+       ,forms))
 
-(defun my/execute-menu-command ()
-  (interactive)
-  (let ((helm-candidate-number-limit nil))
-    (lacarte-execute-menu-command '(local minor global))))
+  (defun my/execute-menu-command ()
+    (interactive)
+    (let ((helm-candidate-number-limit nil))
+      (lacarte-execute-menu-command '(local minor global))))
 
-(defun my/execute-command ()
-  (interactive)
-  (let ((helm-candidate-number-limit nil))
-    (lacarte-execute-command '(local minor global))))
+  (defun my/execute-command ()
+    (interactive)
+    (let ((helm-candidate-number-limit nil))
+      (lacarte-execute-command '(local minor global))))
 
-(defhydra my/menu-execute (global-map "C-x <f10>" :color blue :columns 1)
-  "Choose from local minor or global commands"
-  ("l" (no-helm-limit (lacarte-execute-menu-command '(local)))  "local")
-  ("m" (no-helm-limit (lacarte-execute-menu-command '(minor)))  "minor")
-  ("g" (no-helm-limit (lacarte-execute-menu-command '(global))) "global")
-  ("a" (no-helm-limit (lacarte-execute-menu-command '(local minor global))) "all")
-  ("ESC" nil "abort"))
-(global-set-key (kbd "C-x <f10>") 'my/menu-execute/body)
+  (defhydra my/menu-execute (global-map "C-x <f10>" :color blue :columns 1)
+    "Choose from local minor or global commands"
+    ("l" (no-helm-limit (lacarte-execute-menu-command '(local)))  "local")
+    ("m" (no-helm-limit (lacarte-execute-menu-command '(minor)))  "minor")
+    ("g" (no-helm-limit (lacarte-execute-menu-command '(global))) "global")
+    ("a" (no-helm-limit (lacarte-execute-menu-command '(local minor global))) "all")
+    ("ESC" nil "abort"))
+  (global-set-key (kbd "C-x <f10>") 'my/menu-execute/body)
 
-(defun my/swap-windows (w1 w2)
-  (let ((b1 (window-buffer w1))
-        (b2 (window-buffer w2)))
-    (set-window-buffer w1 b2)
-    (set-window-buffer w2 b1)))
+  (defun my/swap-windows (w1 w2)
+    (let ((b1 (window-buffer w1))
+          (b2 (window-buffer w2)))
+      (set-window-buffer w1 b2)
+      (set-window-buffer w2 b1)))
 
-(defun my/frame-windows (&optional frame)
-  (cl-remove
-   nil
-   (car
-    (gethash
-     (or frame (selected-frame))
-     window-numbering-table))))
+  (defun my/frame-windows (&optional frame)
+    (cl-remove
+     nil
+     (car
+      (gethash
+       (or frame (selected-frame))
+       window-numbering-table))))
 
-(defun my/window-swap-with-next ()
-  (interactive)
-  (let* ((ws (my/frame-windows))
-         (w1 (selected-window))
-         (w2 (if (equal (aref ws 1) ws)
-                 (aref ws 2)
-               (aref ws 1))))
-    (message "(my/swap-windows %S %S)" w1 w2)
-    (my/swap-windows w1 w2)))
+  (defun my/window-swap-with-next ()
+    (interactive)
+    (let* ((ws (my/frame-windows))
+           (w1 (selected-window))
+           (w2 (if (equal (aref ws 1) ws)
+                   (aref ws 2)
+                 (aref ws 1))))
+      (message "(my/swap-windows %S %S)" w1 w2)
+      (my/swap-windows w1 w2)))
 
-(defun my/copy-matching-lines (regexp &optional unique-buffer append-results)
-  "Copy lines containing a match for REGEXP and display in a new buffer.
-
-If UNIQUE-BUFFER is non-nil, a new *copy-matching* buffer is used, even if one
-already exists. If APPEND-RESULTS is non-nil, the results are appended to the
-results already in the *copy-matching* buffer. The combined results are then
-displayed and copied to the kill-ring. Note that APPEND-RESULTS is redundant if
-UNIQUE-BUFFER is non-nil."
-  (interactive "sCopy lines containing a match for regexp: ")
-  (let ((min (if (region-active-p) (region-beginning) (point-min)))
-        (max (if (region-active-p) (region-end) nil))
-        (resultbuf (get-buffer-create (if unique-buffer
-                                          (gensym "*copy-matching*")
-                                        "*copy-matching*"))))
-    (with-current-buffer resultbuf
-      (read-only-mode 0)
-      (if append-results
-          (goto-char (point-max))
-        (erase-buffer)))
-    (save-excursion
-      (save-match-data
-        (goto-char min)
-        (while (re-search-forward regexp max t)
-          (let ((line (buffer-substring (line-beginning-position 1)
-                                        (line-beginning-position 2))))
-            (with-current-buffer resultbuf (insert line))))
-        (pop-to-buffer resultbuf)
-        (kill-ring-save (point-min) (point-max))
-        (help-mode)))))
-
-(defun my/copy-non-matching-lines (regexp &optional unique-buffer append-results)
-  "Copy lines not containing a match for REGEXP and display in a new buffer.
+  (defun my/copy-matching-lines (regexp &optional unique-buffer append-results)
+    "Copy lines containing a match for REGEXP and display in a new buffer.
 
 If UNIQUE-BUFFER is non-nil, a new *copy-matching* buffer is used, even if one
 already exists. If APPEND-RESULTS is non-nil, the results are appended to the
 results already in the *copy-matching* buffer. The combined results are then
 displayed and copied to the kill-ring. Note that APPEND-RESULTS is redundant if
 UNIQUE-BUFFER is non-nil."
-  (interactive "sCopy all lines except those containing a match for regexp: ")
-  (let ((min (if (region-active-p) (region-beginning) (point-min)))
-        (max (if (region-active-p) (region-end) (point-max)))
-        (searchbuf (current-buffer))
-        (resultbuf (get-buffer-create (if unique-buffer
-                                          (gensym "*copy-matching*")
-                                        "*copy-matching*"))))
-    (with-current-buffer resultbuf
-      (read-only-mode 0)
-      (if append-results
-          (goto-char (point-max))
-        (erase-buffer)))
-    (save-excursion
-      (save-match-data
-        (goto-char min)
-        (unless (bolp) (forward-line))
-        (while (< (point) max)
-          (let ((line (buffer-substring (point) (line-end-position))))
-            (when (not (string-match-p regexp line))
-              (with-current-buffer resultbuf
-                (insert line)
-                (newline))))
-          (forward-line))
-        (pop-to-buffer resultbuf)
-        (kill-ring-save (point-min) (point-max))
-        (help-mode)))))
+    (interactive "sCopy lines containing a match for regexp: ")
+    (let ((min (if (region-active-p) (region-beginning) (point-min)))
+          (max (if (region-active-p) (region-end) nil))
+          (resultbuf (get-buffer-create (if unique-buffer
+                                            (gensym "*copy-matching*")
+                                          "*copy-matching*"))))
+      (with-current-buffer resultbuf
+        (read-only-mode 0)
+        (if append-results
+            (goto-char (point-max))
+          (erase-buffer)))
+      (save-excursion
+        (save-match-data
+          (goto-char min)
+          (while (re-search-forward regexp max t)
+            (let ((line (buffer-substring (line-beginning-position 1)
+                                          (line-beginning-position 2))))
+              (with-current-buffer resultbuf (insert line))))
+          (pop-to-buffer resultbuf)
+          (kill-ring-save (point-min) (point-max))
+          (help-mode)))))
 
-(defmacro dolines (spec &rest body)
-  "Iterate through the (visible) lines of the current buffer.
+  (defun my/copy-non-matching-lines (regexp &optional unique-buffer append-results)
+    "Copy lines not containing a match for REGEXP and display in a new buffer.
+
+If UNIQUE-BUFFER is non-nil, a new *copy-matching* buffer is used, even if one
+already exists. If APPEND-RESULTS is non-nil, the results are appended to the
+results already in the *copy-matching* buffer. The combined results are then
+displayed and copied to the kill-ring. Note that APPEND-RESULTS is redundant if
+UNIQUE-BUFFER is non-nil."
+    (interactive "sCopy all lines except those containing a match for regexp: ")
+    (let ((min (if (region-active-p) (region-beginning) (point-min)))
+          (max (if (region-active-p) (region-end) (point-max)))
+          (searchbuf (current-buffer))
+          (resultbuf (get-buffer-create (if unique-buffer
+                                            (gensym "*copy-matching*")
+                                          "*copy-matching*"))))
+      (with-current-buffer resultbuf
+        (read-only-mode 0)
+        (if append-results
+            (goto-char (point-max))
+          (erase-buffer)))
+      (save-excursion
+        (save-match-data
+          (goto-char min)
+          (unless (bolp) (forward-line))
+          (while (< (point) max)
+            (let ((line (buffer-substring (point) (line-end-position))))
+              (when (not (string-match-p regexp line))
+                (with-current-buffer resultbuf
+                  (insert line)
+                  (newline))))
+            (forward-line))
+          (pop-to-buffer resultbuf)
+          (kill-ring-save (point-min) (point-max))
+          (help-mode)))))
+
+  (defmacro dolines (spec &rest body)
+    "Iterate through the (visible) lines of the current buffer.
 
 SPEC is an optional list of loop variable names (NVAR LINEVAR). NVAR, if
 specified, contains the number of the current line. LINEVAR, if specified,
 contains the text of the current line. BODY is one or more sexps to execute for
 each line."
-  (declare (indent 1))
-  (let ((min      (if (region-active-p) (region-beginning) (point-min)))
-        (max      (if (region-active-p) (region-end) (point-max)))
-        (nvar     (car spec))
-        (linevar  (cadr spec))
-        (vardefs  nil))
-    (when linevar
-      (push `(setf ,linevar (buffer-substring (line-beginning-position)
-                                              (line-end-position)))
-            vardefs))
-    (when nvar
-      (push `(setf ,nvar (line-number-at-pos (point)))
-            vardefs))
-    `(progn
-      (goto-char ,min)
-      (while (< (line-end-position) ,max)
-        ;; set loop variables
-        ,@vardefs
-         ;; process
-        ,@body
-        ;; increment
-        (beginning-of-line 2)))))
+    (declare (indent 1))
+    (let ((min      (if (region-active-p) (region-beginning) (point-min)))
+          (max      (if (region-active-p) (region-end) (point-max)))
+          (nvar     (car spec))
+          (linevar  (cadr spec))
+          (vardefs  nil))
+      (when linevar
+        (push `(setf ,linevar (buffer-substring (line-beginning-position)
+                                                (line-end-position)))
+              vardefs))
+      (when nvar
+        (push `(setf ,nvar (line-number-at-pos (point)))
+              vardefs))
+      `(progn
+         (goto-char ,min)
+         (while (< (line-end-position) ,max)
+           ;; set loop variables
+           ,@vardefs
+           ;; process
+           ,@body
+           ;; increment
+           (beginning-of-line 2)))))
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
