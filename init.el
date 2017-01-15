@@ -185,6 +185,7 @@ values."
      dired-sort-menu
      column-enforce-mode
      (dirtree :local :location "~/.emacs.d/private/local/ye-wenbin/dirtree.el")
+     elmacro
      firefox-controller
      flycheck-package
      helm-firefox
