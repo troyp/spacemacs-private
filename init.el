@@ -1990,6 +1990,21 @@ you should place you code here."
     (interactive "P")
     (magit-mode-bury-buffer (not bury)))
 
+  (fset 'magit-diff-toggle-ignore-all-space
+        (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([68 19 45 45 105 103 110 111 114 101 45 97 108 108 45 115 112 97 99 101 return return 103] 0 "%d")) arg)))
+  (fset 'magit-diff-toggle-ignore-space-change
+        (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([68 19 45 45 105 103 110 111 114 101 45 115 112 97 99 101 45 99 104 97 110 103 101 return return 103] 0 "%d")) arg)))
+
+  (spacemacs/set-leader-keys-for-major-mode 'magit-diff-mode
+    "s"      'magit-diff-toggle-ignore-all-space
+    "S"      'magit-diff-toggle-ignore-space-change
+    )
+  (spacemacs/set-leader-keys-for-major-mode 'magit-status-mode
+    "s"      'magit-diff-toggle-ignore-all-space
+    "S"      'magit-diff-toggle-ignore-space-change
+    )
+
+
   ;; -------------------------------------------------------------------------------
   ;; ,------,
   ;; | Lisp |
