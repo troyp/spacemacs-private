@@ -767,6 +767,8 @@ you should place you code here."
   (global-set-key [\C-\S-down] 'move-text-down)
   (global-set-key [\C-\S-up]   'move-text-up)
 
+
+  (global-set-key (kbd "S-SPC") 'my/insert-space-after)
   ;; remove C-S-SPC from cua-global-keymap and bind to just-one-space
   (define-key cua-global-keymap (kbd "C-S-SPC") nil)
   ;; just-one-space
@@ -3608,6 +3610,10 @@ each line."
            ;; increment
            (beginning-of-line 2)))))
 
+  (defun my/insert-space-after (&rest arg)
+    (interactive "p")
+    (insert-char ?\  (car arg))
+    (backward-char (car arg)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
