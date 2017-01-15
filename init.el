@@ -1978,7 +1978,7 @@ you should place you code here."
      :map magit-mode-map
      ("<C-tab>" . nil)
      ("<C-`>"   . magit-section-cycle)
-     ("q"       . tsp-magit-mode-kill-buffer)
+     ("q"       . my/magit-mode-kill-buffer)
      ))
 
   (eval-after-load 'magit-mode
@@ -1986,7 +1986,7 @@ you should place you code here."
        (add-hook 'magit-mode-hook 'magit-init-fn)
        ))
 
-  (defun tsp-magit-mode-kill-buffer (bury)
+  (defun my/magit-mode-kill-buffer (bury)
     (interactive "P")
     (magit-mode-bury-buffer (not bury)))
 
