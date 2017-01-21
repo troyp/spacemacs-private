@@ -1064,7 +1064,6 @@ you should place you code here."
     ","            'helm-mini
     ">"            'evil-shift-right-fine-dispatcher
     "<"            'evil-shift-left-fine-dispatcher
-    "|"            'extend-to-column
     "="            'quick-calc
     "S-SPC"        'avy-goto-char-timer
     "SPC"          'avy-goto-char
@@ -1203,6 +1202,15 @@ you should place you code here."
     "SPC &"    "diff"
     "SPC & m"  "merge"
     )
+
+  (bind-keys :map spacemacs-cmds
+             :prefix-map column-prefix
+             :menu-name "column"
+             :prefix "&"
+             :prefix-docstring "Column commands."
+             ("e" . my/extend-to-column)
+             ("|" . my/add-column-marker)
+             )
 
   (bind-keys :map spacemacs-cmds
              :prefix-map modes-prefix-key-map
@@ -3202,7 +3210,7 @@ See also `rectangle-number-lines'."
     (newline)
     (insert (sprint-keymap map)))
 
-  (defun extend-to-column (&optional col set-fill-column)
+  (defun my/extend-to-column (&optional col set-fill-column)
     "Extend line to column COL by adding spaces, if necessary.
 
 Interactively, COL is provided as a prefix argument. If COL is omitted, the
@@ -3631,6 +3639,27 @@ each line."
     (interactive "p")
     (insert-char ?\  (car arg))
     (backward-char (car arg)))
+
+  (defun my/install-bb-spacemacs-layers ()
+    (interactive)
+    (shell-command "cd ~/.emacs.d/private/layer-groups; git clone https://github.com/TheBB/spacemacs-layers.git bb-spacemacs-layers"))
+
+  (defun my/add-column-marker (beg end &optional group spacing repeat)
+    (interactive "r")
+    (unless group (setq group 1))
+    (let ((endm (save-excursion
+                  (goto-char (1- end))
+                  (end-of-line)
+                  (point-marker))))
+      (save-excursion
+        (goto-char beg)
+        (while (<= (point) (marker-position endm))
+          (end-of-line)
+          (insert " |")
+          (beginning-of-line 2))
+        (set-marker endm (line-end-position))
+        (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
+        (set-marker endm nil))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
