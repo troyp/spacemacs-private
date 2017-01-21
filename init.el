@@ -1011,6 +1011,7 @@ you should place you code here."
     "h ."          'count-words
     "h /"          'find-function-prefix-map
     "h 1"          'evil-goto-definition
+    "h C-f"        'find-library-other-window
     "h C-m"        'lacarte-execute-menu-command
     "h C-y"        'tsp-info-goto-node
     "h C-/"        'evil-search-highlight-persist-remove-all
