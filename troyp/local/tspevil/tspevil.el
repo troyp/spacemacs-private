@@ -31,7 +31,7 @@
 ;; *             *
 ;; ***************
 
-(defun line-end-after-pos (pos)
+(defun my/line-end-after-pos (pos)
   (save-excursion
 	(goto-char pos)
 	(line-end-position)))
@@ -46,7 +46,7 @@
 (defun evil-forward-char-or-extend ()
    (interactive)
    (letrec ((pos (marker-position evil-visual-point))
-			(line-end (line-end-after-pos pos)))
+			(line-end (my/line-end-after-pos pos)))
 	   (if (eq pos line-end)
 		   (progn
 			 (save-excursion
