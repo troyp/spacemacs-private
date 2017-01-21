@@ -1206,7 +1206,7 @@ you should place you code here."
   (bind-keys :map spacemacs-cmds
              :prefix-map column-prefix
              :menu-name "column"
-             :prefix "&"
+             :prefix "|"
              :prefix-docstring "Column commands."
              ("e" . my/extend-to-column)
              ("|" . my/add-column-marker)
