@@ -2202,6 +2202,11 @@ you should place you code here."
 
   (add-hook 'ruby-mode-hook 'ruby-init)
 
+  (spacemacs/set-leader-keys-for-major-mode 'ruby-mode
+    "g l"      'goto-gem
+    "g /"      'goto-gem-grep-gem
+    "g ?"      'goto-gem-grep-all-gems
+    )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
