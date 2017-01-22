@@ -188,6 +188,7 @@ values."
      elmacro
      firefox-controller
      flycheck-package
+     (goto-gem :location (recipe :fetcher github :repo "pidu/goto-gem"))
      helm-firefox
      mozc
      move-dup
