@@ -1066,6 +1066,7 @@ you should place you code here."
     ">"            'evil-shift-right-fine-dispatcher
     "<"            'evil-shift-left-fine-dispatcher
     "="            'quick-calc
+    "-"            'my/dired-replace-buffer
     "S-SPC"        'avy-goto-char-timer
     "SPC"          'avy-goto-char
     "<backtab>"    'switch-to-most-recent-buffer
@@ -1644,6 +1645,11 @@ you should place you code here."
                              (file-name-nondirectory f))))
         (rename-file f newpath overwrite))))
 
+  (defun my/dired-replace-buffer ()
+    (interactive)
+    (let ((dir default-directory))
+      (kill-buffer (current-buffer))
+      (dired dir)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------,
