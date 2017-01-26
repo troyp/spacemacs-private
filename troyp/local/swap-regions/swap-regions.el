@@ -1,34 +1,32 @@
 
-(defvar swap-region-marker-beginning (make-marker))
-(defvar swap-region-marker-end (make-marker))
-(defvar swap-region-A nil)
-(defvar swap-region-B nil)
+(defvar swap-region-location nil)
+(defvar swap-region-A "")
+(defvar swap-region-B "")
 
 (defun swap-region-mark (beg end)
   (interactive "r")
-  (set-marker swap-region-marker-beginning (min beg end))
-  (set-marker swap-region-marker-end (max beg end))
-  (setf swap-region-A (buffer-substring beg end)))
+  (setq swap-region-location (list (current-buffer) (min beg end) (max beg end)))
+  (setq swap-region-A (buffer-substring beg end)))
 
 (defun swap-region (beg end)
   (interactive "r")
   ;; copy region B, replace with region A
-  (setf swap-region-B (buffer-substring beg end))
+  (setq swap-region-B (buffer-substring beg end))
   (kill-region beg end)
   (insert swap-region-A)
-  (setq swap-region-A nil)
+  (setq swap-region-A "")
   ;; replace region A with region B
-  (save-excursion
-    (with-current-buffer (marker-buffer swap-region-marker-beginning)
-      (goto-char (marker-position swap-region-marker-beginning))
-      (kill-region (marker-position swap-region-marker-beginning)
-                     (marker-position swap-region-marker-end))
-      (insert swap-region-B)
-      (setq swap-region-B nil)
-      )))
+  (destructuring-bind (bufA begA endA) swap-region-location
+    (save-excursion
+      (with-current-buffer bufA
+        (goto-char begA)
+        (kill-region begA endA)
+        (insert swap-region-B)
+        (setq swap-region-B "")
+        ))))
 
 (defun swap-region-dispatch (beg end)
   (interactive "r")
-  (if swap-region-A
-      (swap-region beg end)
-    (swap-region-mark beg end)))
+  (if (member swap-region-A '("" nil))
+      (swap-region-mark beg end)
+    (swap-region beg end)))
