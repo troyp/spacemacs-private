@@ -2490,6 +2490,18 @@ See also `multi-occur-in-matching-buffers'."
            (quote ([102 91 104 134217848 106 117 115 116 45 111 110 101 45 115 112 97 99 101 return 106 1] 0 "%d"))
            arg)))
 
+  (fset 'wdired-tidy-name-keep-square-brackets
+        (lambda (&optional arg)
+          "Keyboard macro. In wdired-mode, remove everything between after the first )
+except the the first [...] (preceded by a space) and everything after a dot.
+Then move to the next line (column 3).
+
+    KEEP) DELETE[KEEP]DELETE.KEEP"
+          (interactive "p")
+          (kmacro-exec-ring-item
+           (quote ([102 41 108 118 116 91 99 32 escape 102 93 108 100 116 46 106 48 108 108] 0 "%d"))
+           arg)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,--------------------------------,
   ;; | Key/Keymap Functions & Aliases |
