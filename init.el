@@ -770,13 +770,15 @@ you should place you code here."
   (global-set-key [\C-\S-up]   'move-text-up)
 
 
-  (global-set-key (kbd "S-SPC") 'my/insert-space-after)
-  ;; remove C-S-SPC from cua-global-keymap and bind to just-one-space
+  ;; remove C-S-SPC from cua-global-keymap and bind to my/insert-space-after
   (define-key cua-global-keymap (kbd "C-S-SPC") nil)
-  ;; just-one-space
-  (global-set-key (kbd "C-S-SPC") 'just-one-space)
+  (global-set-key (kbd "C-S-SPC") 'my/insert-space-after)
   ;; This binding is intercepted by UIM
-  ;; Can also use S-M-SPC (transl to M-SPC, which can't be used itself since it's intercepted by KWin)
+
+  ;; just-one-space
+  ;; This is available by default, since it translates to M-SPC (which can't be used itself since it's intercepted by KWin)
+  ;; This just makes it explicit
+  (global-set-key (kbd "M-S-SPC") 'just-one-space)
 
   (global-set-key [\C-f10] 'menu-bar-mode)
   (global-set-key [\M-f12] 'shell-pop)
