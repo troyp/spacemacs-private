@@ -19,6 +19,7 @@
     (use-package asciiheadings)
     (use-package mode-ring)
     (use-package tsplib)
+    (use-package region-swap)
     ))
 
 ;; Initialize the extensions
