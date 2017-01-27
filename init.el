@@ -882,8 +882,9 @@ you should place you code here."
   ;; evil-shift-up/down-line-or-block
   (define-key evil-normal-state-map [\M-\S-down] 'evil-shift-down-line-or-block)
   (define-key evil-normal-state-map [\M-\S-up] 'evil-shift-up-line-or-block)
-  ;; insert at WORD beginning
-  (define-key evil-normal-state-map (kbd "M-B") 'evil-insert-at-WORD-beginning)
+  ;; insert at WORD beginning/end
+  (define-key evil-normal-state-map (kbd "M-B") 'my/evil-insert-at-WORD-beginning)
+  (define-key evil-normal-state-map (kbd "M-E") 'my/evil-append-at-WORD-end)
 
   ;; evil-window: C-w C-w to swap windows
   (bind-key "C-w" #'my/window-swap-with-next evil-window-map)
@@ -3137,10 +3138,15 @@ command FN has been applied."
          (funcall ,fn)
          (point))))
 
-  (defun evil-insert-at-WORD-beginning (&optional count)
+  (defun my/evil-insert-at-WORD-beginning (&optional count)
     (interactive "p")
     (evil-backward-WORD-begin count)
     (evil-insert-state))
+
+  (defun my/evil-append-at-WORD-end (&optional count)
+    (interactive "p")
+    (evil-forward-WORD-end count)
+    (evil-append 1))
 
   (defun wrap-lines-in-region (beg end)
     "An interactive function to split lines longer than `fill-column'.
