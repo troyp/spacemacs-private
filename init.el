@@ -1053,6 +1053,8 @@ you should place you code here."
     "x a S-SPC"    'quick-pcre-align
     "x l U"        'delete-duplicate-lines-nonblank
     "x N"          'rectangle-number-lines-interactive
+    "x <insert>"   'region-swap
+    "x t r"        'region-swap
     "x C-k"        'evil-insert-digraph
     "x C-l"        'quick-pcre-align-repeat
     "x \\"         'shell-command-on-region
