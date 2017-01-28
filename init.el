@@ -1392,6 +1392,16 @@ you should place you code here."
     (setq nameless-private-prefix t)
     )
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------------,
+  ;; | Whitespace-Mode |
+  ;; '-----------------'
+  (setq whitespace-style-heavy
+        '(face tabs spaces trailing lines-tail space-before-tab newline indentation empty
+               space-after-tab space-mark tab-mark newline-mark))
+  (setq whitespace-style-light
+        '(face tabs spaces trailing space-before-tab indentation space-after-tab space-mark tab-mark))
+  (setq-default whitespace-style whitespace-style-light)
 
   ;; ***************
   ;; *             *
