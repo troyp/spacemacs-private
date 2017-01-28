@@ -1150,6 +1150,7 @@ you should place you code here."
              :prefix "K"
              :prefix-docstring "Commands dealing with keymaps."
              ("a" . which-key-show-keymap-at-point)
+             ("e" . edmacro-insert-key)
              ("f" . get-binding)
              ("i" . lookup-key-interactive)
              ("m" . which-key-show-minor-mode-keymap)
