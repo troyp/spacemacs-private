@@ -2509,7 +2509,7 @@ Then move to the next line (column 3).
     KEEP) DELETE[KEEP]DELETE.KEEP"
           (interactive "p")
           (kmacro-exec-ring-item
-           (quote ([102 41 108 118 116 91 99 32 escape 102 93 108 100 116 46 106 48 108 108] 0 "%d"))
+           (quote ([102 41 97 32 escape 118 116 91 99 32 escape 102 93 108 100 116 46 106 48 108 108] 0 "%d"))
            arg)))
 
   ;; -------------------------------------------------------------------------------
