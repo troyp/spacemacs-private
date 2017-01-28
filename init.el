@@ -1610,6 +1610,13 @@ you should place you code here."
 
        ;; wdired-mode
        (evil-set-initial-state 'wdired-mode 'normal)
+
+       (spacemacs/set-leader-keys-for-major-mode 'wdired-mode
+         "c"    'wdired-finish-edit
+         "a"    'wdired-abort-changes
+         "t"    'wdired-tidy-name-keep-square-brackets
+         )
+
        )
     )
 
