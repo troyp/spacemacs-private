@@ -1668,6 +1668,18 @@ you should place you code here."
       (dired dir)))
 
   ;; -------------------------------------------------------------------------------
+  ;; ,--------------,
+  ;; | Edmacro-Mode |
+  ;; '--------------'
+
+  ;; FIXME: major-mode leader key not working
+  (spacemacs/set-leader-keys-for-major-mode 'edmacro-mode
+    "c"   'edmacro-finish-edit
+    "a"   'spacemacs/kill-this-buffer
+    )
+
+
+  ;; -------------------------------------------------------------------------------
   ;; ,--------,
   ;; | Elfeed |
   ;; '--------'
