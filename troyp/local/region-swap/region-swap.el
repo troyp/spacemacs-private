@@ -53,7 +53,7 @@
         (kill-region begA endA)
         (insert region-swap-region-B)
         (setq region-swap-region-B "")
-        (setq region-swap-location-A nil))))
+        (setq region-swap-location-A nil)))))
 
 (defun region-swap (beg end)
   (interactive "r")
