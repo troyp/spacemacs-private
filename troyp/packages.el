@@ -31,12 +31,15 @@
 
 (defvar troyp-packages
   '(
-    (tsputils      :location local)
     (asciiheadings :location local)
     (mode-ring     :location local)
+    (region-swap   :location local)
+    (t             :location local)
+    (troyp-macros  :location local)
     (tspevil       :location local)
     (tsplib        :location local)
-    (region-swap   :location local)
+    (tsputils      :location local)
+    (workarounds   :location local)
     )
   "The list of Lisp packages required by the troyp layer.
 
@@ -68,9 +71,12 @@ Each entry is either:
 
 (defun troyp/init-asciiheadings () (use-package asciiheadings :init :after tsputils))
 (defun troyp/init-mode-ring     () (use-package mode-ring     :init))
+(defun troyp/init-region-swap   () (use-package region-swap   :init))
+(defun troyp/init-t             () (use-package t             :init))
+(defun troyp/init-troyp-macros  () (use-package troyp-macros  :init))
 (defun troyp/init-tspevil       () (use-package tspevil       :init))
 (defun troyp/init-tsputils      () (use-package tsputils      :init))
 (defun troyp/init-tsplib        () (use-package tsplib        :init))
-(defun troyp/init-region-swap   () (use-package region-swap   :init))
+(defun troyp/init-workarounds   () (use-package workarounds   :init))
 
 ;;; packages.el ends here
