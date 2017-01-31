@@ -185,7 +185,7 @@ values."
      ;; quelpa-use-package
      dired-sort-menu
      column-enforce-mode
-     (dirtree :local :location "~/.emacs.d/private/local/ye-wenbin/dirtree.el")
+     dirtree
      elmacro
      firefox-controller
      flycheck-package
@@ -564,8 +564,6 @@ you should place you code here."
           ))
   (loop for pkg in dotspacemacs-additional-local-packages do
         (require pkg nil :noerror))
-
-  (use-package dirtree)
 
   ;; ==============================================================================
   ;;                             *******************
