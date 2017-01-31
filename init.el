@@ -406,6 +406,14 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
+
+   ;; -------------------------------------------------------------------------------
+   ;; ,------------,
+   ;; | User-Added |
+   ;; '------------'
+   ;; TODO: remove when possible
+   ;; workaround for github.com/syl20bnr/spacemacs/issues/8091
+   dotspacemacs-helm-use-fuzzy 'source
    ))
 
 
