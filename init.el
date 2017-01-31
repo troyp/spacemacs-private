@@ -138,7 +138,8 @@ values."
      ;; -----------
      evil-visual-replace
      ;; (evil-visual-replace :local :location "~/.emacs.d/private/repos/evil-visual-replace/evil-visual-replace.el")
-     (fn :location (recipe :fetcher github :repo "troyp/fn.el" :files ("fn.el")))
+     ;; (fn :location (recipe :fetcher github :repo "troyp/fn.el" :files ("fn.el")))
+     fn
      (ls :location (recipe :fetcher github :repo "troyp/ls.el" :files ("ls.el")))
      (evil-adjust :location (recipe :fetcher github :repo "troyp/evil-adjust"))
      ;; --------
