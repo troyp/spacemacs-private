@@ -556,7 +556,6 @@ you should place you code here."
   (defvar dotspacemacs-additional-local-packages)
   (setf dotspacemacs-additional-local-packages
         '(
-          dired+
           find-func+
           firefox-protocol
           help-macro+
@@ -1559,7 +1558,6 @@ you should place you code here."
 
   (eval-after-load "dired"
     `(progn
-       (require 'dired+)
 
        (define-key dired-mode-map (kbd "C-h") nil)
 
