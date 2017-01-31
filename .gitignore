@@ -20,6 +20,7 @@ snippets/README.html
 local/evil-visual-replace
 local/README.html
 local/testpkg.el
+local/troyp-test.el
 repos/
 layers/*/README.html
 
