@@ -1631,15 +1631,6 @@ you should place you code here."
       ))
   (add-hook 'wdired-mode-hook 'wdired-init)
 
-  (evil-define-key 'normal view-mode-map
-    "q"   'View-quit
-    )
-  (defun view-mode-init ()
-    (spacemacs/set-leader-keys-for-minor-mode 'view-mode
-      "q"   'View-quit
-      ))
-  (add-hook 'view-mode-hook #'view-mode-init)
-
   (defvar tsp-dired-files-to-move-or-copy '()
     "Stores a list of files to be moved or copied by tsp-dired-*-files-here
  commands.")
@@ -2371,6 +2362,20 @@ you should place you code here."
   (bind-keys :map spacemacs-emacs-lisp-mode-map
              ("m" . spacemacs-undo-tree-visualizer-mode-map)
              )
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-----------,
+  ;; | View-Mode |
+  ;; '-----------'
+
+  (evil-define-key 'normal view-mode-map
+    "q"   'View-quit
+    )
+  (defun view-mode-init ()
+    (spacemacs/set-leader-keys-for-minor-mode 'view-mode
+      "q"   'View-quit
+      ))
+  (add-hook 'view-mode-hook #'view-mode-init)
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
