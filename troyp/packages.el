@@ -39,7 +39,6 @@
     (tspevil       :location local)
     (tsplib        :location local)
     (tsputils      :location local)
-    (workarounds   :location local)
     )
   "The list of Lisp packages required by the troyp layer.
 
@@ -77,6 +76,5 @@ Each entry is either:
 (defun troyp/init-tspevil       () (use-package tspevil       :init))
 (defun troyp/init-tsputils      () (use-package tsputils      :init))
 (defun troyp/init-tsplib        () (use-package tsplib        :init))
-(defun troyp/init-workarounds   () (use-package workarounds   :init))
 
 ;;; packages.el ends here
