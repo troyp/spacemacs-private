@@ -29,7 +29,8 @@
 ;; ==========================================================
 ;; describe-symbol command taken from emacs 25 sources (GPL3)
 ;; ==========================================================
-(when (not (evil-adjust-emacs25-p))
+(when (< (string-to-number emacs-version)
+         25)
 
   (defun describe-symbol (symbol &optional buffer frame)
     "Display the full documentation of SYMBOL.
