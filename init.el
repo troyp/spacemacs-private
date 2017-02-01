@@ -1609,7 +1609,7 @@ you should place you code here."
          "Y"     'diredp-relsymlink-this-file
          "x"     'tsp-dired-cut-or-copy-files
          "p"     'tsp-dired-copy-files-here
-         "r"     'tsp-dired-move-files-here
+         "m"     'tsp-dired-move-files-here
          )
        (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
 
