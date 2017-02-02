@@ -1020,6 +1020,7 @@ you should place you code here."
     "h w"          'help-download-prefix-map
     "h ."          'count-words
     "h /"          'find-function-prefix-map
+    "h \\"         'shell-command-on-region
     "h 1"          'evil-goto-definition
     "h C-f"        'find-library-other-window
     "h C-m"        'lacarte-execute-menu-command
@@ -1066,7 +1067,8 @@ you should place you code here."
     "x t r"        'region-swap
     "x C-k"        'evil-insert-digraph
     "x C-l"        'quick-pcre-align-repeat
-    "x \\"         'shell-command-on-region
+    "x \\"         'my/evil-shell-command-replace-region
+    "x |"          'my/shell-command-process-region-as-file
     "z +"          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z ="          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
