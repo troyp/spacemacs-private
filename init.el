@@ -3444,8 +3444,7 @@ acts on the region if active, or else the entire buffer."
       (start end command &optional error-buffer display-error-buffer)
     "Process the region as input with COMMAND and replace with output.
 
-The command should use %s to represent the filename. If the region is not
-active, the entire buffer is processed."
+If the region is not active, the entire buffer is processed."
     (interactive
      (list (if (region-active-p) (region-beginning) (point-min))
            (if (region-active-p) (region-end) (point-max))
@@ -3460,8 +3459,7 @@ active, the entire buffer is processed."
     (start end type command &optional error-buffer display-error-buffer)
     "Process the region as input with COMMAND and replace with output.
 
-The command should use %s to represent the filename. If the region is not
-active, the entire buffer is processed."
+If the region is not active, the entire buffer is processed."
     (interactive
      (let ((selection (evil-visual-range)))
        (list
