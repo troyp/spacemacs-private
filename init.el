@@ -3429,7 +3429,16 @@ acts on the region if active, or else the entire buffer."
       (append-to-file (buffer-substring start end) nil tmpfile)
       (when (and output-buffer (not (bufferp output-buffer)))
         (delete-region start end))
-      (shell-command (format command tmpfile) output-buffer error-buffer)))
+      ;; Since the shell command may contain multiple occurrences of "%s",
+      ;; #'format may need multiple repetitions of TMPFILE to substitute.
+      ;; We count the number of occurrences of "%s" in command and provide that
+      ;; may repetitions of TMPFILE in the format argument list.
+      ;; This may result in too many repetitions if COMMAND contains escaped %s,
+      ;; but that's okay. The excess arguments to format are ignored.
+      (let* ((n (s-count-matches "%s" command))
+             (repeated-tmpfile (-repeat n tmpfile))
+             (resolved-command (apply #'format command repeated-tmpfile)))
+        (shell-command resolved-command output-buffer error-buffer))))
 
   (defun my/shell-command-replace-region
       (start end command &optional error-buffer display-error-buffer)
