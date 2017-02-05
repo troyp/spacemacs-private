@@ -470,6 +470,15 @@ With prefix argument, comment end-delimiter is aligned with that on the previous
 
 (unless (boundp 'align-default-spacing) (setf align-default-spacing 1))
 
+(defun pcre-align-region (pcre group spacing)
+  "Align region using a PCRE. Requires pcre2el.
+GROUP is the number of the group to be modified (ie. spacing group).
+SPACING is the minimum number of spaces between columns."
+  (interactive "sPCRE: \nsGROUP NO.: \nsSPACING: ")
+  (let ((groupnum (if (string-empty-p group) 1 (string-to-int group)))
+        (spaces   (if (string-empty-p group) 2 (string-to-int spacing))))
+    (align-regexp (region-beginning) (region-end) (pcre-to-elisp pcre) groupnum spaces nil)))
+
 (defun pcre-align (BEG END s &optional group spacing repeat)
   "Align region using a PCRE. Requires pcre2el."
   (interactive "r\nsPCRE (group around part to extend): ")

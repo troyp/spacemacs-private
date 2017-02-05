@@ -1061,6 +1061,7 @@ you should place you code here."
     "x a C-\""     'tsp-align-double-quoted-column
     "x a SPC"      'quick-pcre-align-repeat
     "x a S-SPC"    'quick-pcre-align
+    "x a C-SPC"    'pcre-align-region
     "x l U"        'delete-duplicate-lines-nonblank
     "x N"          'rectangle-number-lines-interactive
     "x <insert>"   'region-swap
