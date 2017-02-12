@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: options_loop
+# key: opt
+# --
+# options
+while [[ $# -gt $1 ]]; do
+    case "\$1" in
+        -$2|--$3) ${4:${5:$3}="true";}
+                  shift$0; ;;
+        *) echo "unrecognized option: \$1"; return 1; ;;
+    esac
+done
+# --- end options ---

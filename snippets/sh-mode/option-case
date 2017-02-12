@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: option_case
+# key: -)
+# --
+-$1) $0
+     shift ${2:1}; ;;

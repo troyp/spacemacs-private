@@ -1,0 +1,23 @@
+# -*- mode: snippet -*-
+# name: getopt
+# key: getopt
+# --
+PARSED=\$(getopt -n "\$0" -o $1 --long "$2"  -- "\$@")
+if [ \$? -ne 0 ]; then echo "getopt error"; exit 1; fi
+eval set -- "$PARSED"
+while true; do
+    case "\$1" in
+        -h|--help)
+            cat <<EOF
+$3
+    Options:
+        $4
+EOF
+        $5)
+            shift; ;;
+        --)
+            shift; break; ;;
+        *)
+            shift; ;;
+    esac
+done
