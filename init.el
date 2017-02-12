@@ -922,7 +922,7 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
   (define-key evil-visual-state-map (kbd "o") 'evil-visual-rotate)
-  (evil-visual-replace-visual-bindings)
+  (evil-visual-replace-visual-bindings :PCRE)
 
 
   ;; ,--------------,
@@ -1993,10 +1993,6 @@ you should place you code here."
           (kmacro-exec-ring-item
            (quote ([1 102 58 119 100 119 1 101 97 32 escape 112 102 58 114 59 86 134217848 100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104 105 116 101 115 112 97 99 101 13 65 escape 106 1] 0 "%d")) arg)))
 
-  (fset 'md-sig-to-list-item
-        (fset 'md-sig-to-list-item
-              (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([118 69 121 103 118 115 93 105 42 32 escape 69 108 120 97 35 escape 80 16 97 45 escape 118 36 104 201326629 38 63 32 return 45 return] 0 "%d")) arg))))
-
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
   ;; | JSON-Mode |
@@ -2546,12 +2542,38 @@ Then move to the next line (column 3).
            (quote ([102 41 97 32 escape 118 116 91 99 32 escape 102 93 108 100 116 46 106 48 108 108] 0 "%d"))
            arg)))
 
+  (fset 'md-sig-to-list-item
+        (fset 'md-sig-to-list-item
+              (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([118 69 121 103 118 115 93 105 42 32 escape 69 108 120 97 35 escape 80 16 97 45 escape 118 36 104 201326629 38 63 32 return 45 return] 0 "%d")) arg))))
+
+  (defun my/delete-inside-double-quotes ()
+    "Delete contents of double quotes."
+    ;; TODO: rewrite as function to handle escaped quotes
+    (interactive)
+    (command-execute "l?\"lvNhd"))
+  (defun my/delete-double-quotes ()
+    "Delete double quotes and contents."
+    (interactive)
+    (let (start end)
+      (right-char)
+      (cl-loop do
+       (search-backward "\"")
+       while (yas-inside-string))
+      (setf start (point))
+      (right-char)
+      (cl-loop do
+       (search-forward "\"")
+       while (yas-inside-string))
+      (setf end (point))
+      (delete-region start end)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,--------------------------------,
   ;; | Key/Keymap Functions & Aliases |
   ;; '--------------------------------'
   ;; to get the definition of a key sequence in a keymap: lookup-key
   ;; to show keymap with which-key:  (which-key--show-keymap keymap-name keymap)
+  ;; to show keys sequence that invoked the current command: (this-command-keys)
   (defalias 'key-vector-to-readable-string 'key-description)
   ;; WARNING: key-description is described as an *approximate* inverse to kbd.
   (defalias 'key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
