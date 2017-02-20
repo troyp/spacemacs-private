@@ -1000,6 +1000,8 @@ you should place you code here."
     "b <insert>"   'buffer-major-mode
     "b <f1>"       'about-emacs
     "e F"          'flycheck-mode
+    "e TAB"        'flycheck-next-error
+    "e S-TAB"      'flycheck-previous-error
     "f e s s"      'spacemacs-rgrep
     "f e s p"      'spacemacs-private-rgrep
     "f e s o"      'spacemacs-only-rgrep
