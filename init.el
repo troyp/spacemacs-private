@@ -2094,6 +2094,13 @@ you should place you code here."
     )
   (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-init-fn)
 
+  ;; testing macro for my packages
+  (defmacro should-equal
+      (expr keyword result)
+    (progn
+      (unless (eq keyword :result) (error "expected :result"))
+      `(should (equal ,expr ,result))))
+
   ;; ===== EVIL-ADJUST =====
 
   (require 'evil-adjust)
