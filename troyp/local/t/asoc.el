@@ -34,6 +34,10 @@ other value, functions default to using `equal'.
 
 This variable may be passed to asoc functions dynamically in a let binding.")
 
+(defun asoc--compare (x y)
+  "Compare X and Y using `asoc-compare-fn'."
+  (funcall (or asoc-compare-fn #'equal) x y))
+
 (defun asoc--assoc (key alist &optional test)
   "Return the first element of ALIST whose `car' matches KEY, or nil if none match.
 
@@ -48,8 +52,26 @@ to `equal'. Possible values include `eq', `eql', `equal', `equalp'."
            (setf alist (cdr alist)))
          (car alist)))))
 
+;; TODO: implement to use asoc-compare-fn
 (defalias 'asoc-get 'alist-get)
+
+(defmacro asoc-put (key value alist &optional replace)
+  "Associate KEY with VALUE in ALIST.
+
+When KEY already exists, if REPLACE is non-nil, previous entries with that key
+are removed. Otherwise, the pair is simply consed on the front of the alist."
+  `(progn
+     (when (and (asoc-contains-key? ,alist ,key)
+              ,replace)
+       (mapc (lambda (pr)
+               (when (asoc--compare (car pr) ,key)
+                 (delete pr ,alist)))
+             ,alist))
+     (setq ,alist (cons (cons ,key ,value) ,alist))))
+
+;; TODO: implement to use asoc-compare-fn
 (defalias 'asoc-find-key 'assoc)
+
 (defun asoc-contains-key? (alist key)
   "Return t if ALIST contains an item with key KEY, nil otherwise."
   (case asoc-compare-fn
@@ -57,6 +79,7 @@ to `equal'. Possible values include `eq', `eql', `equal', `equalp'."
     ('eql    (and (asoc--assoc key alist #'eql) t))
     ('eq     (and (assq  key alist) t))
     (t       (and (assoc key alist) t))))
+
 (defun asoc-contains-pair? (alist key value)
   (and (member (cons key value) alist) t))
 
@@ -68,12 +91,12 @@ For each iteration, KEYVAR is bound to the key and VALUEVAR is bound to the valu
 The return value is obtained by evaluating RESULT (nil by default).
 
 Example:
-  (asoc-do ((key value) h sum)
+  (asoc-do ((key value) a sum)
     (when (symbolp key)
       (setf sum (+ (or sum 0) value))))
   ;; add values associated with all keys that are symbols.
 
-(asoc-do ((k v) h)
+(asoc-do ((k v) a)
   (insert (format \"%S\t%S\n\" k v)))
   ;; print keys and values
 
@@ -100,7 +123,32 @@ Example:
                    ,@body))
                ,alist))))
 
+(defun asoc-fold (alist init function)
+  "Reduce ALIST using FUNCTION on the values, starting with value INIT.
 
-(provide 'alist)
+FUNCTION should take a key, a value and the accumulated result and return
+an updated result.
+
+Example:
+   (let ((a '((1 . 1) (2 . 4) (3 . 9) (4 . 16) (5 . 25)))
+         (s \"\"))
+     (asoc-fold a \"\"
+                (lambda (k v acc)
+                  (concat acc (format \"%S\t%S\\n\" k v)))))
+   \"1	1
+   2	4
+   3	9
+   4	16
+   5	25
+   \"
+"
+  (let ((result init))
+    (asoc-do
+     ((key value) alist)
+     (setq result (funcall function key value result)))
+    result))
+
+
+(provide 'asoc)
 
 ;;; asoc ends here
