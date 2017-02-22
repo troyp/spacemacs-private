@@ -2070,6 +2070,7 @@ you should place you code here."
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
              ("RET"    . lisp-state-toggle-lisp-state)
+             ("C-j"    . evil-adjust-eval-print-last-sexp)
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
              ("e D"    . eval-instrument-defun)
