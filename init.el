@@ -951,7 +951,7 @@ you should place you code here."
   ;; '--------------'
   ;; define bindings for shift-right/left-line: frees C-d, C-t:
   (define-key evil-insert-state-map (kbd "S-<tab>")       'evil-shift-right-line)
-  (define-key evil-insert-state-map (kbd "S-<backspace>") 'evil-shift-left-line)
+  ;; (define-key evil-insert-state-map (kbd "S-<backspace>") 'evil-shift-left-line)
   (define-key evil-insert-state-map (kbd "C-d")   'delete-forward-char)
   (define-key evil-insert-state-map (kbd "C-l")   'delete-forward-char)
   (define-key evil-insert-state-map (kbd "C-t")   'transpose-chars)
