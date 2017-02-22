@@ -865,9 +865,11 @@ you should place you code here."
   ;; reverse gu and gU
   (define-key evil-normal-state-map (kbd "gu") 'evil-upcase)
   (define-key evil-normal-state-map (kbd "gU") 'evil-downcase)
-  ;; centre after n, N
+  ;; centre after n, N, '
   (define-key evil-normal-state-map (kbd "n") 'my/evil-search-next-and-center)
   (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center)
+  (define-key evil-normal-state-map (kbd "'") 'my/evil-goto-mark-line)
+
   ;; provide evil-repeat-find-char-reverse binding
   (define-key evil-normal-state-map (kbd "M-;") 'evil-repeat-find-char-reverse)
   ;; [r and ]r move to beginning and end of region
@@ -3790,6 +3792,18 @@ each line."
     (define-key cua--global-mark-keymap "\r" nil)
     (define-key cua--global-mark-keymap "\t" nil))
 
+  ;; modified version of evil-goto-mark-line
+  (evil-define-command my/evil-goto-mark-line (char &optional noerror)
+    "Go to the line of the marker specified by CHAR and recentre.
+With prefix argument, do not recentre."
+    :keep-visual t
+    :repeat nil
+    :type line
+    (interactive (list (read-char)))
+    (evil-goto-mark char noerror)
+    (evil-first-non-blank)
+    (unless current-prefix-arg
+      (evil-scroll-line-to-center nil)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
