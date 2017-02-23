@@ -2047,6 +2047,19 @@ you should place you code here."
   (fset 'magit-diff-toggle-ignore-space-change
         (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([68 19 45 45 105 103 110 111 114 101 45 115 112 97 99 101 45 99 104 97 110 103 101 return return 103] 0 "%d")) arg)))
 
+  (defun my/magit-diff-meld ()
+    (interactive)
+    (my/async-shell-command-no-window
+     "GIT_EXTERNAL_DIFF='meld $2 $5 | cat' git diff --color-words"))
+  (defun my/magit-diff-added-meld ()
+    (interactive)
+    (my/async-shell-command-no-window
+     "GIT_EXTERNAL_DIFF='meld $2 $5 | cat' git diff --cached --color-words"))
+  (defun my/magit-diff-committed-meld ()
+    (interactive)
+    (my/async-shell-command-no-window
+     "GIT_EXTERNAL_DIFF='meld $2 $5 | cat' git diff HEAD --color-words"))
+
   (spacemacs/set-leader-keys-for-major-mode 'magit-diff-mode
     "s"      'magit-diff-toggle-ignore-all-space
     "S"      'magit-diff-toggle-ignore-space-change
@@ -2054,6 +2067,9 @@ you should place you code here."
   (spacemacs/set-leader-keys-for-major-mode 'magit-status-mode
     "s"      'magit-diff-toggle-ignore-all-space
     "S"      'magit-diff-toggle-ignore-space-change
+    "d g g"  'my/magit-diff-meld
+    "d g a"  'my/magit-diff-added-meld
+    "d g c"  'my/magit-diff-committed-meld
     )
 
 
