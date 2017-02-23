@@ -917,7 +917,7 @@ you should place you code here."
   (defun insert-space-visual () (interactive) (execute-kbd-macro " ") (evil-visual-restore))
   (define-key evil-visual-state-map (kbd "S-SPC") 'insert-space-visual)
   (define-key evil-visual-state-map (kbd "C-SPC") 'evil-forward-char-or-extend)
-  (define-key evil-visual-state-map (kbd "C-\\") 'shell-command-replace-region)
+  (define-key evil-visual-state-map (kbd "C-\\") 'my/shell-command-replace-region)
   (define-key evil-visual-state-map (kbd "M-u") 'evil-upcase)
   (define-key evil-visual-state-map (kbd "M-l") 'evil-downcase)
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
