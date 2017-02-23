@@ -3805,6 +3805,11 @@ With prefix argument, do not recentre."
     (unless current-prefix-arg
       (evil-scroll-line-to-center nil)))
 
+  (defun my/async-shell-command-no-window (command &optional output-buffer error-buffer)
+    (interactive "sShell command: ")
+    (let ((display-buffer-alist '(("*Async Shell Command*" . (display-buffer-no-window nil)))))
+      (async-shell-command command)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
