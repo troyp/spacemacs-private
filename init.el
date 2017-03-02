@@ -2033,6 +2033,21 @@ you should place you code here."
           (kmacro-exec-ring-item
            (quote ([1 102 58 119 100 119 1 101 97 32 escape 112 102 58 114 59 86 134217848 100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104 105 116 101 115 112 97 99 101 13 65 escape 106 1] 0 "%d")) arg)))
 
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,----------,
+  ;; | js2-mode |
+  ;; '----------'
+
+  (defun my/js-url-decode ()
+    (interactive)
+    (my/evil-shell-command-replace-region (region-beginning) (region-end) "inclusive" "sed 's/+/%2B/g' | xargs -0 urlencode -d"))
+
+  (spacemacs/set-leader-keys-for-major-mode 'js2-mode
+    "%"    'my/js-url-decode
+    )
+
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
   ;; | JSON-Mode |
