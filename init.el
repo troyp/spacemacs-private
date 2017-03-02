@@ -541,6 +541,42 @@ you should place you code here."
     (dolist (dir extra-Info-dirs)
       (add-to-list 'Info-directory-list dir)))
 
+  ;; ===============================================================================
+  ;;                                      ________
+  ;;                                     |        |
+  ;;                                     | THEMES |
+  ;;                                     |________|
+
+  (spacemacs|define-transient-state my/cycle-theme
+    :title "Theme Cycling Transient State"
+    :doc "\n[_n_] next [_p_] previous [_0_] reset [_q_] quit"
+    :bindings
+    ("n" spacemacs/cycle-spacemacs-theme)
+    ("p" my/spacemacs/reverse-cycle-spacemacs-theme)
+    ("0" my/spacemacs/reset-spacemacs-theme)
+    ("q" nil :exit t))
+  (spacemacs/set-leader-keys "Tn" 'spacemacs/my/cycle-theme-transient-state/body)
+  (defun my/spacemacs/reverse-cycle-spacemacs-theme ()
+    "Reverse cycle through themes defined in `dotspacemacs-themes.'"
+    (interactive)
+    (if spacemacs--cur-theme (disable-theme spacemacs--cur-theme)
+      (setq spacemacs--cur-theme (car dotspacemacs-themes)))
+    (add-to-list 'spacemacs--cycle-themes spacemacs--cur-theme)
+    (setq spacemacs--cur-theme
+          (let ((i (-elem-index spacemacs--cur-theme dotspacemacs-themes)))
+            (if (> i 0)
+                (nth (1- i) dotspacemacs-themes)
+              (-last-item dotspacemacs-themes))))
+    (message "Loading theme %s..." spacemacs--cur-theme)
+    (spacemacs/load-theme spacemacs--cur-theme))
+  (defun my/spacemacs/reset-spacemacs-theme ()
+    (interactive)
+    (when spacemacs--cur-theme (disable-theme spacemacs--cur-theme))
+    (setq spacemacs--cur-theme 'spacemacs-dark)
+    (setq spacemacs--cycle-themes nil)
+    (message "Loading theme %s..." spacemacs--cur-theme)
+    (spacemacs/load-theme spacemacs--cur-theme))
+
   ;; ==============================================================================
   ;;                       *****************************
   ;;                       *                           *
