@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: esversion:6
+# key: v6
+# --
+// jshint esversion: 6
+$0
