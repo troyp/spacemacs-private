@@ -191,6 +191,7 @@ values."
      flycheck-package
      (goto-gem :location (recipe :fetcher github :repo "pidu/goto-gem"))
      helm-firefox
+     jsfmt
      mozc
      move-dup
      nameless
