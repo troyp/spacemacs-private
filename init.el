@@ -615,6 +615,7 @@ you should place you code here."
   (add-to-list 'auto-mode-alist '("\\.pryrc" . ruby-mode))
   (add-to-list 'auto-mode-alist '("\\.ocamlinit" . tuareg-mode))
   (add-to-list 'auto-mode-alist '("\\.vimpagerrc" . vimrc-mode))
+  (add-to-list 'auto-mode-alist '("\\.jshintrc" . json-mode))
 
 
   ;; ==============================================================================
