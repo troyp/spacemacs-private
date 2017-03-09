@@ -1993,6 +1993,7 @@ you should place you code here."
     '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-application))
   (eval-after-load "haskell-mode"
     '(define-key haskell-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox))
+  (define-key text-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox)
 
   ;; -------------------------------------------------------------------------------
   ;; ,------,
