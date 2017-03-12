@@ -602,6 +602,9 @@ you should place you code here."
   (loop for pkg in dotspacemacs-additional-local-packages do
         (require pkg nil :noerror))
 
+  (add-to-load-path "/home/troy/.emacs.d/private/repos/elisp-utils/")
+  (require 'elisp-utils)
+
   ;; ==============================================================================
   ;;                             *******************
   ;;                             *                 *
@@ -2143,6 +2146,7 @@ you should place you code here."
              ("<f3> p" . insert-kbd-macro)
              ("RET"    . lisp-state-toggle-lisp-state)
              ("C-j"    . evil-adjust-eval-print-last-sexp)
+             ("M-w"    . elu-copy-md-sig-and-doc)
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
              ("e D"    . eval-instrument-defun)
