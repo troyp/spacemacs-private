@@ -1605,13 +1605,13 @@ you should place you code here."
 
   (eval-after-load "dired"
     `(progn
-
+       (require 'dired+)
        (define-key dired-mode-map (kbd "C-h") nil)
-
        ;; keys: dired-mode-map
        (bind-keys
         :map dired-mode-map
         ("q" . tsp-quit-window-kill)
+        ("<S-return>" . dired-find-file)
         )
 
        ;; keys: evilified-state
