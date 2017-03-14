@@ -1654,6 +1654,7 @@ you should place you code here."
        (spacemacs/set-leader-keys-for-major-mode 'dired-mode
          "c"     'dired-mode-map
          "to"    'dired-omit-mode
+         "tl"    'dired-hide-details-mode
          "tr"    'toggle-diredp-find-file-reuse-dir
          "v"     'dired-view-file    ;; for discovery - can just use \v
          "Y"     'diredp-relsymlink-this-file
