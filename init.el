@@ -1031,6 +1031,7 @@ you should place you code here."
 
   (spacemacs/set-leader-keys
     "a ="          'calculator
+    "a '"          'browse-url-firefox
     "b M"          'switch-to-messages-buffer
     "b S"          'spacemacs/switch-to-scratch-buffer-other-window
     "b W"          'switch-to-warnings-buffer
