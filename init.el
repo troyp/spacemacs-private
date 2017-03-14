@@ -1586,6 +1586,8 @@ you should place you code here."
   ;; | Dired |
   ;; '-------'
 
+  (require 'dired+)
+
   (setq wdired-use-dired-vertical-movement 'sometimes)
 
   (defun dired-copy-file-path-as-kill ()
@@ -1605,7 +1607,6 @@ you should place you code here."
 
   (eval-after-load "dired"
     `(progn
-       (require 'dired+)
        (define-key dired-mode-map (kbd "C-h") nil)
        ;; keys: dired-mode-map
        (bind-keys
