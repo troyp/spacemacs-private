@@ -429,7 +429,7 @@ Returns a new hash-table consisting of all key-value pairs for which
 Example:
   (setq fib (t-hash 1 1  2 1  3 2  4 3  5 5  6 8  7 13  8 21))
   ;; #s(hash-table ... data (1 1 2 1 3 2 4 3 5 5 6 8 7 13 8 21))
-  (t-filter fib (lambda (k v) (> k v)))
+  (t-filter fib #'>)
   ;; #s(hash-table ... data ( 2 1 3 2 4 3))"
   (let ((result (copy-hash-table table)))
     (maphash (lambda (key value)
