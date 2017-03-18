@@ -3815,11 +3815,12 @@ specified, contains the number of the current line. LINEVAR, if specified,
 contains the text of the current line. BODY is one or more sexps to execute for
 each line."
     (declare (indent 1))
-    (let ((min      (if (region-active-p) (region-beginning) (point-min)))
-          (max      (if (region-active-p) (region-end) (point-max)))
-          (nvar     (car spec))
-          (linevar  (cadr spec))
-          (vardefs  nil))
+    (let* ((min      (if (region-active-p) (region-beginning) (point-min)))
+           (max      (if (region-active-p) (region-end) (point-max)))
+           (maxmark  (set-marker (make-marker) max))
+           (nvar     (car spec))
+           (linevar  (cadr spec))
+           (vardefs  nil))
       (when linevar
         (push `(setf ,linevar (buffer-substring (line-beginning-position)
                                                 (line-end-position)))
@@ -3829,13 +3830,14 @@ each line."
               vardefs))
       `(progn
          (goto-char ,min)
-         (while (< (line-end-position) ,max)
+         (while (< (point) (marker-position ,maxmark))
            ;; set loop variables
            ,@vardefs
            ;; process
            ,@body
            ;; increment
-           (beginning-of-line 2)))))
+           (forward-line 1)))))
+
   (defun insertf (string &rest objects)
     "Insert a string at point, formatted with a format-string and arguments."
     (insert (apply #'format string objects)))
