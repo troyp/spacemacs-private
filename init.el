@@ -64,6 +64,7 @@ values."
      (org :variables
           org-enable-github-support t
           )
+     nlinum
      python
      racket
      (ranger :variables
@@ -455,7 +456,7 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place you code here."
 
   ;; (setq-default tab-always-indent t)
-  (global-linum-mode)
+  (global-nlinum-mode)
   (menu-bar-mode)
   (scroll-bar-mode)
   (minibuffer-depth-indicate-mode 1)
