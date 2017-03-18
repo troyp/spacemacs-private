@@ -3836,6 +3836,9 @@ each line."
            ,@body
            ;; increment
            (beginning-of-line 2)))))
+  (defun insertf (string &rest objects)
+    "Insert a string at point, formatted with a format-string and arguments."
+    (insert (apply #'format string objects)))
 
   (defun my/insert-space-after (&rest arg)
     (interactive "p")
