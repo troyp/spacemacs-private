@@ -2093,7 +2093,11 @@ you should place you code here."
      ("<C-tab>" . nil)
      ("<C-`>"   . magit-section-cycle)
      ("q"       . my/magit-mode-kill-buffer)
-     ))
+     )
+    (setf magit-log-revision-headers-format "\
+%+b
+Author:    %aN <%aE>
+Committer: %cN <%cE>"))
 
   (eval-after-load 'magit-mode
     `(progn
