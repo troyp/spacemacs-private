@@ -1058,6 +1058,7 @@ you should place you code here."
     "f / f"        'sudo-open-file
     "f / e"        'spacemacs/sudo-edit
     "f / b"        'sudo-edit-this-file
+    "f SPC"        'my/open-file-at-point
     "f <insert>"   'find-file-clipboard
     "f C-."        'find-file-at-point
     "f C-k"        'bookmark-jump
@@ -3252,6 +3253,10 @@ within the region."
     (let ((f (concat "/sudo::" (expand-file-name buffer-file-name))))
       (find-file f)))
 
+  (defun my/open-file-at-point ()
+    "Open the file at point using xdg-open."
+    (interactive)
+    (shell-command (concat "xdg-open " (ffap-file-at-point))))
 
   ;; ================
   ;; shift left/right
