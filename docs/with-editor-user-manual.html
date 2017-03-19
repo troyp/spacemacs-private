@@ -1,0 +1,452 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- The library with-editor makes it easy to use the Emacsclient as
+the $EDITOR of child processes, making sure they know how to call
+home.  For remote processes a substitute is provided, which communicates
+with Emacs on standard output instead of using a socket as the Emacsclient
+does.
+
+This library was written because Magit has to be able to do the above
+to allow the user to edit commit messages gracefully and to edit
+rebase sequences, which wouldn't be possible at all otherwise.
+
+Because other packages can benefit from such functionality, this
+library is made available as a separate package.  It also defines some
+additional functionality which makes it useful even for end-users, who
+don't use Magit or another package which uses it internally.
+
+Copyright (C) 2015-2016 Jonas Bernoulli <jonas@bernoul.li>
+
+You can redistribute this document and/or modify it under the terms
+of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+This document is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details. -->
+<!-- Created by GNU Texinfo 5.2, http://www.gnu.org/software/texinfo/ -->
+<head>
+<title>With-Editor User Manual</title>
+
+<meta name="description" content="With-Editor User Manual">
+<meta name="keywords" content="With-Editor User Manual">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="#Top" rel="start" title="Top">
+<link href="#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="dir.html#Top" rel="up" title="(dir)">
+<style type="text/css">
+<!--
+a.summary-letter {text-decoration: none}
+blockquote.smallquotation {font-size: smaller}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+div.indentedblock {margin-left: 3.2em}
+div.lisp {margin-left: 3.2em}
+div.smalldisplay {margin-left: 3.2em}
+div.smallexample {margin-left: 3.2em}
+div.smallindentedblock {margin-left: 3.2em; font-size: smaller}
+div.smalllisp {margin-left: 3.2em}
+kbd {font-style:oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+pre.smalldisplay {font-family: inherit; font-size: smaller}
+pre.smallexample {font-size: smaller}
+pre.smallformat {font-family: inherit; font-size: smaller}
+pre.smalllisp {font-size: smaller}
+span.nocodebreak {white-space:nowrap}
+span.nolinebreak {white-space:nowrap}
+span.roman {font-family:serif; font-weight:normal}
+span.sansserif {font-family:sans-serif; font-weight:normal}
+ul.no-bullet {list-style: none}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="/assets/page.css">
+
+
+</head>
+
+<body lang="en" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#800080" alink="#FF0000">
+<h1 class="settitle" align="center">With-Editor User Manual</h1>
+
+
+
+
+<a name="SEC_Contents"></a>
+<h2 class="contents-heading">Table of Contents</h2>
+
+<div class="contents">
+
+<ul class="no-bullet">
+  <li><a name="toc-Using-the-With_002dEditor-package-1" href="#Using-the-With_002dEditor-package">1 Using the With-Editor package</a>
+  <ul class="no-bullet">
+    <li><a name="toc-Configuring-With_002dEditor-1" href="#Configuring-With_002dEditor">1.1 Configuring With-Editor</a></li>
+    <li><a name="toc-Using-With_002dEditor-commands-1" href="#Using-With_002dEditor-commands">1.2 Using With-Editor commands</a></li>
+  </ul></li>
+  <li><a name="toc-Using-With_002dEditor-as-a-library-1" href="#Using-With_002dEditor-as-a-library">2 Using With-Editor as a library</a></li>
+  <li><a name="toc-Debugging-1" href="#Debugging">3 Debugging</a></li>
+</ul>
+</div>
+
+
+<a name="Top"></a>
+<div class="header">
+<p>
+Next: <a href="#Using-the-With_002dEditor-package" accesskey="n" rel="next">Using the With-Editor package</a>, Up: <a href="dir.html#Top" accesskey="u" rel="up">(dir)</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<a name="With_002dEditor-User-Manual"></a>
+<h1 class="top">With-Editor User Manual</h1>
+<p>The library <code>with-editor</code> makes it easy to use the Emacsclient as
+the <code>$EDITOR</code> of child processes, making sure they know how to call
+home.  For remote processes a substitute is provided, which communicates
+with Emacs on standard output instead of using a socket as the Emacsclient
+does.
+</p>
+<p>This library was written because Magit has to be able to do the above
+to allow the user to edit commit messages gracefully and to edit
+rebase sequences, which wouldn&rsquo;t be possible at all otherwise.
+</p>
+<p>Because other packages can benefit from such functionality, this
+library is made available as a separate package.  It also defines some
+additional functionality which makes it useful even for end-users, who
+don&rsquo;t use Magit or another package which uses it internally.
+</p>
+<blockquote>
+<p>Copyright (C) 2015-2016 Jonas Bernoulli &lt;jonas@bernoul.li&gt;
+</p>
+<p>You can redistribute this document and/or modify it under the terms
+of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any
+later version.
+</p>
+<p>This document is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+</p></blockquote>
+
+
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="#Using-the-With_002dEditor-package" accesskey="1">Using the With-Editor package</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Using-With_002dEditor-as-a-library" accesskey="2">Using With-Editor as a library</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Debugging" accesskey="3">Debugging</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
+</pre></th></tr><tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">&mdash; The Detailed Node Listing &mdash;
+
+Using the With-Editor package
+
+</pre></th></tr><tr><td align="left" valign="top">&bull; <a href="#Configuring-With_002dEditor" accesskey="4">Configuring With-Editor</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Using-With_002dEditor-commands" accesskey="5">Using With-Editor commands</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+
+
+<hr>
+<a name="Using-the-With_002dEditor-package"></a>
+<div class="header">
+<p>
+Next: <a href="#Using-With_002dEditor-as-a-library" accesskey="n" rel="next">Using With-Editor as a library</a>, Previous: <a href="#Top" accesskey="p" rel="prev">Top</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<a name="Using-the-With_002dEditor-package-1"></a>
+<h2 class="chapter">1 Using the With-Editor package</h2>
+
+<p>The <code>With-Editor</code> package is used internally by Magit when editing
+commit messages and rebase sequences.  It also provides some commands
+and features which are useful by themselves, even if you don&rsquo;t use
+Magit.
+</p>
+<p>For information about using this library in you own package, see
+<a href="#Using-With_002dEditor-as-a-library">Using With-Editor as a library</a>.
+</p>
+<table class="menu" border="0" cellspacing="0">
+<tr><td align="left" valign="top">&bull; <a href="#Configuring-With_002dEditor" accesskey="1">Configuring With-Editor</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Using-With_002dEditor-commands" accesskey="2">Using With-Editor commands</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+</table>
+
+<hr>
+<a name="Configuring-With_002dEditor"></a>
+<div class="header">
+<p>
+Next: <a href="#Using-With_002dEditor-commands" accesskey="n" rel="next">Using With-Editor commands</a>, Up: <a href="#Using-the-With_002dEditor-package" accesskey="u" rel="up">Using the With-Editor package</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<a name="Configuring-With_002dEditor-1"></a>
+<h3 class="section">1.1 Configuring With-Editor</h3>
+
+<p>With-Editor tries very hard to locate a suitable emacsclient
+executable, so ideally you should never have to customize the option
+<code>with-editor-emacsclient-executable</code>.  When it fails to do so, then the
+most likely reason is that someone found yet another way to package
+Emacs (most likely on OS X) without putting the executable on <code>$PATH</code>,
+and we have to add another kludge to find it anyway.
+</p>
+<dl>
+<dt><a name="index-with_002deditor_002demacsclient_002dexecutable"></a>User Option: <strong>with-editor-emacsclient-executable</strong></dt>
+<dd>
+<p>The emacsclient executable used as the editor by child process of
+this Emacs instance.  By using this executable, child processes can
+call home to their parent process.
+</p>
+<p>This option is automatically set at startup by looking in <code>exec-path</code>,
+and other places where the executable could be installed, to find
+the emacsclient executable most suitable for the current emacs
+instance.
+</p>
+<p>You should <strong>not</strong> customize this option permanently.  If you have to do
+it, then you should consider that a temporary kludge and inform the
+Magit maintainer as described in <a href="#Debugging">Debugging</a>.
+</p>
+<p>If With-Editor fails to find a suitable emacsclient on you system,
+then this should be fixed for all users at once, by teaching
+<code>with-editor-locate-emacsclient</code> how to so on your system and system
+like yours. Doing it this way has the advantage, that you won&rsquo;t have
+do it again every time you update Emacs, and that other users who
+have installed Emacs the same way as you have, won&rsquo;t have to go
+through the same trouble.
+</p>
+<p>Note that there also is a nuclear option; setting this variable to
+<code>nil</code> causes the &quot;sleeping editor&quot; described below to be used even for
+local child processes.  Obviously we don&rsquo;t recommend that you use
+this except in &quot;emergencies&quot;, i.e. before we had a change to add a
+kludge appropriate for you setup.
+</p></dd></dl>
+
+<dl>
+<dt><a name="index-with_002deditor_002dlocate_002demacsclient"></a>Function: <strong>with-editor-locate-emacsclient</strong></dt>
+<dd>
+<p>The function used to set the initial value of the option
+<code>with-editor-emacsclient-executable</code>.  There&rsquo;s a lot of voodoo here.
+</p></dd></dl>
+
+<p>The emacsclient cannot be used when using Tramp to run a process on a
+remote machine.  (Theoretically it could, but that would be hard to
+setup, very fragile, and rather insecure).
+</p>
+<p>With-Editor provides an alternative &quot;editor&quot; which can be used by
+remote processes in much the same way as local processes use an
+emacsclient executable.  This alternative is known as the &quot;sleeping
+editor&quot; because it is implemented as a shell script which sleeps until
+it receives a signal.
+</p>
+<dl>
+<dt><a name="index-with_002deditor_002dsleeping_002deditor"></a>User Option: <strong>with-editor-sleeping-editor</strong></dt>
+<dd>
+<p>The sleeping editor is a shell script used as the editor of child
+processes when the emacsclient executable cannot be used.
+</p>
+<p>This fallback is used for asynchronous process started inside the
+macro <code>with-editor</code>, when the process runs on a remote machine or for
+local processes when <code>with-editor-emacsclient-executable</code> is <code>nil</code>.
+</p>
+<p>Where the latter uses a socket to communicate with Emacs&rsquo; server,
+this substitute prints edit requests to its standard output on
+which a process filter listens for such requests.  As such it is
+not a complete substitute for a proper Emacsclient, it can only
+be used as <code>$EDITOR</code> of child process of the current Emacs instance.
+</p>
+<p>Some shells do not execute traps immediately when waiting for a
+child process, but by default we do use such a blocking child
+process.
+</p>
+<p>If you use such a shell (e.g. <code>csh</code> on FreeBSD, but not Debian), then
+you have to edit this option.  You can either replace <code>sh</code> with <code>bash</code>
+(and install that), or you can use the older, less performant
+implementation:
+</p>
+<div class="lisp">
+<pre class="lisp">&quot;sh -c '\
+echo \&quot;WITH-EDITOR: $$ OPEN $0\&quot;; \
+trap \&quot;exit 0\&quot; USR1; \
+trap \&quot;exit 1\&quot; USR2; \
+while true; do sleep 1; done'&quot;
+</pre></div>
+
+<p>This leads to a delay of up to a second.  The delay can be shortened
+by replacing <code>sleep 1</code> with <code>sleep 0.01</code>, or if your implementation does
+not support floats, then by using <code>nanosleep 0.01</code> instead.
+</p></dd></dl>
+
+<hr>
+<a name="Using-With_002dEditor-commands"></a>
+<div class="header">
+<p>
+Previous: <a href="#Configuring-With_002dEditor" accesskey="p" rel="prev">Configuring With-Editor</a>, Up: <a href="#Using-the-With_002dEditor-package" accesskey="u" rel="up">Using the With-Editor package</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<a name="Using-With_002dEditor-commands-1"></a>
+<h3 class="section">1.2 Using With-Editor commands</h3>
+
+<p>This section describes how to use the <code>with-editor</code> library <em>outside</em> of
+Magit.  You don&rsquo;t need to know any of this just to create commits
+using Magit.
+</p>
+<p>The commands <code>with-editor-async-shell-command</code> and
+<code>with-editor-shell-command</code> are intended as drop in replacements for
+<code>async-shell-command</code> and <code>shell-command</code>.  They automatically export
+<code>$EDITOR</code> making sure the executed command uses the current Emacs
+instance as &quot;the editor&quot;.  With a prefix argument these commands
+prompt for an alternative environment variable such as <code>$GIT_EDITOR</code>.
+</p>
+<a name="index-with_002deditor_002dasync_002dshell_002dcommand"></a>
+<dl>
+<dt><a name="index-with_002deditor_002dasync_002dshell_002dcommand-1"></a>Command: <strong>with-editor-async-shell-command</strong></dt>
+<dd>
+<p>Like <code>async-shell-command</code>, but the command is run with the current
+Emacs instance exported as <code>$EDITOR</code>.
+</p></dd></dl>
+
+<a name="index-with_002deditor_002dshell_002dcommand"></a>
+<dl>
+<dt><a name="index-with_002deditor_002dshell_002dcommand-1"></a>Command: <strong>with-editor-shell-command</strong></dt>
+<dd>
+<p>Like <code>async-shell-command</code>, but the command is run with the current
+Emacs instance exported as <code>$EDITOR</code>.  This only has an effect if
+the command is run asynchronously, i.e. when the command ends
+with <code>&amp;</code>.
+</p></dd></dl>
+
+<p>To always use these variants add this to you init file:
+</p>
+<div class="lisp">
+<pre class="lisp">(define-key (current-global-map)
+  [remap async-shell-command] 'with-editor-async-shell-command)
+(define-key (current-global-map)
+  [remap shell-command] 'with-editor-shell-command)
+</pre></div>
+
+<p>Alternatively use the global <code>shell-command-with-editor-mode</code>.
+</p>
+<dl>
+<dt><a name="index-shell_002dcommand_002dwith_002deditor_002dmode"></a>Variable: <strong>shell-command-with-editor-mode</strong></dt>
+<dd>
+<p>When this mode is active, then <code>$EDITOR</code> is exported whenever
+ultimately <code>shell-command</code> is called to asynchronously run some shell
+command.  This affects most variants of that command, whether they
+are defined in Emacs or in some third-party package.
+</p></dd></dl>
+
+<p>The command <code>with-editor-export-editor</code> exports <code>$EDITOR</code> or
+another such environment variable in <code>shell-mode</code>, <code>term-mode</code> and
+<code>eshell-mode</code> buffers.  Use this Emacs command before executing a
+shell command which needs the editor set, or always arrange for the
+current Emacs instance to be used as editor by adding it to the
+appropriate mode hooks:
+</p>
+<div class="lisp">
+<pre class="lisp">(add-hook 'shell-mode-hook  'with-editor-export-editor)
+(add-hook 'term-exec-hook   'with-editor-export-editor)
+(add-hook 'eshell-mode-hook 'with-editor-export-editor)
+</pre></div>
+
+<p>Some variants of this function exist; these two forms are equivalent:
+</p>
+<div class="lisp">
+<pre class="lisp">(add-hook 'shell-mode-hook
+	  (apply-partially 'with-editor-export-editor &quot;GIT_EDITOR&quot;))
+(add-hook 'shell-mode-hook 'with-editor-export-git-editor)
+</pre></div>
+
+<a name="index-with_002deditor_002dexport_002deditor"></a>
+<dl>
+<dt><a name="index-with_002deditor_002dexport_002deditor-1"></a>Command: <strong>with-editor-export-editor</strong></dt>
+<dd>
+<p>When invoked in a <code>shell-mode</code>, <code>term-mode</code>, or <code>eshell-mode</code> buffer, this
+command teaches shell commands to use the current Emacs instance as
+the editor, by exporting <code>$EDITOR</code>.
+</p></dd></dl>
+
+<a name="index-with_002deditor_002dexport_002dgit_002deditor"></a>
+<dl>
+<dt><a name="index-with_002deditor_002dexport_002dgit_002deditor-1"></a>Command: <strong>with-editor-export-git-editor</strong></dt>
+<dd>
+<p>Like <code>with-editor-export-editor</code> but exports <code>$GIT_EDITOR</code>.
+</p></dd></dl>
+
+<a name="index-with_002deditor_002dexport_002dhg_002deditor"></a>
+<dl>
+<dt><a name="index-with_002deditor_002dexport_002dhg_002deditor-1"></a>Command: <strong>with-editor-export-hg-editor</strong></dt>
+<dd>
+<p>Like <code>with-editor-export-editor</code> but exports <code>$HG_EDITOR</code>.
+</p></dd></dl>
+
+<hr>
+<a name="Using-With_002dEditor-as-a-library"></a>
+<div class="header">
+<p>
+Next: <a href="#Debugging" accesskey="n" rel="next">Debugging</a>, Previous: <a href="#Using-the-With_002dEditor-package" accesskey="p" rel="prev">Using the With-Editor package</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<a name="Using-With_002dEditor-as-a-library-1"></a>
+<h2 class="chapter">2 Using With-Editor as a library</h2>
+
+<p>This section describes how to use the <tt>with-editor</tt> library <em>outside</em> of
+Magit to teach another package how to have its child processes call
+home, just like Magit does.  You don&rsquo;t need to know any of this just
+to create commits using Magit.  You can also ignore this if you use
+<code>with-editor</code> outside of Magit, but only as an end-user.
+</p>
+<p>For information about interactive use and options which affect both
+interactive and non-interactive use, see <a href="#Using-the-With_002dEditor-package">Using the With-Editor package</a>.
+</p>
+<dl>
+<dt><a name="index-with_002deditor"></a>Macro: <strong>with-editor</strong> <em>&amp;rest body</em></dt>
+<dd>
+<p>This macro arranges for the emacsclient or the sleeping editor to be
+used as the editor of child processes, effectively teaching them to
+call home to the current emacs instance when they require that the
+user edits a file.
+</p>
+<p>This is essentially done by establishing a local binding for
+<code>process-environment</code> and changing the value of the <code>$EDITOR</code>
+environment variable.  This affects all processes started by forms
+inside BODY.
+</p></dd></dl>
+
+<dl>
+<dt><a name="index-with_002deditor_002dset_002dprocess_002dfilter"></a>Function: <strong>with-editor-set-process-filter</strong> <em>process filter</em></dt>
+<dd>
+<p>This function is like <code>set-process-filter</code> but ensures that adding the
+new FILTER does not remove the <code>with-editor-process-filter</code>.  This is
+done by wrapping the two filter functions using a lambda, which
+becomes the actual filter.  It calls <code>with-editor-process-filter</code>
+first, passing <code>t</code> as NO-STANDARD-FILTER.  Then it calls FILTER.
+</p></dd></dl>
+
+<hr>
+<a name="Debugging"></a>
+<div class="header">
+<p>
+Previous: <a href="#Using-With_002dEditor-as-a-library" accesskey="p" rel="prev">Using With-Editor as a library</a>, Up: <a href="#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<a name="Debugging-1"></a>
+<h2 class="chapter">3 Debugging</h2>
+
+<p>With-Editor tries very hard to locate a suitable emacsclient
+executable, and then sets option <code>with-editor-emacsclient-executable</code>
+accordingly.  In very rare cases this fails.  When it does fail, then
+the most likely reason is that someone found yet another way to
+package Emacs (most likely on OS X) without putting the executable on
+<code>$PATH</code>, and we have to add another kludge to find it anyway.
+</p>
+<p>If you are having problems using <code>with-editor</code>, e.g. you cannot commit
+in Magit, then please open a new issue at
+<a href="https://github.com/magit/with-editor/issues">https://github.com/magit/with-editor/issues</a> and provide information
+about your Emacs installation.  Most importantly how did you install
+Emacs and what is the output of <code>M-x with-editor-debug</code>?
+</p>
+<hr>
+
+
+
+</body>
+</html>
