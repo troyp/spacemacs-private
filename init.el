@@ -2094,6 +2094,7 @@ you should place you code here."
      ("<C-`>"   . magit-section-cycle)
      ("q"       . my/magit-mode-kill-buffer)
      )
+    (add-hook 'magit-diff-visit-file-hook #'recenter)
     (setf magit-log-revision-headers-format "\
 %+b
 Author:    %aN <%aE>
