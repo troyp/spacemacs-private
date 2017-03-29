@@ -1589,7 +1589,10 @@ you should place you code here."
   ;; | Dired |
   ;; '-------'
 
-  (require 'dired+)
+  (use-package dired+
+    :init
+    (diredp-toggle-find-file-reuse-dir 1)
+    )
 
   (setq wdired-use-dired-vertical-movement 'sometimes)
 
@@ -1679,7 +1682,6 @@ you should place you code here."
        )
     )
 
-  (eval-after-load "dired+" `(diredp-toggle-find-file-reuse-dir 1))
   (eval-after-load "dired-sort-menu" `(require 'dired-sort-menu+))
 
   (defun wdired-init ()
