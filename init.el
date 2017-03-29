@@ -1591,6 +1591,12 @@ you should place you code here."
 
   (use-package dired+
     :init
+    (spacemacs|add-toggle diredp-wrap-around-flag
+      :status diredp-wrap-around-flag
+      :on  (setq diredp-wrap-around-flag t)
+      :off (setq diredp-wrap-around-flag nil)
+      )
+    (setq diredp-wrap-around-flag nil)
     (diredp-toggle-find-file-reuse-dir 1)
     )
 
@@ -1662,6 +1668,7 @@ you should place you code here."
          "to"    'dired-omit-mode
          "tl"    'dired-hide-details-mode
          "tr"    'toggle-diredp-find-file-reuse-dir
+         "tw"    'spacemacs/toggle-diredp-wrap-around-flag
          "v"     'dired-view-file    ;; for discovery - can just use \v
          "Y"     'diredp-relsymlink-this-file
          "x"     'tsp-dired-cut-or-copy-files
