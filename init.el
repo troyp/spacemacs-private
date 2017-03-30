@@ -2187,6 +2187,8 @@ Committer: %cN <%cE>"))
     (interactive)
     ;; set tab-width to 8 to make GNU sources readable
     (setq tab-width 8)
+    (make-local-variable 'evil-args-delimiters)
+    (setq evil-args-delimiters (mapcar (fn: make-string <> ? ) (number-sequence 1 50)))
     )
   (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-init-fn)
 
