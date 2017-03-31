@@ -937,6 +937,9 @@ you should place you code here."
   ;; insert at WORD beginning/end
   (define-key evil-normal-state-map (kbd "M-B") 'my/evil-insert-at-WORD-beginning)
   (define-key evil-normal-state-map (kbd "M-E") 'my/evil-append-at-WORD-end)
+  ;; evil-arg
+  (define-key evil-normal-state-map (kbd "M-j") 'evil-forward-arg)
+  (define-key evil-normal-state-map (kbd "M-k") 'evil-backward-arg)
 
   ;; evil-window: C-w C-w to swap windows
   (bind-key "C-w" #'my/window-swap-with-next evil-window-map)
