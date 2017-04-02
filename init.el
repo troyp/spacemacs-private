@@ -676,8 +676,13 @@ you should place you code here."
 
   (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
   (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
+  (evil-define-text-object evil-inner-filename (count &optional beg end type)
+    "operates on the filename around point."
+    (-cons-to-list (bounds-of-thing-at-point 'filename)))
+
   (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
   (define-key evil-outer-text-objects-map "d" 'evil-outer-defun)
+  (define-key evil-inner-text-objects-map "f" 'evil-inner-filename)
 
   ;; ===============================================================================
   ;;                                      _________
