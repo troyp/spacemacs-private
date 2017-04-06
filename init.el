@@ -1010,6 +1010,7 @@ you should place you code here."
   ;; (define-key evil-insert-state-map (kbd "S-<backspace>") 'evil-shift-left-line)
   (define-key evil-insert-state-map (kbd "C-d")   'delete-forward-char)
   (define-key evil-insert-state-map (kbd "C-l")   'delete-forward-char)
+  (define-key evil-insert-state-map (kbd "M-h")   'delete-backward-char)
   (define-key evil-insert-state-map (kbd "C-t")   'transpose-chars)
   (define-key evil-insert-state-map (kbd "C-S-a") 'evil-paste-last-insertion)
   (define-key evil-insert-state-map (kbd "C-a")   'move-beginning-of-line-or-text)
