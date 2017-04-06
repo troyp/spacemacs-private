@@ -942,6 +942,10 @@ you should place you code here."
   ;; insert at WORD beginning/end
   (define-key evil-normal-state-map (kbd "M-B") 'my/evil-insert-at-WORD-beginning)
   (define-key evil-normal-state-map (kbd "M-E") 'my/evil-append-at-WORD-end)
+  ;; forward/backward sentence
+  (define-key evil-normal-state-map (kbd "M-e") 'evil-forward-sentence-begin)
+  (define-key evil-normal-state-map (kbd "M-a") 'evil-backward-sentence-begin)
+
   ;; evil-arg
   (define-key evil-normal-state-map (kbd "M-j") 'evil-forward-arg)
   (define-key evil-normal-state-map (kbd "M-k") 'evil-backward-arg)
