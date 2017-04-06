@@ -722,6 +722,7 @@ you should place you code here."
           ((?. ?/) . ?\x2026)    ;; (horizontal) ellipsis
           ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
           ((?. ?-) . ?\x00b7)    ;; middle-dot
+          ((?i 34) . ?\x00ef)    ;; ï (also on i:)
           ))
   (defalias 'digra 'evil-enter-digraphs)  ;; tspevil.el
 
