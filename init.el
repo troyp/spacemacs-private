@@ -657,10 +657,6 @@ you should place you code here."
   (spacemacs|define-text-object "h" "helplink" "`" "'")
   (spacemacs|define-text-object "q" "curlquote" "‘" "’")
 
-  (evil-define-text-object evil-inner-line (count &optional beg end type)
-    (list (line-visible-beginning-position) (+ 1 (line-visible-end-position))))
-  (evil-define-text-object evil-outer-line (count &optional beg end type)
-    (list (line-beginning-position) (line-end-position)))
   (evil-define-text-object evil-inner-defun (count &optional beg end type)
     "operates on the top-level sexp around point."
     (save-excursion
@@ -674,15 +670,41 @@ you should place you code here."
       (list (+ (point) 1)
             (- (mark) 1))))
 
-  (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
-  (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
   (evil-define-text-object evil-inner-filename (count &optional beg end type)
     "operates on the filename around point."
     (-cons-to-list (bounds-of-thing-at-point 'filename)))
 
+  (evil-define-text-object evil-inner-line (count &optional beg end type)
+    (list (line-visible-beginning-position) (+ 1 (line-visible-end-position))))
+  (evil-define-text-object evil-outer-line (count &optional beg end type)
+    (list (line-beginning-position) (line-end-position)))
+
+  ;; heredoc object: define properties for thingatpt
+  (put 'heredoc 'beginning-op
+       (lambda ()
+         (search-backward-regexp "<< *EOF" nil t)
+         (forward-line)))
+  (put 'heredoc 'end-op
+       (lambda ()
+         (search-forward-regexp "^EOF$" nil t)
+         (forward-line -1)
+         (end-of-line)
+         (forward-char)))
+  (put 'heredoc 'forward-op
+       (lambda (count)
+         (search-forward-regexp "^EOF$" nil t count)
+         (forward-line)))
+  ;; define evil-inner-textobject in terms of thing at pt
+  (evil-define-text-object evil-inner-heredoc (count &optional beg end type)
+    "operates on the heredoc around point."
+    (-cons-to-list (bounds-of-thing-at-point 'heredoc)))
+
   (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
   (define-key evil-outer-text-objects-map "d" 'evil-outer-defun)
   (define-key evil-inner-text-objects-map "f" 'evil-inner-filename)
+  (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
+  (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
+  (define-key evil-inner-text-objects-map "<" 'evil-inner-heredoc)
 
   ;; ===============================================================================
   ;;                                      _________
