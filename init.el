@@ -706,6 +706,23 @@ you should place you code here."
   (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
   (define-key evil-inner-text-objects-map "<" 'evil-inner-heredoc)
 
+  ;; ,--------,
+  ;; | cursor |
+  ;; '--------'
+  (defun my/evil-insert-overwrite-cursor ()
+    (set-cursor-color "chartreuse3")
+    (setq cursor-type (if overwrite-mode (cons 'hbar 2) (cons 'bar 2))))
+
+  (setq evil-insert-state-cursor #'my/evil-insert-overwrite-cursor)
+
+  (defun my/enter-overwrite-mode ()
+    (interactive)
+    (call-interactively #'overwrite-mode)
+    (evil-refresh-cursor))
+
+  (define-key evil-insert-state-map (kbd "<insert>") 'my/enter-overwrite-mode)
+
+
   ;; ===============================================================================
   ;;                                      _________
   ;;                                     |         |
