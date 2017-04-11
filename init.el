@@ -798,6 +798,7 @@ you should place you code here."
   (defun mmap (keyrep defstr) "Vim-style keybinding for `evil-motion-state'. Uses the `define-key' binding function."
          (xmap evil-motion-state-map keyrep defstr))
 
+  (defmacro fn! (&rest body) `(lambda () (interactive) ,@body))
 
   ;; ,-----------------,
   ;; | Global Bindings |
