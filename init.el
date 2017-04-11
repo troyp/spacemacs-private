@@ -2201,7 +2201,7 @@ Committer: %cN <%cE>"))
              ("<f3> p" . insert-kbd-macro)
              ("RET"    . lisp-state-toggle-lisp-state)
              ("C-j"    . evil-adjust-eval-print-last-sexp)
-             ("M-w"    . elu-copy-md-sig-and-doc)
+             ("M-w"    . elu-github-copy-md-sig-and-doc)
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
              ("e D"    . eval-instrument-defun)
