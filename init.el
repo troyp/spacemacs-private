@@ -188,6 +188,7 @@ values."
      column-enforce-mode
      dirtree
      elmacro
+     evil-textobj-column
      firefox-controller
      flycheck-package
      (goto-gem :location (recipe :fetcher github :repo "pidu/goto-gem"))
@@ -705,6 +706,8 @@ you should place you code here."
   (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
   (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
   (define-key evil-inner-text-objects-map "<" 'evil-inner-heredoc)
+  ;; evil-textobj-column
+  (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD)
 
   ;; ,--------,
   ;; | cursor |
