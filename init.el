@@ -3998,20 +3998,13 @@ considered."
         (setq bs (cdr bs)))
       (car bs)))
 
-  (evil-define-operator my/evil-select-region-operator (beg end)
-    "Select text and return a list (BEG END+1)."
-    :keep-visual t
-    :move-point nil
-    (interactive "<r>")
-    (list beg (1+ end)))
-
   (evil-define-operator my/evil-replace-in-region (beg end)
     "Select text and replace in region [BEG, END].
 
 Text is selected using `my/evil-select-region-operator'."
     :move-point nil
     (interactive "<r>")
-    (let* ((from-str-range (call-interactively #'my/evil-select-region-operator))
+    (let* ((from-str-range (evil-operator-range))
            (from-str (apply #'buffer-substring from-str-range))
            (to-str (read-from-minibuffer (format "Replace '%s' with: " from-str))))
       (perform-replace from-str to-str t
