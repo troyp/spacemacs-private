@@ -944,9 +944,11 @@ you should place you code here."
   ;; '--------------'
   ;; note: evilified state map uses the bindings for keys:
   ;; / : h j k l n N v V gg G C-f C-b C-e C-y C-d C-u C-z
-
   ;; when rebinding them for normal-state, rebind for evilified-state also
+
   (define-key evil-normal-state-map [delete] 'kill-this-buffer)
+  (define-key evil-normal-state-map [S-delete] 'delete-window)
+  (define-key evil-normal-state-map [C-delete] 'kill-buffer-and-window)
   ;; shift reverses C-d (-scroll-down) and C-o (-jump-backward)
   (define-key evil-normal-state-map (kbd "C-S-d") 'evil-scroll-up)
   (define-key evil-normal-state-map (kbd "C-S-o") 'evil-jump-forward)
@@ -1190,8 +1192,6 @@ you should place you code here."
     "S-SPC"        'avy-goto-char-timer
     "SPC"          'avy-goto-char
     "<backtab>"    'switch-to-most-recent-buffer
-    ;; "<backspace>"  'kill-this-buffer
-    "<delete>"     'kill-buffer-and-window
     "<return>"     'helm-buffers-list
     "<f3>"         'kmacro-keymap
     "<f5>"         'spacemacs/safe-revert-buffer
