@@ -2212,23 +2212,29 @@ Committer: %cN <%cE>"))
   ;; '------'
 
   (bind-keys :map spacemacs-emacs-lisp-mode-map
-             ("e D"    . eval-instrument-defun)
+             ;; common
+             ("e j"    . my/eval-prettyprint-last-sexp)
              ("e p"    . eval-print-last-sexp)
-             ("e j"    . eval-prettyprint-last-sexp)
-             ("e RET"  . eval-replace-last-sexp)
+             ("e D"    . eval-instrument-defun)
+             ("e RET"  . my/eval-replace-last-sexp)
+             ("C-M-x"  . eval-defun)
              ("t i"    . ert-run-tests-interactively)
+             ("j"      . my/eval-prettyprint-last-sexp)
              ("x"      . prettyexpand-at-point)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
              ("RET"    . lisp-state-toggle-lisp-state)
-             ("C-j"    . evil-adjust-eval-print-last-sexp)
+             ;; emacs-lisp-mode only
              ("M-w"    . elu-github-copy-md-sig-and-doc)
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
+             ;; common
+             ("e j"    . my/eval-prettyprint-last-sexp)
+             ("e p"    . eval-print-last-sexp)
              ("e D"    . eval-instrument-defun)
-             ("e RET"  . eval-replace-last-sexp)
-             ("e j"    . eval-prettyprint-last-sexp)
-             ("j"      . eval-prettyprint-last-sexp)
+             ("e RET"  . my/eval-replace-last-sexp)
+             ("C-M-x"  . eval-defun)
+             ("j"      . my/eval-prettyprint-last-sexp)
              ("x"      . prettyexpand-at-point)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
@@ -3044,17 +3050,17 @@ temporarily enables it to allow getting help on disabled items and buttons."
         (message mm)
         (unless current-prefix-arg (kill-new mm)))))
 
-  (defun eval-replace-last-sexp ()
+  (defun my/eval-replace-last-sexp ()
     "Replace the preceding sexp with its value, formatted by `pp-to-string'.
 With a prefix argument, formats the value using `(format \"%S\" val)' instead."
     (interactive)
     (if (boundp 'evil-state)
         (evil-save-state
           (call-interactively #'evil-append)
-          (eval-replace-last-sexp-core))
-      (eval-replace-last-sexp-core)))
+          (my/eval-replace-last-sexp-core))
+      (my/eval-replace-last-sexp-core)))
 
-  (defun eval-replace-last-sexp-core ()
+  (defun my/eval-replace-last-sexp-core ()
     "Replace the preceding sexp with its value, formatted by pp-to-string. With a
  prefix argument, formats the value using `(format \"%S\" val)' instead."
     (let ((val (eval (preceding-sexp))))
@@ -3062,9 +3068,12 @@ With a prefix argument, formats the value using `(format \"%S\" val)' instead."
       (if current-prefix-arg (insert (format "%S" val))
         (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
 
-  (defun eval-prettyprint-last-sexp (eval-last-sexp-arg-internal)
+  (defun my/eval-prettyprint-last-sexp (eval-last-sexp-arg-internal)
     (interactive "P")
-    (cl-prettyprint (eval-last-sexp eval-last-sexp-arg-internal)))
+    (cl-prettyprint
+     (if (functionp #'evil-adjust-eval-last-sexp)
+         (evil-adjust-eval-last-sexp eval-last-sexp-arg-internal)
+       (eval-last-sexp eval-last-sexp-arg-internal))))
 
   (defun eval-instrument-defun ()
     "Equivalent to `eval-defun' with a prefix argument."
