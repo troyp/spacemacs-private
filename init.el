@@ -3980,6 +3980,21 @@ With prefix argument, do not recentre."
     (let ((display-buffer-alist '(("*Async Shell Command*" . (display-buffer-no-window nil)))))
       (async-shell-command command)))
 
+  (defun my/get-non-visible-buffer (&optional filter)
+    "Return the first non-visible buffer.
+
+Minibuffer buffers are ignored. If FILTER is supplied, it should be a boolean
+function taking a buffer as its argument. Only buffers satisfying FILTER are
+considered."
+    (let* ((bs (buffer-list)))
+      (while
+          (let ((b (car bs)))
+            (or (get-buffer-window b 'visible)
+                (minibufferp b)
+                (and filter (not (funcall filter b)))))
+        (setq bs (cdr bs)))
+      (car bs)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
