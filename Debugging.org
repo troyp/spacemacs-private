@@ -1,0 +1,206 @@
+This page explains some concepts needed to debug Spacemacs and to report issues
+in an useful way.
+
+* Table of contents                                                   :TOC@2:
+ - [[#how-to-make-a-great-bug-report][How to make a great bug report]]
+ - [[#get-the-description-of-your-installation][Get the description of your installation]]
+ - [[#make-a-step-by-step-reproduction-guide][Make a step-by-step reproduction guide]]
+ - [[#enable-debug][Enable debug]]
+   - [[#enable-debug-at-initialization][Enable debug at initialization]]
+   - [[#if-load-time-is-a-problem][If load time is a problem]]
+   - [[#debug-a-freezing-instance][Debug a freezing instance]]
+ - [[#get-the-backtrace][Get the backtrace]]
+ - [[#dummy-example-of-a-good-bug-report][Dummy example of a good bug report]]
+
+* How to make a great bug report
+A great bug report :metal: should contain:
+
+- A description of your problem
+
+- The description of your system:
+  - [[#get-the-description-of-your-installation][Get the description of your installation]]
+
+- A step-by-step reproduction guide:
+  - [[#make-a-step-by-step-reproduction-guide][Make a step-by-step reproduction guide]]
+  - Describe the observed and expected behaviours
+
+- A backtrace (if relevant):
+  - [[#enable-debug][Enable debug]]
+  - [[#get-the-backtrace][Get the backtrace]]
+
+This is a template you can use for reporting issues on Spacemacs:
+
+/Note: Triple backquotes are not showing up because of some wiki parsing issues.
+Don't forget to add them around the backtrace./
+
+#+begin_src text
+<PLEASE REPLACE ALL UPPERCASE EXPRESSIONS AND DELETE THIS LINE>
+#### Description
+DESCRIPTION OF THE PROBLEM
+
+#### Reproduction guide
+- Start Emacs
+- REPRODUCTION STEPS
+
+*Observed behaviour:*
+DESCRIPTION OF THE OBSERVED BEHAVIOUR
+
+*Expected behaviour:*
+DESCRIPTION OF THE EXPECTED BEHAVIOUR
+
+#### System Info
+REPLACE THIS SECTION BY THE OUTPUT OF `SPC h d s`
+
+#### Backtrace
+BACKTRACE IF RELEVANT; PUT IT BETWEEN TRIPLE BACKQUOTES
+#+end_src
+
+You can see an example of it [[#dummy-example-of-a-good-bug-report][at the end of this page]].
+
+* Get the description of your installation
+The versions of software your are using can be obtained by pressing ~SPC h d s~
+or ~M-m h d s~ (bind to =spacemacs/describe-system-info=). This will copy to the
+system clipboard some important information, such as your activated layers, or
+the Spacemacs and Emacs versions you are using.
+
+The copied text is in markdown format, so you can paste it directly in =gitter=
+or in issues, *without* quoting it.
+
+* Make a step-by-step reproduction guide
+Spacemacs contributors are more efficient if they have a way to reproduce the
+bugs on their side. For this, nothing is better than a detailed step-by-step
+reproduction guide. It should describe a minimal workflow that make the problem
+appears. It should look like a bullet-points list, beginning with "Start emacs".
+
+This is a good example:
+
+- Start Emacs
+- Open the `.spacemacs` file with ~SPC f e d~
+- Search for the "dotspacemacs" with ~/ dotspacemacs RET~
+- Notice ~n~ and ~N~ are not working
+
+On `develop` you can also activate the =command-log= layer. That will offer you
+the possibility to toggle this mode with ~SPC a L~ or ~M-m a L~. All the key you
+will press will be recorded with their associated functions on a side buffer.
+You can then use the content of this buffer as a starting point of a
+reproduction guide.
+
+* Enable debug
+To turn on the =debug-on-error= mode, what will give a backtrace of an error
+popping up at run-time, you can use ~SPC t D~ or ~M-m t D~. This keybinding
+toggle the mode, so it can also be used to deactivate it.
+
+After having enabled the =debug-on-error= mode, you can redo the action making
+the error to appear, then read the [[#reporting-the-backtrace][Reporting the backtrace]] section on how to get
+and report the problematic backtrace.
+
+** Enable debug at initialization
+In order to get a backtrace of an error appearing at initialization time, you
+need to run emacs with the =--debug-init= flag, as in:
+
+#+begin_src text
+emacs --debug-init
+#+end_src
+
+The =debug-on-error= mode stays activated after the initialization, so no need
+to use ~SPC t D~ afterward to debug errors.
+
+** If load time is a problem
+If part of the issue is the amount of time spacemacs takes to load, you can
+launch emacs with the command
+
+#+begin_src text
+emacs --debug-init --timed-requires
+#+end_src
+
+which will add a timer to all =require= and =load= statements. Any file that
+takes longer than 150ms (not configurable at the moment) to load will be logged
+in a buffer called =*load-times*=, which may help you narrow down the cause of
+the slow startup.
+
+** Debug a freezing instance
+When an instance of emacs is freezing, it is difficult to debug and to get a
+backtrace. Sometimes, even pressing `C-g` is not enough to escape the
+problematic behaviour.
+
+Emacs handle the system =SIGUSR2= signal for such cases. This tries, by acting
+at a lower level, to stop the problematic behaviour and enable the debugger. For
+this you have to use the following command on Linux:
+
+#+BEGIN_SRC shell
+pkill -SIGUSR2 emacs
+#+END_SRC
+
+According to this [[http://emacs.1067599.n5.nabble.com/PATCH-Unconditional-quit-on-SIGUSR2-td220976.html][mailing list thread]], here is what this does:
+
+#+BEGIN_QUOTE
+When we receive it, we set debug-on-quit to t, inhibit-quit to nil, and
+quit-flag to t. These operations will force Emacs to stop at the next possible
+opportunity and display a backtrace. From here, users can save their work, and
+developers can figure out what caused the hang.
+#+END_QUOTE
+
+* Get the backtrace
+After having enabled the =debug-on-error= mode, if an error occurs its backtrace
+will be accessible in the =*Backtrace*= buffer. This buffer shows-up after an
+error. If it is not the case you can access it with ~SPC b b~ or ~M-m b b~.
+
+In order to get this buffer content, you can use ~M-m b Y~, what will copy the
+buffers content in the system clipboard. You can paste it directly on Github
+issues between triple backquotes =```=. If the content is too long, or for
+sharing it on =gitter=, it's recommended to use a pastebin service.
+
+Note: If you have the `github` layer enabled, you can use ~M-m g g b~ to
+directly send the content of the buffer to a gist and get back it's URL. The URL
+is copied to the system clipboard so you can directly use it.
+
+* Dummy example of a good bug report
+
+/Note: Triple backquotes are not showing up because of some wiki parsing issues.
+Don't forget to add them around the backtrace./
+
+#+begin_src text
+#### Description
+Searching next/previous elements in vim-mode with `n` and `N` are not working.
+
+#### Reproduction guide
+- Start Emacs
+- Be sure to use `vim` editing mode
+- Open the `.spacemacs` file with `SPC f e d`
+- Search for the "dotspacemacs" expression with `/ dotspacemacs RET`
+
+*Observed behaviour:*
+I observe `n` and `N` are not having any effect.
+
+*Expected behaviour:*
+I expect `n` to search the next occurence of an expression, and `N` to search the previous one.
+
+#### System Info
+- OS: gnu/linux
+- Emacs: 24.5.1
+- Spacemacs: 0.105.0
+- Spacemacs branch: contrib/bepo (rev. cc4b324)
+- Distribution: spacemacs
+- Layers:
+(asciidoc auto-completion better-defaults c-c++ clojure colors command-log deft dockerfile
+              (elfeed :variables rmh-elfeed-org-files
+                      (list "~/org/elfeed.org"))
+              emacs-lisp emoji erc ess evil-cleverparens extra-langs finance git github haskell html ipython-notebook javascript latex markdown mu4e no-dots ocaml org pandoc python ranger restclient ruby semantic shell shell-scripts speed-reading
+              (spell-checking :variables spell-checking-enable-auto-dictionary t)
+              syntax-checking themes-megapack theming typography
+              (version-control :variables version-control-diff-tool 'diff-hl)
+              yaml)
+
+#### Backtrace
+Debugger entered--Lisp error: (error "Don't know where `evil-lisp-state-major-mode-map-prefix' is defined")
+  signal(error ("Don't know where `evil-lisp-state-major-mode-map-prefix' is defined"))
+  error("Don't know where `%s' is defined" evil-lisp-state-major-mode-map-prefix)
+  find-function-search-for-symbol(evil-lisp-state-major-mode-map-prefix nil nil)
+  find-function-noselect(evil-lisp-state-major-mode-map-prefix)
+  find-definition-noselect(evil-lisp-state-major-mode-map-prefix nil)
+  find-function-do-it(evil-lisp-state-major-mode-map-prefix nil switch-to-buffer)
+  find-function(evil-lisp-state-major-mode-map-prefix)
+  helm-descbinds-action:find-func(("SPC k" . evil-lisp-state-major-mode-map-prefix))
+  helm-execute-selection-action-1()
+  helm-execute-selection-action()
+#+end_src

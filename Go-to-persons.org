@@ -1,0 +1,63 @@
+This page list the persons who can help on specific fields of *Spacemacs* :rocket:.
+
+-----
+
+/By putting your name here, you may be pinged for testing/helping on issues and in Gitter./
+
+-----
+
+* General
+
+| Domain      | Gurus           | Regular contributors              |
+|-------------+-----------------+-----------------------------------|
+| core        | syl20bnr, TheBB | justbur, nixmaniack, StreakyCobra |
+| helm        | tuhdo           |                                   |
+| keybindings | justbur         |                                   |
+| modeline    | TheBB           |                                   |
+| wiki        | StreakyCobra    |                                   |
+
+* Programming languages
+
+| Domain     | Gurus         | Regular contributors    |
+|------------+---------------+-------------------------|
+| go         | bogdanteleaga |                         |
+| haskell    | d12frosted    |                         |
+| lisp       | kingcons      |                         |
+| python     | cpaulik       |                         |
+| autohotkey | ralesi        |                         |
+| ruby       |               | brandoncc, robbyoconnor |
+
+* Installation-specific
+List of persons that will be happy to help on any installation-specific
+problems. (Keep this list sorted by OS first, Emacs version second)
+
+| Username     | OS         | Emacs Version                     | Spacemacs version |
+|--------------+------------+-----------------------------------+-------------------|
+| StreakyCobra | Archlinux  | 24.5.1 / 25.0.50.1                | Any               |
+| d12frosted   | OS X 10.12 | GNU Emacs 25.1.1                  | Any               |
+| NJBS         | Windows    | 24.5.1 / 25.0.92                  | Any               |
+
+* Layers
+
+| Domain            | Gurus        | Regular contributors     |
+|-------------------+--------------+--------------------------|
+| bepo              | StreakyCobra |                          |
+| chinese           | louy2        |                          |
+| ipython-notebook  | CestDiego    |                          |
+| nixos             | CestDiego    |                          |
+| ranger            | ralesi       |                          |
+| vinegar           | ralesi       |                          |
+| unimpaired        | ralesi       |                          |
+| spacemacs-layouts | CestDiego    | bmag                     |
+| spell-checking    |              | StreakyCobra, d12frosted |
+
+* Upstream
+These people are /not/ regular contributors to Spacemacs, but maintain upstream
+packages on which we rely. They have been known to help us out. Try not to bother
+them /too/ much.
+
+| Package     | Maintainer    |
+|-------------+---------------|
+| flycheck    |               |
+| quelpa      | steckerhalter |
+| use-package | jwiegley      |
