@@ -1,0 +1,409 @@
+The =defhydra= macro has the following argument list:
+
+#+begin_src elisp
+(NAME BODY &optional DOCSTRING &rest HEADS)
+#+end_src
+
+** =NAME=
+
+=NAME= is a symbol that serves as a namespace for the functions and
+variables defined by the hydra. Take this example hydra:
+
+#+begin_src elisp
+(defhydra hydra-zoom (global-map "<f2>")
+  "zoom"
+  ("g" text-scale-increase "in")
+  ("l" text-scale-decrease "out"))
+#+end_src
+
+Here, =NAME= is =hydra-zoom=. You can name your hydras as you wish,
+but since interactive functions (commands) will be generated, I prefer
+for each =NAME= to start with =hydra-=, so that when you use ~M-x~ you
+can immediately distinguish which commands belong to a hydra.
+
+The generated symbols will be:
+
+- =hydra-zoom/keymap= variable
+- =hydra-zoom/heads= variable
+- =hydra-zoom/hint= variable
+- =hydra-zoom/text-scale-increase= command
+- =hydra-zoom/text-scale-decrease= command
+- =hydra-zoom/body= command
+
+You should be mainly interested in just the generated the commands,
+unless you want to accomplish something very advanced.
+
+** =DOCSTRING=
+
+It is either:
+
+- Omitted: defaults to ="hydra"=.
+- A string without leading newline: no Ruby-style interpolation is used.
+- A string with a leading newline: Ruby-style interpolation is used.
+- A function call to either =hydra--table=, =concat=, or =format=: this call will be re-evaluated
+each time the docstring is re-displayed.
+** =BODY=
+
+=BODY= is a list =(BODY-MAP BODY-KEY &rest BODY-PLIST)=.
+
+If =BODY-MAP= and =BODY-KEY= are nil, you can omit them and treat
+=BODY= as the list =(&rest BODY-PLIST)=.
+
+*** =BODY-MAP=
+
+=BODY-MAP= is a keymap that is used to bind the entry points into hydra.  The
+most used option here is =global-map=, but any minor or major mode keymap will
+work as well.
+
+If you set =BODY-MAP= to nil, the heads will not be bound outside the
+hydra.  This means that, unless you bind some of them manually, you'll
+have to call the hydra with ~M-x~.
+
+*** =BODY-KEY=
+
+Each function generated from =HEADS= will be bound in =BODY-MAP= to
+=BODY-KEY= + =KEY=.  Take this example hydra:
+
+#+begin_src elisp
+(defhydra hydra-zoom (global-map "<f2>")
+  "zoom"
+  ("g" text-scale-increase "in")
+  ("l" text-scale-decrease "out"))
+#+end_src
+
+These particular values of =BODY-MAP= (=global-map=) and =BODY-KEY=
+(=<f2>=) result in the following generated code:
+
+#+begin_src elisp
+(define-key global-map (kbd "<f2> g") #'hydra-zoom/text-scale-increase)
+(define-key global-map (kbd "<f2> l") #'hydra-zoom/text-scale-decrease)
+#+end_src
+
+So it's clear from here that =BODY-KEY= should be compatible with
+=kbd=.  Also note that =BODY-KEY= can be an empty string =""=.
+
+*** =BODY-PLIST=
+
+This is the part where you can customize your hydra the most.  You can
+read up on what a plist is in [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Property-Lists.html][the Elisp manual]].
+
+Basically, you just need to know what types of keys are available, and
+what are the acceptable values for each key.
+
+**** =:exit=
+The =:exit= key is inherited by every head (they can override it) and
+influences what will happen after executing head's command:
+
+- =:exit nil= (the default) means that the hydra state will continue -
+  you'll still see the hint and be able to use short bindings.
+- =:exit t= means that the hydra state will stop.
+
+The most basic example is this one:
+
+#+begin_src elisp
+(defhydra hydra-toggle (:exit t)
+  ("a" abbrev-mode "abbrev")
+  ("d" toggle-debug-on-error "debug")
+  ("f" auto-fill-mode "fill")
+  ("t" toggle-truncate-lines "truncate")
+  ("w" whitespace-mode "whitespace")
+  ("q" nil "quit"))
+(global-set-key (kbd "C-c C-v") 'hydra-toggle/body)
+#+end_src
+
+This is almost equivalent to this code:
+
+#+begin_src elisp
+(global-set-key (kbd "C-c C-v a") 'abbrev-mode)
+(global-set-key (kbd "C-c C-v d") 'toggle-debug-on-error)
+(global-set-key (kbd "C-c C-v f") 'auto-fill-mode)
+(global-set-key (kbd "C-c C-v t") 'toggle-truncate-lines)
+(global-set-key (kbd "C-c C-v w") 'whitespace-mode)
+#+end_src
+
+The first difference is that you get a hint after ~C-c C-v~, otherwise
+the behavior is almost the same.  The second difference is that, with
+the approach above, you have bound ~C-c C-v~, and you can no longer
+use it as a prefix.
+
+If you want complete equivalence to the =global-set-key= approach, you
+can write it like this:
+
+#+begin_src elisp
+(defhydra hydra-toggle (global-map "C-c C-v"
+                        :exit t)
+  ("a" abbrev-mode)
+  ("d" toggle-debug-on-error)
+  ("f" auto-fill-mode)
+  ("t" toggle-truncate-lines)
+  ("w" whitespace-mode))
+#+end_src
+
+As you can see, there's a lot less repetition, when compared with the
+=global-set-key= approach.  However, this comes at a price of
+generating 5 extra commands. As a bonus, you can use =:pre= and
+=:post= to amend these wrappers.
+
+**** =:foreign-keys=
+It decides what to do when a key is pressed that doesn't belong to any
+head:
+
+It can take the following values:
+
+- =:foreign-keys nil= (the default) means that the hydra state will
+  stop and the foreign key will do whatever it was supposed to do if
+  there was no hydra state.
+- =:foreign-keys warn= will not stop the hydra state, but instead will
+  issue a warning /without/ running the foreign key.
+- =:foreign-keys run= will not stop the hydra state, and try to run
+  the foreign key.
+
+**** =:color=
+The =:color= key is a shortcut. It aggregates =:exit= and
+=:foreign-keys= in the following way:
+
+| color    | toggle                     |
+|----------+----------------------------|
+| red      |                            |
+| blue     | :exit t                    |
+| amaranth | :foreign-keys warn         |
+| teal     | :foreign-keys warn :exit t |
+| pink     | :foreign-keys run          |
+
+It's also a trick to make you instantly aware of the current hydra
+keys that you're about to press: the keys will be highlighted with the
+appropriate color.
+
+**** =:timeout=
+The =:timeout= key starts a timer for the corresponding amount of
+seconds that disables the hydra.  Calling any head will refresh the
+timer.
+
+**** =:hint=
+The =:hint= key is inherited by every head (they can override it).
+One value that makes sense is =:hint nil=.
+
+**** =:bind=
+The =:bind= key can be a lambda to be used to bind each head.  This is
+quite advanced and rarely used, you're not likely to need it.  But if
+you would like to bind your heads with e.g. =bind-key= instead of
+=define-key= you can use this option.
+
+The =:bind= key can be overridden by each head. This is useful if you
+want to have a few heads that are not bound outside the hydra.
+
+Example:
+#+begin_src elisp
+(defhydra hydra-zoom (global-map "<f2>")
+  "zoom"
+  ("g" text-scale-increase "in")
+  ("l" text-scale-decrease "out")
+  ("r" (text-scale-set 0) "reset" :bind nil)
+  ("0" (text-scale-set 0) :bind nil :exit t)
+  ("1" (text-scale-set 0) nil :bind nil :exit t))
+#+end_src
+
+Here, I want to bind ~<f2> g~ and ~<f2> l~ in the global map, but not
+e.g. ~<f2> r~ or ~<f2> 0~.
+
+**** =:idle=
+This key can delay the appearance of the hint.
+
+Example:
+#+begin_src elisp
+(defhydra hydra-toggle (:color blue :idle 1.5)
+  "
+_a_ abbrev-mode:       %`abbrev-mode
+_d_ debug-on-error:    %`debug-on-error
+_f_ auto-fill-mode:    %`auto-fill-function
+_t_ truncate-lines:    %`truncate-lines
+_w_ whitespace-mode:   %`whitespace-mode
+
+"
+  ("a" abbrev-mode nil)
+  ("d" toggle-debug-on-error nil)
+  ("f" auto-fill-mode nil)
+  ("t" toggle-truncate-lines nil)
+  ("w" whitespace-mode nil)
+  ("q" nil "quit"))
+(global-set-key (kbd "C-c t") 'hydra-toggle/body)
+#+end_src
+
+When you call =hydra-toggle/body= with ~C-c t~, the hint will be shown
+not immediately like usual, but after 1.5 seconds delay. If you
+remember what you want to do, e.g. enable =debug-on-error=, just press
+~C-c td~ and the hydra will exit without the hint ever being
+displayed. But if you get lost after ~C-c t~, you can just wait a bit
+and get the hint.
+
+**** =:body-pre=
+Used to add a sexp / function to the start of e.g. =hydra-zoom/body= function.
+
+Example:
+#+begin_src elisp
+(defhydra hydra-change-mode (:color blue
+                             :body-pre (insert "j")
+                             :idle 1.0)
+  ("k" (progn
+         (delete-char -1)
+         (evil-normal-state))))
+(define-key evil-insert-state-map
+    (kbd "j") 'hydra-change-mode/body)
+#+end_src
+
+This code binds ~j~ to =hydra-change-mode/body= in the Evil insert
+state. This function would typically do nothing but setup the hydra state.
+But because of =:body-pre (insert "j")=, it inserts a "j".
+
+Because of =:color blue=, anything typed after ~j~ that isn't ~k~ will
+exit the hydra and still call the command that is bound to that key.
+But if ~k~ is pressed, "j" will be deleted and Emacs will switch to
+the Evil normal state.
+
+Since you wouldn't want to get the hint each time you press ~j~ in
+insert mode, it's delayed by one second with =:idle 1.0=.
+
+**** =:pre=
+Used to add a sexp / function to the start of all functions generated
+by the hydra.
+
+**** =:after-exit=
+Used to add a sexp / function to the end of all functions generated by
+the hydra
+
+**** =:before-exit= / =:post=
+Used to add a sexp / function to the cleanup code for when hydra exits.
+
+** =HEADS=
+
+Each head has the format: =(KEY CMD &optional HINT &rest HEAD-PLIST)=.
+
+For the head =("g" text-scale-increase "in")=:
+- =KEY= is ="g"=.
+- =CMD= is =text-scale-increase=.
+- =HINT= is ="in"=.
+- =HEAD-PLIST= is =nil=.
+
+*** =KEY=
+=KEY= is a string that can be passed to =kbd=. It is combined with =BODY-MAP=.
+
+*** =CMD=
+=CMD= can be:
+
+- a command name, like =text-scale-increase=.
+- a lambda
+- =nil=, which exits the Hydra.
+- a single sexp, which will be wrapped in an iteractive lambda.
+
+Example:
+#+begin_src elisp
+(defhydra hydra-launcher (:color blue)
+   "Launch"
+   ("h" man "man")
+   ("r" (browse-url "http://www.reddit.com/r/emacs/") "reddit")
+   ("w" (browse-url "http://www.emacswiki.org/") "emacswiki")
+   ("s" shell "shell")
+   ("q" nil "cancel"))
+#+end_src
+
+*** =HINT=
+=HINT= is a string or =nil=. Use =nil= if you don't want the head to
+show up in the Hydra hint.
+
+As of version 0.14.0, the hint can also be a sexp.
+Here's a simple, although not so useful example:
+
+#+begin_src elisp
+(defhydra hydra-test (:columns 2)
+  "Test."
+  ("j" next-line (format-time-string "%H:%M:%S" (current-time)))
+  ("k" previous-line (format-time-string "%H:%M:%S" (current-time)))
+  ("h" backward-char (format-time-string "%H:%M:%S" (current-time)))
+  ("l" forward-char (format-time-string "%H:%M:%S" (current-time))))
+#+end_src
+
+Calling any head will cause the docstring to re-display, so the
+up-to-date time will be displayed next to each key.
+
+Note though that a function isn't currently acceptable, exactly a sexp is needed.
+So if you wanted to call a function, you should use this:
+
+#+begin_src elisp
+(defun ctime ()
+  (format-time-string "%H:%M:%S" (current-time)))
+
+(defhydra hydra-test (:columns 2)
+  "Test."
+  ("j" next-line (ctime))
+  ("k" previous-line (ctime))
+  ("h" backward-char (ctime))
+  ("l" forward-char (ctime)))
+#+end_src
+
+You could also do it like this, which shows off the flexibility:
+#+begin_src elisp
+(defun dtime (time)
+  (format-time-string "%H:%M:%S" time))
+
+(defhydra hydra-test (:columns 2)
+  "Test."
+  ("j" next-line (dtime (current-time)))
+  ("k" previous-line (dtime (current-time)))
+  ("h" backward-char (dtime (current-time)))
+  ("l" forward-char (dtime (current-time))))
+#+end_src
+
+*** =HEAD-PLIST=
+Here's a list of body keys that can be overridden in each head:
+
+- =:exit=
+- =:color= (only the =:exit= portion, not the =:foreign-keys= portion)
+- =:bind=
+- =:column=
+
+**** =:Column=
+=:Column= is a string that is used to group heads by category. If this property is not defined, the head inherits the category of the previous head. If no previous heads have a category defined then it defaults to nil.
+
+When the hydra is instantiated, a docstring is generated arranging same category heads with non-nil =hints= by columns. Heads without a category are arranged in a line below the table or in a second table if the body property =:columns= have been specified.
+
+Exemple:
+#+begin_src elisp
+(defhydra hydra-window
+                (:color red :hint nil)
+               "
+                               -- WINDOW MENU --
+
+"
+               ("z" ace-window "ace" :color blue :column "1-Switch")
+               ("h" windmove-left "← window")
+               ("j" windmove-down "↓ window")
+               ("k" windmove-up "↑ window")
+               ("l" windmove-right "→ window")
+               ("s" split-window-below "split window" :color blue :column "2-Split Management")
+               ("v" split-window-right "split window vertically" :color blue)
+               ("d" delete-window "delete current window")
+               ("f" follow-mode "toogle follow mode")
+               ("u" winner-undo "undo window conf" :column "3-Undo/Redo")
+               ("r" winner-redo "redo window conf")
+               ("b" balance-windows "balance window height" :column "4-Sizing")
+               ("m" maximize-window "maximize current window")
+               ("M" minimize-window "maximize current window")
+               ("q" nil "quit menu" :color blue :column nil))
+
+#+end_src
+#+BEGIN_EXAMPLE
+                               -- WINDOW MENU --
+
+
+1-Switch    | 2-Split Management         | 3-Undo/Redo         | 4-Sizing
+----------- | -------------------------- | ------------------- | --------------------------
+z: ace      | s: split window            | u: undo window conf | b: balance window height
+h: ← window | v: split window vertically | r: redo window conf | m: maximize current window
+j: ↓ window | d: delete current window   |                     | M: maximize current window
+k: ↑ window | f: toogle follow mode      |                     |
+l: → window |                            |                     |
+[q]: quit menu.
+#+END_EXAMPLE
+
+Its not visible on exemple but heads color are also rendered. 
+In addition, a column name can appear several times on any head. Thus inherited heads comming from =:inherit= are properly merged in case of category match.

@@ -1,0 +1,60 @@
+
+This is a very basic hydra that pools commands related to org clock. I used to have difficulties remembering them and their key bindings. I keep track of work time, so I bind this to =C-c w=. Now mnemonic for =C-c w c= is "Emacs, run personal command work continue"
+
+Since org mode comes with a great set of info pages, I link to the relevant one from the hydra. Using a question mark in parenthesis in the document string header is the first attempt to standardise this feature in hydras. I'd like see other hydras to start linking to more detailed documentation, too.
+
+#+BEGIN_SRC emacs-lisp
+     (bind-key "C-c w" 'hydra-org-clock/body)
+     (defhydra hydra-org-clock (:color blue :hint nil)
+       "
+    Clock   In/out^     ^Edit^   ^Summary     (_?_)
+    -----------------------------------------
+            _i_n         _e_dit   _g_oto entry
+            _c_ontinue   _q_uit   _d_isplay
+            _o_ut        ^ ^      _r_eport
+          "
+       ("i" org-clock-in)
+       ("o" org-clock-out)
+       ("c" org-clock-in-last)
+       ("e" org-clock-modify-effort-estimate)
+       ("q" org-clock-cancel)
+       ("g" org-clock-goto)
+       ("d" org-clock-display)
+       ("r" org-clock-report)
+       ("?" (org-info "Clocking commands")))
+#+END_SRC
+
+I've extended to above hydra to include org timers. Having two closely related topics in one hydra limits the selection of keys making them a bit more forced for the second topic. Therefore, instead of replacing the above hydra, I include my current extended hydra separately to give others more options to copy and modify them to their own liking:
+
+#+BEGIN_SRC emacs-lisp
+      (bind-key "C-c w" 'hydra-org-clock/body)
+      (defhydra hydra-org-clock (:color blue :hint nil)
+        "
+     ^Clock:^ ^In/out^     ^Edit^   ^Summary^    | ^Timers:^ ^Run^           ^Insert
+     -^-^-----^-^----------^-^------^-^----------|--^-^------^-^-------------^------
+     (_?_)    _i_n         _e_dit   _g_oto entry | (_z_)     _r_elative      ti_m_e
+      ^ ^     _c_ontinue   _q_uit   _d_isplay    |  ^ ^      cou_n_tdown     i_t_em
+      ^ ^     _o_ut        ^ ^      _r_eport     |  ^ ^      _p_ause toggle
+      ^ ^     ^ ^          ^ ^      ^ ^          |  ^ ^      _s_top
+     "
+        ("i" org-clock-in)
+        ("c" org-clock-in-last)
+        ("o" org-clock-out)
+        
+        ("e" org-clock-modify-effort-estimate)
+        ("q" org-clock-cancel)
+
+        ("g" org-clock-goto)
+        ("d" org-clock-display)
+        ("r" org-clock-report)
+        ("?" (org-info "Clocking commands"))
+
+       ("r" org-timer-start)
+       ("n" org-timer-set-timer)
+       ("p" org-timer-pause-or-continue)
+       ("s" org-timer-stop)
+
+       ("m" org-timer)
+       ("t" org-timer-item)
+       ("z" (org-info "Timers")))
+#+END_SRC
