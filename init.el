@@ -2216,13 +2216,13 @@ Committer: %cN <%cE>"))
 
   (bind-keys :map spacemacs-emacs-lisp-mode-map
              ;; common
-             ("e j"    . my/eval-prettyprint-last-sexp)
-             ("e p"    . eval-print-last-sexp)
+             ("e j"    . my/eval-prettyprint-last-sexp-maybe-comment)
+             ("e p"    . my/eval-print-last-sexp-maybe-comment)
              ("e D"    . eval-instrument-defun)
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
              ("t i"    . ert-run-tests-interactively)
-             ("j"      . my/eval-prettyprint-last-sexp)
+             ("j"      . my/eval-prettyprint-last-sexp-maybe-comment)
              ("x"      . prettyexpand-at-point)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
@@ -2232,12 +2232,12 @@ Committer: %cN <%cE>"))
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
              ;; common
-             ("e j"    . my/eval-prettyprint-last-sexp)
-             ("e p"    . eval-print-last-sexp)
+             ("e j"    . my/eval-prettyprint-last-sexp-maybe-comment)
+             ("e p"    . my/eval-print-last-sexp-maybe-comment)
              ("e D"    . eval-instrument-defun)
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
-             ("j"      . my/eval-prettyprint-last-sexp)
+             ("j"      . my/eval-prettyprint-last-sexp-maybe-comment)
              ("x"      . prettyexpand-at-point)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
@@ -3071,12 +3071,55 @@ With a prefix argument, formats the value using `(format \"%S\" val)' instead."
       (if current-prefix-arg (insert (format "%S" val))
         (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
 
-  (defun my/eval-prettyprint-last-sexp (eval-last-sexp-arg-internal)
+  (defun my/eval-prettyprint-last-sexp (&optional eval-last-sexp-arg-internal)
     (interactive "P")
-    (cl-prettyprint
-     (if (functionp #'evil-adjust-eval-last-sexp)
-         (evil-adjust-eval-last-sexp eval-last-sexp-arg-internal)
-       (eval-last-sexp eval-last-sexp-arg-internal))))
+    (cl-case (and (boundp 'evil-state)
+                  evil-state)
+      ('normal (progn
+                 (evil-append 1)
+                 (cl-prettyprint
+                  (eval-last-sexp eval-last-sexp-arg-internal))
+                 (evil-normal-state)
+                 ))
+      ('visual (progn
+                 (evil-append 1)
+                 (cl-prettyprint
+                  (eval-last-sexp eval-last-sexp-arg-internal))
+                 (evil-visual-restore)
+                 ))
+      (otherwise
+       (cl-prettyprint
+        (eval-last-sexp eval-last-sexp-arg-internal)))
+      ))
+
+  (defun my/eval-print-last-sexp-as-comment (&optional eval-last-sexp-arg-internal)
+    (interactive "P")
+    (let ((beg (line-beginning-position 2))  ;; start of next line
+          end
+          (printer (if (fboundp 'evil-adjust-eval-print-last-sexp)
+                       #'evil-adjust-eval-print-last-sexp
+                     #'eval-print-last-sexp)))
+      (funcall printer eval-last-sexp-arg-internal)
+      (setq end (line-end-position 0))       ;; end of previous line
+      (comment-region beg end)))
+
+  (defun my/eval-prettyprint-last-sexp-as-comment (&optional eval-last-sexp-arg-internal)
+    (interactive "P")
+    (let ((beg (line-beginning-position 2))  ;; start of next line
+          end)
+      (my/eval-prettyprint-last-sexp eval-last-sexp-arg-internal)
+      (setq end (line-end-position 1))       ;; end of current line
+      (comment-region beg end)))
+
+  (defun my/eval-print-last-sexp-maybe-comment (&optional comment)
+    (interactive "P")
+    (if comment (my/eval-print-last-sexp-as-comment)
+      (my/eval-print-last-sexp-as-comment)))
+
+  (defun my/eval-prettyprint-last-sexp-maybe-comment (&optional comment)
+    (interactive "P")
+    (if comment (my/eval-print-last-sexp-as-comment)
+      (my/eval-prettyprint-last-sexp-as-comment)))
 
   (defun eval-instrument-defun ()
     "Equivalent to `eval-defun' with a prefix argument."
