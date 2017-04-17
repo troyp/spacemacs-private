@@ -1,0 +1,1 @@
+The installation instructions can be found [in the manual](https://magit.vc/manual/magit/Installation.html).
