@@ -1,0 +1,1 @@
+((nil . ((ws-trim-mode . nil))))

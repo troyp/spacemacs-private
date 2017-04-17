@@ -1,0 +1,118 @@
+~helm-locate~ (=<helm-prefix> l= by default) is Helm's interface to the [[http://linux.die.net/man/1/locate][locate]] command, which finds files on your system that have been indexed with [[http://linux.die.net/man/8/updatedb][updatedb]].
+
+** Configuration
+
+The exact command for ~helm-locate~ can be customized through the variable ~helm-locate-command~. The  default value works on most =locate= versions and variants. 
+
+On more recent versions of =locate=, you may want to use multi-matching with the =--regex= option, which is not available in older versions:
+
+#+BEGIN_SRC emacs-lisp
+  (setq helm-locate-command "locate %s -e -A --regex %s")
+#+END_SRC
+
+Update: On helm version >=2.4.0 this is now the default.
+    
+** Usage
+Execute the ~helm-locate~ command, then enter a filename or pattern at the prompt. Some options are below:
+
+| Option | Description                             |
+|--------+-----------------------------------------|
+| -b     | Only use the base name (no directories) |
+| -e     | Only include files that actually exist  |
+| -n     | Limit number of search results          |
+
+Example pattern:
+
+#+BEGIN_SRC sh
+  emacs -b -e -n 12
+#+END_SRC
+
+Note that adding options at end of pattern is disabling fuzzy
+matching.
+You should add the =-b= option at end of other options to let helm
+highlight properly the right part (i.e basename) of candidate.
+
+*** From ~helm-find-files~
+In ~helm-find-files~, hit =C-x C-f=. With a prefix argument, you can choose a =locatedb= file.
+With two prefix args the database file will be recreated.
+
+*** Launch grep
+When the search is done, you can search in a specific file or directory with the =grep= action in the action menu (TAB). You can also launch Helm =grep= with =(C-u) M-g s= without switching to the action panel.
+
+** Local =locatedb= database
+
+You can specify a =locate= database with prefix argument ARG (=C-u=). Many databases can be used: navigate to and mark them. See ~helm-locate-with-db~.
+
+To create a user specific db, use:
+
+#+BEGIN_SRC sh
+  updatedb -l 0 -o dbpath -U directory
+#+END_SRC
+
+where ~dbpath~ is a filename matched by ~helm-locate-db-file-regexp~.
+
+*** Search in a list of projects only
+
+For this, populate the list ~helm-locate-project-list~ with a list of
+projects, then run M-x ~helm-projects-find-files~, ~helm-locate~ will
+search for files only in the database of these projects.
+
+** Enable fuzzy matching in locate
+
+The only thing you have to do is:
+
+#+begin_src elisp
+  (setq helm-locate-fuzzy-match t)
+#+end_src
+
+Once this is enabled, ~helm-locate~ will search on the basename of
+files, adding automatically the =-b= flag, so you don't need to add
+it.  As soon as you add spaces between your patterns multi matching
+will happen instead of fuzzy, with regexp matching on each pattern
+(no fuzzy matching of separate pattern), also when switching to multi
+matching, search is done on the whole path and no more on basename.
+
+When fuzzy matching, candidates are sorted with
+~helm-locate-fuzzy-sort-fn~ which use by default the helm fuzzy
+matching default sort fn ~helm-locate-default-fuzzy-sort-fn~, you can
+customize this if needed.
+
+** Other platforms
+
+*** Windows
+
+On Windows, you should use [[http://voidtools.com/][Everything]], which works like =locate=. It
+is very fast and does not require manual database updates.
+
+To use =Everything= with ~helm-locate~, you will need the command line
+tool named =es=. Be sure to modify the =PATH= environment variable to
+include path to the directory that contain =es=. Also unset
+~helm-locate-fuzzy-match~, or =Everything= will give no results.
+
+When using =es= on Windows, you may want to use the sorting feature
+(put the recentest visited files on top) provided by its very last
+version (>=es 1.1.0.4a), for this you will have to add here the required arguments to
+=es= i.e =-sort run-count= and also notify the Everything database
+you jumped to some file by running =es -inc-run-count file= each
+time you visit a file, to achieve this you can add a function doing this to
+~helm-find-many-files-after-hook~.
+
+e.g 
+
+```elisp
+(setq helm-locate-command "es %s -sort run-count %s")
+(defun helm-es-hook ()
+  (when (and (equal (assoc-default 'name (helm-get-current-source)) "Locate")
+             (string-match "\\`es" helm-locate-command))
+    (mapc (lambda (file)
+            (call-process "es" nil nil nil
+                          "-inc-run-count" (convert-standard-filename file)))
+          (helm-marked-candidates))))
+(add-hook 'helm-find-many-files-after-hook 'helm-es-hook)
+
+```
+
+See [[https://www.voidtools.com/forum/viewtopic.php?f=2&t=5762&p=16376#p16376][Topic]] and issue [[https://github.com/emacs-helm/helm/issues/1645][#1645]] on github for more infos.
+
+*** OS X
+To use =mdfind=, disable ~helm-locate-fuzzy-match~. If it is set to ~t~ and =mdfind= is used, ~helm-locate~ won't show any results.

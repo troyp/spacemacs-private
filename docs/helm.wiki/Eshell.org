@@ -1,0 +1,87 @@
+[[http://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]] is a shell-like command interpreter implemented in Emacs Lisp. It invokes no external processes except for those requested by the user.
+
+** Completion
+
+*** pcomplete
+
+=pcomplete= is already enabled in Eshell, but we want to add Helm support. Add the following to your init file:
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (eshell-cmpl-initialize)
+              (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+              (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history)))
+#+END_SRC
+
+Now, the =TAB= key should provide Helm support for =pcomplete=.
+
+***  Fix SUDO completion
+
+When you use =sudo= in Eshell, there is no completion on the command you enter after =sudo=. This is true regardless of whether Helm is enabled.
+
+To fix this problem, you can define a ~pcomplete/sudo~ function and add it to your configuration.
+
+#+BEGIN_SRC emacs-lisp
+(defun pcomplete/sudo ()
+  (let ((prec (pcomplete-arg 'last -1)))
+    (cond ((string= "sudo" prec)
+           (while (pcomplete-here*
+                   (funcall pcomplete-command-completion-function)
+                   (pcomplete-arg 'last) t))))))
+#+END_SRC
+
+However, the above example of ~pcomplete/sudo~ *will not work in some cases without modifications to some Emacs functions due to unresolved Emacs bugs*. To fix this, you can use my [[https://github.com/thierryvolpiatto/pcomplete-extension][pcomplete-extension]], which will provide more Helm completions like =apt-get= and =find=.
+
+*** Custom pcomplete functions
+
+You can enhance Emacs =pcomplete= by writing your own =pcomplete= functions. See my [[https://github.com/thierryvolpiatto/pcomplete-extension][pcomplete-extension]] for enhanced completions.
+
+ Here an example with =find= command:
+
+#+BEGIN_SRC emacs-lisp
+  (defun pcomplete/find ()
+    (let ((prec (pcomplete-arg 'last -1)))
+      (cond ((and (pcomplete-match "^-" 'last)
+                  (string= "find" prec))
+             (pcomplete-opt "HLPDO"))
+            ((pcomplete-match "^-" 'last)
+             (while (pcomplete-here
+                     '("-amin" "-anewer" "-atime" "-cmin" "-cnewer" "-context"
+                       "-ctime" "-daystart" "-delete" "-depth" "-empty" "-exec"
+                       "-execdir" "-executable" "-false" "-fls" "-follow" "-fprint"
+                       "-fprint0" "-fprintf" "-fstype" "-gid" "-group"
+                       "-help" "-ignore_readdir_race" "-ilname" "-iname"
+                       "-inum" "-ipath" "-iregex" "-iwholename"
+                       "-links" "-lname" "-ls" "-maxdepth"
+                       "-mindepth" "-mmin" "-mount" "-mtime"
+                       "-name" "-newer" "-nogroup" "-noignore_readdir_race"
+                       "-noleaf" "-nouser" "-nowarn" "-ok"
+                       "-okdir" "-path" "-perm" "-print"
+                       "-print0" "-printf" "-prune" "-quit"
+                       "-readable" "-regex" "-regextype" "-samefile"
+                       "-size" "-true" "-type" "-uid"
+                       "-used" "-user" "-version" "-warn"
+                       "-wholename" "-writable" "-xdev" "-xtype"))))
+            ((string= "-type" prec)
+             (while (pcomplete-here (list "b" "c" "d" "p" "f" "l" "s" "D"))))
+            ((string= "-xtype" prec)
+             (while (pcomplete-here (list "b" "c" "d" "p" "f" "l" "s"))))
+            ((or (string= prec "-exec")
+                 (string= prec "-execdir"))
+             (while (pcomplete-here* (funcall pcomplete-command-completion-function)
+                                     (pcomplete-arg 'last) t))))
+      (while (pcomplete-here (pcomplete-entries) nil 'identity))))
+#+END_SRC
+
+** History
+
+To search Eshell history with Helm, use the ~helm-eshell-history~ command. The following is an example configuration:
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (define-key eshell-mode-map
+              (kbd "M-p")
+              'helm-eshell-history)))
+#+END_SRC

@@ -1,0 +1,53 @@
+You will have to set Firefox to import bookmarks in the file =book-marks.html=. 
+
+In Firefox 3.0 and above, open =about:config= and change the bookmark exporting preference to =true=. That is, change:
+
+#+BEGIN_SRC js
+user_pref("browser.bookmarks.autoExportHTML", false);
+#+END_SRC
+
+to
+
+#+BEGIN_SRC js
+user_pref("browser.bookmarks.autoExportHTML", true);
+#+END_SRC
+
+Now you can use the =helm-firefox-bookmarks= command.
+
+** Seeing Firefox bookmarks in Emacs
+
+When you are in Firefox, things are a little more complicated. You will need the =wmctrl= program and a script named =ffbookmarks=. 
+
+Create a Bash script:
+
+#+BEGIN_SRC sh
+#!/bin/bash
+
+wmctrl -xa emacs
+emacsclient -e "(progn (helm-firefox-bookmarks) nil)" > /dev/null
+wmctrl -xa firefox
+exit 0
+#+END_SRC
+
+Put this script somewhere in your =PATH= and make it executable with:
+
+#+BEGIN_SRC sh
+chmod +x ffbookmarks
+#+END_SRC
+
+Firefox is not aware of this new protocol; you will have to instruct it. See Firefox documentation or use the [[https://github.com/thierryvolpiatto/emacs-bmk-ext][firefox-protocol]] package.
+
+If using the =firefox-protocol= package:
+
+- Install =ffbookmarks= with =M-x firefox-protocol-installer-install=
+- Install a bookmarklet in Firefox
+  - Right click on the bookmark toolbar in Firefox and add a new bookmark called =ffbookmarks=. 
+  - Add this instead of a url:
+
+#+BEGIN_SRC js
+javascript:location.href='ffbookmarks://localhost'
+#+END_SRC
+
+Now clicking on =ffbookmarks= will bring you to Emacs and allow you to browse your bookmarks with Helm.
+
+*NOTE*: Emacs server needs to be started in the running Emacs; see Emacs documentation.

@@ -1,0 +1,37 @@
+The ~helm-buffers-list~ command is Helm's version of ~switch-to-buffer~ or ~list-buffers~. By default, it is bound to =<helm-prefix> C-x C-b=.
+
+The ~helm-mini~ command displays buffers and recently visited files. It may be more useful that ~helm-buffers-list~.
+
+*** Tip
+- Use ~helm-mini~ instead of ~helm-buffers-list~.
+
+** Buffers by major mode
+
+To find buffers by major mode, we can use a pattern for the major mode name, regexps, or both.
+
+| Desired Buffers                | Pattern      |
+|--------------------------------+--------------|
+| =emacs-lisp-mode=              | *lisp        |
+| =emacs-lisp-mode= or =sh-mode= | *lisp,sh     |
+| Name starts with "helm"        | ^helm        |
+| Name excludes "lisp", "info"   | *!lisp,!info |
+
+
+Patterns can be combined. For example, for buffers in ~emacs-lisp-mode~, match "helm", and end in "foo", the pattern is:
+
+#+BEGIN_QUOTE
+*lisp helm foo
+#+END_QUOTE
+
+** Buffer face
+
+The buffer's face indicates its state. The faces depend on the Emacs theme; some examples are below:
+
+| Color                        | State  |
+|------------------------------+--------|
+| Modified                     | Orange |
+| Modified by external program | Red    |
+
+** Hide buffers
+
+The customizable variable ~helm-boring-buffer-regexp-list~ stores regexps indicating "boring" buffers that Helm should not display.

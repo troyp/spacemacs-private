@@ -1,0 +1,139 @@
+Helm =grep= is a Helm implementation of the [[https://en.wikipedia.org/wiki/Grep][grep]] command, which searches a text file for lines matching a regular expression.
+
+Features include:
+
+- Incremental
+- Recursive
+- Supports wildcards
+- Allow multi matching
+- Respects ~grep-fine-ignored-files~ and ~grep-find-ignored-directories~ variables
+- Faster than Emacs =grep=
+
+** Usage
+
+From ~helm-find-files~ (=<helm-prefix> C-x C-f=), open the action menu with =TAB= and choose =grep=. A prefix argument will launch recursive =grep=, or .
+
+You can also launch =grep= directly with =(C-u) M-g s= without switching to the action menu.
+
+*** Single file
+
+Just launch =grep=, it will search in file at point. If the file is a directory, =grep= will search in all files in the directory like:
+
+#+BEGIN_SRC sh
+  grep -nH -e pattern *
+#+END_SRC
+
+*** Marked files
+
+To grep marked files, just mark some files with =C-<space>= and launch =grep=. Marked files can be from different directories.
+
+*** Recursive
+
+Go to the root of the directory you want to =grep= in, then hit TAB to open the action menu and choose =grep= with a prefix argument (=C-u=).
+
+You will be prompted for types of files to search. Wildcard syntax like =\*.el= (which searches only files ending in =.el=) is allowed.
+With ack-grep you will be prompted instead for ack-grep types, see ack-grep documentation on how define types in your .ackrc file.
+
+By default, the extension of the file at point is used when the cursor is on a file name. If the cursor is at root of a directory, all the file name extensions found in the directory and not matching
+the variable ~grep-find-ignored-files~ are inserted into the prompt.
+
+*** Persistent action
+Persistent action in a Helm =grep= buffer (=C-z=) will bring up the buffer corresponding to the file being grepped. 
+
+=C-u C-z= will record the location in the mark ring. If you want to come back later to the grepped location, there is no need to grep again; you can find the locations in the mark ring.
+
+Accessing the mark ring in Emacs is very inconvenient. Fortunately, the ~helm-all-mark-rings~ command (in the menu, Tools > Helm > Tools > Browse Mark Ring) brings up a list of all mark rings, both local and global.
+
+*** Save session
+
+If you want to save the results of your =grep= session, doing =C-x C-s= will save your =grep= results in a =helm-grep-mode= buffer.
+
+*Tip*:
+- You can save multiple Helm =grep= buffers with different names. 
+- If you haven't saved your =grep= session in a named buffer, you can still retrieve the last session with ~helm-resume~.
+
+Editing the =helm-grep-mode= buffer is possible with [[https://github.com/mhayashi1120/Emacs-wgrep][wgrep]]. Saving this buffer will apply changes to the corresponding files.
+
+*** Highlight results
+By default, Helm applies its own highlights to matched items. However, it may be better to use the backend to highlight result with ANSI sequences.
+
+This can be done by customizing the ~helm-grep-default-command~ variable. See the docstring of ~helm-grep-default-command~ for more information.
+
+**** Grep
+
+#+BEGIN_SRC emacs-lisp
+  (setq helm-grep-default-command
+        "grep --color=always -d skip %e -n%cH -e %p %f"
+        helm-grep-default-recurse-command
+        "grep --color=always -d recurse %e -n%cH -e %p %f")
+#+END_SRC
+
+
+**** Ack-grep
+#+BEGIN_SRC emacs-lisp
+  (setq helm-grep-default-command
+        "ack-grep -Hn --color --smart-case --no-group %e %p %f"
+        helm-grep-default-recurse-command
+        "ack-grep -H --color --smart-case --no-group %e %p %f")
+#+END_SRC
+
+**** Git-grep
+
+#+BEGIN_SRC emacs-lisp
+  (setq helm-ls-git-grep-command
+        "git grep -n%cH --color=always --full-name -e %p %f")
+#+END_SRC
+
+The color of git-grep can be customized from global =.gitconfig= file.
+
+NOTE: Now ~--color~ is enabled everywhere by default.
+Even if by default grep and ack-grep are using --color You should specify this option
+to ensure all patterns are highlighted when using multi matches (i.e add a space between each pattern).
+
+**** Ag (silver-searcher)
+
+#+begin_src emacs-lisp
+(setq helm-grep-ag-command "ag --line-numbers -S --hidden --color --color-match '31;43' --nogroup %s %s %s")
+(setq helm-grep-ag-pipe-cmd-switches '("--color-match '31;43'"))
+
+#+end_src
+**** Rg (ripgrep)
+
+#+begin_src emacs-lisp
+(setq helm-grep-ag-command "rg --color=always --colors 'match:fg:black' --colors 'match:bg:yellow' --smart-case --no-heading --line-number %s %s %s")
+(setq helm-grep-ag-pipe-cmd-switches '("--colors 'match:fg:black'" "--colors 'match:bg:yellow'"))
+
+#+end_src
+** Other search tools
+
+Helm =grep= supports other tools like [[https://github.com/ggreer/the_silver_searcher][ag]], [[https://github.com/monochromegane/the_platinum_searcher][pt]], [[https://github.com/BurntSushi/ripgrep][rg]] and =git-grep=.
+
+Both =ag=, =pt= and =rg= can be used with ~helm-do-grep-ag~. The
+variable ~helm-grep-ag-command~ controls the exact command used, see
+its docstring for more infos.
+
+=git-grep= can be used with ~helm-grep-do-git-grep~, see git-grep
+documentation for configuring =.gitconfig=.
+
+** TRAMP
+
+Helm =grep= works with TRAMP (you can grep a file on a remote host or in su/sudo methods), but *TRAMP has poor support for multiple processes launched with short delays (< 5 seconds) between them*.
+
+Therefore, you should suspend Helm updates with =C-!= while you write your regexp. Once done, hit again =C-!= to restart Helm updates. If you don't, Helm =grep= should still work, but it will be slow and may result in occasional failures.
+
+** Platforms
+
+*** OS X
+
+Apple OS X users need a version of =grep= that accepts ~--exclude-dir~. Install it from Homebrew with:
+
+#+BEGIN_SRC sh
+  brew tap homebrew/dupes
+  brew install homebrew/dupes/grep
+#+END_SRC
+
+You should also set ~helm-grep-default-command~ to use =ggrep= instead of =grep=.
+
+*** Windows
+
+Windows users need =grep= version 2.5.4 of Gnuwin32. This version should accept the ~--exclude-dir~ option.

@@ -1,0 +1,28 @@
+Japanese users can use [[https://github.com/emacs-jp/migemo][migemo]], an Emacs package that provides Japanese increment search with 'Romanization of Japanese'(ローマ字).
+
+** Configuration
+First, install [[https://github.com/emacs-jp/migemo][migemo]] and configure it properly. Then enable ~helm-migemo-mode~:
+
+#+BEGIN_SRC emacs-lisp
+(helm-migemo-mode t)
+#+END_SRC
+
+** Usage
+~helm-migemo-mode~ activates =migemo= support for the following:
+
+- Bookmarks (including filtered)
+- Buffers
+- Files in current directory
+- File name history
+  - =C-c h= in ~helm-find-files~
+- ~helm-find-files~ 
+  - Single space after a current path is needed to get candidates via =migemo=.
+- Kill ring
+- Minibuffer history
+- =(m)occur=
+- =recentf=
+
+To enable =migemo= in your code, use the ~migemo~ slot in your classes or with the diverse build functions for sources (~helm-build-sync-source~, etc.). Only "sync" and "in-buffer" sources suppport =migemo=.
+
+*** helm-migemo.el
+You will find in a package called =helm-migemo.el= in [[https://melpa.org/#/][MELPA]]. *This package is deprecated and not supported by helm, so please do not use it!*

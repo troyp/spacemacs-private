@@ -1,0 +1,25 @@
+The ~helm-etags-select~ command, bound to =<helm-prefix> e= by default, can be used to navigate TAGS files built with =etags=. To jump to the definition of the symbol at point, invoke the command with a universal prefix (=C-u <helm-prefix> e=).
+
+If the project is big, It take some time to load the TAGS file. Once loading is done, however, the next search will be very fast. 
+
+** Create TAGS file
+
+To use =etags= in Emacs, you must first create a TAGS file for your project with the =etags= shell command. If your directory contains sub-directories, use something like the following:
+
+#+BEGIN_SRC sh
+find . -iregex .*\.el$ | xargs etags
+#+END_SRC
+
+Otherwise, using the following is enough:
+
+#+BEGIN_SRC sh
+etags *.el
+#+END_SRC
+
+For more information, see the Emacs manual [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Tags.html][section on Tags tables]] or the [[http://linux.die.net/man/1/etags][etags man page]].
+
+** Refresh TAGS file
+
+If you modify the TAGS file, call =C-u C-u <helm-prefix> e= to refresh tag cache.
+
+

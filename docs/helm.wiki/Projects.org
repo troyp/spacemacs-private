@@ -1,0 +1,17 @@
+The ~helm-browse-projects~ command can be used to browse projects. It supports version control (VC) systems like [[https://git-scm.com/][Git]], [[https://www.mercurial-scm.org/][Mercurial]] (Hg), and [[https://subversion.apache.org/][Subversion]] (SVN).
+
+** Usage
+Install the following extensions as necessary:
+
+- [[https://github.com/emacs-helm/helm-ls-git][helm-ls-git]]
+- [[https://github.com/emacs-helm/helm-ls-hg][helm-ls-hg]]
+- [[http://melpa.org/#/helm-ls-svn][helm-ls-svn]]
+
+If your directory is not under VC, you can still use ~helm-browse-project~. A universal prefix (=C-u=) is required to recursively create the project file list and cache it.
+
+** From ~helm-find-files~
+You can launch ~helm-browse-project~ from ~helm-find-files~ to browse projects unrelated to your current buffer.
+
+You can also bookmark your directories with =C-x r m= from ~helm-find-files~.
+
+
