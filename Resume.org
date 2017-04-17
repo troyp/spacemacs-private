@@ -1,0 +1,1 @@
+You can resume the previous Helm session with ~helm-resume~, which is bound to =<helm-prefix> b= by default. With a universal argument (=C-u=), you can choose between different Helm sessions.

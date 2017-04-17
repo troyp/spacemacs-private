@@ -1,0 +1,19 @@
+~helm-M-x~, which by default is bound to =<helm-prefix> M-x=, is used to launch commands in Helm. For convenience, you should bind it to =M-x=.
+
+Features include:
+
+- Smart sorting
+- Show key bindings next to command names
+- Show documentation with persistent action (=C-z=)
+- Show prefix arguments in the mode line
+
+** Prefix arguments with helm-M-x
+
+Prefix arguments should be passed *after* calling ~helm-M-x~. Simply type the prefix you want (e.g. =C-u= or =M-9=) on the highlighted command before hitting RET to execute it, you will see a prefix arg counter appearing in mode-line notifying you
+the number of prefix args entered.
+
+This allows you to view the command's documentation (with persistent action) and know exactly what prefix arguments do before passing them.
+
+If you pass prefix arguments before calling ~helm-M-x~, the prefix arguments will be displayed in the minibuffer prompt like emacs vanilla ~execute-extended-command~ command, then after ~helm-M-x~ starts, the first =C-u= will be to used to clear it, so you can cancel prefix arguments or pass another one after calling ~helm-M-x~.
+
+To put the command in the minibuffer, hit =C-c C-y= on the highlighted command.

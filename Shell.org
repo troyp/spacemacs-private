@@ -1,0 +1,6 @@
+** Completion
+Completion in the inferior shell for the ~shell~ command uses ~completion-at-point~.
+
+From Emacs 24.4, ~helm-mode~ provides completion for ~completion-at-point~. *This is not available in Emacs 24.3*.
+
+Consider using [[https://github.com/thierryvolpiatto/pcomplete-extension][pcomplete-extension]] for a better completion experience.

@@ -1,0 +1,7 @@
+** Delete minibuffer contents
+While in a Helm session, you can delete minibuffer all contents with =C-k= (~helm-delete-minibuffer-contents~).
+
+When the customizable variable ~helm-delete-minibuffer-contents-from-point~ is non-nil, ~helm-delete-minibuffer-contents~ deletes from point to the end of the minibuffer.
+
+** Mark, copy, and kill in minibuffer
+Helm does not provide a way to mark/copy/kill a region in the minibuffer. The [[https://github.com/thierryvolpiatto/zop-to-char][zop-to-char]] package provides a way to do this.

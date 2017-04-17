@@ -1,0 +1,291 @@
+* Table of Contents :TOC:
+ - [[#install][Install]]
+   - [[#from-melpa][From MELPA]]
+   - [[#from-source][From source]]
+ - [[#configure][Configure]]
+ - [[#general-concept][General concept]]
+ - [[#quick-try][Quick Try]]
+ - [[#helm-completion-vs-emacs-completion][Helm Completion v.s. Emacs Completion]]
+   - [[#helm-interaction-model][Helm interaction model]]
+ - [[#general-helm-commands][General Helm Commands]]
+   - [[#yanking-text][Yanking text]]
+  - [[#preconfigured-helm-commands][Preconfigured Helm Commands]]
+ - [[#show-helm-commands][Show Helm Commands]]
+ - [[#browse-other-tools][Browse Other Tools]]
+ - [[#helm-mode][~helm-mode~]]
+   - [[#customize-helm-mode][Customize helm-mode]]
+ - [[#other-useful-extensions][Other Useful Extensions]]
+ - [[#helm-with-other-emacs-extensions][Helm With Other Emacs Extensions]]
+   - [[#linum-relative][linum-relative]]
+ - [[#helm-workflow-for-files-directories-and-buffers][Helm Workflow for Files, Directories and Buffers]]
+ - [[#useful-links][Useful links]]
+ - [[#contributing-to-the-wiki][Contributing to the Wiki]]
+
+* Install
+
+** From MELPA
+
+Helm is available on two major =package.el= community-maintained repos: [[http://melpa.org/#/helm][MELPA]] and [[http://stable.melpa.org/#/helm][MELPA Stable]]. Follow the [[https://melpa.org/#/getting-started][instructions]] to set up the MELPA (Stable) repository.
+
+Install Helm with =M-x package-install RET helm RET=.
+
+*Note*: always restart Emacs after reinstalling Helm (or other packages) for the updates to take effect.
+
+*** Potential issues
+
+Helm upgrades from MELPA encountered errors because of the way the Emacs package manager fetched and compiled updates for existing packages.
+
+To get around these errors, Helm has [[https://github.com/jwiegley/emacs-async][emacs-async]] as a dependency. =emacs-async= forces compilation in a clean environment, which resolves the compilation errors.
+
+** From source
+
+Helm needs [[https://github.com/auto-complete/popup-el][popup-el]] as a dependency, but we recommend installing also [[https://github.com/jwiegley/emacs-async][Emacs-async]] even if not mandatory since it fixes packages compilation errors and allow copying files asynchronously among other things.
+See the [[https://github.com/emacs-helm/helm/wiki/FAQ][FAQ]] for more information.
+
+To install, get the files from the [[https://github.com/emacs-helm/helm/wiki/Bugs][Git repo]] (see the [[https://github.com/emacs-helm/helm/tags][tagged releases]] for older versions):
+
+#+BEGIN_SRC sh
+  git clone https://github.com/emacs-helm/helm
+#+END_SRC
+
+After downloading, go to the Helm directory and run =make=.
+
+* Configure
+
+If installed via the Emacs package manager, add the following to your init file:
+
+#+BEGIN_SRC emacs-lisp
+  (require 'helm-config)
+#+END_SRC
+
+If installed from source, add the following:
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "/path/to/helm/directory")
+  (require 'helm-config)
+#+END_SRC
+
+This will do same basic preparation (load autoloads for example), but it will not load Helm or turn on the Helm minor mode.
+
+For further configuration like changing bindings in the =helm-map= you will likely want to use a delayed method like =with-eval-after-load= to avoid loading all of Helm at startup.
+
+* General concept
+
+People often think helm is just something like ido but displaying
+completion in a vertical layout instead of an horizontal one, it is
+not, helm is much more powerful than that.
+
+- Helm is able to complete multiple lists dispatched in differents
+  sources against a pattern.
+- Helm allow executing an unlimited number of actions on candidates.
+- Helm allow marking candidates to execute choosen action against this
+  set of candidates.
+
+However Helm is divided in two distincts categories of commands, the *helm
+natives commands* that provide a feature not existing in Emacs or a new
+implementation of an existing Emacs feature and the *helmized commands*
+that are Emacs native commands modified by helm-mode to provide helm
+completion and only that.
+When both are provided e.g ~switch-to-buffer~ vs ~helm-buffers-list~
+you will prefer the native helm commands generally more featured (more
+than one action, allows marking candidates, better display etc...).
+
+* Quick Try
+
+To try Helm with a default configurations in a minimal Emacs, run the provided =emacs-helm.sh= script in Helm's installation directory. If installed through the Emacs package manager,
+
+#+BEGIN_SRC sh
+  ~/.emacs.d/elpa/helm-<VERSION>/emacs-helm.sh
+#+END_SRC
+
+=emacs-helm.sh= should also be used when [[https://github.com/emacs-helm/helm/wiki/Bugs][reporting bugs]].
+
+*Note*: for convenience, consider creating a symlink of
+=emacs-helm.sh= to e.g ~~/bin~.
+
+* Helm Completion v.s. Emacs Completion
+
+This different has tripped up new users in ways involving
+
+Emacs completion is based on the *minibuffer*. Helm completion is based on the *completion window*.
+
+- [[Https://github.com/emacs-helm/helm/issues/495][Different way of invoking commands]]
+- [[https://github.com/emacs-helm/helm/issues/222][Lack of tab completion]]
+- [[https://groups.google.com/forum/#!topic/emacs-helm/zaBbg2tFAuM][Finding files]]
+
+In default Emacs, interactivity happens in the /minibuffer/.
+
+- Typing new characters filters candidates in the minibuffer.
+  - =<tab>= may try to complete the typed characters with a valid candidate.
+- Hitting =RET= selects the current candidate from the minibuffer.
+
+In Helm, interactivity happens in the /completion window/, not the minibuffer
+
+- Typing new characters filters candidates in the completion window.
+  - Type until the desired candidate is highlighted, or navigate to it using =C-n=.
+- Hitting =RET= selects the currently highlighted item in the completion window.
+
+** Helm interaction model
+
+Helm's interactivity makes the =<tab>= key redundant for completion because the selection candidates are already made visible in the Helm completion window. So, *tab completion is not supported*. In Helm, =<tab>= is used to view available *actions* to be taken on a candidate.
+
+Because the =<tab>= key is so ingrained in the muscle memory of long-time Emacs users, transition to Helm's interactive model requires:
+
+- A conscious visual adjustment to look at the completion window, and
+- A conscious mental adjustment to avoid using the =<tab>= key for completion
+  and go straight to =<RET>= key to select a candidate. Helm's approach to
+  completion is provides better visual cues, takes fewer keystrokes, and is
+  much faster.
+
+* General Helm Commands
+
+Helm's functionality needs only a few general key bindings as shown below. These are also documented in the mode line.
+
+- =<tab>= or =C-i= lists available actions
+
+- =C-j= or =C-z= invokes the persistent action
+
+- =M-SPC= or =C-SPC= marks a candidate
+
+- =C-h m= displays the embeded help in an org buffer without quitting helm session.
+
+- =RET= runs the first action of action list
+
+** Yanking text
+
+Yank symbol at point from ~helm-current-buffer~ (i.e. buffer where a helm command was invoked):
+
+=M-n= copies symbol at point to minibuffer
+
+=C-w= appends word next to point to the minibuffer and advance to next
+word, hitting =C-_= undo last insertion and rewind yank point in ~helm-current-buffer~
+
+*  Preconfigured Helm Commands
+
+- ~helm-command-prefix-key~ is the prefix for the preconfigured helm menu.
+
+- =C-x c= is the default key binding for =helm-command-prefix-key=.
+
+- =helm-M-x= and then type "helm" to discover Helm commands.
+  - This is the same as running ~helm-command-prefix-key~ followed by =M-x=.
+
+- The =Helm > All commands= menu item is another way to discover helm commands.
+  - It runs ~helm-execute-helm-command~.
+
+- ~helm-command-prefix-key~ followed by any regular Emacs key invokes the Helm version of the same command.
+  - E.g. ~helm-M-x~ for =M-x=.
+
+To run the helm version of a command with a key binding, set it in your init file as follows:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-x") 'helm-M-x)
+#+END_SRC
+
+* Show Helm Commands
+
+- =C-h m= shows Helm commands and currently active key bindings.
+
+* Browse Other Tools
+
+- Invoke =M-x=, then type "helm" to browse other Helm tools.
+
+* ~helm-mode~
+
+~helm-mode~ enables Helm completion globally for any Emacs command using ~completing-read~ or ~read-file-name~.
+
+~helm-mode~ completes with ~completion-at-point~ and implements ~completion-in-region-function~ for ~completing-read-multiple~ for Emacs 24.4 and later.
+
+Helm provides generic functions for completions to replace tab-completion in Emacs with no loss of functionality. To use Helm's generic functions, first set them in your init file, e.g.:
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-x") #'helm-M-x)
+  (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+  (global-set-key (kbd "C-x C-f") #'helm-find-files)
+#+END_SRC
+
+Then enable ~helm-mode~ with:
+
+#+BEGIN_SRC emacs-lisp
+  (helm-mode 1)
+#+END_SRC
+
+Or, enable ~helm-mode~ interactively with =M-x helm-mode=.
+
+** Customize helm-mode
+
+To customize the completion interface or disable completion for specific commands in ~helm-mode~, edit ~helm-completing-read-handlers-alist~. See =C-h v= ~helm-completing-read-handlers-alist~ for details.
+
+*** Use helm-mode and ido-mode
+
+To use [[https://www.gnu.org/software/emacs/manual/html_mono/ido.html][Ido]] for some commands and Helm for others, do not enable ~ido-mode~. Instead, customize ~helm-completing-read-handlers-alist~ to specify which command uses Ido.
+
+For example, suppose we want ~find-file-read-only~ to use Ido and ~find-file~ to use Helm. Then:
+
+1. In your init file, turn on ~helm-mode~.
+2. In the ~helm-mode~ customize group, add a key to ~helm-completing-read-handlers-alist~ for ~find-file-read-only~ with value =ido=, i.e.
+
+#+BEGIN_SRC emacs-lisp
+  (find-file-read-only . ido)
+#+END_SRC
+
+With ~helm-mode~ active, to use Emacs default completion instead of either Helm or Ido, use ~nil~ for the key value:
+
+#+BEGIN_SRC emacs-lisp
+  (find-alternate-file . nil)
+#+END_SRC
+
+* Other Useful Extensions
+
+MELPA and other repositories have many useful extensions, some of which are redundant as Helm already provides them. Review if they already exist as part of the default Helm package before downloading new extensions.
+
+* Helm With Other Emacs Extensions
+
+** linum-relative
+
+~(helm-linum-relative-mode 1)~ enables ~linum-relative~ in Helm. Helm buffers then display nine numbered candidates before and after the current candidate (highlighted line). =C-x <n>= jumps to =n= lines before, before, and =C-c <n>= jumps to =n= lines after, the current candidate.
+
+* Helm Workflow for Files, Directories and Buffers
+
+The new Helm workflow uses fewer buffers. Whereas the old workflow opened many Dired buffers stacked in the workspace, the new approach uses virtual Dired buffers without cluttering the buffer list with many Dired buffers.  The decluttering of buffers also helps with running ~helm-locate~ without conflicts; there's also less need to resort to other workarounds, such as running ~helm-multi-files~.
+
+The new approach uses ~helm-find-files~ as the starting point, never opens Dired buffers yet provides easy access to common Helm commands, such as ~grep~, ~locate~, ~find~, etc. These Helm commands, moreover, are not limited to the current directory because Helm now allows marking files in other directories before running the commands.
+
+Other quick jumping off features of ~helm-find-files~:
+
+- =C-x C-d= (~helm-browse-project~) shows buffers and files in the project.
+
+- =C-c C-d= with prefix argument shows files in this directory and its subdirectories recursively.
+
+When using [[https://github.com/emacs-helm/helm-ls-git][helm-ls-git]] and [[https://github.com/emacs-helm/helm-ls-hg][helm-ls-hg]], files under version control have a corresponding backend indicator.
+
+- =C-x C-b= to switch back to the resumed Helm sources.
+
+- =M-p= to access history of ~helm-find-files~
+
+- =C-c h= to access the full history of files (~file-name-history~)
+
+- =C-x C-f= switches back to ~helm-find-files~
+
+* Useful links
+
+- [[https://github.com/emacs-helm/helm][Helm on GitHub]]
+- [[http://tuhdo.github.io/helm-intro.html][Tuhdo's Helm tutorial]]
+- [[https://groups.google.com/group/emacs-helm?hl%3Den][Helm mailing list]] (Google Group)
+- [[http://dir.gmane.org/gmane.emacs.helm.user][Helm Gmane]] (=gmane.emacs.helm.user=)
+
+* Contributing to the Wiki
+
+1. Prefer using [[http://orgmode.org/][Org mode]] for Wiki pages.
+2. Install the [[https://github.com/snosov1/toc-org][toc-org]] package to automatically generate tables of contents.
+3. Edit the Wiki.
+4. Before saving, run =toc-org-insert-toc=.
+   - Consider adding something like the following to =before-save-hook= to do
+     this automatically:
+
+#+BEGIN_SRC emacs-lisp
+  (defun *-org-insert-toc ()
+    "Create table of contents (TOC) if current buffer is in
+  `org-mode'."
+    (when (= major-mode 'org-mode)
+      toc-org-insert-toc))
+#+END_SRC

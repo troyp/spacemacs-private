@@ -1,0 +1,18 @@
+The ~helm-regexp~ command is Helm's version of the built-in RE-Builder (~re-builder~), which highlights matches in the buffer and provides instant feedback as you write a regexp.
+
+By default, ~helm-regexp~ is bound to ~<helm-prefix> r~; it can also be found in the menu bar under Tools > Helm > Tools > Regexp handler.
+
+** Features
+~helm-regexp~ has several features. A comparison with ~re-builder~ highlights differences between the two.
+
+| helm-regexp                         | re-builder                          |
+|-------------------------------------+-------------------------------------|
+| Write regexp without double backslashes, and copy with/without them. | Manually switch between syntaxes with =C-c TAB= (~reb-change-syntax~). |
+| View all matches in a list, and navigate with standard Helm commands. | Use =C-c C-s= (~reb-next-match~) or =C-c C-r= (~reb-prev-match~) to navigate between matches in the target buffer. |
+| View numbered capturing groups for each match. | Capturing groups are highlighted in different colors. |
+| Call ~query-replace-regexp~ directly with Helm action. | N/A                                 |
+
+
+
+
+

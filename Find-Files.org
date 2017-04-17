@@ -1,0 +1,214 @@
+* Finding Files 							:TOC:
+   - [[#usage][Usage]]
+   - [[#navigation][Navigation]]
+   - [[#actions][Actions]]
+   - [[#create][Create]]
+   - [[#open-files-externally][Open files externally]]
+   - [[#renamemove][Rename/move]]
+   - [[#serial-rename][Serial rename]]
+   - [[#mark-files-using-wildcard][Mark files using wildcard]]
+   - [[#query-replace-on-filenames][Query replace on filenames]]
+   - [[#copy][Copy]]
+   - [[#symlink][Symlink]]
+   - [[#hardlink][Hardlink]]
+   - [[#follow-file-after-action][Follow file after action]]
+   - [[#insert-file-name][Insert file name]]
+   - [[#ediff][Ediff]]
+   - [[#eshell-command-on-files][Eshell command on files]]
+   - [[#browse-images][Browse images]]
+   - [[#browse-archives-with-avfs][Browse archives with AVFS]]
+
+** Usage
+~helm-find-files~ is Helm's version of ~find-files~; it allows easy navigation of file hierarchies. 
+
+By default, it is bound to =<helm-prefix> C-x C-f=. You can also find it in the menu (Tools > Helm > Files > Find files). For convenience, you should bind it to =C-x C-f=. 
+
+Using universal argument (=C-u=) displays a history of previously visited directories.
+
+** Navigation
+~helm-find-files~ starts at ~default-directory~ or ~thing-at-point~, the latter of which it gets from ~ffap~. If you are on a URL, mail address, etc., it will do the right thing.
+
+Some common actions and corresponding keys are below:
+
+| Action            | Key |
+|-------------------+-----|
+| Move up           | C-p |
+| Move down         | C-n |
+| Persistent action | C-z |
+| Up directory      | C-l |
+
+** Actions
+*** Persistent action
+=C-j= and =C-z= execute the *persistent action*, which differs depending on context. The persistent actions for different file types are below:
+
+| Type      | Persistent Action                   |
+|-----------+-------------------------------------|
+| File      | Shows file name in the Helm buffer. |
+| Directory | Steps into the directory.           |
+| Symlink   | Expand to symlink's true name       |
+
+** Create
+
+Navigate to the directory where you want to create the new file, then type the file's name and hit =RET=. If the name ends in a slash (=/=), Helm prompts you to create a directory (possibly with parent directories).
+
+** Open files externally
+
+In the action menu, the =Open files externally= action (bound to =C-c C-x= by default) can open a file with an external program.
+
+** Rename/move
+
+Mark some files and select the =Rename file(s)= action in the action menu. If the new name is in the current directory, the file is renamed. If it is in another directory, the file is moved there.
+
+** Serial rename
+
+You can rename files with a prefix and incremental numbering. Marked files will be renamed with the prefix and number starting at the one given.
+
+*Tip*:
+- If you have more than 100 files to serial rename, start at 100 instead of 1 to have your directory sorted correctly.
+
+Marked files are renamed in *order of selection*. If you mark files in directories other than the current one, the files will be moved or symlinked to the current one.
+
+There are three methods to serial rename files:
+
+| Method  | Description                                                                           |
+|---------+---------------------------------------------------------------------------------------|
+| Rename  | Files in other directories are moved to the target directory.                         |
+| Symlink | Files in other directories are symlinked; those in the current directory are renamed. |
+| Copy    | Files in other directories are copied to the target directory.                        |
+
+*** Example
+Suppose we want to create a directory with many symlinks to images from multiple directories.
+
+1. Execute ~helm-find-files~.
+2. Navigate to the parent directory of the target directory, create the target directory (with name ending in =/=), and hit =RET=.
+3. Navigate to images in other directories and mark them.
+   - =M-a= marks all files in a directory.
+4. After marking all files, choose =serial rename by symlinking= from the action menu.
+5. Choose prefix and start number.
+6. Navigate to the target directory and hit =RET=.
+7. Confirm.
+** Mark files using wildcard
+
+Use of wilcard is supported to give a set of files to an action:
+
+e.g. You can copy all the files with ~.el~ extension by using ~*.el~
+and then run your copy action.
+
+You can do the same but with ~**.el~ (note the two stars),
+this will select recursively all ~.el~ files under current directory.
+
+NOTE: When using an action that involve an external backend (e.g. grep), using ~**~
+is not advised (even if it works fine) because it will be slower to select all your files,
+you have better time letting the backend doing it, it will be faster.
+However, if you know you have not many files it is reasonable to use this,
+also using not recursive wilcard (e.g. ~*.el~) is perfectly fine for this.
+
+This feature (~**~) is activated by default with the option ~helm-file-globstar~.
+The directory selection with ~**foo/~ like bash shopt globstar option
+is not supported yet.
+
+** Query replace on filenames
+
+You can rename your files by replacing only part of filenames matching
+a regexp.
+e.g Rename recursively all files with ~.JPG~ extension to ~.jpg~:
+Use the ~helm-file-globstar~ feature described in previous section by
+entering at end of ~helm-find-files~ pattern ~**.JPG~, then hit ~M-%~,
+at first prompt enter ~JPG~, at second ~jpg~ and hit ~RET~.
+
+** Copy
+
+With ~helm-find-files~, you can mark files in different directories and copy them to a target directory.
+
+Mark some files in various directories and select the =Copy file(s)= action in the action menu. This creates a new ~helm-find-files~ session where you can choose the target directory.
+
+** Symlink
+
+Mark some files and select the =Symlink file(s)= or =Relsymlink file(s)= action in the action menu. A new ~helm-find-files~ session appears in which you can select where the symlink will be.
+
+** Hardlink
+
+Mark some files and select the =Hardlink file(s)= action in the action menu. A new ~helm-find-files~ session appears in which you can select where the hardlink will be.
+
+** Follow file after action
+
+A prefix argument on any of the following actions will follow the file:
+
+- Rename
+- Copy
+- Symlink
+- Hardlink
+
+For example, when you want to copy a =.elisp= file somewhere and compile it there, hitting =C-u RET= will go to the destination with the file already marked. You can then select =Byte compile lisp file(s)= to compile it.
+
+** Insert file name
+
+In any buffer (including the minibuffer, if ~enable-recursive-minibuffers~ is =t=), you can get insert the file name at point by selecting  =Complete at point= from the action menu.
+
+** Ediff
+Move cursor to a file and choose =Ediff file= in the action menu. A new ~helm-find-files~ session allows you to choose a second file with which to diff with the first.
+
+The =Ediff merge file= action is similar, but allows merging files.
+
+** Eshell command on files
+
+You can run ~eshell-command~ on a file or marked files. The command must accept a single file as an argument.
+
+Completion is made on your Eshell aliases. This allow you to creating custom actions for
+~helm-find-files~.
+
+*** Why Eshell?
+We use Eshell because it:
+
+- Allows aliases
+- Accepts both shell commands and Emacs Lisp functions
+
+*** Aliases
+To create an alias in Eshell, enter the following at the prompt:
+
+#+BEGIN_SRC sh
+alias my_alias command $1
+#+END_SRC
+
+*NOTE*:
+- Don't forget the escape the =$=.
+
+See the [[http://www.gnu.org/software/emacs/manual/html_node/eshell/Aliases.html][Eshell aliases]] documentation for more information.
+
+***  Problems starting Eshell
+
+Most Eshell commands are available only after Eshell has been started once. To start Eshell on Emacs startup, add the following to your init file: 
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'emacs-startup-hook (lambda ()
+                                  (let ((default-directory (getenv "HOME")))
+                                    (command-execute 'eshell)
+                                    (bury-buffer))))
+#+END_SRC
+
+** Browse images
+~helm-find-files~ and its persistent actions make for a fine image browser.
+
+*** Requirements
+
+The following requires [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Image_002dDired.html][image-dired]] (built-in) and [[http://www.imagemagick.org/script/index.php][ImageMagick]].
+
+1. Navigate to a directory with images.
+2. Hit =C-u C-z= on first image.
+3. Turn on ~follow-mode~ with =C-c C-f=. 
+
+Now, you can navigate the image directory with the =<up>= and =<down>= arrow keys, or =C-n= and =C-p=. You can also use =C-t= to split windows vertically and =C-}=, =C-{= to shrink/enlarge the Helm window.
+
+In the action menu, there are actions to rotate an image.
+
+| Action       | Key |
+|--------------+-----|
+| Rotate left  | M-l |
+| Rotate right | M-r |
+
+** Browse archives with AVFS
+
+If you have [[http://sourceforge.net/projects/avf][AVFS]] installed, you can browse archives in your =.avfs= directory once it is mounted with
+~mountavfs~.
+
+Move to the archive filename and choose persistent action (=C-z=), and you will see a Helm buffer containing the archive's sub-directories.

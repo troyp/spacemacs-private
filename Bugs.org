@@ -1,0 +1,25 @@
+** Confirming bugs
+
+To confirm that a bug is, in fact, a Helm problem, it is important to /replicate the behavior with a minimal Emacs configuration/. This precludes the possibility that the bug is caused by factors outside of Helm.
+
+The easiest and recommended way to do so is through the =emacs-helm.sh= script.
+
+*** =emacs-helm.sh=
+If your system supports it, you should run the =emacs-helm.sh= script to start an Emacs instance with minimal, Helm-specific configuration. 
+
+This is useful for debugging, and easier than starting Emacs with =emacs -Q= and configuring Helm from scratch.
+
+If Helm is installed via MELPA, the =emacs-helm.sh= script should be located at =~/.emacs.d/elpa/helm-<version>/emacs-helm.sh=.
+
+*** =emacs -Q=
+
+If you cannot run the =emacs-helm.sh= script, be sure to reproduce the problem with =emacs -Q=, then installing Helm as described in the Install section.
+
+** Reporting bugs
+
+To report a bug, [[https://github.com/emacs-helm/helm/issues][open an issue]]. Be sure that you've confirmed the bug as described in the previous section, and include relevant information for the maintainer to identify the bug.
+
+*** Version info
+
+When reporting bugs, it is important to include the Helm version number, which can be found in the [[https://github.com/emacs-helm/helm/blob/master/helm-pkg.el][helm-pkg.el]] file.
+

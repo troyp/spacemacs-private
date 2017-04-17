@@ -1,0 +1,22 @@
+~helm-find~ uses GNU [[http://linux.die.net/man/1/find][find]] to search for files in a directory hierarchy. 
+
+** Usage
+Execute ~helm-find~ (bound to =<helm-prefix> /= by default). The search with this command is actually performed literally, however you can use a space to
+match multiple pattern within a line.
+
+*** From ~helm-find-files~
+Hit =C-c /= while using ~helm-find-files~.
+
+** Other platforms
+
+*** Windows
+
+On Windows, you need to install the [[http://www.mingw.org/wiki/msys][MSYS]] version of =find= because the [[http://gnuwin32.sourceforge.net/][GnuWin32]] version is not working.
+
+The =MSYS= version of =find= is not available as a standalone program; it must be installed as part of =MSYS=, which is installed using the [[http://www.mingw.org/wiki/msys][MinGW]] installer. Steps are as follows:
+
+1. Download and install the [[http://sourceforge.net/projects/mingw/files/latest/download?source%3Dfiles][MinGW installer]].
+2. Install =find= with the installer.
+3. Add MSYS =bin= directory to =PATH= (e.g. =C:\MinGW\msys\1.0\bin=).
+
+I /believe/ MinGW itself does not have to be installed, but I could be wrong.

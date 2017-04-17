@@ -1,0 +1,29 @@
+Helm provides a convenient interface to [[http://www.gnu.org/software/texinfo/manual/info/info.html][GNU Info]] files on your system. There are two main Info-related commands for Helm:
+
+- ~helm-info~
+- ~helm-info-at-point~
+
+** helm-info
+
+The ~helm-info~ command brings up a list of all Info files that Helm could find on your system and for which Helm has created sources. After selecting an Info file, the file's index is shown, allowing jumping to any indexed topic within the file.
+
+Helm finds Info files on your system by looking in the directories specified in ~Info-directory-list~. You can add more Info files by customizing ~helm-default-info-index-list~.
+
+*** Tips
+
+-  Use the ~info~ command (which is built-in) to jump back to the Info file you were just visiting.
+
+** helm-info-at-point
+The ~helm-info-at-point~ command searches for the symbol at point in the Helm sources specified in the customizable variable ~helm-info-default-sources~, and jumps to the location in the Info file if found.
+
+The default sources are:
+
+- [[https://www.gnu.org/software/emacs/manual/html_node/elisp/index.html][GNU Emacs Lisp Reference]] manual
+- [[http://www.gnu.org/software/emacs/manual/html_mono/cl.html][GNU Emacs Common Lisp Emulation]] manual
+- [[https://www.gnu.org/software/emacs/manual/html_node/eieio/][EIEIO]] manual
+- Info =dir= node
+
+** Other Commands
+Helm also creates individual commands for all the Info files that it could find (e.g. ~helm-info-emacs~ for the Emacs manual). 
+
+This way, if there is an Info manual that you reference particularly frequently, you can bind corresponding command to a key and access the index directly without using ~helm-info~.

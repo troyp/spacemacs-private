@@ -1,0 +1,36 @@
+** Introduction
+Users of [[https://github.com/m2ym/popwin-el][popwin]], which displays certain "temporary" buffers (e.g. Help, Messages, etc.) in dismissable pop-up windows, may run into some issues with Helm.
+
+** Issues
+
+*** Double windows
+
+Many Helm sources bring up the Help buffer with persistent action. In a two-window configuration, the Help buffer is displayed in the other window.
+
+If Popwin is used for Help buffers, however, the Help buffer will be shown in both the pop-up window /and/ the other window. This is unnecessary and annoying.
+
+**** Solution
+You can [[https://github.com/m2ym/popwin-el#special-display-config][turn off Popwin for Help buffers globally]], but it may be preferable to *turn them off only while using Helm*.
+
+"Turning off" should be done in ~helm-minibuffer-set-up-hook~, while "turning on" should be done in ~helm-cleanup-hook~. [[https://github.com/emacs-helm/helm/issues/1386][Issue #1386]] describes why ~helm-exit-minibuffer-hook~ should not be used for "turning on".
+
+The following example works well:
+
+#+BEGIN_SRC emacs-lisp
+  (defun *-popwin-help-mode-off ()
+    "Turn `popwin-mode' off for *Help* buffers."
+    (when (boundp 'popwin:special-display-config)
+      (customize-set-variable 'popwin:special-display-config
+                              (delq 'help-mode popwin:special-display-config))))
+
+  (defun *-popwin-help-mode-on ()
+    "Turn `popwin-mode' on for *Help* buffers."
+    (when (boundp 'popwin:special-display-config)
+      (customize-set-variable 'popwin:special-display-config
+                              (add-to-list 'popwin:special-display-config 'help-mode nil #'eq))))
+
+  (add-hook 'helm-minibuffer-set-up-hook #'*-popwin-help-mode-off)
+  (add-hook 'helm-cleanup-hook #'*-popwin-help-mode-on)
+#+END_SRC
+
+This example is about Help buffers, but the idea of turning Popwin off only while using Helm applies generally.
