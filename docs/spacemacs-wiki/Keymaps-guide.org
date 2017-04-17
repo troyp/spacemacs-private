@@ -1,0 +1,54 @@
+This is the nearly complete hierarchy for Emacs keymaps when used with evil (vim emulation). Emacs will search for a binding for whatever key you press starting from the top and working down, until it finds a valid binding. That means a key can currently have multiple bindings, but only the one with the highest priority is ever used. You do not need to remember all of this, but it's helpful to have it here in case you can't figure out why the key you bound is not available. 
+
+1. *Overriding keymaps/overlay keymaps*
+   - /Examples:/
+     - magit section maps
+     - micro states
+2. *Emulation mode keymaps*
+   1. Non-evil emulation-mode-maps
+      - Used to elevate minor mode maps
+      - /Examples:/
+        - bind-map keys (not evil-keys) with override option
+        - also =bind-key*= puts things here
+   2. Evil Intercept keymaps
+      - Used to handle ESC in evil
+      - /Command:/ =(evil-make-intercept-map map)=
+        - etc.
+   3. Evil Local state keymap
+      - Used by evil-leader
+      - /Command:/ =(define-key evil-normal-state-local-map key def)=
+      - /Maps:/
+        - =evil-normal-state-local-map=
+        - =evil-insert-state-local-map=
+      - /Example:/ currently used by bind-map for evil keys with override-mode-maps option (chosen to emulate evil-leader priority)
+   4. Evil Auxiliary keymaps
+      - Used if you define minor-mode and evil-state specific keys (lots of examples)
+      - /Command:/ =(evil-define-key state mode-map key def)=
+      - /Example:/ bind-map evil-keys tied to a minor-mode
+   5. Evil Overriding keymaps
+      - Used to put minor mode maps ahead of evil global maps
+      - /Command:/ =(evil-make-overriding-map map)=
+      - /Example:/ Dired-mode-map for example is here
+   6. Evil Global state keymap
+      - "most" of the vim keybindings are here
+      - /Commands:/
+        - =(evil-global-set-key state key def)=
+        - =(define-key evil-normal-state-map key def)=
+      - /Maps:/
+        - =evil-normal-state-map=
+        - =evil-insert-state-map=
+        - etc.
+      - /Examples:/
+        - bind-map evil-keys without override option
+3. *Minor mode keymaps*
+   - All the minor mode maps that are set up without using evil functionality
+   - /Example:/ bind-map keys tied to minor-mode and major-mode
+4. *Local keymap*
+   - /Command:/ =(local-set-key key def)=
+   - /Example:/ major mode maps are here I believe
+5. *Global keymap*
+   - /Command:/ =(global-set-key key def)=
+   - /Map:/ =global-map=
+   - /Example:/ bind-map keys default location
+
+Thanks to @justbur for [[https://github.com/syl20bnr/spacemacs/issues/4063#issuecomment-162983365][this guide]].

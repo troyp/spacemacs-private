@@ -1,0 +1,68 @@
+-----
+
+/This page should be merged into the [[https://github.com/syl20bnr/spacemacs/blob/develop/doc/LAYERS.org#the-spacemacs-loading-process][`LAYERS.org` existing documentation]]./
+
+-----
+
+Here is in details the Spacemacs loading process:
+
+1. *Collect data*
+
+   - load used layer files defining the functions they contain, this is done in
+     the order of the used layer list in the user dotfile (so a user can put its
+     own layer at the end of the list and take ownership of any package by
+     defining an init function for them)
+   - build a list of package objects which corresponds to the packages contained
+     in all used layers
+     - when a layer defines an init-xxx function this layer is set as the owner
+       of the package, the last layer to do so wins the ownership
+     - we gather a list of pre-init and post-init functions for each package
+   - sort the package list alphabetically
+
+2. *Install missing packages*
+
+   - for each package in the list built previously we check if they are
+     installed
+     - if not and the package has a owner then install it
+     - if the package has no owner (ie it has only a list of post-init
+       functions) don't install it
+
+3. *Configure packages*
+
+   - for each package with a owner
+     - call pre-init functions
+     - call the init function
+     - call post-init functions
+
+4. *Uninstall not used packages*
+
+   - collect the list of installed packages that are not used
+   - desinstall them
+
+*Important remarks:*
+
+- Spacemacs does not load all the layers at startup, it only loads the used
+  ones. Only when the user invokes helm-spacemacs to introspect all the layers
+  Spacemacs loads all of them but without building any new package object.
+- The design aims to avoid explicit dependencies between layers and between
+  packages, nowhere there is a list of dependencies, there are only lists of
+  what is used and the layer system resolves all this into a simple flat list of
+  packages ordered alphabetically so it is simple to predict the loading order.
+  This is possible thanks to the eval-after-load macro of elisp which allows to
+  delay a configuration until a file is loaded.
+- The design aims for layer isolation as much as possible and this is the most
+  important property of the whole system, this isolation allow us to configure
+  and integrate hundreds of packages while keeping the possibility to exclude
+  any package at will. For instance a package A owned by layer L should never
+  configure something in L that should go in layer L', it means in practice that
+  we list package A in both layers L and L' with an init function in L and
+  post-init function in L'. The idea is that when we look at the list of
+  packages for L' we get the whole picture, we have an exhaustive list of
+  configured packages for this layer, there is nothing configured for L' hidden
+  in other layers. So if we take the simple example of flycheck, the layer
+  syntax-checking will never add the hooks for the language layers, instead we
+  add flycheck in the language layers and hook it in a post-init function, so
+  when one looks at the package list of a given language they can quickly see if
+  flycheck is supported or not (if it is then it will be listed in the list).
+
+Thanks to @syl20bnr for [[https://github.com/dvcrn/proton/issues/50#issuecomment-165681476][this explanation]].

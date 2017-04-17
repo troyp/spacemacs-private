@@ -1,0 +1,42 @@
+------
+
+/This cleanup is now over/ :end:
+
+------
+
+* Goal
+
+The :fallen_leaf: *Autumnal Cleanup 2015* consists of joining contributors' forces to go over the 600+ open PR/issues in order to close the ones that are not relevant anymore, fixed, or even dead.
+
+This will make the life easier for all persons using Spacemacs, from contributors to end users.
+
+* Workflow
+
+To avoid people looking at the same issues over and over, you should ask @StreakyCobra on Gitter for a list of issues to check, they will be selected randomly over the ones that haven't been yet assigned. You should be precise with the number of issues you want, and if you have any particular labels of interest. If you have already done the attributed ones, you can still ask for new ones :smile:. Assigned issues will be reserved for 2 weeks, unless they have been reported, in which case they will not be assigned anymore. So, also please report *valid* issues since we need to know which one has already been treated.
+
+Once checked, *all verified* issues have to be reported in [[https://github.com/syl20bnr/spacemacs/issues/3549][this thread]], in the form of a checkboxed list with their associated [[#flags][Flags]]:
+
+#+begin_src
+- [ ] #1 Valid
+- [ ] #2 Wontfix
+- [ ] #3 NRA
+- [ ] #4 Can't reproduce
+...
+#+end_src
+
+/The checkboxes will be used by repository collaborators to follow the issues they have already dealt with, so please do not check any issue yourself./
+
+* Flags
+
+| Flag                       | Used for                                                                                                           |
+|----------------------------+--------------------------------------------------------------------------------------------------------------------|
+| Valid                      | PR/issues that are still relevant.                                                                                 |
+| Fixed                      | PR/issues that have already been fixed/merged.                                                                     |
+| Fixed in Develop           | PR/issues that have already been fixed/merged in develop branch.                                                   |
+| Already closed             | PR/issues that were probably close in the meantime.                                                                |
+| (NRA) Not Relevant Anymore | PR/issues that are not relevant anymore (for packages that are not used in current version, upstream fixes, etc…). |
+| Wontfix                    | PR/issues that were discussed and won't be fixed (not a bug, not enough used, etc…).                               |
+| Discussion Over            | PR/issues that had a discussion that ran over (debate reaches its end, agreement was not found, etc…).             |
+| No Response                | PR/issues that didn't receive any answer after a reasonable delay (~1 month).                                      |
+| Can't Reproduce            | PR/issues that you can't reproduce.                                                                                |
+| Unsure                     | PR/issues that you are unsure about their state (fixed or not, discussion over or not, etc…).                      |

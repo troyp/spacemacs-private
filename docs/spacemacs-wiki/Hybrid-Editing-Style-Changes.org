@@ -1,0 +1,9 @@
+The implementation of hybrid editing style recently changed to become simpler and easier to maintain. This will affect how key bindings are configured. Here is how to translate your personal configuration to the new style. 
+
+| Old Command | New Command |
+|-------------|-------------|
+| =(evil-global-set-key 'hybrid KEY DEF)= | =(global-set-key KEY DEF)= |
+| =(define-key evil-hybrid-state-map KEY DEF)= | =(global-set-key KEY DEF)= |
+| =(evil-define-key 'hybrid MAP KEY DEF)= | =(define-key MAP KEY DEF)= |
+| =(evil-set-initial-state MODE 'hybrid)= | =(evil-set-initial-state MODE 'insert)= |
+
