@@ -1,0 +1,96 @@
+This page includes a summary for each =defcustom=.
+
+*** =hydra-is-helpful=
+
+*More Help*
+
+Hydras can be helpful with:
+
+#+begin_src elisp
+(setq hydra-is-helpful t)
+#+end_src
+
+On by default.
+
+When non-nil, you'll get a hint in the Echo Area consisting of current
+Hydra's base comment and heads.  You can even add comments to the
+heads like this:
+
+#+begin_src elisp
+(defhydra hydra-zoom (global-map "<f2>")
+  "zoom"
+  ("g" text-scale-increase "in")
+  ("l" text-scale-decrease "out"))
+#+end_src
+
+With this, you'll see =zoom: [g]: in, [l]: out.= in your Echo Area,
+once the zoom Hydra becomes active.
+
+*** =hydra-lv=
+
+*Dedicated window for Hydra hints*
+
+#+begin_src elisp
+(setq hydra-lv t)
+#+end_src
+
+On by default.
+
+When non-nil, use a dedicated window right above the Echo Area for
+hints. This has the advantage that you can immediately see any
+=message= output from the functions that you call, since Hydra no
+longer uses =message= to display the hint. You can still have the old
+behavior by setting =hydra-lv= to nil.
+
+*** =lv-use-separator=
+
+*Use a fancy separator between =LV= and the Echo Area*
+
+
+#+begin_src elisp
+(setq lv-use-separator t)
+#+end_src
+
+Off by default.
+
+When non-nil, draw a line between the =*LV*= window and the Echo Area.
+
+*** =hydra-verbose=
+
+*Re-throw errors caught in =defhydra=*
+
+#+begin_src elisp
+(setq hydra-verbose t)
+#+end_src
+
+Off by default.
+
+When nil, if =defhydra= macro catches an error it will expand to nil
+and let your Emacs continue loading. The error will be logged to
+=*Messages*=.
+
+When non-nil, re-throw an error instead. Useful if you're in the
+process of writing new Hydras, and want to see the error output after
+e.g. ~C-x C-e~ without having to switch to =*Messages*=.
+
+*** =hydra-look-for-remap=
+
+*When enabled, hydra detects =[remap]= directive and will call the remapped command where applicable*
+
+#+begin_src elisp
+(setq hydra-look-for-remap t)
+#+end_src
+
+Off by default (compatibility setting).
+
+Exemple: 
+
+#+begin_src elisp
+(defhydra hydra-magit (:color blue)
+  "visit"
+  ("RET" magit-visit-thing "visit magit things at point")
+#+end_src
+
+=magit-visit-thing= is a placeholder command that does nothing by default. This command is remapped to the correct one (ie: visit ref, visit diff etc...) according to the current active mode/keymap.
+
+When =hydra-look-for-remap= is =nil=, no matter the current mode, hydra will always call the placeholder which is not very useful. When not =nil=, hydra will respects the =[remap]= and do the expected results.
