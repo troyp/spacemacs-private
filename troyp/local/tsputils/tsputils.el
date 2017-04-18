@@ -137,8 +137,12 @@
 ;; *                   *
 ;; *********************
 (defun xor (p q)
-  (or (and (not q) p)
-      (and (not p) q)))
+  "Return non-nil if exactly on of P and Q is non-nil.
+
+The actual value is the non-nil value (if any)."
+  (cond ((null p) q)
+        ((null q) p)
+        (t nil)))
 
 
 ;; =============================================================================
