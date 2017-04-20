@@ -1,4 +1,3 @@
-
 ;;; tsplib-evil.el --- utility functions related to evil-mode
 
 ;; Copyright (C) 2016 Troy Pracy
@@ -53,8 +52,10 @@ Evil-mode equivalent of `set-region-to-symbol-at-point'."
              (cons (point-min) (point-max)))))
     r))
 
-;; =====BUFFERS AND WINDOWS=====
-
+;; ,---------------------,
+;; | BUFFERS AND WINDOWS |
+;; '---------------------'
+
 ;; code adapted from spacemacs' 'spacemacs/switch-to-scratch-buffer
 (defun spacemacs/switch-to-scratch-buffer-other-window ()
   "Switch to the `*scratch*' buffer. Create it first if needed."
