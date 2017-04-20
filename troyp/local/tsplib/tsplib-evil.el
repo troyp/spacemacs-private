@@ -57,7 +57,7 @@ Evil-mode equivalent of `set-region-to-symbol-at-point'."
 ;; '---------------------'
 
 ;; code adapted from spacemacs' 'spacemacs/switch-to-scratch-buffer
-(defun spacemacs/switch-to-scratch-buffer-other-window ()
+(defun my/switch-to-scratch-buffer-other-window ()
   "Switch to the `*scratch*' buffer. Create it first if needed."
   (interactive)
   (let ((exists (get-buffer "*scratch*")))

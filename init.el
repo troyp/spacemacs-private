@@ -1093,9 +1093,9 @@ you should place you code here."
   (spacemacs/set-leader-keys
     "a ="          'calculator
     "a '"          'browse-url-firefox
-    "b M"          'switch-to-messages-buffer
-    "b S"          'spacemacs/switch-to-scratch-buffer-other-window
-    "b W"          'switch-to-warnings-buffer
+    "b M"          'my/switch-to-messages-buffer
+    "b S"          'my/switch-to-scratch-buffer-other-window
+    "b W"          'my/switch-to-warnings-buffer
     "b -"          'diff-buffer-with-file
     "b SPC"        'spacemacs/new-empty-buffer
     "b C-b"        'ibuffer
@@ -3254,11 +3254,11 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
            (dir       (concat userdir "private/docs/")))
       (shell-command (format "cd '%s'; git clone %s" dir url))))
 
-  (defun switch-to-messages-buffer ()
+  (defun my/switch-to-messages-buffer ()
     (interactive)
     (switch-to-buffer (messages-buffer)))
 
-  (defun switch-to-warnings-buffer ()
+  (defun my/switch-to-warnings-buffer ()
     (interactive)
     (switch-to-buffer "*Warnings*"))
 
