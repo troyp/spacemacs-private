@@ -3071,6 +3071,18 @@ With a prefix argument, formats the value using `(format \"%S\" val)' instead."
       (if current-prefix-arg (insert (format "%S" val))
         (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
 
+  (defun my/evil-normal-or-visual-state? ()
+    (and (boundp 'evil-state)
+         (memq evil-state
+               '(normal visual))))
+
+  (defun my/evil-indent-line-hold-position ()
+    (interactive)
+    (let ((marker (make-marker)))
+      (set-marker marker (point))
+      (evil-indent-line (line-beginning-position) (line-end-position))
+      (goto-char marker)))
+
   (defun my/eval-prettyprint-last-sexp (&optional eval-last-sexp-arg-internal)
     (interactive "P")
     (cl-case (and (boundp 'evil-state)
