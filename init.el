@@ -2216,14 +2216,16 @@ Committer: %cN <%cE>"))
 
   (bind-keys :map spacemacs-emacs-lisp-mode-map
              ;; common
-             ("e j"    . my/eval-prettyprint-last-sexp-maybe-comment)
-             ("e p"    . my/eval-print-last-sexp-maybe-comment)
+             ("e j"    . my/eval-print-last-sexp)
+             ("e p"    . my/eval-prettyprint-last-sexp)
              ("e D"    . eval-instrument-defun)
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
              ("t i"    . ert-run-tests-interactively)
-             ("j"      . my/eval-prettyprint-last-sexp-maybe-comment)
+             ("j"      . my/eval-print-last-sexp)
              ("x"      . prettyexpand-at-point)
+             ("; j"    . my/eval-print-last-sexp-as-comment)
+             ("; p"    . my/eval-prettyprint-last-sexp-as-comment)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
              ("RET"    . lisp-state-toggle-lisp-state)
@@ -2232,16 +2234,21 @@ Committer: %cN <%cE>"))
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
              ;; common
-             ("e j"    . my/eval-prettyprint-last-sexp-maybe-comment)
-             ("e p"    . my/eval-print-last-sexp-maybe-comment)
+             ("e j"    . my/eval-print-last-sexp)
+             ("e p"    . my/eval-prettyprint-last-sexp)
              ("e D"    . eval-instrument-defun)
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
-             ("j"      . my/eval-prettyprint-last-sexp-maybe-comment)
+             ("j"      . my/eval-print-last-sexp)
              ("x"      . prettyexpand-at-point)
+             ("; j"    . my/eval-print-last-sexp-as-comment)
+             ("; p"    . my/eval-prettyprint-last-sexp-as-comment)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
              ("RET"    . lisp-state-toggle-lisp-state)
+             )
+  (bind-keys :map lisp-interaction-mode-map
+             ("C-j"  . my/eval-prettyprint-last-sexp)
              )
 
   (which-key-add-major-mode-key-based-replacements 'emacs-lisp-mode
@@ -3082,6 +3089,24 @@ With a prefix argument, formats the value using `(format \"%S\" val)' instead."
       (set-marker marker (point))
       (evil-indent-line (line-beginning-position) (line-end-position))
       (goto-char marker)))
+
+  (defun my/eval-print-last-sexp (&optional same-line)
+    "Print the value of the preceding sexp on a new line.
+
+If SAME-LINE is non-nil, do not start a new line."
+    (interactive "P")
+    (let ((evil? (boundp 'evil-state))
+          (evil-move-beyond-eol t))
+      (when (my/evil-normal-or-visual-state?)
+        (forward-char 1))
+      (unless same-line
+        (newline))
+      (eval-last-sexp t)
+      (if evil?
+          (my/evil-indent-line-hold-position)
+        (indent-according-to-mode))
+      (unless same-line
+        (newline))))
 
   (defun my/eval-prettyprint-last-sexp (&optional eval-last-sexp-arg-internal)
     (interactive "P")
