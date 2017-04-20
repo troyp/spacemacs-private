@@ -462,6 +462,7 @@ you should place you code here."
   (scroll-bar-mode)
   (minibuffer-depth-indicate-mode 1)
   (setq evil-search-highlight-persist nil)
+  (setq left-fringe-width 16)    ;; displays diff-hl mode well
 
   ;; not working?
   (setq-default evil-esc-delay 0.00001)
@@ -1151,6 +1152,7 @@ you should place you code here."
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t :"          'nameless-mode
+    "t ["          'diff-hl-flydiff-mode
     "t C-s"        'my/undo-auto-save-make-local-and-toggle
     "t C-/"        'evil-search-highlight-persist
     "t C-'"        (def-variable-toggle fit-frame-inhibit-fitting-flag)
