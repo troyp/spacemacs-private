@@ -1097,6 +1097,7 @@ you should place you code here."
     "b S"          'my/switch-to-scratch-buffer-other-window
     "b W"          'my/switch-to-warnings-buffer
     "b -"          'diff-buffer-with-file
+    "b +"          'my/switch-to-changelog-buffer
     "b SPC"        'spacemacs/new-empty-buffer
     "b C-b"        'ibuffer
     "b C-e"        'bury-buffer
@@ -3261,6 +3262,10 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
   (defun my/switch-to-warnings-buffer ()
     (interactive)
     (switch-to-buffer "*Warnings*"))
+
+  (defun my/switch-to-changelog-buffer ()
+    (interactive)
+    (find-file (concat user-emacs-directory "CHANGELOG.org")))
 
   (defun help-previous ()
     (interactive)
