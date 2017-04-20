@@ -2277,7 +2277,7 @@ Committer: %cN <%cE>"))
   ;; ===== EVIL-ADJUST =====
 
   (require 'evil-adjust)
-  (evil-adjust)
+  (evil-adjust :noemacs25fix)
 
   ;; ===== SWITCH TO EVIL LISP STATE =====
 
