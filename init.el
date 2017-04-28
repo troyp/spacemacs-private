@@ -2236,6 +2236,7 @@ Committer: %cN <%cE>"))
              ("RET"    . lisp-state-toggle-lisp-state)
              ;; emacs-lisp-mode only
              ("M-w"    . elu-github-copy-md-sig-and-doc)
+             ("M-t"    . elu-create-test)
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
              ;; common
