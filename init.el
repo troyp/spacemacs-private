@@ -1206,6 +1206,7 @@ you should place you code here."
     "C-."          'ido-switch-buffer
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
+    "C-\\"         'set-input-method
     "C-SPC"        'cua-toggle-global-mark
     "C-S-SPC"      'just-one-blank-line
     "M-q"          'wrap-lines-in-region
