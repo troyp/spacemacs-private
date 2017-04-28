@@ -2233,6 +2233,7 @@ Committer: %cN <%cE>"))
              ("; p"    . my/eval-prettyprint-last-sexp-as-comment)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
+             (">"      . my/delete-function-application)
              ;; emacs-lisp-mode only
              ("M-w"    . elu-github-copy-md-sig-and-doc)
              ("M-t"    . elu-create-test)
@@ -2250,6 +2251,7 @@ Committer: %cN <%cE>"))
              ("; p"    . my/eval-prettyprint-last-sexp-as-comment)
              ("<f3> n" . kmacro-name-last-macro)
              ("<f3> p" . insert-kbd-macro)
+             (">"      . my/delete-function-application)
              )
   (bind-keys :map lisp-interaction-mode-map
              ("C-j"  . my/eval-prettyprint-last-sexp)
@@ -2268,6 +2270,13 @@ Committer: %cN <%cE>"))
     (setq evil-args-delimiters (mapcar (fn: make-string <> ? ) (number-sequence 1 50)))
     )
   (add-hook 'emacs-lisp-mode-hook 'emacs-lisp-init-fn)
+
+  (defun my/delete-function-application ()
+    "Remove the function under point and the parentheses wrapping it."
+    (interactive)
+    (apply #'evil-delete (evil-inner-symbol))
+    (sp-unwrap-sexp -1)
+    (evil-normal-state))
 
   ;; testing macro for my packages
   (defmacro should-equal
