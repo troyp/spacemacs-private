@@ -963,6 +963,7 @@ you should place you code here."
   (define-key evil-normal-state-map (kbd "n") 'my/evil-search-next-and-center)
   (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center)
   (define-key evil-normal-state-map (kbd "'") 'my/evil-goto-mark-line)
+  (define-key evil-normal-state-map (kbd "gi") 'my/evil-insert-resume)
 
   ;; provide evil-repeat-find-char-reverse binding
   (define-key evil-normal-state-map (kbd "M-;") 'evil-repeat-find-char-reverse)
@@ -4064,6 +4065,12 @@ With prefix argument, do not recentre."
     (evil-first-non-blank)
     (unless current-prefix-arg
       (evil-scroll-line-to-center nil)))
+
+  ;; TODO: scroll-to-center only if target is out of view
+  (defun my/evil-insert-resume (count)
+    (interactive "p")
+    (evil-insert-resume count)
+    (evil-scroll-line-to-center nil))
 
   (defun my/async-shell-command-no-window (command &optional output-buffer error-buffer)
     (interactive "sShell command: ")
