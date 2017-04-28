@@ -2277,6 +2277,12 @@ Committer: %cN <%cE>"))
       (unless (eq keyword :result) (error "expected :result"))
       `(should (equal ,expr ,result))))
 
+  (defmacro should-not-equal
+      (expr keyword result)
+    (progn
+      (unless (eq keyword :result) (error "expected :result"))
+      `(should-not (equal ,expr ,result))))
+
   ;; ===== EVIL-ADJUST =====
 
   (require 'evil-adjust)
