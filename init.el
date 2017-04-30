@@ -681,6 +681,13 @@ you should place you code here."
   (evil-define-text-object evil-outer-line (count &optional beg end type)
     (list (line-beginning-position) (line-end-position)))
 
+  (evil-define-text-object evil-inner-sexp  (count &optional beg end type)
+    (let ((sexp-bounds (cdr (sexp-at-point-with-bounds))))
+      (list (1+ (car sexp-bounds)) (1- (cdr sexp-bounds)))))
+  (evil-define-text-object evil-outer-sexp  (count &optional beg end type)
+    (let ((sexp-bounds (cdr (sexp-at-point-with-bounds))))
+      (list (car sexp-bounds) (cdr sexp-bounds))))
+
   ;; heredoc object: define properties for thingatpt
   (put 'heredoc 'beginning-op
        (lambda ()
@@ -707,6 +714,8 @@ you should place you code here."
   (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
   (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
   (define-key evil-inner-text-objects-map "<" 'evil-inner-heredoc)
+  (define-key evil-inner-text-objects-map "x" 'evil-inner-sexp)
+  (define-key evil-outer-text-objects-map "x" 'evil-outer-sexp)
   ;; evil-textobj-column
   (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD)
 
@@ -2228,6 +2237,7 @@ Committer: %cN <%cE>"))
              ("C-M-x"  . eval-defun)
              ("t i"    . ert-run-tests-interactively)
              ("j"      . my/eval-print-last-sexp)
+             ("v"      . my/evil-select-sexp-at-point)
              ("x"      . prettyexpand-at-point)
              ("; j"    . my/eval-print-last-sexp-as-comment)
              ("; p"    . my/eval-prettyprint-last-sexp-as-comment)
@@ -2246,6 +2256,7 @@ Committer: %cN <%cE>"))
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
              ("j"      . my/eval-print-last-sexp)
+             ("v"      . my/evil-select-sexp-at-point)
              ("x"      . prettyexpand-at-point)
              ("; j"    . my/eval-print-last-sexp-as-comment)
              ("; p"    . my/eval-prettyprint-last-sexp-as-comment)
@@ -3666,6 +3677,11 @@ Inserts the expansion on a new line at the end of the sexp."
       (forward-sexp)
       (newline)
       (insert (cl-prettyexpand sexp))))
+
+  (defun my/evil-select-sexp-at-point ()
+    (interactive)
+    (let ((sexp-bounds (cdr (sexp-at-point-with-bounds))))
+      (evil-visual-char (cdr sexp-bounds) (car sexp-bounds))))
 
   (defun describe-bindings-orig ()
     (interactive)
