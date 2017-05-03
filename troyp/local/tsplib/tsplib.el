@@ -41,6 +41,9 @@
     (end-of-line)
     (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
 
+(defun my/get-current-line ()
+  (buffer-substring (my/line-visible-beginning-position) (1+ (my/line-visible-end-position))))
+
 (defun match-line (regexp)
   "Check the current line against regexp and return the match position the or nil
  if it fails."
