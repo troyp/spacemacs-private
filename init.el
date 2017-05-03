@@ -3388,6 +3388,9 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (or (line-above-blank-p n)
         (line-below-blank-p n)))
 
+  (defun my/copy-current-line ()
+    (interactive)
+    (kill-ring-save (my/line-visible-beginning-position) (1+ (my/line-visible-end-position))))
 
   ;; ======================
   ;; delete duplicate lines
