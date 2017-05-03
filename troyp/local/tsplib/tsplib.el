@@ -29,13 +29,13 @@
 
 ;; ======CURRENT LINE OR REGION======
 
-(defun line-visible-beginning-position ()
+(defun my/line-visible-beginning-position ()
   "Return the position of the first visible character on the current line."
   (save-excursion
     (back-to-indentation)
     (point)))
 
-(defun line-visible-end-position ()
+(defun my/line-visible-end-position ()
   "Return the position of the last visible character on the current line."
   (save-excursion
     (end-of-line)

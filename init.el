@@ -677,7 +677,7 @@ you should place you code here."
     (-cons-to-list (bounds-of-thing-at-point 'filename)))
 
   (evil-define-text-object evil-inner-line (count &optional beg end type)
-    (list (line-visible-beginning-position) (+ 1 (line-visible-end-position))))
+    (list (my/line-visible-beginning-position) (+ 1 (my/line-visible-end-position))))
   (evil-define-text-object evil-outer-line (count &optional beg end type)
     (list (line-beginning-position) (line-end-position)))
 
