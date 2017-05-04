@@ -370,13 +370,12 @@ inserts a divider followed by a rectangular heading."
 ;; | Bar Headings |
 ;; '--------------'
 
-(fset 'comment-bar-heading-5=
-      (lambda (&optional arg)
-        "Keyboard macro."
-        (interactive "p")
-        (kmacro-exec-ring-item
-         (quote ("gu$vils=vils=vils=vils=vils= ;;" 0 "%d"))
-         arg)))
+(defun comment-bar-heading-5= (&optional arg)
+  "Keyboard macro."
+  (interactive "p")
+  (kmacro-exec-ring-item
+   (quote ("gu$vils=vils=vils=vils=vils= ;;" 0 "%d"))
+   arg))
 
 ;; -----------------------------------------------------------------------------
 
