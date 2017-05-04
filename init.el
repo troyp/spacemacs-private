@@ -1034,7 +1034,7 @@ you should place you code here."
   (define-key evil-visual-state-map (kbd "M-=") 'count-region)
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
-  (define-key evil-visual-state-map (kbd "o") 'evil-visual-rotate)
+  (define-key evil-visual-state-map (kbd "O") 'evil-visual-rotate)
   (evil-visual-replace-visual-bindings :PCRE)
 
 
