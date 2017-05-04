@@ -2233,7 +2233,7 @@ Committer: %cN <%cE>"))
            (heading (replace-regexp-in-string "^#*[ \\t]*" "" heading-line))
            (heading-fragment (downcase
                               (concat "#" (replace-regexp-in-string " " "-" heading))))
-           (link (format "[%s](%s)" heading heading-fragment)))
+           (link (format "[%s](%s)\n" heading heading-fragment)))
       (copy-string-as-kill link)))
 
   (bind-keys :map spacemacs-markdown-mode-map
