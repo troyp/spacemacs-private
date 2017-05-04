@@ -147,9 +147,9 @@
      (interactive "s")
      (insert-lines (,heading-lines-fn-sym s))))
 
-(fset 'box-heading (make-heading-command 'box-heading-lines))
-(fset 'rect-heading (make-heading-command (lambda (s) (rect-heading-lines s 'notrailing))))
-(fset 'short-rect-heading (make-heading-command 'short-rect-heading-lines))
+(defalias 'box-heading (make-heading-command 'box-heading-lines))
+(defalias 'rect-heading (make-heading-command (lambda (s) (rect-heading-lines s 'notrailing))))
+(defalias 'short-rect-heading (make-heading-command 'short-rect-heading-lines))
 
 (defun rect-heading-join-under (s)
   (let ((*rect-heading-omit-top* 't))    (rect-heading s)))
@@ -174,9 +174,9 @@
        (comment-region start (point))
        (indent-region start (point)))))
 
-(fset 'box-heading-comment  (make-heading-comment 'box-heading))
-(fset 'rect-heading-comment (make-heading-comment 'rect-heading))
-(fset 'short-rect-heading-comment (make-heading-comment 'short-rect-heading))
+(defalias 'box-heading-comment  (make-heading-comment 'box-heading))
+(defalias 'rect-heading-comment (make-heading-comment 'rect-heading))
+(defalias 'short-rect-heading-comment (make-heading-comment 'short-rect-heading))
 
 ;; -----------------------------------------------------------------------------
 ;; ,--------------------,
