@@ -997,6 +997,10 @@ you should place you code here."
   (define-key evil-normal-state-map (kbd "'") 'my/evil-goto-mark-line)
   (define-key evil-normal-state-map (kbd "gi") 'my/evil-insert-resume)
 
+  ;; PCRE search forward/backward
+  (define-key evil-normal-state-map (kbd "/") 'my/evil-pcre-isearch-forward)
+  (define-key evil-normal-state-map (kbd "?") 'my/evil-pcre-isearch-backward)
+
   ;; provide evil-repeat-find-char-reverse binding
   (define-key evil-normal-state-map (kbd "M-;") 'evil-repeat-find-char-reverse)
   ;; [r and ]r move to beginning and end of region
@@ -2764,6 +2768,40 @@ See also `multi-occur-in-matching-buffers'."
         (nreverse (mapcar #'get-buffer bufs)))
       (occur-read-primary-args)))
     (occur-1 (pcre-to-elisp regexp) nlines bufs))
+
+  (evil-define-motion my/evil-pcre-isearch-forward ()
+    (format
+     "Search forward incrementally for entered text or PCRE.
+
+If `evil-regexp-search' is t, search for a PCRE.
+
+ISEARCH DOCUMENTATION.
+----------------------
+%s" (documentation 'isearch-forward))
+    :jump t
+    :type exclusive
+    :repeat evil-repeat-search
+    (let ((init-pcre-mode (if pcre-mode 1 0)))
+      (pcre-mode t)
+      (evil-search-incrementally t evil-regexp-search)
+      (pcre-mode init-pcre-mode)))
+
+  (evil-define-motion my/evil-pcre-search-backward ()
+    (format
+     "Search backward incrementally for entered text or PCRE.
+
+If `evil-regexp-search' is t, search for a PCRE.
+
+ISEARCH DOCUMENTATION.
+----------------------
+%s" (documentation 'isearch-forward))
+    :jump t
+    :type exclusive
+    :repeat evil-repeat-search
+    (let ((init-pcre-mode (if pcre-mode 1 0)))
+      (pcre-mode t)
+      (evil-search-incrementally nil evil-regexp-search)
+      (pcre-mode init-pcre-mode)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------,
