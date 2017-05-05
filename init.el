@@ -506,6 +506,26 @@ you should place you code here."
             (fn: define-key cua-global-keymap [remap exchange-point-and-mark] nil))
   (define-key cua-global-keymap [remap exchange-point-and-mark] nil)
 
+  ;; ,-----------------,
+  ;; | CUA Global Mark |
+  ;; '-----------------'
+
+  (defun my/cua-global-mark-remove-nonregion-remappings ()
+    (interactive)
+    (define-key cua--global-mark-keymap [remap self-insert-command] nil)
+    (define-key cua--global-mark-keymap [remap backward-delete-char] nil)
+    (define-key cua--global-mark-keymap [remap backward-delete-char-untabify] nil)
+    (define-key cua--global-mark-keymap [t]
+      '(menu-item "sic" nil :filter cua--self-insert-char-p))
+    (define-key cua--global-mark-keymap [remap newline] nil)
+    (define-key cua--global-mark-keymap [remap newline-and-indent] nil)
+    (define-key cua--global-mark-keymap "\r" nil)
+    (define-key cua--global-mark-keymap "\t" nil))
+
+  (use-package cua-gmrk
+    :init (my/cua-global-mark-remove-nonregion-remappings)
+    )
+
   ;; AVY KEYS
   (setq avy-keys (list 97 115 100 102 106 107 108 59))
 
@@ -4097,18 +4117,6 @@ each line."
         (set-marker endm (line-end-position))
         (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
         (set-marker endm nil))))
-
-  (defun my/cua-global-mark-remove-nonregion-remappings ()
-    (interactive)
-    (define-key cua--global-mark-keymap [remap self-insert-command] nil)
-    (define-key cua--global-mark-keymap [remap backward-delete-char] nil)
-    (define-key cua--global-mark-keymap [remap backward-delete-char-untabify] nil)
-    (define-key cua--global-mark-keymap [t]
-      '(menu-item "sic" nil :filter cua--self-insert-char-p))
-    (define-key cua--global-mark-keymap [remap newline] nil)
-    (define-key cua--global-mark-keymap [remap newline-and-indent] nil)
-    (define-key cua--global-mark-keymap "\r" nil)
-    (define-key cua--global-mark-keymap "\t" nil))
 
   ;; modified version of evil-goto-mark-line
   (evil-define-command my/evil-goto-mark-line (char &optional noerror)
