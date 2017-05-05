@@ -503,7 +503,7 @@ you should place you code here."
             (fn: define-key cua-global-keymap [remap exchange-point-and-mark] nil))
   (define-key cua-global-keymap [remap exchange-point-and-mark] nil)
 
-  ;; ANY KEYS
+  ;; AVY KEYS
   (setq avy-keys (list 97 115 100 102 106 107 108 59))
 
   ;; global-hl-line
