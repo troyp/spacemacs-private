@@ -495,7 +495,10 @@ you should place you code here."
   ;; follow VC'ed symlinks
   (setq vc-follow-symlinks t)
 
-  ;; CUA RECTANGLE
+  ;; ,---------------,
+  ;; | CUA Rectangle |
+  ;; '---------------'
+
   (setq cua-enable-cua-keys nil)
   (cua-mode t)
   ;; stop cua breaking C-x C-x in visual-line selections
