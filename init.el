@@ -998,8 +998,8 @@ you should place you code here."
   (define-key evil-normal-state-map (kbd "gi") 'my/evil-insert-resume)
 
   ;; PCRE search forward/backward
-  (define-key evil-normal-state-map (kbd "/") 'my/evil-pcre-isearch-forward)
-  (define-key evil-normal-state-map (kbd "?") 'my/evil-pcre-isearch-backward)
+  (define-key evil-normal-state-map (kbd "/") 'my/evil-pcre-search-forward)
+  (define-key evil-normal-state-map (kbd "?") 'my/evil-pcre-search-backward)
 
   ;; provide evil-repeat-find-char-reverse binding
   (define-key evil-normal-state-map (kbd "M-;") 'evil-repeat-find-char-reverse)
@@ -2769,7 +2769,7 @@ See also `multi-occur-in-matching-buffers'."
       (occur-read-primary-args)))
     (occur-1 (pcre-to-elisp regexp) nlines bufs))
 
-  (evil-define-motion my/evil-pcre-isearch-forward ()
+  (evil-define-motion my/evil-pcre-search-forward ()
     (format
      "Search forward incrementally for entered text or PCRE.
 
