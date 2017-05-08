@@ -891,6 +891,9 @@ you should place you code here."
   (global-set-key (kbd "M-J") 'scroll-up-line)
   (global-set-key (kbd "M-K") 'scroll-down-line)
 
+  (global-set-key (kbd "M-[") (fn! (forward-symbol -1)))
+  (global-set-key (kbd "M-]") 'forward-symbol)
+
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
   (global-set-key "\C-a" 'move-beginning-of-line-or-text)    ;; troyp/utils.el
