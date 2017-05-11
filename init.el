@@ -568,6 +568,9 @@ you should place you code here."
     (dolist (dir extra-Info-dirs)
       (add-to-list 'Info-directory-list dir)))
 
+  ;; Shell-command switches
+  (setq shell-command-switch "-ic")
+
   ;; ===============================================================================
   ;;                                      ________
   ;;                                     |        |
