@@ -36,20 +36,23 @@
     (point)))
 
 (defun my/line-visible-end-position ()
-  "Return the position of the last visible character on the current line."
+  "Return the position after the last visible character on the current line."
   (save-excursion
     (end-of-line)
-    (re-search-backward "[^ \t\n]" (line-beginning-position) t)))
+    (let* (start (line-beginning-position)
+          (search-result (re-search-backward "[^ \t\n]" start t)))
+      (1+ (or search-result start)))))
 
 (defun my/get-current-line ()
-  (buffer-substring (my/line-visible-beginning-position) (1+ (my/line-visible-end-position))))
+  (when (my/line-visible-end-position)
+    (buffer-substring (my/line-visible-beginning-position) (my/line-visible-end-position)))
 
-(defun match-line (regexp)
-  "Check the current line against regexp and return the match position the or nil
+  (defun match-line (regexp)
+    "Check the current line against regexp and return the match position the or nil
  if it fails."
-  (save-excursion
-    (beginning-of-line)
-    (re-search-forward regexp (line-end-position) t)))
+    (save-excursion
+      (beginning-of-line)
+      (re-search-forward regexp (line-end-position) t))))
 
 (defun get-region-or-buffer ()
   "Return cons representing the bounds of the current region or the entire buffer."

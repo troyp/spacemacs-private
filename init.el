@@ -705,7 +705,7 @@ you should place you code here."
     (-cons-to-list (bounds-of-thing-at-point 'filename)))
 
   (evil-define-text-object evil-inner-line (count &optional beg end type)
-    (list (my/line-visible-beginning-position) (+ 1 (my/line-visible-end-position))))
+    (list (my/line-visible-beginning-position) (my/line-visible-end-position)))
   (evil-define-text-object evil-outer-line (count &optional beg end type)
     (list (line-beginning-position) (line-end-position)))
 
@@ -3476,7 +3476,8 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
 
   (defun my/copy-current-line ()
     (interactive)
-    (kill-ring-save (my/line-visible-beginning-position) (1+ (my/line-visible-end-position))))
+    (when (my/line-visible-end-position)
+      (kill-ring-save (my/line-visible-beginning-position) (my/line-visible-end-position))))
 
   ;; ======================
   ;; delete duplicate lines
