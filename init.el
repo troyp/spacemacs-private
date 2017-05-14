@@ -4219,6 +4219,21 @@ Text is selected using `my/evil-select-region-operator'."
                        nil nil               ;; repeat-count map
                        beg end)))
 
+  (defun my/line-length (&optional N trim)
+    "Return the length of the Nth line.
+
+If N is nil, the current line is measured.
+if TRIM is non-nil, leading and trailing whitespace is ignored."
+    (save-excursion
+      (when N
+        (goto-char (point-min))
+        (forward-line (1- N)))
+      (if trim
+         (1+ (- (progn (end-of-line) (re-search-backward "[^ \t\n]" (line-beginning-position) t))
+                (progn (back-to-indentation) (point))))
+       (- (line-end-position)
+          (line-beginning-position)))))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
