@@ -1247,6 +1247,7 @@ you should place you code here."
     "C-l"          'quick-pcre-align-repeat
     "C-v"          'evil-cua-toggle
     "C-w"          'delete-frame
+    "C-y"          'my/paste-no-properties
     "C-."          'ido-switch-buffer
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
@@ -4233,6 +4234,13 @@ if TRIM is non-nil, leading and trailing whitespace is ignored."
                 (progn (back-to-indentation) (point))))
        (- (line-end-position)
           (line-beginning-position)))))
+
+  (defun my/paste-no-properties ()
+    "Paste the text at the top of the kill ring, but ignore properties.
+
+In particular, rectangular selections are yanked as whole lines."
+    (interactive)
+    (insert (current-kill 0)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
