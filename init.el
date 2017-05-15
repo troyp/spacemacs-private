@@ -1984,7 +1984,14 @@ you should place you code here."
                   ("a" . help-previous)
                   ("d" . help-next)
                   )
+       (define-key button-map [remap push-button] #'my/push-button-and-center)
        ))
+
+  (defun my/push-button-and-center (&optional pos use-mouse-action)
+    (interactive (list (if (integerp last-command-event) (point)
+                         last-command-event)))
+    (call-interactively #'push-button)
+    (evil-scroll-line-to-center nil))
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
