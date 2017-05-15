@@ -3089,7 +3089,6 @@ temporarily enables it to allow getting help on disabled items and buttons."
   (defalias 'undefun 'fmakunbound)
   (defalias 'acoff 'auto-complete-mode-off)
   (defalias 'ali 'quick-pcre-align-repeat)
-  (defalias 'replace-in-string 'dired-replace-in-string)
   ;; aliases for discoverability
   (defalias 'string-to-symbol 'intern)
   (defalias 'symbol-to-string 'symbol-name)
