@@ -2137,6 +2137,17 @@ you should place you code here."
   (setq eclim-eclipse-dirs "~/opt/eclipse"
         eclim-executable "~/opt/eclipse/eclim")
 
+  (defun my/java-quick-run ()
+    (interactive)
+    (let ((name (replace-regexp-in-string
+                 "\\.java$" ""
+                 (file-name-nondirectory buffer-file-name))))
+      (shell-command (format "javac %s.java && java %s" name name))))
+
+  (spacemacs/set-leader-keys-for-major-mode 'java-mode
+    "RET"           'my/java-quick-run
+    )
+
   ;; ================
   ;; Keyboard Macros.
   ;; ================
