@@ -1987,12 +1987,6 @@ you should place you code here."
        (define-key button-map [remap push-button] #'my/push-button-and-center)
        ))
 
-  (defun my/push-button-and-center (&optional pos use-mouse-action)
-    (interactive (list (if (integerp last-command-event) (point)
-                         last-command-event)))
-    (call-interactively #'push-button)
-    (evil-scroll-line-to-center nil))
-
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
   ;; | Hy-Mode |
@@ -3919,22 +3913,6 @@ If the region is not active, the entire buffer is processed."
       (evil-visual-restore)
       (evil-visual-paste 1)))
 
-  (evil-define-motion my/evil-search-previous-and-center (count)
-    "Repeat the last search and center."
-    :jump t
-    :type exclusive
-    :keep-visual t
-    (evil-search-previous count)
-    (evil-scroll-line-to-center nil))
-
-  (evil-define-motion my/evil-search-next-and-center (count)
-    "Repeat the last search and center."
-    :jump t
-    :type exclusive
-    :keep-visual t
-    (evil-search-next count)
-    (evil-scroll-line-to-center nil))
-
   (defun my/kill-buffer-quit-help ()
     "Kill the current buffer, close its window, and quit the help buffer."
     (interactive)
@@ -4287,6 +4265,9 @@ In particular, rectangular selections are yanked as whole lines."
          (evil-scroll-line-to-center nil))))
 
   (my/define-command-and-center spacemacs/jump-to-definition)
+  (my/define-command-and-center push-button)
+  (my/define-evil-motion-and-center evil-search-previous-and-center)
+  (my/define-evil-motion-and-center evil-search-next-and-center)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
