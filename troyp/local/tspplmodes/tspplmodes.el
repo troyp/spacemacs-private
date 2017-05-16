@@ -109,6 +109,23 @@
       (comment-use-block-comments)
     (comment-use-line-comments)))
 
+
+;; -------------------------------------------------------------------------------
+;; ,-------------,
+;; | Common Lisp |
+;; '-------------'
+
+;; https://www.reddit.com/r/lisp/comments/5osi1d/dont_loop_iterate_the_iterate_manual/
+(with-eval-after-load 'lisp-mode
+  (font-lock-add-keywords
+   'lisp-mode
+   '(("(\\(iter\\(ate\\)?\\|defmacro-\\(driver\\|clause\\)\\)[[:space:]\n]" 1 'font-lock-keyword-face)
+     ("(i\\(ter\\(ate\\)?\\|n\\)\\s-+\\([^()\\s-]+\\)" 3 'font-lock-constant-face)
+     ("(\\(f\\(or\\|in\\(ish\\|ally\\(-protected\\)?\\)\\)\\|generate\\|w\\(hile\\|ith\\)\\|until\\|repeat\\|leave\\|next-iteration\\|i\\(n\\(itially\\)?\\|f-first-time\\)\\|after-each\\|else\\)[[:space:]\n)]" 1 'font-lock-keyword-face)
+     ("(define-constant\\s-+\\(\\(\\sw\\|\\s_\\)*\\)" 1 'font-lock-variable-name-face))
+   t))
+
+
 ;; -------------------------------------------------------------------------------
 ;; ,---,
 ;; | D |
