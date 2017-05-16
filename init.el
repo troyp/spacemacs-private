@@ -2306,6 +2306,7 @@ Committer: %cN <%cE>"))
              ("e D"    . eval-instrument-defun)
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
+             ("g g"    . my/spacemacs/jump-to-definition-and-center)
              ("t i"    . ert-run-tests-interactively)
              ("j"      . my/eval-print-last-sexp)
              ("v"      . my/evil-select-sexp-at-point)
@@ -2326,6 +2327,7 @@ Committer: %cN <%cE>"))
              ("e D"    . eval-instrument-defun)
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
+             ("g g"    . my/spacemacs/jump-to-definition-and-center)
              ("j"      . my/eval-print-last-sexp)
              ("v"      . my/evil-select-sexp-at-point)
              ("x"      . prettyexpand-at-point)
@@ -4283,6 +4285,8 @@ In particular, rectangular selections are yanked as whole lines."
          (interactive)
          (call-interactively #',func)
          (evil-scroll-line-to-center nil))))
+
+  (my/define-command-and-center spacemacs/jump-to-definition)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
