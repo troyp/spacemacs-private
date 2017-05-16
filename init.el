@@ -4259,6 +4259,31 @@ In particular, rectangular selections are yanked as whole lines."
     (interactive)
     (insert (current-kill 0)))
 
+  (defmacro my/define-evil-motion-and-center (func)
+    "Define a version of an evil jump motion which centers the target line."
+    (let* ((func-name (symbol-name func))
+           (new-name  (concat "my/" func-name "-and-center"))
+           (new-func  (intern new-name))
+           (new-doc   (format "Perform `%s' and recenter." func)))
+      `(evil-define-motion ,new-func (count)
+         ,new-doc
+         :jump t
+         :type exclusive
+         :keep-visual t
+         (,func count)
+         (evil-scroll-line-to-center nil))))
+
+  (defmacro my/define-command-and-center (func)
+    "Define a version of a command which centers the target line."
+    (let* ((func-name (symbol-name func))
+           (new-name  (concat "my/" func-name "-and-center"))
+           (new-func  (intern new-name))
+           (new-doc   (format "Perform `%s' and recenter." func)))
+      `(defun ,new-func ()
+         (interactive)
+         (call-interactively #',func)
+         (evil-scroll-line-to-center nil))))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
