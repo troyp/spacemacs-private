@@ -781,6 +781,9 @@ you should place you code here."
           ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
           ((?. ?-) . ?\x00b7)    ;; middle-dot
           ((?i 34) . ?\x00ef)    ;; ï (also on i:)
+          ;; kragen compose combinations
+          ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
+          ((?, ?t) . ?\x0163)    ;; ţ (default, but obscured by binding above)
           ))
 
   (defun my/evil-enter-digraphs ()
