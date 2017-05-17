@@ -782,7 +782,12 @@ you should place you code here."
           ((?. ?-) . ?\x00b7)    ;; middle-dot
           ((?i 34) . ?\x00ef)    ;; ï (also on i:)
           ))
-  (defalias 'digra 'evil-enter-digraphs)  ;; tspevil.el
+
+  (defun my/evil-enter-digraphs ()
+    "Enter digraphs until `undo' is triggered."
+    (interactive)
+    (while t (evil-insert-digraph 1)))
+
 
   ;; TODO: generate digraphs table with unicode names and descriptions
   (defun helm-occur-digraphs ()
