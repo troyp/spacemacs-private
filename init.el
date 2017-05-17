@@ -788,6 +788,11 @@ you should place you code here."
     (interactive)
     (while t (evil-insert-digraph 1)))
 
+  (defun my/evil-enter-digraphs-default ()
+    "Enter default digraphs until `undo' is triggered."
+    (interactive)
+    (let ((evil-digraphs-table-user nil))
+      (while t (evil-insert-digraph 1))))
 
   ;; TODO: generate digraphs table with unicode names and descriptions
   (defun helm-occur-digraphs ()
