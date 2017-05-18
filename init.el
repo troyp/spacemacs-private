@@ -495,6 +495,9 @@ you should place you code here."
   ;; follow VC'ed symlinks
   (setq vc-follow-symlinks t)
 
+  ;; undo
+  (setq undo-outer-limit 50000000)
+
   ;; ,---------------,
   ;; | CUA Rectangle |
   ;; '---------------'
