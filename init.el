@@ -4279,8 +4279,8 @@ In particular, rectangular selections are yanked as whole lines."
 
   (my/define-command-and-center spacemacs/jump-to-definition)
   (my/define-command-and-center push-button)
-  (my/define-evil-motion-and-center evil-search-previous-and-center)
-  (my/define-evil-motion-and-center evil-search-next-and-center)
+  (my/define-evil-motion-and-center evil-search-previous)
+  (my/define-evil-motion-and-center evil-search-next)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
