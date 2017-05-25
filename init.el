@@ -1216,6 +1216,8 @@ you should place you code here."
     "s R r"          'pcre-occur
     "t O"          (my/def-variable-toggle which-key-show-operator-state-maps)
     "t T"          (my/def-variable-toggle indent-tabs-mode)
+    "t 3"          'my/toggle-evil-mc-mode
+    "t C-n"        'my/toggle-evil-mc-mode-and-cursor
     "t SPC"        (my/def-variable-toggle show-trailing-whitespace)
     "t '"          'variable-pitch-mode
     "t |"          'fci-mode
@@ -1225,7 +1227,6 @@ you should place you code here."
     "t C-s"        'my/undo-auto-save-make-local-and-toggle
     "t C-/"        'evil-search-highlight-persist
     "t C-'"        (my/def-variable-toggle fit-frame-inhibit-fitting-flag)
-    "t C-SPC"      'evil-mc-mode
     "T |"          'scroll-bar-mode
     "w TAB"        'ace-swap-window
     "w DEL"        'my/delete-window-ace-move-buffer-quit-help
@@ -1530,6 +1531,30 @@ you should place you code here."
   ;; * MINOR MODES *
   ;; *             *
   ;; ***************
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,--------------,
+  ;; | evil-mc-mode |
+  ;; '--------------'
+
+  (defun my/toggle-evil-mc-mode()
+    (interactive)
+    (if evil-mc-mode
+        (progn (evil-mc-undo-all-cursors)
+               (evil-mc-mode 0)
+               (message "evil-mc-mode disabled"))
+      (evil-mc-mode 1)
+      (message "evil-mc-mode enabled")))
+
+  (defun my/toggle-evil-mc-mode-and-cursor()
+    (interactive)
+    (if evil-mc-mode
+        (progn (evil-mc-undo-all-cursors)
+               (evil-mc-mode 0)
+               (message "evil-mc-mode disabled"))
+      (evil-mc-mode 1)
+      (evil-mc-make-and-goto-next-match)
+      (message "evil-mc-mode enabled")))
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
