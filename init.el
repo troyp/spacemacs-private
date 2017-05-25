@@ -1216,6 +1216,7 @@ you should place you code here."
     "s R r"          'pcre-occur
     "t O"          (my/def-variable-toggle which-key-show-operator-state-maps)
     "t T"          (my/def-variable-toggle indent-tabs-mode)
+    "t SPC"        (my/def-variable-toggle show-trailing-whitespace)
     "t '"          'variable-pitch-mode
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
