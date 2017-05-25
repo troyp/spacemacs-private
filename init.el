@@ -2056,6 +2056,12 @@ you should place you code here."
   (bind-keys :map Info-mode-map
              ("M-h" . Info-history-back)
              ("M-l" . Info-history-forward)
+             ("<mouse-4>" . mwheel-scroll)
+             ("<mouse-5>" . mwheel-scroll)
+             ("<mouse-6>" . Info-backward-node)
+             ("<mouse-7>" . Info-forward-node)
+             ("<mouse-8>" . Info-history-forward )
+             ("<mouse-9>" . Info-history-back)
              )
 
   (spacemacs/set-leader-keys-for-major-mode 'Info-mode
