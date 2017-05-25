@@ -638,6 +638,9 @@ you should place you code here."
   (require 'elisp-utils)
   (add-to-load-path "/home/troy/.emacs.d/private/repos/tempgit/")
   (require 'tempgit)
+  (add-to-load-path "/home/troy/.emacs.d/private/repos/asoc.el/")
+  (add-to-load-path "/home/troy/.emacs.d/private/repos/asciiboxes/")
+  (add-to-load-path "/home/troy/.emacs.d/private/repos/tempgit/")
 
   ;; ==============================================================================
   ;;                             *******************
