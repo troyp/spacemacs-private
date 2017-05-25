@@ -829,11 +829,11 @@ you should place you code here."
   ;;                                 *              *
   ;;                                 ****************
 
-  (defmacro def-variable-toggle (var)
-    (let* ((fname `(concat "toggle-" (symbol-name ',var)))
+  (defmacro my/def-variable-toggle (var)
+    (let* ((fname `(concat "my/toggle-" (symbol-name ',var)))
            (fsym  (intern (eval fname))))
       `(defun ,fsym ()
-         "Defined with `def-variable-toggle'."
+         "Defined with `my/def-variable-toggle'."
          (interactive)
          (setq ,var (not ,var))
          (message "%S is %s" ',var (if ,var "enabled" "disabled")))))
@@ -1214,8 +1214,8 @@ you should place you code here."
     "r b"          'bookmark-map
     "s R R"          'pcre-multi-occur
     "s R r"          'pcre-occur
-    "t O"          (def-variable-toggle which-key-show-operator-state-maps)
-    "t T"          (def-variable-toggle indent-tabs-mode)
+    "t O"          (my/def-variable-toggle which-key-show-operator-state-maps)
+    "t T"          (my/def-variable-toggle indent-tabs-mode)
     "t '"          'variable-pitch-mode
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
@@ -1223,7 +1223,7 @@ you should place you code here."
     "t ["          'diff-hl-flydiff-mode
     "t C-s"        'my/undo-auto-save-make-local-and-toggle
     "t C-/"        'evil-search-highlight-persist
-    "t C-'"        (def-variable-toggle fit-frame-inhibit-fitting-flag)
+    "t C-'"        (my/def-variable-toggle fit-frame-inhibit-fitting-flag)
     "t C-SPC"      'evil-mc-mode
     "T |"          'scroll-bar-mode
     "w TAB"        'ace-swap-window
@@ -3870,7 +3870,7 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
     (interactive)
     (my/variable-make-local-and-toggle 'undo-tree-auto-save-history))
 
-  (def-variable-toggle company-quickhelp-mode)
+  (my/def-variable-toggle company-quickhelp-mode)
 
   (defun my/shell-command-process-region-as-file
       (start end command &optional output-buffer error-buffer)
