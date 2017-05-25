@@ -779,11 +779,14 @@ you should place you code here."
 
   (setq evil-digraphs-table-user
         '(
-          ((?. ? ) . ?\x2024)    ;; one-dot leader
-          ((?. ?/) . ?\x2026)    ;; (horizontal) ellipsis
+          ((?. ? ) . ?\x2024)    ;; ․ 1-dot leader
+          ((?. ?/) . ?\x2025)    ;; ‥ 2-dot leader
+          ;; compose combinations
+          ((?. ?.) . ?\x2026)    ;; (horizontal) ellipsis (replaces ‥)
           ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
           ((?. ?-) . ?\x00b7)    ;; middle-dot
           ((?i 34) . ?\x00ef)    ;; ï (also on i:)
+          ((?t ?-) . ?\x0167)    ;; ŧ
           ;; kragen compose combinations
           ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
           ((?, ?t) . ?\x0163)    ;; ţ (default, but obscured by binding above)
