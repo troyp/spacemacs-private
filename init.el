@@ -973,6 +973,10 @@ you should place you code here."
 
   (global-set-key (kbd "<M-insert>") 'org-capture)
 
+  (global-set-key (kbd "C-x C-c")
+                  (fn! (when (y-or-n-p "Exit? ")
+                         (call-interactively #'save-buffers-kill-terminal))))
+
   (bind-key* "C-M-x" 'helm-eval-expression-with-eldoc)
 
   (use-package google-this :bind-keymap ("C-c /" . google-this-mode-submap))
