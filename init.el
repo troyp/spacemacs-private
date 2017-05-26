@@ -2322,6 +2322,9 @@ Committer: %cN <%cE>"))
     (interactive)
     (my/async-shell-command-no-window
      "GIT_EXTERNAL_DIFF='meld $2 $5 | cat' git diff HEAD --color-words"))
+  (defun my/magit-undo-last-commit ()
+    (interactive)
+    (magit-reset "HEAD~"))
 
   (spacemacs/set-leader-keys-for-major-mode 'magit-diff-mode
     "s"      'magit-diff-toggle-ignore-all-space
@@ -2333,6 +2336,7 @@ Committer: %cN <%cE>"))
     "d g g"  'my/magit-diff-meld
     "d g a"  'my/magit-diff-added-meld
     "d g c"  'my/magit-diff-committed-meld
+    "r"      'my/magit-undo-last-commit
     )
 
   ;; -------------------------------------------------------------------------------
