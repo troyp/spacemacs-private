@@ -793,6 +793,10 @@ you should place you code here."
           ;; kragen compose combinations
           ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
           ((?, ?t) . ?\x0163)    ;; ţ (default, but obscured by binding above)
+          ((?, ?T) . ?\x0162)    ;; Ţ (default, but obscured by binding above)
+          ((?n ?,) . ?\x0273)    ;; ɳ (replaces ţ which is also available on ,n)
+          ((?, ?n) . ?\x0146)    ;; ņ (default, but obscured by binding above)
+          ((?, ?N) . ?\x0145)    ;; Ņ (default, but obscured by binding above)
           ))
 
   (defun my/evil-enter-digraphs ()
