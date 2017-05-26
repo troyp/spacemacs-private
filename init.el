@@ -1075,6 +1075,9 @@ you should place you code here."
   ;; evil-window: C-w C-w to swap windows
   (bind-key "C-w" #'my/window-swap-with-next evil-window-map)
 
+  ;; save
+  (define-key evil-normal-state-map "ZC" 'save-buffers-kill-terminal)
+
   ;; ,-----------------,
   ;; | EVILIFIED STATE |
   ;; '-----------------'
