@@ -4310,6 +4310,14 @@ In particular, rectangular selections are yanked as whole lines."
     (interactive)
     (insert (current-kill 0)))
 
+  (defmacro my/resulting-position (&rest operations)
+    "Return the position that results after OPERATIONS are performed.
+
+All changes are reverted."
+    `(save-mark-and-excursion
+      ,@operations
+      (point)))
+
   (defmacro my/define-evil-motion-and-center (func)
     "Define a version of an evil jump motion which centers the target line."
     (let* ((func-name (symbol-name func))
