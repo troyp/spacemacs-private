@@ -1280,6 +1280,8 @@ you should place you code here."
     "<f5>"         'spacemacs/safe-revert-buffer
     "<f10>"        'my/menu-execute/lambda-a-and-exit
     "C-l"          'quick-pcre-align-repeat
+    "C-p"          'my/evil-paste-after-as-block
+    "C-P"          'my/evil-paste-before-as-block
     "C-v"          'evil-cua-toggle
     "C-w"          'delete-frame
     "C-y"          'my/paste-no-properties
@@ -4333,6 +4335,24 @@ If UNTABIFY is non-nil, then tabs are replaced by spaces before conversion."
           (insert
            (make-string (- longest-length last-length) space))
           (evil-yank (point-min) (point-max) evil-visual-block)))))
+
+  (defun my/evil-paste-after-as-block ()
+    "Paste the latest selection after point after converting to a block.
+
+If UNTABIFY is non-nil (or if no argument is given interactively), then tabs
+are replaced by spaces before conversion."
+    (interactive)
+    (my/evil-convert-kill-to-block t)
+    (evil-paste-after))
+
+  (defun my/evil-paste-before-as-block ()
+    "Paste the latest selection before point after converting to a block.
+
+If UNTABIFY is non-nil (or if no argument is given interactively), then tabs
+are replaced by spaces before conversion."
+    (interactive)
+    (my/evil-convert-kill-to-block t)
+    (evil-paste-before))
 
   (defun my/number-of-lines-in-kill ()
     "Return the number of lines in the latest selection."
