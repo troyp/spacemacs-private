@@ -4171,6 +4171,8 @@ UNIQUE-BUFFER is non-nil."
           (kill-ring-save (point-min) (point-max))
           (help-mode)))))
 
+  ;; FIXME: macro was hanging when used in my/convert-kill-to-rectangle.
+  ;;        The marker-position was much greater than maximum point.
   (defmacro dolines (spec &rest body)
     "Iterate through the (visible) lines of the current buffer.
 
