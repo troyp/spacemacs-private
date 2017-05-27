@@ -1291,6 +1291,7 @@ you should place you code here."
     "C-\\"         'set-input-method
     "C-SPC"        'cua-toggle-global-mark
     "C-S-SPC"      'just-one-blank-line
+    "M-p"          'my/evil-paste-after-column-kill-height
     "M-q"          'wrap-lines-in-region
     "M-x"          'helm-M-x
     "M-%"          'evil-visual-replace-query-replace
