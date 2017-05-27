@@ -4310,6 +4310,69 @@ In particular, rectangular selections are yanked as whole lines."
     (interactive)
     (insert (current-kill 0)))
 
+  (defun my/evil-convert-kill-to-block(&optional untabify)
+    "Convert the latest selection to an evil block selection and push on kill-ring."
+    (interactive)
+    (let (lns)
+      (with-temp-buffer
+        (yank)
+        ;; remove trailing newline
+        (when (= (line-end-position) (line-beginning-position))
+          (delete-backward-char 1))
+        (when untabify (untabify (point-min) (point-max)))
+        (beginning-of-buffer)
+        (do ((n 1)) ((> n (evil-ex-last-line)))
+          (push (my/line-length n) lns)
+          (incf n))
+        (end-of-buffer)
+        (let ((longest-length (apply #'max lns))
+              (last-length    (car lns))
+              (space          32))
+          (insert
+           (make-string (- longest-length last-length) space))
+          (evil-yank (point-min) (point-max) evil-visual-block)))))
+
+  (defun my/number-of-lines-in-kill ()
+    "Return the number of lines in the latest selection."
+    (with-temp-buffer
+      (yank)
+      (evil-ex-last-line)))
+
+  (defun my/evil-make-column-kill-height (char)
+    "Create an evil visual-block out of a column of CHAR and push on kill-ring.
+
+The height of the column is the same as that of the latest selection."
+    (with-temp-buffer
+      (insert
+       (s-join "\n"
+               (-repeat (my/number-of-lines-in-kill) (list char))))
+      (evil-yank (point-min) (point-max) evil-visual-block)))
+  (defun my/evil-paste-after-column-kill-height (char)
+    "Paste a column of CHAR after point.
+
+The height of the column is the same as that of the latest selection."
+    (interactive "c")
+    (my/evil-make-column-kill-height char)
+    (evil-paste-after 1))
+  (defun my/evil-paste-before-column-kill-height (char)
+    "Paste a column of CHAR before point.
+
+The height of the column is the same as that of the latest selection."
+    (interactive "c")
+    (my/evil-make-column-kill-height char)
+    (evil-paste-before 1))
+  (defun my/evil-select-column-kill-height ()
+    "Select a column under point as an evil-block.
+
+The height of the column is the same as that of the latest selection."
+    (interactive)
+    (evil-save-mark)
+    (let ((beg (point))
+          (end (my/resulting-position
+                (evil-next-line (1- (my/number-of-lines-in-kill))))))
+      (evil-visual-make-region beg end)
+      (evil-visual-block)))
+
   (defmacro my/resulting-position (&rest operations)
     "Return the position that results after OPERATIONS are performed.
 
