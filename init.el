@@ -4311,7 +4311,9 @@ In particular, rectangular selections are yanked as whole lines."
     (insert (current-kill 0)))
 
   (defun my/evil-convert-kill-to-block(&optional untabify)
-    "Convert the latest selection to an evil block selection and push on kill-ring."
+    "Convert the latest selection to an evil block selection and push on kill-ring.
+
+If UNTABIFY is non-nil, then tabs are replaced by spaces before conversion."
     (interactive)
     (let (lns)
       (with-temp-buffer
