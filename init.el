@@ -1169,6 +1169,7 @@ you should place you code here."
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
   (spacemacs/set-leader-keys
+    "a p"          'my/list-processes
     "a ="          'calculator
     "a '"          'browse-url-firefox
     "b M"          'my/switch-to-messages-buffer
@@ -4403,6 +4404,11 @@ All changes are reverted."
     `(save-mark-and-excursion
       ,@operations
       (point)))
+
+  (defun my/list-processes (&optional query-only buffer)
+    (interactive)
+    (list-processes query-only buffer)
+    (select-window (display-buffer "*Process List*")))
 
   (defmacro my/define-evil-motion-and-center (func)
     "Define a version of an evil jump motion which centers the target line."
