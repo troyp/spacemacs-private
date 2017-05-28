@@ -2185,7 +2185,7 @@ you should place you code here."
 
   (global-set-key (kbd "C-c C-v") 'browse-buffer-file-firefox)
   (eval-after-load "markdown-mode"
-    '(define-key markdown-mode-map (kbd "C-c C-v") 'markdown-export-to-html-and-view))
+    '(define-key markdown-mode-map (kbd "C-c C-v") 'my/markdown-view))
   (eval-after-load "web-mode"
     '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-application))
   (eval-after-load "haskell-mode"
@@ -3237,11 +3237,69 @@ temporarily enables it to allow getting help on disabled items and buttons."
     (interactive)
     (browse-file-with-external-application buffer-file-name))
 
-  (defun markdown-export-to-html-and-view ()
+  (defun my/markdown-export-to-html-and-view (&optional file)
+    "Export markdown to html and view with XDG default browser."
     (interactive)
-    (let ((fname (or (markdown-export-file-name)
-                     (make-temp-file "markdown-output"))))
-      (browse-file-with-external-application (markdown-export fname))))
+    (let ((fname (if file
+                     (with-temp-buffer
+                       (insert-file-contents file t)
+                       (markdown-export (markdown-export-file-name)))
+                   (unless (buffer-file-name)
+                     (write-file (make-temp-file "markdown-output")))
+                   (markdown-export (markdown-export-file-name)))))
+      (browse-file-with-external-application fname)))
+
+  (defun my/markdown-view-with-remarkable (file)
+    "View FILE with remarkable (https://github.com/jamiemcg/remarkable)."
+    (interactive (list (buffer-file-name)))
+    (my/async-shell-command-no-window
+     (format "remarkable '%s'" file)))
+
+  (defun my/markdown-view (file &optional app)
+    "View markdown FILE with APP.
+
+APP is specified as a key from `my/markdown-apps'.
+
+When called interactively, view the current file using an app specified by the
+current prefix argument.
+
+    nil  convert to html & view in default browser
+    C-u  [ choose from completion menu ]
+    1    grip server & view in firefox
+    2    firefox markdown plugin
+    3    remarkable"
+    (interactive
+     (list (buffer-file-name)
+           (let ((arg current-prefix-arg))
+             (cond ((equalp arg '(4)) (intern (completing-read "app: " my/markdown-apps)))
+                   ((equalp arg 1)    'grip/firefox)
+                   ((equalp arg 2)    'firefox/md)
+                   ((equalp arg 3)    'remarkable)
+                   (t                 'xdg/html)
+                   ))))
+    (my/markdown-app-call (or app 'remarkable) file))
+
+  (defvar my/markdown-apps
+    (list '(remarkable   . (my/async-shell-command-no-window (format "remarkable '%s'" file)))
+          '(xdg/html     . (my/markdown-export-to-html-and-view))
+          '(firefox/md   . (my/async-shell-command-no-window (format "firefox '%s'" file)))
+          '(grip/firefox . (progn (my/async-shell-command-no-window
+                                   (format "grip '%s'" (buffer-file-name)))
+                                  (run-with-timer
+                                   0.8 nil
+                                   (fn: start-process
+                                     "localhost" nil "firefox" "http://localhost:6419")))))
+    "List of (SYMBOL . FUNCTION) pairs specifying applications for opening
+markdown files.")
+
+  (defun my/markdown-app-call (app &optional file)
+    "Lookup APP in `my/markdown-apps' and call with 'file bound to FILE.
+
+If FILE is nil, the file associated with the current buffer is used."
+    (interactive (list (intern (completing-read "app: " my/markdown-apps))
+                       (buffer-file-name)))
+    (let ((code (alist-get app my/markdown-apps)))
+      (eval `(let ((file ,file)) ,code))))
 
   ;; REGION-BEGINNING and REGION-END
   ;; TODO: make these into text motions
