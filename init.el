@@ -2294,6 +2294,7 @@ you should place you code here."
      ("<C-`>"   . magit-section-cycle)
      ("q"       . my/magit-mode-kill-buffer)
      )
+    (define-key magit-blame-mode-map (kbd "C-b") 'my/magit-blame-and-center)
     (add-hook 'magit-diff-visit-file-hook #'recenter)
     (setf magit-log-revision-headers-format "\
 %+b
@@ -4437,6 +4438,7 @@ All changes are reverted."
 
   (my/define-command-and-center spacemacs/jump-to-definition)
   (my/define-command-and-center push-button)
+  (my/define-command-and-center magit-blame)
   (my/define-evil-motion-and-center evil-search-previous)
   (my/define-evil-motion-and-center evil-search-next)
 
