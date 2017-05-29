@@ -417,6 +417,8 @@ values."
    ;; TODO: remove when possible
    ;; workaround for github.com/syl20bnr/spacemacs/issues/8091
    dotspacemacs-helm-use-fuzzy 'source
+
+   dotspacemacs-folding-method 'origami
    ))
 
 
