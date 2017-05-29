@@ -935,6 +935,10 @@ you should place you code here."
   (global-set-key [\C-\S-down] 'move-text-down)
   (global-set-key [\C-\S-up]   'move-text-up)
 
+  ;; evil-arg
+  (global-set-key (kbd "M-j") 'evil-forward-arg)
+  (global-set-key (kbd "M-k") 'evil-backward-arg)
+
 
   ;; remove C-S-SPC from cua-global-keymap and bind to my/insert-space-after
   (define-key cua-global-keymap (kbd "C-S-SPC") nil)
@@ -1069,10 +1073,6 @@ you should place you code here."
   ;; forward/backward sentence
   (define-key evil-normal-state-map (kbd "M-e") 'evil-forward-sentence-begin)
   (define-key evil-normal-state-map (kbd "M-a") 'evil-backward-sentence-begin)
-
-  ;; evil-arg
-  (define-key evil-normal-state-map (kbd "M-j") 'evil-forward-arg)
-  (define-key evil-normal-state-map (kbd "M-k") 'evil-backward-arg)
 
   ;; evil-window: C-w C-w to swap windows
   (bind-key "C-w" #'my/window-swap-with-next evil-window-map)
