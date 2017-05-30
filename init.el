@@ -1010,6 +1010,11 @@ you should place you code here."
     (let ((aya-create-with-newline t))
       (call-interactively 'aya-create)))
 
+  ;; ,----------------,
+  ;; | Mouse bindings |
+  ;; '----------------'
+  (global-set-key (kbd "<mouse-3>") 'my/mouse-toggle-fold)
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------------,
@@ -4500,6 +4505,12 @@ All changes are reverted."
          (interactive)
          (call-interactively #',func)
          (evil-scroll-line-to-center nil))))
+
+  (defun my/mouse-toggle-fold (ev)
+    (interactive "e")
+    (save-excursion
+      (goto-char (posn-point (event-start ev)))
+      (evil-toggle-fold)))
 
   (my/define-command-and-center spacemacs/jump-to-definition)
   (my/define-command-and-center push-button)
