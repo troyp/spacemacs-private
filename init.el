@@ -2434,18 +2434,21 @@ Committer: %cN <%cE>"))
     (sp-unwrap-sexp -1)
     (evil-normal-state))
 
-  ;; testing macro for my packages
-  (defmacro should-equal
-      (expr keyword result)
-    (progn
-      (unless (eq keyword :result) (error "expected :result"))
-      `(should (equal ,expr ,result))))
+  ;; ===== TESTING MACROS FOR MY PACKAGES =====
 
-  (defmacro should-not-equal
-      (expr keyword result)
-    (progn
-      (unless (eq keyword :result) (error "expected :result"))
-      `(should-not (equal ,expr ,result))))
+  (cl-defmacro should-equal (expr &key result)
+    `(should (equal ,expr ,result)))
+
+  (cl-defmacro should-not-equal (expr &key result)
+    `(should-not (equal ,expr ,result)))
+
+  (cl-defmacro should-error-with (expr &key error)
+    `(should (equal (should-error ,expr)
+                    ,error)))
+
+  (cl-defmacro should-error-with-type  (expr &key error)
+    `(should (equal (car (should-error ,expr))
+                    ,error)))
 
   ;; ===== EVIL-ADJUST =====
 
