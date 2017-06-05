@@ -784,6 +784,16 @@ you should place you code here."
 
   (define-key evil-insert-state-map (kbd "<insert>") 'my/enter-overwrite-mode)
 
+  ;; ,------------------------,
+  ;; | evil interactive codes |
+  ;; '------------------------'
+  (setq my/evil-interactive-alist-source
+        `((name . "evil-interactive-alist")
+          (candidates . ,(asoc--map (list (format "%s\t\t\t%s" key value)) evil-interactive-alist))))
+
+  (defun my/evil-interactive-alist-view ()
+    (interactive)
+    (helm :sources '(my/evil-interactive-alist-source)))
 
   ;; ===============================================================================
   ;;                                      _________
@@ -1228,6 +1238,7 @@ you should place you code here."
     ;; "h"            'help-prefix-map
     "h a"          'apropos
     "h d C-b"      'describe-personal-keybindings
+    "h d C-i"      'my/evil-interactive-alist-view
     "h w"          'help-download-prefix-map
     "h ."          'count-words
     "h /"          'find-function-prefix-map
