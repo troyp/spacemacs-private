@@ -189,6 +189,7 @@ values."
      dirtree
      elmacro
      evil-textobj-column
+     evil-vimish-fold
      firefox-controller
      flycheck-package
      (goto-gem :location (recipe :fetcher github :repo "pidu/goto-gem"))
@@ -198,6 +199,7 @@ values."
      move-dup
      nameless
      top-mode
+     vimish-fold
      )
 
    ;; -------------------------------------------------------------------------------
@@ -418,7 +420,7 @@ values."
    ;; workaround for github.com/syl20bnr/spacemacs/issues/8091
    dotspacemacs-helm-use-fuzzy 'source
 
-   dotspacemacs-folding-method 'origami
+   ;; dotspacemacs-folding-method 'origami
    ))
 
 
@@ -1239,6 +1241,7 @@ you should place you code here."
     "t C-n"        'my/toggle-evil-mc-mode-and-cursor
     "t SPC"        (my/def-variable-toggle show-trailing-whitespace)
     "t '"          'variable-pitch-mode
+    "t `"          'evil-vimish-fold-mode
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t :"          'nameless-mode
@@ -1577,6 +1580,19 @@ you should place you code here."
       (evil-mc-mode 1)
       (evil-mc-make-and-goto-next-match)
       (message "evil-mc-mode enabled")))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,------------------,
+  ;; | evil-vimish-fold |
+  ;; '------------------'
+
+  (defun my/evil-vimish-fold-mode-hook ()
+    (interactive)
+    (evil-define-key 'normal evil-vimish-fold-mode-map "z " 'vimish-fold-avy)
+    (evil-define-key 'visual evil-vimish-fold-mode-map "z " 'vimish-fold-avy))
+  (eval-after-load 'evil-vimish-fold
+    (add-hook 'evil-vimish-fold-mode-hook #'my/evil-vimish-fold-mode-hook))
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
