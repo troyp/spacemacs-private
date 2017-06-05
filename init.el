@@ -472,6 +472,11 @@ you should place you code here."
   (setq evil-search-highlight-persist nil)
   (setq left-fringe-width 16)    ;; displays diff-hl mode well
 
+  (setq lisp-indent-function 'common-lisp-indent-function)
+  (eval-after-load 'cl-indent
+    `(progn
+       (put 'if 'common-lisp-indent-function 2)))
+
   ;; not working?
   (setq-default evil-esc-delay 0.00001)
 
