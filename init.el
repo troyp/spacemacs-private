@@ -2516,6 +2516,35 @@ Committer: %cN <%cE>"))
              ("C-o" . evil-execute-in-normal-state)
              )
 
+  ;; ,--------------------------,
+  ;; | CIDER Overlays for Elisp |
+  ;; '--------------------------'
+  ;; http://endlessparentheses.com/eval-result-overlays-in-emacs-lisp.html
+
+  (autoload 'cider--make-result-overlay "cider-overlays")
+
+  (defun endless/eval-overlay (value point)
+    (cider--make-result-overlay (format "%S" value)
+      :where point
+      :duration 'command)
+    ;; Preserve the return value.
+    value)
+  (defun endless/eval-region-advice (f beg end &rest r)
+    (endless/eval-overlay (apply f beg end r) end))
+  (defun endless/eval-last-sexp-advice (r) (endless/eval-overlay r (point)))
+  (defun endless/eval-defun-advice (r)
+    (endless/eval-overlay r (save-excursion (end-of-defun) (point))))
+  (defun endless/eval-overlay-on ()
+    (interactive)
+    (advice-add 'eval-region :around #'endless/eval-region-advice)
+    (advice-add 'eval-last-sexp :filter-return #'endless/eval-last-sexp-advice)
+    (advice-add 'eval-defun :filter-return #'endless/eval-defun-advice))
+  (defun endless/eval-overlay-off ()
+    (interactive)
+    (advice-remove 'eval-region #'endless/eval-region-advice)
+    (advice-remove 'eval-last-sexp #'endless/eval-last-sexp-advice)
+    (advice-remove 'eval-defun #'endless/eval-defun-advice))
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
