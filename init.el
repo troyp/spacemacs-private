@@ -184,8 +184,9 @@ values."
      ;; other packages
      ;; --------------
      ;; quelpa-use-package
-     dired-sort-menu
      column-enforce-mode
+     company-quickhelp
+     dired-sort-menu
      dirtree
      elmacro
      evil-textobj-column
