@@ -1251,8 +1251,9 @@ you should place you code here."
     "t 3"          'my/toggle-evil-mc-mode
     "t C-n"        'my/toggle-evil-mc-mode-and-cursor
     "t SPC"        (my/def-variable-toggle show-trailing-whitespace)
-    "t '"          'variable-pitch-mode
+    "t '"          'evil-visual-mark-mode
     "t `"          'evil-vimish-fold-mode
+    "t ~"          'variable-pitch-mode
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t :"          'nameless-mode
