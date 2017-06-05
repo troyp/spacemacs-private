@@ -963,6 +963,8 @@ you should place you code here."
   ;; This just makes it explicit
   (global-set-key (kbd "M-S-SPC") 'just-one-space)
 
+  (global-set-key (kbd "C-M-l") 'my/insert-spaces-around-point)
+
   (global-set-key [\C-f10] 'menu-bar-mode)
   (global-set-key [\M-f12] 'shell-pop)
   (global-set-key (kbd "C-'") 'shell-pop)
@@ -4539,6 +4541,12 @@ All changes are reverted."
     (save-excursion
       (goto-char (posn-point (event-start ev)))
       (evil-toggle-fold)))
+
+  (defun my/insert-spaces-around-point (n)
+    (interactive (list (or current-prefix-arg 1)))
+    (insert (make-string (* 2 n) ? ))
+    (backward-char n)
+    (evil-insert-state))
 
   (my/define-command-and-center spacemacs/jump-to-definition)
   (my/define-command-and-center push-button)
