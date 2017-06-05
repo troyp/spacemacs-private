@@ -1546,6 +1546,7 @@ you should place you code here."
     "SPC f '"      "dired"
     "SPC h /"      "find-function"
     "SPC o f"      "flycheck"
+    "SPC s R"      "PCRE Regex"
     "SPC K"        "keys/keymaps"
     "SPC X"        "structured text"
     )
