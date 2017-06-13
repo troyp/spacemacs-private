@@ -1056,6 +1056,9 @@ you should place you code here."
   ;; / : h j k l n N v V gg G C-f C-b C-e C-y C-d C-u C-z
   ;; when rebinding them for normal-state, rebind for evilified-state also
 
+  ;; note: (evil-define-key 'normal global-map ...) takes precedence over
+  ;;       (define-key evil-normal-state-map ...)
+
   (define-key evil-normal-state-map [delete] 'kill-this-buffer)
   (define-key evil-normal-state-map [S-delete] 'delete-window)
   (define-key evil-normal-state-map [C-delete] 'kill-buffer-and-window)
