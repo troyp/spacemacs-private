@@ -201,6 +201,11 @@ values."
      nameless
      top-mode
      vimish-fold
+     wgrep
+     wgrep-ack
+     wgrep-ag
+     wgrep-helm
+     wgrep-pt
      )
 
    ;; -------------------------------------------------------------------------------
