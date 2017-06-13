@@ -816,6 +816,8 @@ you should place you code here."
           ((?i 34) . ?\x00ef)    ;; ï (also on i:)
           ((?\x22 ?<) . ?\x201c) ;; “
           ((?\x22 ?>) . ?\x201d) ;; ”
+          ((?o ?o) . ?\x00b0)    ;; °
+          ((?8 ?8) . ?\x221e)    ;; ∞
           ;; kragen compose combinations
           ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
           ((?, ?t) . ?\x0163)    ;; ţ (default, but obscured by binding above)
