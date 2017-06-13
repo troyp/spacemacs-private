@@ -814,7 +814,6 @@ you should place you code here."
           ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
           ((?. ?-) . ?\x00b7)    ;; middle-dot
           ((?i 34) . ?\x00ef)    ;; ï (also on i:)
-          ((?t ?-) . ?\x0167)    ;; ŧ
           ((?\x22 ?<) . ?\x201c) ;; “
           ((?\x22 ?>) . ?\x201d) ;; ”
           ;; kragen compose combinations
