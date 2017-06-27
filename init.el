@@ -4642,6 +4642,13 @@ All changes are reverted."
   (my/define-evil-motion-and-center evil-search-previous)
   (my/define-evil-motion-and-center evil-search-next)
 
+  (defun my/remove-blank-lines (beg end)
+    (interactive "r")
+    (unless (region-active-p)
+      (setq beg (point-min)
+            end (point-max)))
+    (flush-lines (pcre-to-elisp "^\\s*$") beg end))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
