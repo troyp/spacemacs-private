@@ -1627,7 +1627,7 @@ you should place you code here."
 
   (defun my/toggle-evil-mc-mode-and-cursor()
     (interactive)
-    (if evil-mc-mode
+    (if (and (boundp 'evil-mc-mode) evil-mc-mode)
         (progn (evil-mc-undo-all-cursors)
                (evil-mc-mode 0)
                (message "evil-mc-mode disabled"))
