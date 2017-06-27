@@ -825,6 +825,7 @@ you should place you code here."
           ((?8 ?8) . ?\x221e)    ;; ∞
           ;; kragen compose combinations
           ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
+          ((?T ?,) . ?\x01ae)    ;; Ʈ (replaces Ţ which is also available on ,T) - for consistency
           ((?, ?t) . ?\x0163)    ;; ţ (default, but obscured by binding above)
           ((?, ?T) . ?\x0162)    ;; Ţ (default, but obscured by binding above)
           ((?n ?,) . ?\x0273)    ;; ɳ (replaces ţ which is also available on ,n)
