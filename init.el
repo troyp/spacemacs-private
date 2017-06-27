@@ -1835,6 +1835,23 @@ you should place you code here."
   (evil-set-initial-state 'calculator-mode 'emacs)
 
   ;; -------------------------------------------------------------------------------
+  ;; ,-------------,
+  ;; | dactyl-mode |
+  ;; '-------------'
+
+  (spacemacs/set-leader-keys-for-major-mode 'dactyl-mode
+      "'"     (my/make-insertion-around-point "\" " " \"")
+      "/"     (my/make-insertion-around-point "/* " " */")
+      )
+
+  (which-key-add-major-mode-key-based-replacements 'dactyl-mode
+      ", '"       "\" ⌶ \""
+      "M-RET '"   "\" ⌶ \""
+      ", /"       "/* ⌶ */"
+      "M-RET /"   "/* ⌶ */"
+      )
+
+  ;; -------------------------------------------------------------------------------
   ;; ,-------,
   ;; | Dired |
   ;; '-------'
