@@ -918,6 +918,22 @@ you should place you code here."
 
   (defmacro fn! (&rest body) `(lambda () (interactive) ,@body))
 
+  ;; ,--------------------------------,
+  ;; | Macros for generating commands |
+  ;; '--------------------------------'
+  (defmacro my/make-insertion-around-point (before after)
+    `(lambda ()
+       (interactive)
+       (insert ,before ,after)
+       (backward-char (length ,after))))
+
+  (defmacro my/define-insertion-around-point  (name before after &optional docstr)
+    `(defun ,name ()
+       ,docstr
+       (interactive)
+       (insert ,before ,after)
+       (backward-char (length ,after))))
+
   ;; ,-----------------,
   ;; | Global Bindings |
   ;; '-----------------'
