@@ -3480,6 +3480,12 @@ With a prefix argument, formats the value using `(format \"%S\" val)' instead."
          (memq evil-state
                '(normal visual))))
 
+  (defun my/toggle-evilified-state ()
+    (interactive)
+    (if (eq evil-state 'evilifed)
+        (evil-normal-state)
+      (evil-evilified-state)))
+
   (defun my/evil-indent-line-hold-position ()
     (interactive)
     (let ((marker (make-marker)))
