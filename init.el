@@ -2041,6 +2041,7 @@ you should place you code here."
        (which-key-add-major-mode-key-based-replacements 'haskell-mode
          "C-c @" "hiding"
          )
+      (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
        ))
 
   ;; -------------------------------------------------------------------------------
