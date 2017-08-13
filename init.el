@@ -4662,6 +4662,13 @@ All changes are reverted."
             end (point-max)))
     (flush-lines (pcre-to-elisp "^\\s*$") beg end))
 
+  (defun my/perl-process-lines (cmdstr)
+    (interactive "sPerl Command:")
+    (my/shell-command-replace-region
+     (if (region-active-p) (region-beginning) (point-min))
+     (if (region-active-p) (region-end) (point-max))
+     (format "perl -pe '%s'" cmdstr)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
