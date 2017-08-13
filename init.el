@@ -4638,6 +4638,11 @@ All changes are reverted."
       (goto-char (posn-point (event-start ev)))
       (evil-toggle-fold)))
 
+  (defun my/cycle-evil-visual-mark-mode ()
+    (interactive)
+    (spacemacs/toggle-evil-visual-mark-mode)
+    (spacemacs/toggle-evil-visual-mark-mode))
+
   (defun my/insert-spaces-around-point (n)
     (interactive (list (or current-prefix-arg 1)))
     (insert (make-string (* 2 n) ? ))
