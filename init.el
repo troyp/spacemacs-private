@@ -1939,9 +1939,9 @@ you should place you code here."
          "tw"    'spacemacs/toggle-diredp-wrap-around-flag
          "v"     'dired-view-file    ;; for discovery - can just use \v
          "Y"     'diredp-relsymlink-this-file
-         "x"     'tsp-dired-cut-or-copy-files
-         "p"     'tsp-dired-copy-files-here
-         "m"     'tsp-dired-move-files-here
+         "x"     'my/dired-cut-or-copy-files
+         "p"     'my/dired-copy-files-here
+         "m"     'my/dired-move-files-here
          )
        (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
 
@@ -1966,31 +1966,31 @@ you should place you code here."
       ))
   (add-hook 'wdired-mode-hook 'wdired-init)
 
-  (defvar tsp-dired-files-to-move-or-copy '()
+  (defvar my/dired-files-to-move-or-copy '()
     "Stores a list of files to be moved or copied by tsp-dired-*-files-here
  commands.")
 
-  (defun tsp-dired-cut-or-copy-files (append)
+  (defun my/dired-cut-or-copy-files (append)
     (interactive "P")
     (let ((files (dired-get-marked-files)))
       (if append
           (dolist (f files)
-            (add-to-list tsp-dired-files-to-move-or-copy f))
-        (setq tsp-dired-files-to-move-or-copy files))))
+            (add-to-list my/dired-files-to-move-or-copy f))
+        (setq my/dired-files-to-move-or-copy files))))
 
-  (defun tsp-dired-copy-files-here
+  (defun my/dired-copy-files-here
       (&optional overwrite
                  keep-time preserve-uid-gid preserve-permissions)
     (interactive "P")
-    (dolist (f tsp-dired-files-to-move-or-copy)
+    (dolist (f my/dired-files-to-move-or-copy)
       (let ((newpath (concat (dired-current-directory)
                              (file-name-nondirectory f))))
         (copy-file f newpath overwrite
                    keep-time preserve-uid-gid preserve-permissions))))
 
-  (defun tsp-dired-move-files-here (&optional overwrite)
+  (defun my/dired-move-files-here (&optional overwrite)
     (interactive "P")
-    (dolist (f tsp-dired-files-to-move-or-copy)
+    (dolist (f my/dired-files-to-move-or-copy)
       (let ((newpath (concat (dired-current-directory)
                              (file-name-nondirectory f))))
         (rename-file f newpath overwrite))))
