@@ -193,8 +193,11 @@ values."
      dired-rainbow
      dired-sort-menu
      dired-toggle-sudo
+     direx
+     (direx-grep :location (recipe :fetcher github :repo "aki2o/direx-grep"))
      dirtree
      elmacro
+     (emacs-jedi-direx :location (recipe :fetcher github :repo "tkf/emacs-jedi-direx"))
      evil-textobj-column
      evil-vimish-fold
      firefox-controller
@@ -2024,6 +2027,18 @@ you should place you code here."
     (let ((b (current-buffer)))
       (dired-jump)
       (kill-buffer b)))
+
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,-------,
+  ;; | Direx |
+  ;; '-------'
+
+  (require 'direx)
+  (push '(direx:direx-mode :position left :width 25 :dedicated t)
+        popwin:special-display-config)
+  (global-set-key (kbd "C-x C-j") 'direx:jump-to-directory-other-window)
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------------,
