@@ -1239,6 +1239,7 @@ you should place you code here."
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
   (spacemacs/set-leader-keys
+    "a d"          'dired
     "a p"          'my/list-processes
     "a ="          'calculator
     "a '"          'browse-url-firefox
