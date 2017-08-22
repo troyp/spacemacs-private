@@ -155,7 +155,7 @@ values."
      autofit-frame
      ;; bookmark+
      (dired+ :variables
-             diredp-hide-details-initially-flag t
+             diredp-hide-details-initially-flag nil
              diredp-hide-details-propagate-flag t
              )
      dired-sort-menu+
@@ -187,7 +187,12 @@ values."
      ;; quelpa-use-package
      column-enforce-mode
      company-quickhelp
+     dired-collapse-mode
+     dired-du
+     dired-icon
+     dired-rainbow
      dired-sort-menu
+     dired-toggle-sudo
      dirtree
      elmacro
      evil-textobj-column
@@ -195,6 +200,7 @@ values."
      firefox-controller
      flycheck-package
      (goto-gem :location (recipe :fetcher github :repo "pidu/goto-gem"))
+     helm-dired-history
      helm-firefox
      jsfmt
      mozc
@@ -1868,6 +1874,13 @@ you should place you code here."
     (diredp-toggle-find-file-reuse-dir 1)
     )
 
+  (require 'dired-toggle-sudo)
+  (eval-after-load 'tramp
+    '(progn
+      ;; Allow to use: /sudo:user@host:/path/to/file
+      (add-to-list 'tramp-default-proxies-alist
+       '(".*" "\\`.+\\'" "/ssh:%h:"))))
+
   (setq wdired-use-dired-vertical-movement 'sometimes)
 
   (defun dired-copy-file-path-as-kill ()
@@ -1885,15 +1898,24 @@ you should place you code here."
   ;; dired-mode  :   (customized) evilified state
   ;; wdired-mode :                normal state
 
+  (defun my/dired-init ()
+    (define-keys dired-mode-map
+      (kbd "C-h")            nil
+      (kbd "q")              'tsp-quit-window-kill
+      (kbd "<S-return>")     'dired-find-file
+      (kbd "<mouse-3>")      'diredp-mouse-3-menu
+      (kbd "<down-mouse-3>") 'diredp-mouse-3-menu
+      ))
+  (defun my/wdired-init ()
+    (define-keys wdired-mode-map
+      (kbd "C-c <escape>") 'wdired-abort-changes
+      [f2]                 'wdired-finish-edit
+      ))
+
   (eval-after-load "dired"
     `(progn
-       (define-key dired-mode-map (kbd "C-h") nil)
-       ;; keys: dired-mode-map
-       (bind-keys
-        :map dired-mode-map
-        ("q" . tsp-quit-window-kill)
-        ("<S-return>" . dired-find-file)
-        )
+       (add-hook 'dired-mode-hook 'my/dired-init)
+       (add-hook 'wdired-mode-hook 'my/wdired-init)
 
        ;; keys: evilified-state
        (evilified-state-evilify-map dired-mode-map
@@ -1920,6 +1942,7 @@ you should place you code here."
          (kbd "H")      'dired-do-hard-link
          (kbd "C-h")    nil
          (kbd "\"")     'evil-use-register
+         [mouse-3]      'diredp-mouse-3-menu
          )
 
        ;; T is the prefix key for the tags commands
@@ -1942,6 +1965,7 @@ you should place you code here."
          "x"     'my/dired-cut-or-copy-files
          "p"     'my/dired-copy-files-here
          "m"     'my/dired-move-files-here
+         "s"     'dired-toggle-sudo
          )
        (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
 
@@ -1959,12 +1983,12 @@ you should place you code here."
 
   (eval-after-load "dired-sort-menu" `(require 'dired-sort-menu+))
 
-  (defun wdired-init ()
-    (define-keys wdired-mode-map
-      (kbd "C-c <escape>") 'wdired-abort-changes
-      [f2]                 'wdired-finish-edit
-      ))
-  (add-hook 'wdired-mode-hook 'wdired-init)
+  (eval-after-load "ranger"
+    `(progn
+       (bind-keys
+        :map ranger-mode-map
+        ("C-h" . nil))
+       ))
 
   (defvar my/dired-files-to-move-or-copy '()
     "Stores a list of files to be moved or copied by tsp-dired-*-files-here
