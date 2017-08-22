@@ -1665,6 +1665,12 @@ you should place you code here."
   (eval-after-load 'evil-vimish-fold
     (add-hook 'evil-vimish-fold-mode-hook #'my/evil-vimish-fold-mode-hook))
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------------,
+  ;; | evil-surround |
+  ;; '---------------'
+
+  (asoc-put! evil-surround-pairs-alist ?, (cons "< " " >"))
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
