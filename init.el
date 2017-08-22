@@ -2043,6 +2043,10 @@ you should place you code here."
       (dired-jump)
       (kill-buffer b)))
 
+  (defun my/diredp-create-files-union (union-buffer-name files)
+    "Create a diredp union buffer from a list of files/directories."
+    (diredp-dired-union union-buffer-name nil nil files))
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
