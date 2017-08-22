@@ -1346,6 +1346,14 @@ you should place you code here."
     "<"            'evil-shift-left-fine-dispatcher
     "="            'quick-calc
     "-"            'my/dired-jump-and-kill
+    "("            'my/add-spacing-inside-parens
+    ")"            'my/remove-spacing-inside-parens
+    "["            'my/add-spacing-inside-brackets
+    "]"            'my/remove-spacing-inside-brackets
+    "{"            'my/add-spacing-inside-bracers
+    "}"            'my/remove-spacing-inside-bracers
+    "\""           'my/add-spacing-inside-double-quotes
+    "C-\""         'my/remove-spacing-inside-double-quotes
     "S-SPC"        'avy-goto-char-timer
     "SPC"          'avy-goto-char
     "<backtab>"    'switch-to-most-recent-buffer
@@ -2378,6 +2386,46 @@ you should place you code here."
           (interactive "p")
           (kmacro-exec-ring-item
            (quote ([1 102 58 119 100 119 1 101 97 32 escape 112 102 58 114 59 86 134217848 100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104 105 116 101 115 112 97 99 101 13 65 escape 106 1] 0 "%d")) arg)))
+
+  (fset 'my/add-spacing-inside-parens
+        (lambda (&optional arg)
+          (interactive "p")
+          (kmacro-exec-ring-item '([ ?c ?s 41 40 ] 0 "%d") arg)))
+
+  (fset 'my/remove-spacing-inside-parens
+        (lambda (&optional arg)
+          (interactive "p")
+          (kmacro-exec-ring-item '([ ?c ?s 40 41 ] 0 "%d") arg)))
+
+  (fset 'my/add-spacing-inside-brackets
+        (lambda (&optional arg)
+          (interactive "p")
+          (kmacro-exec-ring-item '([ ?c ?s 93 91 ] 0 "%d") arg)))
+
+  (fset 'my/remove-spacing-inside-brackets
+        (lambda (&optional arg)
+          (interactive "p")
+          (kmacro-exec-ring-item '([ ?c ?s 91 93 ] 0 "%d") arg)))
+
+  (fset 'my/add-spacing-inside-bracers
+        (lambda (&optional arg)
+          (interactive "p")
+          (kmacro-exec-ring-item '([ ?c ?s 125 123 ] 0 "%d") arg)))
+
+  (fset 'my/remove-spacing-inside-bracers
+        (lambda (&optional arg)
+          (interactive "p")
+          (kmacro-exec-ring-item '([ ?c ?s 123 125 ] 0 "%d") arg)))
+
+  (fset 'my/add-spacing-inside-double-quotes
+        (lambda (&optional arg)
+          (interactive "p")
+          (kmacro-exec-ring-item '([ ?c ?s 34 40 ?c ?s 41 34 ] 0 "%d") arg)))
+
+  (fset 'my/remove-spacing-inside-double-quotes
+        (lambda (&optional arg)
+          (interactive "p")
+          (kmacro-exec-ring-item '([?c ?s 40 34 ] 0 "%d") arg)))
 
 
   ;; -------------------------------------------------------------------------------
