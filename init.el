@@ -2549,6 +2549,7 @@ Committer: %cN <%cE>"))
 
   (bind-keys :map spacemacs-markdown-mode-map
              ("i C-l"  . my/markdown-gh-linkify-heading)
+             ("C-v"    . my/markdown-app-call)
              )
 
   ;; -------------------------------------------------------------------------------
