@@ -1073,7 +1073,13 @@ you should place you code here."
   ;; ,----------------,
   ;; | Mouse bindings |
   ;; '----------------'
-  (global-set-key (kbd "<mouse-3>") 'my/mouse-toggle-fold)
+  (global-set-key (kbd "<mouse-3>")   'my/mouse-toggle-fold)
+  (global-set-key (kbd "<mouse-4>")   'mwheel-scroll)
+  (global-set-key (kbd "<mouse-5>")   'mwheel-scroll)
+  (global-set-key (kbd "<S-mouse-4>") 'my/text-scale-increase-under-mouse)
+  (global-set-key (kbd "<S-mouse-5>") 'my/text-scale-decrease-under-mouse)
+  (global-set-key (kbd "<C-mouse-4>") 'spacemacs/zoom-frm-in)
+  (global-set-key (kbd "<C-mouse-5>") 'spacemacs/zoom-frm-out)
 
 
   ;; -------------------------------------------------------------------------------
@@ -4767,6 +4773,29 @@ All changes are reverted."
      (if (region-active-p) (region-beginning) (point-min))
      (if (region-active-p) (region-end) (point-max))
      (format "perl -pe '%s'" cmdstr)))
+
+  (defun my/text-scale-increase-under-mouse (x y &optional frame inc)
+    "Increase the height of the default face in the buffer under the mouse."
+    (interactive
+     (let* ((mousepos (mouse-position))
+            (frame    (car mousepos))
+            (coords   (cdr mousepos))
+            (x        (car coords))
+            (y        (cdr coords)))
+       (list x y frame 1)))
+    (select-window (window-at x y frame))
+    (text-scale-increase 1))
+
+  (defun my/text-scale-decrease-under-mouse (x y &optional frame inc)
+    (interactive
+     (let* ((mousepos (mouse-position))
+            (frame    (car mousepos))
+            (coords   (cdr mousepos))
+            (x        (car coords))
+            (y        (cdr coords)))
+       (list x y frame 1)))
+    (select-window (window-at x y frame))
+    (text-scale-decrease 1))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
