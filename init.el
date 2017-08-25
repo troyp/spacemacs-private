@@ -187,7 +187,7 @@ values."
      ;; quelpa-use-package
      column-enforce-mode
      company-quickhelp
-     dired-collapse-mode
+     dired-collapse
      dired-du
      dired-icon
      dired-rainbow
@@ -197,7 +197,7 @@ values."
      (direx-grep :location (recipe :fetcher github :repo "aki2o/direx-grep"))
      dirtree
      elmacro
-     (emacs-jedi-direx :location (recipe :fetcher github :repo "tkf/emacs-jedi-direx"))
+     jedi-direx
      evil-textobj-column
      evil-vimish-fold
      firefox-controller
