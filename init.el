@@ -573,6 +573,13 @@ you should place you code here."
                         ))
   (add-hook 'global-hl-line-mode-hook 'auto-set-hl-line-face)
 
+  ;; ,--------------,
+  ;; | mode-compile |
+  ;; '--------------'
+
+  (require 'mode-compile)
+  (require 'mode-compile-kill)
+
   ;; ==============================================================================
   ;; ***************
   ;; *             *
@@ -1261,6 +1268,8 @@ you should place you code here."
     "b C-u"        'undo-tree-clear
     "b <insert>"   'buffer-major-mode
     "b <f1>"       'about-emacs
+    "c SPC"        'mode-compile
+    "c DEL"        'mode-compile-kill
     "e F"          'flycheck-mode
     "e TAB"        'flycheck-next-error
     "e S-TAB"      'flycheck-previous-error
