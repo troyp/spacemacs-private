@@ -573,13 +573,6 @@ you should place you code here."
                         ))
   (add-hook 'global-hl-line-mode-hook 'auto-set-hl-line-face)
 
-  ;; ,--------------,
-  ;; | mode-compile |
-  ;; '--------------'
-
-  (require 'mode-compile)
-  (require 'mode-compile-kill)
-
   ;; ==============================================================================
   ;; ***************
   ;; *             *
@@ -665,6 +658,8 @@ you should place you code here."
           firefox-protocol
           help-macro+
           ibuffer-hydra
+          mode-compile
+          mode-compile-kill
           t
           ))
   (loop for pkg in my/dotspacemacs-additional-local-packages do
