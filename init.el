@@ -1015,7 +1015,6 @@ you should place you code here."
 
   (global-set-key (kbd "C-M-l") 'my/insert-spaces-around-point)
 
-  (global-set-key [\C-f10] 'menu-bar-mode)
   (global-set-key [\M-f12] 'shell-pop)
   (global-set-key (kbd "C-'") 'shell-pop)
 
