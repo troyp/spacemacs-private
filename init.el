@@ -658,8 +658,8 @@ you should place you code here."
   ;; MY PACKAGES
   (add-to-load-path "~/.emacs.d/private/local/t")
 
-  (defvar dotspacemacs-additional-local-packages)
-  (setf dotspacemacs-additional-local-packages
+  (defvar my/dotspacemacs-additional-local-packages)
+  (setf my/dotspacemacs-additional-local-packages
         '(
           find-func+
           firefox-protocol
@@ -667,7 +667,7 @@ you should place you code here."
           ibuffer-hydra
           t
           ))
-  (loop for pkg in dotspacemacs-additional-local-packages do
+  (loop for pkg in my/dotspacemacs-additional-local-packages do
         (require pkg nil :noerror))
 
   (add-to-load-path "/home/troy/.emacs.d/private/repos/elisp-utils/")
