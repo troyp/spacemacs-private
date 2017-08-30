@@ -491,7 +491,9 @@ you should place you code here."
   (setq lisp-indent-function 'common-lisp-indent-function)
   (eval-after-load 'cl-indent
     `(progn
-       (put 'if 'common-lisp-indent-function 2)))
+       (put 'if 'common-lisp-indent-function 2)
+       (put 'use-package 'common-lisp-indent-function 1)
+       ))
 
   ;; not working?
   (setq-default evil-esc-delay 0.00001)
