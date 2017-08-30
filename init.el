@@ -1806,6 +1806,16 @@ you should place you code here."
        (define-key term-raw-map (kbd "C-c C-y")  'term-paste)
        ))
 
+  ;; -------------------------------------------------------------------------------
+  ;;            ,------------,
+  ;;            | shell-mode |
+  ;;            '------------'
+
+  (eval-after-load 'shell
+    '(progn
+      (evil-define-key 'insert shell-mode-map
+        (kbd "C-d")    'comint-send-eof
+        )))
 
   ;;            ,-----------,
   ;;            | term-mode |
