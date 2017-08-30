@@ -1850,9 +1850,9 @@ you should place you code here."
         (term-switch-to-shell-mode)
       (term-switch-back-from-shell-mode)))
 
-  ;; ,-----------------,
-  ;; | multi-term-mode |
-  ;; '-----------------'
+  ;;            ,-----------------,
+  ;;            | multi-term-mode |
+  ;;            '-----------------'
 
 
   ;; -------------------------------------------------------------------------------
