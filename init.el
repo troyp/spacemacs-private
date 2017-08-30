@@ -98,6 +98,7 @@ values."
      ;; LOCAL LAYERS
      drag-n-drop
      no-dots
+     perl5
      troyp
      )
 
