@@ -3051,6 +3051,16 @@ Committer: %cN <%cE>"))
   ;; | Align |
   ;; '-------'
 
+  (defmacro spacemacs|create-align-repeat-x (name regexp &optional justify-right default-after)
+    (let* ((new-func (intern (concat "spacemacs/align-repeat-" name)))
+           (new-func-defn
+            `(defun ,new-func (start end switch)
+               (interactive "r\nP")
+               (let ((after (not (eq (if switch t nil) (if ,default-after t nil)))))
+                 (spacemacs/align-repeat start end ,regexp ,justify-right after)))))
+      (put new-func 'function-documentation "Created by `spacemacs|create-align-repeat-x'.")
+      new-func-defn))
+
   (spacemacs|create-align-repeat-x "period" "\\." t nil)
   (spacemacs|create-align-repeat-x "quote" "'")
   (spacemacs|create-align-repeat-x "double-quote" "\"")
@@ -3058,6 +3068,18 @@ Committer: %cN <%cE>"))
   (spacemacs|create-align-repeat-x "hash" "#" )
   (spacemacs|create-align-repeat-x "semicolon-comment" ";;?" )
   (spacemacs|create-align-repeat-x "slash-comment" "//" )
+
+  ;; Redefine spacemacs functions (to add link to help)
+  (spacemacs|create-align-repeat-x "comma" "," nil t)
+  (spacemacs|create-align-repeat-x "semicolon" ";" nil t)
+  (spacemacs|create-align-repeat-x "colon" ":" nil t)
+  (spacemacs|create-align-repeat-x "equal" "=")
+  (spacemacs|create-align-repeat-x "math-oper" "[+\\-*/]")
+  (spacemacs|create-align-repeat-x "ampersand" "&")
+  (spacemacs|create-align-repeat-x "bar" "|")
+  (spacemacs|create-align-repeat-x "left-paren" "(")
+  (spacemacs|create-align-repeat-x "right-paren" ")" t)
+  (spacemacs|create-align-repeat-x "backslash" "\\\\")
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
