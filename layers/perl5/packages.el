@@ -73,7 +73,17 @@ Each entry is either:
     (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
     (if (fboundp 'mode-compile)
         (define-key cperl-mode-map (kbd "C-c C-c") 'mode-compile))
+    (add-hook 'cperl-mode-hook 'perl5/add-chmod-hook)
     ))
+
+(defun perl5/add-chmod-hook ()
+  (add-hook 'after-save-hook 'perl5/chmodx nil t))
+
+(defun perl5/chmodx ()
+  (when (string-match "[[:space:]]*#!" (buffer-string))
+    (shell-command (concat "chmod a+x '" buffer-file-name "'"))
+    (remove-hook 'after-save-hook 'perl5/chmodx)
+    (message "set executable bits")))
 
 (defun perl5/init-pde ()
   (use-package pde
