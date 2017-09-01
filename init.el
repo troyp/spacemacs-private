@@ -4852,6 +4852,25 @@ All changes are reverted."
     (evil-normal-state)
     (if (fboundp 'pos-tip-hide) (pos-tip-hide)))
 
+  (defun my/faces-list-fg-bg-colors ()
+    (interactive)
+    (let ((new-buffer (generate-new-buffer "*Faces Colors*")))
+      ;; (set-window-buffer nil new-buffer)
+      (switch-to-buffer new-buffer)
+      (mapcar (lambda (face)
+                (let* ((fg (face-foreground face nil t))
+                       (bg (face-background face nil t))
+                       (fghex (if (stringp fg)
+                                  (downcase (hexrgb-color-name-to-hex fg 2))
+                                ""))
+                       (bghex (if (stringp bg)
+                                  (downcase (hexrgb-color-name-to-hex bg 2))
+                                "")))
+                  (insert (format "%S\t|\t%s\t|\t%s\n" face fghex bghex))))
+              (face-list))
+      (mark-whole-buffer)
+      (spacemacs/align-repeat-bar (region-beginning) (region-end) nil)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
