@@ -585,6 +585,18 @@ you should place you code here."
   ;; | pos-tip |
   ;; '---------'
   (setq x-gtk-use-system-tooltips nil)
+  (defun my/pos-tip-set-brown-on-yellow ()
+    (interactive)
+    (setq pos-tip-foreground-color "#3e3030")
+    (setq pos-tip-background-color "#ffffe0"))
+  (defun my/pos-tip-set-light-grey-on-purple ()
+    (interactive)
+    (setq pos-tip-foreground-color "#b2b2b2")
+    (setq pos-tip-background-color "#5e5079"))
+  (defun my/pos-tip-set-blue-grey-light-on-dark ()
+    (interactive)
+    (setq pos-tip-foreground-color "#9a9aba")
+    (setq pos-tip-background-color "#34323e"))
 
   ;; ==============================================================================
   ;; ***************
