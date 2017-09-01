@@ -1111,9 +1111,9 @@ you should place you code here."
   (define-key evil-normal-state-map (kbd "C-e") 'evil-end-of-line)
   ;; remove C-y (use global M-p)
   (define-key evil-normal-state-map (kbd "C-y") nil)
-  ;; reverse gu and gU
+  ;; rebind gu to evil-upcase (rather than -downcase), use gl for -downcase:
   (define-key evil-normal-state-map (kbd "gu") 'evil-upcase)
-  (define-key evil-normal-state-map (kbd "gU") 'evil-downcase)
+  (define-key evil-normal-state-map (kbd "gl") 'evil-downcase)
   ;; centre after n, N, '
   (define-key evil-normal-state-map (kbd "n") 'my/evil-search-next-and-center)
   (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center)
