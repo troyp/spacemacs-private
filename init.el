@@ -4441,6 +4441,10 @@ If the region is not active, the entire buffer is processed."
        (or frame (selected-frame))
        window-numbering-table))))
 
+  (defun my/frame-parameter-names (&optional frame)
+    (let ((frame (or frame (selected-frame))))
+      (mapcar #'car (frame-parameters frame))))
+
   (defun my/window-swap-with-next ()
     (interactive)
     (let* ((ws (my/frame-windows))
