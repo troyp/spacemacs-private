@@ -1102,6 +1102,7 @@ you should place you code here."
   ;; note: (evil-define-key 'normal global-map ...) takes precedence over
   ;;       (define-key evil-normal-state-map ...)
 
+  (define-key evil-normal-state-map [escape] 'my/evil-force-normal-state-and-cancel)
   (define-key evil-normal-state-map [delete] 'kill-this-buffer)
   (define-key evil-normal-state-map [S-delete] 'delete-window)
   (define-key evil-normal-state-map [C-delete] 'kill-buffer-and-window)
@@ -1211,6 +1212,7 @@ you should place you code here."
   ;; ,--------------,
   ;; | INSERT STATE |
   ;; '--------------'
+  (define-key evil-insert-state-map [escape] 'my/evil-normal-state-and-cancel)
   ;; define bindings for shift-right/left-line: frees C-d, C-t:
   (define-key evil-insert-state-map (kbd "S-<tab>")       'evil-shift-right-line)
   ;; (define-key evil-insert-state-map (kbd "S-<backspace>") 'evil-shift-left-line)
@@ -4839,6 +4841,16 @@ All changes are reverted."
        (list x y frame 1)))
     (select-window (window-at x y frame))
     (text-scale-decrease 1))
+
+  (defun my/evil-force-normal-state-and-cancel ()
+    (interactive)
+    (evil-force-normal-state)
+    (if (fboundp 'pos-tip-hide) (pos-tip-hide)))
+
+  (defun my/evil-normal-state-and-cancel ()
+    (interactive)
+    (evil-normal-state)
+    (if (fboundp 'pos-tip-hide) (pos-tip-hide)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
