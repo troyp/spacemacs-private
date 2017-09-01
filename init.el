@@ -4842,6 +4842,23 @@ All changes are reverted."
     (select-window (window-at x y frame))
     (text-scale-decrease 1))
 
+  (defun my/describe-function-string (func)
+    (with-temp-buffer
+      (help-mode)
+      (read-only-mode 0)
+      (insert (format "%S is " func))
+      (let ((standard-output (current-buffer)))
+        (describe-function-1 func))
+      (buffer-string)))
+
+  (defun my/pos-tip-describe-function (func)
+    (interactive
+     (list
+      (completing-read "Function: " obarray 'fboundp t
+                       nil nil (symbol-name (symbol-nearest-point)))))
+    (pos-tip-show (my/describe-function-string (symbol-function (intern func)))
+                  nil nil nil -1))
+
   (defun my/evil-force-normal-state-and-cancel ()
     (interactive)
     (evil-force-normal-state)
