@@ -581,6 +581,11 @@ you should place you code here."
                         ))
   (add-hook 'global-hl-line-mode-hook 'auto-set-hl-line-face)
 
+  ;; ,---------,
+  ;; | pos-tip |
+  ;; '---------'
+  (setq x-gtk-use-system-tooltips nil)
+
   ;; ==============================================================================
   ;; ***************
   ;; *             *
