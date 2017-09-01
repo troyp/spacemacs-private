@@ -562,10 +562,14 @@ you should place you code here."
     :init (my/cua-global-mark-remove-nonregion-remappings)
     )
 
-  ;; AVY KEYS
+  ;; ,----------,
+  ;; | avy-keys |
+  ;; '----------'
   (setq avy-keys (list 97 115 100 102 106 107 108 59))
 
-  ;; global-hl-line
+  ;; ,----------------,
+  ;; | global-hl-line |
+  ;; '----------------'
   (require 'color)
   (defun auto-set-hl-line-face ()
     "Set `hl-line' face to slightly darker than default background."
