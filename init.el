@@ -5044,4 +5044,3 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
   (when (file-readable-p "~/.emacs.d/private/private-data.el")
     (load "~/.emacs.d/private/private-data.el"))
 
-  )
