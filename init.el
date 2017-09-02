@@ -3523,7 +3523,7 @@ temporarily enables it to allow getting help on disabled items and buttons."
   (defalias 'alias/string-to-symbol 'intern)
   (defalias 'alias/symbol-to-string 'symbol-name)
   (defalias 'alias/copy-string-as-kill 'kill-new)
-  (defalias 'alias/match-regexp-at-point)
+  (defalias 'alias/match-regexp-at-point 'looking-at)
   ;; aliases to user-defined functions
   (defalias 'chmodx 'make-executable)
   (defalias 'ppm 'message-prettyprint)
