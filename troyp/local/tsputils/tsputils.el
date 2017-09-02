@@ -1,4 +1,4 @@
-;;; tsputils --- Personal utility functions for Emacs Lisp programming and interactive use.
+;;; tsputils.el --- Personal utility functions for Emacs Lisp programming and interactive use.
 
 ;; Copyright (C) 2016 Troy Pracy
 
