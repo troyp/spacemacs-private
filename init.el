@@ -565,7 +565,7 @@ you should place you code here."
   ;; ,----------,
   ;; | avy-keys |
   ;; '----------'
-  (setq avy-keys (list 97 115 100 102 106 107 108 59))
+  (setq avy-keys (list ?j ?f ?k ?d ?l ?s ?\; ?a ?i ?e ?o ?w ?n ?v))
 
   ;; ,----------------,
   ;; | global-hl-line |
