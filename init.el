@@ -1030,6 +1030,9 @@ you should place you code here."
   (global-set-key (kbd "M-[") (fn! (forward-symbol -1)))
   (global-set-key (kbd "M-]") 'forward-symbol)
 
+  (global-set-key (kbd "C-M-a") 'my/beginning-of-defun)
+  (global-set-key (kbd "C-M-e") 'my/end-of-defun)
+
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
   (global-set-key "\C-a" 'move-beginning-of-line-or-text)    ;; troyp/utils.el
@@ -4937,6 +4940,36 @@ All changes are reverted."
 
   (defun my/substring-at-point (n)
     (buffer-substring (point) (+ (point) n)))
+
+  (defun my/beginning-of-defun ()
+    "Move point to the start of the enclosing definition.
+
+Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
+`defstruct', `defface' and `defmath'."
+    (interactive)
+    (while
+        (and (not
+              (looking-at-p
+               "(def\\(un\\|alias\\|macro\\|var\\|const\\|method\\|struct\\|face\\|math\\)\\b"))
+             (sp-backward-up-sexp))))
+
+  (defun my/end-of-defun (&optional after)
+    "Move point to the end of the enclosing definition.
+
+Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
+`defstruct', `defface' and `defmath'."
+    (interactive)
+    (let ((pt         (point))
+          (regexp     "(def\\(un\\|alias\\|macro\\|var\\|const\\|method\\|struct\\|face\\|math\\)\\b")
+          (after      (or after (point)))
+          (def-start  nil))
+      (my/beginning-of-defun)
+      (setq def-start (point))
+      (sp-forward-sexp)
+      ;; if still before starting position...
+      (when (< (point) pt)
+        (goto-char def-start)
+        (my/end-of-defun pt))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
