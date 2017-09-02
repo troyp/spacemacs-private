@@ -4976,17 +4976,8 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
 Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
 `defstruct', `defface' and `defmath'."
     (interactive)
-    (let ((pt         (point))
-          (regexp     "(def\\(un\\|alias\\|macro\\|var\\|const\\|method\\|struct\\|face\\|math\\)\\b")
-          (after      (or after (point)))
-          (def-start  nil))
-      (my/beginning-of-defun)
-      (setq def-start (point))
-      (sp-forward-sexp)
-      ;; if still before starting position...
-      (when (< (point) pt)
-        (goto-char def-start)
-        (my/end-of-defun pt))))
+    (my/beginning-of-defun)
+    (sp-forward-sexp))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
