@@ -124,10 +124,10 @@
      (comment-region (point) (mark))
      (pop-mark)))
 
-(defmacro with-buffer-string (code)
+(defmacro my/with-buffer-string (&rest code)
   "Perform operations on temp buffer and return contents as string"
   `(with-temp-buffer
-     ,code
+     ,@code
      (buffer-string)))
 
 ;; -------------------------------------------------------------------------------
