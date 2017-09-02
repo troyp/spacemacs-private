@@ -4514,6 +4514,10 @@ If the region is not active, the entire buffer is processed."
     ("ESC" nil "abort"))
   (global-set-key (kbd "C-x <f10>") 'my/lacarte-menu-execute/body)
 
+  (defun my/lacarte-execute-local-menu-command ()
+    (interactive)
+    (no-helm-limit (lacarte-execute-menu-command '(local))))
+
   (defun my/swap-windows (w1 w2)
     (let ((b1 (window-buffer w1))
           (b2 (window-buffer w2)))
