@@ -1883,7 +1883,24 @@ you should place you code here."
     '(progn
       (evil-define-key 'insert shell-mode-map
         (kbd "C-d")    'comint-send-eof
-        )))
+        (kbd "C-u")    'comint-kill-input)
+      (add-hook 'shell-mode-hook 'my/shell-mode-init)))
+
+  (spacemacs/set-leader-keys-for-major-mode 'shell-mode
+      "q"           'my/comint-quit-and-close
+      "r"           'shell-resync-dirs
+      "<backspace>" 'my/bury-buffer-and-delete-window)
+
+  (defun my/shell-mode-init ()
+    (interactive)
+    (define-key shell-mode-map
+      (kbd "M-RET")  nil))
+
+  (defun my/comint-quit-and-close ()
+    (interactive)
+    (comint-send-eof)
+    (sit-for 1)
+    (kill-buffer-and-window))
 
   ;;            ,-----------,
   ;;            | term-mode |
