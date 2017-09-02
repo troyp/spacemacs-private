@@ -4946,6 +4946,15 @@ All changes are reverted."
       (mark-whole-buffer)
       (spacemacs/align-repeat-bar (region-beginning) (region-end) nil)))
 
+  (defmacro my/with-string-as-temp-buffer (s &rest code)
+    "Run CODE on string S in a temp buffer and return the resulting contents
+as a string."
+    `(with-temp-buffer
+       (insert ,s)
+       (beginning-of-buffer)
+       ,@code
+       (buffer-string)))
+
   (defun my/substring-at-point (n)
     (buffer-substring (point) (+ (point) n)))
 
