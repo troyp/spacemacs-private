@@ -4901,6 +4901,14 @@ All changes are reverted."
         (describe-function-1 func))
       (buffer-string)))
 
+  (defun my/describe-function-in-new-buffer (func)
+    (interactive
+     (list
+      (completing-read "Function: " obarray 'fboundp t nil nil
+                       (symbol-name (symbol-nearest-point)))))
+    (switch-to-buffer (generate-new-buffer (format "*Documentation: %S*" func)))
+    (insert (my/describe-function-string (symbol-function (intern func)))))
+
   (defun my/pos-tip-describe-function (func)
     (interactive
      (list
