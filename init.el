@@ -972,6 +972,7 @@ you should place you code here."
          (xmap evil-motion-state-map keyrep defstr))
 
   (defmacro fn! (&rest body) `(lambda () (interactive) ,@body))
+  (defmacro defun! (name doc &rest body) `(defun ,name () ,doc (interactive) ,@body))
 
   ;; ,--------------------------------,
   ;; | Macros for generating commands |
