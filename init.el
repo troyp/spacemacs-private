@@ -1091,6 +1091,8 @@ you should place you code here."
                   (fn! (when (y-or-n-p "Exit? ")
                          (call-interactively #'save-buffers-kill-terminal))))
 
+  (global-set-key (kbd "C-x r 0") 'rectangle-number-lines-interactive)
+
   (bind-key* "C-M-x" 'helm-eval-expression-with-eldoc)
 
   (use-package google-this :bind-keymap ("C-c /" . google-this-mode-submap))
@@ -1604,6 +1606,18 @@ you should place you code here."
              ("h" . highlight-lines-matching-regexp)
              ("y" . my/copy-matching-lines)
              ("Y" . my/copy-non-matching-lines)
+             )
+
+  (bind-keys :map spacemacs-cmds
+             :prefix-map my/rectangle-prefix-map
+             :menu-name "rectangle"
+             :prefix "X r"
+             :prefix-docstring "Commands operating on rectangles."
+             ("c" . clear-rectangle)
+             ("n" . rectangle-number-lines-interactive)
+             ("N" . rectangle-number-lines)
+             ("o" . open-rectangle)
+             ("t" . string-rectangle-history)
              )
 
   ;; -------------------------------------------------------------------------------
