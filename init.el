@@ -1342,6 +1342,8 @@ you should place you code here."
     "h d C-b"      'describe-personal-keybindings
     "h d C-i"      'my/evil-interactive-alist-view
     "h w"          'help-download-prefix-map
+    "h ;"          (defun! my/info-elisp "Open Elisp manual" (info "elisp"))
+    "h :"          (defun! my/info-eintr "Open Elisp intro" (info "eintr"))
     "h ."          'count-words
     "h /"          'find-function-prefix-map
     "h \\"         'shell-command-on-region
