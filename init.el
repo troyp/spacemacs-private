@@ -4524,6 +4524,11 @@ If the region is not active, the entire buffer is processed."
       (message "(my/swap-windows %S %S)" w1 w2)
       (my/swap-windows w1 w2)))
 
+  (defun my/bury-buffer-and-delete-window ()
+    (interactive)
+    (bury-buffer)
+    (delete-window))
+
   (defun my/copy-matching-lines (regexp &optional unique-buffer append-results)
     "Copy lines containing a match for REGEXP and display in a new buffer.
 
