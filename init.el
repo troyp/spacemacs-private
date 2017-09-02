@@ -2924,9 +2924,12 @@ Committer: %cN <%cE>"))
   ;; | Proced |
   ;; '--------'
 
+  ;; set function definition of 'proced-mode-map (same as value)
+  (fset 'proced-mode-map proced-mode-map)
   (spacemacs/set-leader-keys-for-major-mode 'proced-mode
       "<f10>"      'my/lacarte-execute-local-menu-command
       "q"          'quit-window
+      "c"          'proced-mode-map
       )
 
   ;; -------------------------------------------------------------------------------
