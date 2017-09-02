@@ -531,6 +531,24 @@ you should place you code here."
   ;; undo
   (setq undo-outer-limit 50000000)
 
+  ;; ,------------------,
+  ;; | Spacemacs Config |
+  ;; '------------------'
+
+  (defun my/dotspacemacs/refresh-init ()
+    (interactive)
+    (dotspacemacs|call-func dotspacemacs/init))
+  (defun my/dotspacemacs/refresh-user-init ()
+    (interactive)
+    (dotspacemacs|call-func dotspacemacs/user-init))
+  (defun my/dotspacemacs/refresh-user-config ()
+    (interactive)
+    (dotspacemacs|call-func dotspacemacs/user-config))
+  (defun my/configuration-layer/sync ()
+    (interactive)
+    (configuration-layer/sync))
+
+
   ;; ,---------------,
   ;; | CUA Rectangle |
   ;; '---------------'
@@ -1298,6 +1316,11 @@ you should place you code here."
     "f e s p"      'spacemacs-private-rgrep
     "f e s o"      'spacemacs-only-rgrep
     "f e s e"      'elpa-rgrep
+    "f e SPC c"    'my/dotspacemacs/refresh-user-config
+    "f e SPC i"    'my/dotspacemacs/refresh-init
+    "f e SPC l"    'my/configuration-layer/sync
+    "f e SPC t"    'dotspacemacs/test-dotfile
+    "f e SPC u"    'my/dotspacemacs/refresh-user-init
     "f ."          'find-alternate-file
     "f >"          'find-alternate-file-other-window
     "f ' e"        'dired-spacemacs-directory
@@ -1627,6 +1650,7 @@ you should place you code here."
     "SPC b <f1>"   "*About GNU Emacs*"
     "SPC f /"      "sudo"
     "SPC f '"      "dired"
+    "SPC f e SPC"  "spacemacs config"
     "SPC h /"      "find-function"
     "SPC o f"      "flycheck"
     "SPC s R"      "PCRE Regex"
