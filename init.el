@@ -2920,6 +2920,16 @@ Committer: %cN <%cE>"))
             :buffer "*helm org inbuffer*")))
 
   ;; -------------------------------------------------------------------------------
+  ;; ,--------,
+  ;; | Proced |
+  ;; '--------'
+
+  (spacemacs/set-leader-keys-for-major-mode 'proced-mode
+      "<f10>"      'my/lacarte-execute-local-menu-command
+      "q"          'quit-window
+      )
+
+  ;; -------------------------------------------------------------------------------
   ;; ,-----------,
   ;; | Ruby-mode |
   ;; '-----------'
