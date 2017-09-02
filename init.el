@@ -4935,6 +4935,9 @@ All changes are reverted."
       (mark-whole-buffer)
       (spacemacs/align-repeat-bar (region-beginning) (region-end) nil)))
 
+  (defun my/substring-at-point (n)
+    (buffer-substring (point) (+ (point) n)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
   ;; | Minor Modes |
