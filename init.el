@@ -2009,12 +2009,12 @@ you should place you code here."
 
   (setq wdired-use-dired-vertical-movement 'sometimes)
 
-  (defun dired-copy-file-path-as-kill ()
+  (defun my/dired-copy-file-path-as-kill ()
     (interactive)
     (dired-copy-filename-as-kill 0))
-  (defun dired-copy-file-directory-as-kill ()
+  (defun my/dired-copy-file-directory-as-kill ()
     (interactive)
-    (let ((dir (file-name-directory (dired-copy-file-path-as-kill))))
+    (let ((dir (file-name-directory (my/dired-copy-file-path-as-kill))))
       (if (eq last-command 'kill-region)
           (kill-append dir nil)
         (kill-new dir))
@@ -2054,9 +2054,9 @@ you should place you code here."
          (kbd "j")      'diredp-next-line
          (kbd "k")      'diredp-previous-line
          ;; copy name/path bindings: as in ranger
-         (kbd "yd")     'dired-copy-file-directory-as-kill
+         (kbd "yd")     'my/dired-copy-file-directory-as-kill
          (kbd "yn")     'dired-copy-filename-as-kill
-         (kbd "yp")     'dired-copy-file-path-as-kill
+         (kbd "yp")     'my/dired-copy-file-path-as-kill
          ;; (kbd "{")      'evil-backward-paragraph
          ;; (kbd "}")      'evil-forward-paragraph
          (kbd "{")      'dired-prev-subdir
@@ -2092,6 +2092,7 @@ you should place you code here."
          "p"     'my/dired-copy-files-here
          "m"     'my/dired-move-files-here
          "s"     'dired-toggle-sudo
+         "<f2>"  'dired-do-rename
          )
        (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
 
