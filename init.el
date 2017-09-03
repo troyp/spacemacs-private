@@ -4724,25 +4724,6 @@ each line."
     (interactive)
     (shell-command "cd ~/.emacs.d/private/layer-groups; git clone https://github.com/TheBB/spacemacs-layers.git bb-spacemacs-layers"))
 
-  ;; modified version of evil-goto-mark-line
-  (evil-define-command my/evil-goto-mark-line (char &optional noerror)
-    "Go to the line of the marker specified by CHAR and recentre.
-With prefix argument, do not recentre."
-    :keep-visual t
-    :repeat nil
-    :type line
-    (interactive (list (read-char)))
-    (evil-goto-mark char noerror)
-    (evil-first-non-blank)
-    (unless current-prefix-arg
-      (evil-scroll-line-to-center nil)))
-
-  ;; TODO: scroll-to-center only if target is out of view
-  (defun my/evil-insert-resume (count)
-    (interactive "p")
-    (evil-insert-resume count)
-    (evil-scroll-line-to-center nil))
-
   (defun my/async-shell-command-no-window (command &optional output-buffer error-buffer)
     (interactive "sShell command: ")
     (let ((display-buffer-alist '(("*Async Shell Command*" . (display-buffer-no-window nil)))))
@@ -4921,6 +4902,31 @@ All changes are reverted."
          (call-interactively #',func)
          (evil-scroll-line-to-center nil))))
 
+  ;; modified version of evil-goto-mark-line
+  (evil-define-command my/evil-goto-mark-line (char &optional noerror)
+    "Go to the line of the marker specified by CHAR and recentre.
+With prefix argument, do not recentre."
+    :keep-visual t
+    :repeat nil
+    :type line
+    (interactive (list (read-char)))
+    (evil-goto-mark char noerror)
+    (evil-first-non-blank)
+    (unless current-prefix-arg
+      (evil-scroll-line-to-center nil)))
+
+  ;; TODO: scroll-to-center only if target is out of view
+  (defun my/evil-insert-resume (count)
+    (interactive "p")
+    (evil-insert-resume count)
+    (evil-scroll-line-to-center nil))
+
+  (my/define-command-and-center spacemacs/jump-to-definition)
+  (my/define-command-and-center push-button)
+  (my/define-command-and-center magit-blame)
+  (my/define-evil-motion-and-center evil-search-previous)
+  (my/define-evil-motion-and-center evil-search-next)
+
   (defun my/mouse-toggle-fold (ev)
     (interactive "e")
     (save-excursion
@@ -4937,12 +4943,6 @@ All changes are reverted."
     (insert (make-string (* 2 n) ? ))
     (backward-char n)
     (evil-insert-state))
-
-  (my/define-command-and-center spacemacs/jump-to-definition)
-  (my/define-command-and-center push-button)
-  (my/define-command-and-center magit-blame)
-  (my/define-evil-motion-and-center evil-search-previous)
-  (my/define-evil-motion-and-center evil-search-next)
 
   (defun my/remove-blank-lines (beg end)
     (interactive "r")
