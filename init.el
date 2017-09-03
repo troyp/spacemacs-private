@@ -1528,16 +1528,16 @@ you should place you code here."
              :menu-name "keys/keymaps"
              :prefix "K"
              :prefix-docstring "Commands dealing with keymaps."
-             ("a" . which-key-show-keymap-at-point)
+             ("a" . my/which-key-show-keymap-at-point)
              ("e" . edmacro-insert-key)
-             ("f" . get-binding)
-             ("i" . lookup-key-interactive)
+             ("f" . my/get-binding)
+             ("i" . my/lookup-key-interactive)
              ("m" . which-key-show-minor-mode-keymap)
-             ("p" . prettyprint-keymap)
-             ("r" . replace-ints-with-char)
-             ("s" . which-key-show-current-state-map)
-             ("u" . parent-keymap-at-point)
-             ("w" . which-key-show)
+             ("p" . my/prettyprint-keymap)
+             ("r" . my/replace-ints-with-char)
+             ("s" . my/which-key-show-current-state-map)
+             ("u" . my/parent-keymap-at-point)
+             ("w" . my/which-key-show)
              ("K" . which-key-show-top-level)
              )
 
@@ -3358,17 +3358,17 @@ Then move to the next line (column 3).
   ;; to show keys sequence that invoked the current command: (this-command-keys)
   (defalias 'alias/key-vector-to-readable-string 'key-description)
   ;; WARNING: key-description is described as an *approximate* inverse to kbd.
-  (defun key-readable-string-to-vector (keystr) (edmacro-parse-keys keystr t))
   (defalias 'alias/key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
   (defalias 'alias/key-input-to-vector 'read-key-sequence-vector)
   (defalias 'alias/key-input-to-string 'read-key-sequence)
+  (defun my/key-readable-string-to-vector (keystr) (edmacro-parse-keys keystr t))
 
-  (defun read-key-insert-vector ()
+  (defun my/read-key-insert-vector ()
     "Read a keystroke and insert as a vector."
     (interactive)
     (cl-prettyprint (read-key-sequence-vector "")))
 
-  (defun read-key-insert-readable-string (arg)
+  (defun my/read-key-insert-readable-string (arg)
     "Read a keystroke and insert as an edmacro-style string.
 
     If a prefix argument is supplied, the double quotes are omitted."
@@ -3377,7 +3377,7 @@ Then move to the next line (column 3).
         (insert (key-description (read-key-sequence-vector "")))
       (insert ?" (key-description (read-key-sequence-vector "")) ?")))
 
-  (defun read-key-insert-string (arg)
+  (defun my/read-key-insert-string (arg)
     "Read a keystroke and insert as a string.
 
     If a prefix argument is supplied, the double quotes are omitted."
@@ -3386,7 +3386,7 @@ Then move to the next line (column 3).
         (insert (read-key-sequence ""))
       (insert ?" (read-key-sequence "") ?")))
 
-  (defun lookup-key-interactive (keymap key)
+  (defun my/lookup-key-interactive (keymap key)
     (interactive
      (list
       (read-string "Enter keymap: ")
@@ -3394,19 +3394,19 @@ Then move to the next line (column 3).
     (let* ((cmd (lookup-key (evalstr keymap) key)))
       (message "%s" (trim-multiline-string (string-prettyprint cmd)))))
 
-  (defun which-key-show-current-state-map ()
+  (defun my/which-key-show-current-state-map ()
     (interactive)
     (let ((current-state-map (format "evil-%s-state-map" evil-state)))
-      (which-key-show (intern current-state-map))))
+      (my/which-key-show (intern current-state-map))))
 
-  (defun which-key-show (map)
+  (defun my/which-key-show (map)
     "Display the keymap MAP in a which-key pop-up."
     (interactive "SKeymap: ")
     (which-key--show-keymap (symbol-name map) (eval map)))
 
   ;; TODO: work out what 8-digit integers represent in a keymap.
   ;; Currently, they're left untouched.
-  (defun replace-ints-with-char (beg end)
+  (defun my/replace-ints-with-char (beg end)
     "Replace the numbers in a keymap representation with a readable string
 representation."
     (interactive "r")
@@ -3425,14 +3425,14 @@ representation."
                                t nil)))))))
 
   ;; FIXME
-  (defun prettyprint-keymap (kmap)
+  (defun my/prettyprint-keymap (kmap)
     (interactive "SKeymap: ")
     (set-mark-command)
     (cl-prettyprint (eval kmap))
     (evil-active-region 1)
-    (replace-ints-with-char))
+    (my/replace-ints-with-char))
 
-  (defun get-binding (cmd)
+  (defun my/get-binding (cmd)
     (interactive "SCommand name: ")
     (let* ((cmdname       (symbol-name cmd))
            (cmdname-escd  (format "\\[%s]" cmdname))
@@ -3441,15 +3441,15 @@ representation."
       (message "%S" cmdcons)
       cmdcons))
 
-  (defun which-key-show-keymap-at-point (sym)
+  (defun my/which-key-show-keymap-at-point (sym)
     (interactive (list (symbol-at-point)))
     (let ((kmap (cond
                  ((keymapp sym)        sym)
                  ((keymapp (eval sym))  (eval sym))
                  (t                     nil))))
-      (which-key-show kmap)))
+      (my/which-key-show kmap)))
 
-  (defun parent-keymap-at-point (sym)
+  (defun my/parent-keymap-at-point (sym)
     (interactive (list (symbol-at-point)))
     (let ((kmap (cond
                  ((keymapp sym)        sym)
@@ -3457,7 +3457,7 @@ representation."
                  (t                     nil))))
       (keymap-parent kmap)))
 
-  (defun read-kbd-event (start &optional end)
+  (defun my/read-kbd-event (start &optional end)
     "Read a string or the region as an event sequence.
 
 The string should represent a sequence of keys in `edmacro-mode' format.
@@ -3467,7 +3467,7 @@ Interactively, acts on the region. Called from lisp, START may be a string."
         (listify-key-sequence (edmacro-parse-keys start end))
       (listify-key-sequence (edmacro-parse-keys (buffer-substring start end)))))
 
-  (defun simulate-keypress (keys)
+  (defun my/simulate-keypress (keys)
     (interactive "sKeys: ")
     "Simulate a key press or key sequence.
 
@@ -3476,20 +3476,20 @@ Note: when the key sequence represents a completed action, `execute-kbd-macro'
 may be used instead, eg.  (execute-kbd-macro (kbd "C-x o")).
 
 Example: to enter the help prefix and await another keypress...
-    (simulate-keypress "C-h")"
+    (my/simulate-keypress "C-h")"
     (setq prefix-arg current-prefix-arg)
-    (setq unread-command-events (read-kbd-event keys)))
+    (setq unread-command-events (my/read-kbd-event keys)))
 
-  (defun define-simulated-keypress (keys)
+  (defun my/define-simulated-keypress (keys)
     "Return a command executing a simulated keypress of KEY.
 
 KEY is specified in `edmacro-mode' format."
     `(lambda ()
        (interactive)
        (setq prefix-arg current-prefix-arg)
-       (setq unread-command-events (read-kbd-event ,keys))))
+       (setq unread-command-events (my/read-kbd-event ,keys))))
 
-  (defun key-to-edmacro-format (key)
+  (defun my/key-to-edmacro-format (key)
     "Converts a key to edmacro format (eg  -> C-x C-a).
 The key should be entered using quoted-insert, or entered interactively.
 See `edmacro-format-keys'."
@@ -3497,7 +3497,7 @@ See `edmacro-format-keys'."
     (edmacro-format-keys key))
 
   ;; adapted from emacs source. GPL3.
-  (defun read-key-sequence-and-related ()
+  (defun my/read-key-sequence-and-related ()
     "This is the read-function used in `describe-key'.
 It returns a list of (KEY UNTRANSLATED UP-EVENT).
 
@@ -4225,14 +4225,14 @@ See also `rectangle-number-lines'."
   (defun sprint-keymap (map)
     (with-temp-buffer
       (cl-prettyprint map)
-      (replace-ints-with-char (point-min) (point-max))
+      (my/replace-ints-with-char (point-min) (point-max))
       (buffer-string)))
 
   (defun symbol-or-function-near-point ()
     (or (when (fboundp 'symbol-nearest-point) (symbol-nearest-point))
         (function-called-at-point)))
 
-  (defun prettyprint-keymap (map)
+  (defun my/prettyprint-keymap (map)
     "Insert a pretty-printed representation of a keymap."
     (interactive (list
                   (completing-read "keymap: " obarray
