@@ -1122,6 +1122,7 @@ you should place you code here."
 
   (bind-keys :map help-map
              ("C-k" . find-function-on-key)
+             ("<backspace>" . my/quit-help)
              )
 
   (bind-keys :map global-map
@@ -4504,6 +4505,10 @@ If the region is not active, the entire buffer is processed."
       (quit-window nil (get-buffer-window "*Help*"))
       (delete-window)
       (set-window-buffer w b)))
+
+  (defun my/quit-help ()
+    (interactive)
+    (quit-window nil (get-buffer-window "*Help*")))
 
   (defun my/web-mode-normalize-html ()
     (interactive)
