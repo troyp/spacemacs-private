@@ -1054,6 +1054,8 @@ you should place you code here."
 
   (global-set-key (kbd "C-M-a") 'my/beginning-of-defun)
   (global-set-key (kbd "C-M-e") 'my/end-of-defun)
+  (global-set-key (kbd "C-M-n") 'my/evil-next-paragraph-beginning)
+  (global-set-key (kbd "C-M-p") 'my/evil-previous-paragraph-beginning)
 
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
@@ -5060,6 +5062,22 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (interactive)
     (my/beginning-of-defun)
     (sp-forward-sexp))
+
+  (evil-define-motion my/evil-next-paragraph-beginning (count)
+    "Move to the end of the COUNT-th next paragraph."
+    :jump t
+    :type exclusive
+    (evil-signal-at-bob-or-eob count)
+    (evil-forward-beginning 'evil-paragraph count)
+    (evil-first-non-blank))
+
+  (evil-define-motion my/evil-previous-paragraph-beginning (count)
+    "Move to the end of the COUNT-th paragraph before point."
+    :jump t
+    :type exclusive
+    (evil-signal-at-bob-or-eob count)
+    (evil-backward-beginning 'evil-paragraph count)
+    (evil-first-non-blank))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
