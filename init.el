@@ -845,6 +845,9 @@ you should place you code here."
   ;; '---------------'
 
   (asoc-put! evil-surround-pairs-alist ?, (cons "< " " >"))
+  ;; add C-` as an alternative to `
+  ;; so that C-` C-` can be used to backquote a symbol (using my/surround-symbol)
+  (asoc-put! evil-surround-pairs-alist 67108960 (cons "`" "`"))  ;; C-`
 
   ;; ,--------,
   ;; | cursor |
@@ -1076,6 +1079,7 @@ you should place you code here."
   (global-set-key (kbd "M-S-SPC") 'just-one-space)
 
   (global-set-key (kbd "C-M-l") 'my/insert-spaces-around-point)
+  (global-set-key (kbd "C-`") 'my/surround-symbol)
 
   (global-set-key [\M-f12] 'shell-pop)
   (global-set-key (kbd "C-'") 'shell-pop)
@@ -2559,6 +2563,13 @@ you should place you code here."
         (lambda (&optional arg)
           (interactive "p")
           (kmacro-exec-ring-item '([?c ?s 40 34 ] 0 "%d") arg)))
+
+  (fset 'my/surround-symbol
+   (lambda (&optional arg)
+     (interactive "p")
+     (evil-normal-state)
+     (kmacro-exec-ring-item '([ ?v ?i ?o ] 0 "%d") arg)
+     (call-interactively #'evil-surround-region)))
 
 
   ;; -------------------------------------------------------------------------------
