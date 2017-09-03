@@ -1165,6 +1165,8 @@ you should place you code here."
   (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center)
   (define-key evil-normal-state-map (kbd "'") 'my/evil-goto-mark-line)
   (define-key evil-normal-state-map (kbd "gi") 'my/evil-insert-resume)
+  ;; make | use `fill-column' as a default
+  (define-key evil-normal-state-map (kbd "|") 'my/evil-goto-column)
 
   ;; PCRE search forward/backward
   (define-key evil-normal-state-map (kbd "/") 'my/evil-pcre-search-forward)
@@ -4224,6 +4226,14 @@ See also `rectangle-number-lines'."
     (move-end-of-line 1)
     (newline)
     (insert (sprint-keymap map)))
+
+  ;; redefine | to use a default of `fill-column' rather than 0.
+  (evil-define-motion my/evil-goto-column (count)
+    "Move point to column COUNT.
+
+Columns are indexed from zero. If COUNT is not supplied, use `fill-column'."
+    :type exclusive
+    (move-to-column (or count fill-column)))
 
   (defun my/extend-to-column (&optional col set-fill-column)
     "Extend line to column COL by adding spaces, if necessary.
