@@ -1080,7 +1080,6 @@ you should place you code here."
   ;; This just makes it explicit
   (global-set-key (kbd "M-S-SPC") 'just-one-space)
 
-  (global-set-key (kbd "C-M-l") 'my/insert-spaces-around-point)
   (global-set-key (kbd "C-`") 'my/surround-symbol)
 
   (global-set-key [\M-f12] 'shell-pop)
@@ -1301,6 +1300,7 @@ you should place you code here."
   (define-key evil-insert-state-map (kbd "M-?")   'dabbrev-expand)
   (define-key evil-insert-state-map (kbd "C-n")   'next-line)
   (define-key evil-insert-state-map (kbd "C-p")   'previous-line)
+  (define-key evil-insert-state-map (kbd "C-M-l") 'my/insert-spaces-around-point)
 
   ;; (define-key evil-insert-state-map (kbd "C-M-SPC") 'hippie-expand)
 
