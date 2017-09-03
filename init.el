@@ -4244,6 +4244,23 @@ value of COL is additionally set as the new value of `fill-column'."
       (setf fill-column col))
     (move-to-column col t))
 
+  (defun my/add-column-marker (beg end &optional group spacing repeat)
+    (interactive "r")
+    (unless group (setq group 1))
+    (let ((endm (save-excursion
+                  (goto-char (1- end))
+                  (end-of-line)
+                  (point-marker))))
+      (save-excursion
+        (goto-char beg)
+        (while (<= (point) (marker-position endm))
+          (end-of-line)
+          (insert " |")
+          (beginning-of-line 2))
+        (set-marker endm (line-end-position))
+        (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
+        (set-marker endm nil))))
+
   (defun rgrep-with-ignored (regexp ignored files dir)
     (interactive "sREGEXP: \nsIGNORED: \nFILES: \nDIR: ")
     (let ((grep-find-ignored-directories (append ignored grep-find-ignored-directories)))
@@ -4674,23 +4691,6 @@ each line."
   (defun my/install-bb-spacemacs-layers ()
     (interactive)
     (shell-command "cd ~/.emacs.d/private/layer-groups; git clone https://github.com/TheBB/spacemacs-layers.git bb-spacemacs-layers"))
-
-  (defun my/add-column-marker (beg end &optional group spacing repeat)
-    (interactive "r")
-    (unless group (setq group 1))
-    (let ((endm (save-excursion
-                  (goto-char (1- end))
-                  (end-of-line)
-                  (point-marker))))
-      (save-excursion
-        (goto-char beg)
-        (while (<= (point) (marker-position endm))
-          (end-of-line)
-          (insert " |")
-          (beginning-of-line 2))
-        (set-marker endm (line-end-position))
-        (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
-        (set-marker endm nil))))
 
   ;; modified version of evil-goto-mark-line
   (evil-define-command my/evil-goto-mark-line (char &optional noerror)
