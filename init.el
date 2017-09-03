@@ -839,6 +839,13 @@ you should place you code here."
   (define-key evil-inner-text-objects-map "e" 'evil-inner-element)
   (define-key evil-outer-text-objects-map "e" 'evil-a-element)
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------------,
+  ;; | evil-surround |
+  ;; '---------------'
+
+  (asoc-put! evil-surround-pairs-alist ?, (cons "< " " >"))
+
   ;; ,--------,
   ;; | cursor |
   ;; '--------'
@@ -1759,13 +1766,6 @@ you should place you code here."
     (evil-define-key 'visual evil-vimish-fold-mode-map "z " 'vimish-fold-avy))
   (eval-after-load 'evil-vimish-fold
     (add-hook 'evil-vimish-fold-mode-hook #'my/evil-vimish-fold-mode-hook))
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------------,
-  ;; | evil-surround |
-  ;; '---------------'
-
-  (asoc-put! evil-surround-pairs-alist ?, (cons "< " " >"))
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
