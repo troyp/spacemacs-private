@@ -774,7 +774,7 @@ you should place you code here."
       (mark-defun)
       (list (+ (point) 2)
             (- (mark) 2))))
-  (evil-define-text-object evil-outer-defun (count &optional beg end type)
+  (evil-define-text-object evil-a-defun (count &optional beg end type)
     "operates on the top-level sexp around point."
     (save-excursion
       (mark-defun)
@@ -787,15 +787,21 @@ you should place you code here."
 
   (evil-define-text-object evil-inner-line (count &optional beg end type)
     (list (my/line-visible-beginning-position) (my/line-visible-end-position)))
-  (evil-define-text-object evil-outer-line (count &optional beg end type)
+  (evil-define-text-object evil-a-line (count &optional beg end type)
     (list (line-beginning-position) (line-end-position)))
 
+  ;; FIXME
   (evil-define-text-object evil-inner-sexp  (count &optional beg end type)
     (let ((sexp-bounds (cdr (sexp-at-point-with-bounds))))
       (list (1+ (car sexp-bounds)) (1- (cdr sexp-bounds)))))
-  (evil-define-text-object evil-outer-sexp  (count &optional beg end type)
+  (evil-define-text-object evil-a-sexp  (count &optional beg end type)
     (let ((sexp-bounds (cdr (sexp-at-point-with-bounds))))
       (list (car sexp-bounds) (cdr sexp-bounds))))
+
+  (evil-define-text-object evil-inner-element (count &optional beg end type)
+    (list (+ 1 (web-mode-tag-end-position (web-mode-element-beginning-position (point)))) (web-mode-tag-beginning-position (web-mode-element-end-position (- (point) 1)))))
+  (evil-define-text-object evil-a-element (count &optional beg end type)
+    (list (web-mode-element-beginning-position (point)) (+ 1 (web-mode-element-end-position (point)))))
 
   ;; heredoc object: define properties for thingatpt
   (put 'heredoc 'beginning-op
@@ -818,15 +824,20 @@ you should place you code here."
     (-cons-to-list (bounds-of-thing-at-point 'heredoc)))
 
   (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
-  (define-key evil-outer-text-objects-map "d" 'evil-outer-defun)
+  (define-key evil-outer-text-objects-map "d" 'evil-a-defun)
   (define-key evil-inner-text-objects-map "f" 'evil-inner-filename)
   (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
-  (define-key evil-outer-text-objects-map "l" 'evil-outer-line)
+  (define-key evil-outer-text-objects-map "l" 'evil-a-line)
   (define-key evil-inner-text-objects-map "<" 'evil-inner-heredoc)
   (define-key evil-inner-text-objects-map "x" 'evil-inner-sexp)
-  (define-key evil-outer-text-objects-map "x" 'evil-outer-sexp)
-  ;; evil-textobj-column
+  (define-key evil-outer-text-objects-map "x" 'evil-a-sexp)
+  (define-key evil-inner-text-objects-map "0" 'evil-inner-paren)
+  (define-key evil-outer-text-objects-map "0" 'evil-a-paren)
+  (define-key evil-inner-text-objects-map "9" 'evil-inner-paren)
+  (define-key evil-outer-text-objects-map "9" 'evil-a-paren)
   (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD)
+  (define-key evil-inner-text-objects-map "e" 'evil-inner-element)
+  (define-key evil-outer-text-objects-map "e" 'evil-a-element)
 
   ;; ,--------,
   ;; | cursor |
@@ -3120,13 +3131,6 @@ Committer: %cN <%cE>"))
        (kbd "<C-return>")   'open-line-below
        (kbd "<C-S-return>") 'open-line-above
        ))
-
-  (evil-define-text-object evil-inner-element (count &optional beg end type)
-    (list (+ 1 (web-mode-tag-end-position (web-mode-element-beginning-position (point)))) (web-mode-tag-beginning-position (web-mode-element-end-position (- (point) 1)))))
-  (evil-define-text-object evil-outer-element (count &optional beg end type)
-    (list (web-mode-element-beginning-position (point)) (+ 1 (web-mode-element-end-position (point)))))
-  (define-key evil-inner-text-objects-map "e" 'evil-inner-element)
-  (define-key evil-outer-text-objects-map "e" 'evil-outer-element)
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
