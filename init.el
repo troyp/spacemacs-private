@@ -3356,12 +3356,12 @@ Then move to the next line (column 3).
   ;; to get the definition of a key sequence in a keymap: lookup-key
   ;; to show keymap with which-key:  (which-key--show-keymap keymap-name keymap)
   ;; to show keys sequence that invoked the current command: (this-command-keys)
-  (defalias 'key-vector-to-readable-string 'key-description)
+  (defalias 'alias/key-vector-to-readable-string 'key-description)
   ;; WARNING: key-description is described as an *approximate* inverse to kbd.
-  (defalias 'key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
-  (defalias 'key-input-to-vector 'read-key-sequence-vector)
-  (defalias 'key-input-to-string 'read-key-sequence)
   (defun key-readable-string-to-vector (keystr) (edmacro-parse-keys keystr t))
+  (defalias 'alias/key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
+  (defalias 'alias/key-input-to-vector 'read-key-sequence-vector)
+  (defalias 'alias/key-input-to-string 'read-key-sequence)
 
   (defun read-key-insert-vector ()
     "Read a keystroke and insert as a vector."
