@@ -101,6 +101,11 @@ Each entry is either:
     (setq plsense-direx:open-referer-key "C-x M-j")
     (setq plsense-direx:open-referer-other-window-key "C-x C-M-J")
     (plsense-direx:config-default)
+    (add-hook 'cperl-mode-hook 'plsense-server-start)
+    (spacemacs/set-leader-keys-for-major-mode 'cperl-mode
+        "?"  'plsense-display-help-buffer
+        "/"  'plsense-popup-help
+        )
     ))
 
 ;;; packages.el ends here
