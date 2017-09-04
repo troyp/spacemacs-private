@@ -2977,8 +2977,13 @@ Committer: %cN <%cE>"))
   ;; | Proced |
   ;; '--------'
 
+  (add-hook 'proced-mode-hook 'my/proced-init)
+
+  (defun my/proced-init ()
+    (interactive)
+    (fset 'proced-mode-map proced-mode-map))
+
   ;; set function definition of 'proced-mode-map (same as value)
-  (fset 'proced-mode-map proced-mode-map)
   (spacemacs/set-leader-keys-for-major-mode 'proced-mode
       "<f10>"      'my/lacarte-execute-local-menu-command
       "q"          'quit-window
