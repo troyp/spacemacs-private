@@ -1218,9 +1218,6 @@ you should place you code here."
   ;; evil-shift-up/down-line-or-block
   (define-key evil-normal-state-map [\M-\S-down] 'evil-shift-down-line-or-block)
   (define-key evil-normal-state-map [\M-\S-up] 'evil-shift-up-line-or-block)
-  ;; insert at WORD beginning/end
-  (define-key evil-normal-state-map (kbd "M-B") 'my/evil-insert-at-WORD-beginning)
-  (define-key evil-normal-state-map (kbd "M-E") 'my/evil-append-at-WORD-end)
   ;; forward/backward sentence
   (define-key evil-normal-state-map (kbd "M-e") 'evil-forward-sentence-begin)
   (define-key evil-normal-state-map (kbd "M-a") 'evil-backward-sentence-begin)
@@ -1652,6 +1649,8 @@ you should place you code here."
              :menu-name "user cmds"
              :prefix "S-SPC"
              :prefix-docstring "User commands."
+             ("B" . my/evil-insert-at-WORD-beginning)
+             ("F" . my/evil-append-at-WORD-end)
              )
 
   ;; -------------------------------------------------------------------------------
