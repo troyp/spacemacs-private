@@ -2746,6 +2746,10 @@ Committer: %cN <%cE>"))
              ("C-l"    . reposition-window)
              ("C-m"    . spacemacs/macrostep-transient-state/body)
              )
+  (bind-keys :map emacs-lisp-mode-map
+             ("M-B"  . my/backward-evil-defun)
+             ("M-F"  . my/forward-evil-defun)
+             )
   (bind-keys :map lisp-interaction-mode-map
              ("C-j"  . my/eval-prettyprint-last-sexp)
              )
@@ -2770,6 +2774,22 @@ Committer: %cN <%cE>"))
     (apply #'evil-delete (evil-inner-symbol))
     (sp-unwrap-sexp -1)
     (evil-normal-state))
+
+  (evil-define-motion my/forward-evil-defun (count)
+    "Move to the end of the COUNT-th next paragraph."
+    :jump t
+    :type exclusive
+    (evil-signal-at-bob-or-eob count)
+    (evil-forward-beginning 'evil-defun count)
+    (evil-first-non-blank))
+
+  (evil-define-motion my/backward-evil-defun (count)
+    "Move to the end of the COUNT-th next paragraph."
+    :jump t
+    :type exclusive
+    (evil-signal-at-bob-or-eob count)
+    (evil-backward-beginning 'evil-defun count)
+    (evil-first-non-blank))
 
   ;; ===== TESTING MACROS FOR MY PACKAGES =====
 
