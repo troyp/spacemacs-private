@@ -1522,82 +1522,6 @@ you should place you code here."
              )
 
   (bind-keys :map spacemacs-cmds
-             :prefix-map keymaps-prefix-map
-             :menu-name "keys/keymaps"
-             :prefix "K"
-             :prefix-docstring "Commands dealing with keymaps."
-             ("a" . my/which-key-show-keymap-at-point)
-             ("e" . edmacro-insert-key)
-             ("f" . my/get-binding)
-             ("i" . my/lookup-key-interactive)
-             ("m" . which-key-show-minor-mode-keymap)
-             ("p" . my/prettyprint-keymap)
-             ("r" . my/replace-ints-with-char)
-             ("s" . my/which-key-show-current-state-map)
-             ("u" . my/parent-keymap-at-point)
-             ("w" . my/which-key-show)
-             ("K" . which-key-show-top-level)
-             )
-
-  (bind-keys :map keymaps-prefix-map
-             :prefix-map keymaps-describe-prefix-map
-             :prefix "d"
-             :prefix-docstring "Describe commands related to keymaps and key binding."
-             ("b"   . describe-bindings)
-             ("f"   . describe-function)
-             ("k"   . describe-key)
-             ("l"   . spacemacs/describe-last-keys)
-             ("m"   . spacemacs/describe-mode)
-             ("o"   . describe-option)
-             ("K"   . describe-keymap)
-             ("C-b" . describe-personal-keybindings)
-             )
-
-  (bind-keys :map spacemacs-cmds
-             :prefix-map external-apps-prefix
-             :menu-name "external apps"
-             :prefix "!"
-             :prefix-docstring "Commands dealing with external applications."
-             ("f b" . helm-firefox-bookmarks)
-             )
-
-  ;; =====DIFF PREFIX MAP=====
-  (bind-keys :map spacemacs-cmds
-             :prefix-map diff-prefix
-             :menu-name "diff"
-             :prefix "&"
-             :prefix-docstring "Diff commands."
-             ("f"   . diff-buffer-with-file)
-             ("b"   . ediff-buffers)
-             ("3"   . ediff-buffers3)
-             )
-  (bind-keys :map diff-prefix
-             :prefix-map merge-prefix
-             :menu-name "merge"
-             :prefix "m"
-             :prefix-docstring "Merge commands."
-             ("m" . ediff-merge-files)
-             ("M" . ediff-merge-files-with-ancestor)
-             ("b" . ediff-merge-buffers)
-             ("B" . ediff-merge-buffers-with-ancestor)
-             ("d" . ediff-merge-directories)
-             ("D" . ediff-merge-directories-with-ancestor)
-             )
-  (which-key-add-key-based-replacements
-    "SPC &"    "diff"
-    "SPC & m"  "merge"
-    )
-
-  (bind-keys :map spacemacs-cmds
-             :prefix-map column-prefix
-             :menu-name "column"
-             :prefix "|"
-             :prefix-docstring "Column commands."
-             ("e" . my/extend-to-column)
-             ("|" . my/add-column-marker)
-             )
-
-  (bind-keys :map spacemacs-cmds
              :prefix-map modes-prefix-key-map
              :prefix "o m"
              :prefix-docstring "Commands dealing with modes and states. Inherits from `mode-ring-prefix-key-map'"
@@ -1605,14 +1529,6 @@ you should place you code here."
              ("n" . evil-normal-state)
              )
   (set-keymap-parent modes-prefix-key-map mode-ring-prefix-key-map)
-
-  (bind-keys :map spacemacs-cmds
-             :prefix-map structured-text-prefix-map
-             :menu-name "structured text"
-             :prefix "X"
-             :prefix-docstring "Commands dealing with structured text."
-             ("sn" . sort-numeric-fields)
-             )
 
   (bind-keys :map search-map
              ;; M-s map
@@ -1632,7 +1548,29 @@ you should place you code here."
              ("Y" . my/copy-non-matching-lines)
              )
 
-  (bind-keys :map spacemacs-cmds
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------------,
+  ;; | user-cmds-map |
+  ;; '---------------'
+
+  (bind-keys :map global-map
+             :prefix-map user-cmds-map
+             :menu-name "user cmds"
+             :prefix "S-SPC"
+             :prefix-docstring "User commands."
+             ("B" . my/evil-insert-at-WORD-beginning)
+             ("F" . my/evil-append-at-WORD-end)
+             )
+
+  (bind-keys :map user-cmds-map
+             :prefix-map my/structured-text-prefix-map
+             :menu-name "structured text"
+             :prefix "X"
+             :prefix-docstring "Commands dealing with structured text."
+             ("sn" . sort-numeric-fields)
+             )
+
+  (bind-keys :map user-cmds-map
              :prefix-map my/rectangle-prefix-map
              :menu-name "rectangle"
              :prefix "X r"
@@ -1644,14 +1582,84 @@ you should place you code here."
              ("t" . string-rectangle-history)
              )
 
-  (bind-keys :map global-map
-             :prefix-map user-cmds-map
-             :menu-name "user cmds"
-             :prefix "S-SPC"
-             :prefix-docstring "User commands."
-             ("B" . my/evil-insert-at-WORD-beginning)
-             ("F" . my/evil-append-at-WORD-end)
+  (bind-keys :map user-cmds-map
+             :prefix-map my/column-prefix-map
+             :menu-name "column"
+             :prefix "|"
+             :prefix-docstring "Column commands."
+             ("e" . my/extend-to-column)
+             ("|" . my/add-column-marker)
              )
+
+  (bind-keys :map user-cmds-map
+             :prefix-map my/keymaps-prefix-map
+             :menu-name "keys/keymaps"
+             :prefix "K"
+             :prefix-docstring "Commands dealing with keymaps."
+             ("a" . my/which-key-show-keymap-at-point)
+             ("e" . edmacro-insert-key)
+             ("f" . my/get-binding)
+             ("i" . my/lookup-key-interactive)
+             ("m" . which-key-show-minor-mode-keymap)
+             ("p" . my/prettyprint-keymap)
+             ("r" . my/replace-ints-with-char)
+             ("s" . my/which-key-show-current-state-map)
+             ("u" . my/parent-keymap-at-point)
+             ("w" . my/which-key-show)
+             ("K" . which-key-show-top-level)
+             )
+
+  (bind-keys :map my/keymaps-prefix-map
+             :prefix-map keymaps-describe-prefix-map
+             :prefix "d"
+             :prefix-docstring "Describe commands related to keymaps and key binding."
+             ("b"   . describe-bindings)
+             ("f"   . describe-function)
+             ("k"   . describe-key)
+             ("l"   . spacemacs/describe-last-keys)
+             ("m"   . spacemacs/describe-mode)
+             ("o"   . describe-option)
+             ("K"   . describe-keymap)
+             ("C-b" . describe-personal-keybindings)
+             )
+
+  (bind-keys :map user-cmds-map
+             :prefix-map my/external-apps-prefix
+             :menu-name "external apps"
+             :prefix "!"
+             :prefix-docstring "Commands dealing with external applications."
+             ("f b" . helm-firefox-bookmarks)
+             )
+
+  (bind-keys :map user-cmds-map
+             :prefix-map my/diff-prefix-map
+             :menu-name "diff"
+             :prefix "&"
+             :prefix-docstring "Diff commands."
+             ("f"   . diff-buffer-with-file)
+             ("b"   . ediff-buffers)
+             ("3"   . ediff-buffers3)
+             )
+  (bind-keys :map my/diff-prefix-map
+             :prefix-map my/merge-prefix-map
+             :menu-name "merge"
+             :prefix "m"
+             :prefix-docstring "Merge commands."
+             ("m" . ediff-merge-files)
+             ("M" . ediff-merge-files-with-ancestor)
+             ("b" . ediff-merge-buffers)
+             ("B" . ediff-merge-buffers-with-ancestor)
+             ("d" . ediff-merge-directories)
+             ("D" . ediff-merge-directories-with-ancestor)
+             )
+  (which-key-add-key-based-replacements
+    "S-SPC K"    "keymaps"
+    "S-SPC X"    "structured text"
+    "S-SPC !"    "external apps"
+    "S-SPC &"    "diff"
+    "S-SPC & m"  "merge"
+    "S-SPC |"    "column"
+    )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------------,
