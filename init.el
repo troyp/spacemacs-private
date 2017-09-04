@@ -1647,6 +1647,13 @@ you should place you code here."
              ("t" . string-rectangle-history)
              )
 
+  (bind-keys :map global-map
+             :prefix-map user-cmds-map
+             :menu-name "user cmds"
+             :prefix "S-SPC"
+             :prefix-docstring "User commands."
+             )
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------------,
   ;; | which-key Configuration |
