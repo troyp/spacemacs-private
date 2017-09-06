@@ -963,7 +963,7 @@ you should place you code here."
   ;; builtin: global-key-binding local-set-key local-unset-key
   ;; other:   defhydra
 
-  (defun define-keys (keymap &rest bindings)
+  (defun my/define-keys (keymap &rest bindings)
     "Define multiple keys with `define-key'\nBINDINGS has the form KEY DEFN [KEY DEFN ...]"
     (loop for (key defn) on bindings by 'cddr do
           (define-key keymap key defn)))
@@ -1233,7 +1233,7 @@ you should place you code here."
   ;; '-----------------'
 
   (defun evilified-state-init ()
-    (define-keys evil-evilified-state-map
+    (my/define-keys evil-evilified-state-map
       (kbd "C-y") nil
       (kbd "C-e") 'end-of-line
       (kbd "C-v") 'evil-visual-block
@@ -2059,7 +2059,7 @@ you should place you code here."
   ;; wdired-mode :                normal state
 
   (defun my/dired-init ()
-    (define-keys dired-mode-map
+    (my/define-keys dired-mode-map
       (kbd "C-h")            nil
       (kbd "q")              'tsp-quit-window-kill
       (kbd "<S-return>")     'dired-find-file
@@ -2067,7 +2067,7 @@ you should place you code here."
       (kbd "<down-mouse-3>") 'diredp-mouse-3-menu
       ))
   (defun my/wdired-init ()
-    (define-keys wdired-mode-map
+    (my/define-keys wdired-mode-map
       (kbd "C-c <escape>") 'wdired-abort-changes
       [f2]                 'wdired-finish-edit
       ))
@@ -2286,7 +2286,7 @@ you should place you code here."
       )
     (spacemacs/set-leader-keys-for-major-mode 'helm-major-mode
       "tm"    'helm-toggle-all-marks)
-    (define-keys helm-map
+    (my/define-keys helm-map
       (kbd "M-RET")  spacemacs-helm-major-mode-map
       (kbd "M-m")    spacemacs-cmds
       (kbd "S-SPC")  spacemacs-cmds
@@ -2454,7 +2454,7 @@ you should place you code here."
          (kbd ",")   'spacemacs-Info-mode-map
          (kbd "M-;") 'evil-repeat-find-char-reverse
          )
-       (define-keys Info-mode-map
+       (my/define-keys Info-mode-map
          (kbd "M-RET") 'spacemacs-Info-mode-map
          (kbd "M-;")   'evil-repeat-find-char-reverse
          )
@@ -3180,7 +3180,7 @@ Committer: %cN <%cE>"))
        (setq web-mode-enable-auto-expanding t)
        ))
   (eval-after-load "emmet-mode"
-    '(define-keys emmet-mode-keymap
+    '(my/define-keys emmet-mode-keymap
        (kbd "<C-return>")   'open-line-below
        (kbd "<C-S-return>") 'open-line-above
        ))
