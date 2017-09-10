@@ -616,6 +616,11 @@ you should place you code here."
     (setq pos-tip-foreground-color "#9a9aba")
     (setq pos-tip-background-color "#34323e"))
 
+  ;; ,--------,
+  ;; | Macros |
+  ;; '--------'
+  (define-key kmacro-keymap (kbd "<insert>") 'insert-kbd-macro)
+
   ;; ==============================================================================
   ;; ***************
   ;; *             *
