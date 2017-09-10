@@ -1036,6 +1036,7 @@ you should place you code here."
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
 
   (global-set-key [\S-f4] 'my/launch-standalone-terminal)
+  (global-set-key [f12] 'my/launch-standalone-file-manager)
 
   (global-set-key [\M-f4] 'kill-buffer-and-window)
 
@@ -4612,6 +4613,20 @@ If the region is not active, the entire buffer is processed."
                        "-d" (expand-file-name (file-name-as-directory "private")
                                               user-emacs-directory))
       (start-process "terminal" nil "x-terminal-emulator")))
+
+  (defvar my/external-file-manager "/usr/bin/dolphin")
+
+  (defun my/launch-standalone-file-manager ()
+    "Launch an external file manager in the current directory.
+
+   With a prefix-argument, launch in spacemacs private directory. The file
+manager is determined by the `my/external-file-manager' variable."
+    (interactive)
+    (let ((dir (if current-prefix-arg
+                   (expand-file-name (file-name-as-directory "private")
+                                     user-emacs-directory)
+                 default-directory)))
+      (start-process "terminal" nil my/external-file-manager dir)))
 
   (defmacro no-helm-limit (&optional forms)
     "Execute FORMS without any `helm-candidate-number-limit' in effect."
