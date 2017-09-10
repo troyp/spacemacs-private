@@ -1727,6 +1727,20 @@ you should place you code here."
                   ))
     (add-to-list 'which-key-key-replacement-alist cons))
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | C-c C-v |
+  ;; '---------'
+
+  (global-set-key (kbd "C-c C-v") 'browse-buffer-file-firefox)
+  (eval-after-load "markdown-mode"
+    '(define-key markdown-mode-map (kbd "C-c C-v") 'my/markdown-view))
+  (eval-after-load "web-mode"
+    '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-application))
+  (eval-after-load "haskell-mode"
+    '(define-key haskell-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox))
+  (define-key text-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox)
+
 
   ;; ,--------------------,
   ;; | Command Docstrings |
@@ -2474,20 +2488,6 @@ you should place you code here."
   ;; '--------------'
 
   (setq indent-guide-recursive t)
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | C-c C-v |
-  ;; '---------'
-
-  (global-set-key (kbd "C-c C-v") 'browse-buffer-file-firefox)
-  (eval-after-load "markdown-mode"
-    '(define-key markdown-mode-map (kbd "C-c C-v") 'my/markdown-view))
-  (eval-after-load "web-mode"
-    '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-application))
-  (eval-after-load "haskell-mode"
-    '(define-key haskell-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox))
-  (define-key text-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox)
 
   ;; -------------------------------------------------------------------------------
   ;; ,---,
