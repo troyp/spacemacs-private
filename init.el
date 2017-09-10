@@ -2490,6 +2490,23 @@ you should place you code here."
   (define-key text-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox)
 
   ;; -------------------------------------------------------------------------------
+  ;; ,---,
+  ;; | J |
+  ;; '---'
+
+  (add-to-load-path "~/.emacs.d/private/local/j-mode")
+  (autoload 'j-mode "j-mode.el" "Major mode for editing J files" t)
+
+  (eval-after-load 'j-mode
+    '(progn
+      ;; J Console named 'jcons' to avoid conflict with Java Monitoring & Management Console executable
+      (setq j-console-cmd "ijconsole")
+      (setq j-help-local-dictionary-url "/opt/j64-804/addons/docs/help/dictionary/")
+      ))
+
+  (add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . j-mode))
+
+  ;; -------------------------------------------------------------------------------
   ;; ,------,
   ;; | Java |
   ;; '------'
