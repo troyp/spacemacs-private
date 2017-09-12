@@ -2988,6 +2988,8 @@ If FILE is nil, the file associated with the current buffer is used."
      :map org-mode-map
      ("<tab>" . org-cycle)
      ("<S-iso-lefttab>" . nil)
+     ("<C-S-return>" . nil)
+     ("<S-return>" . nil)
      ("<M-n>" . org-next-link)
      ("<M-p>" . org-previous-link)
      ("<C-c><C-v>" . tsp-org-view-as-html))
@@ -3019,13 +3021,15 @@ If FILE is nil, the file associated with the current buffer is used."
        ))
 
   (spacemacs/set-leader-keys-for-major-mode 'org-mode
-    "SPC"      'ace-link-org
-    "<C-tab>"  'org-force-cycle-archived
-    "<tab>"    'org-cycle
-    "<S-tab>"  'org-shifttab
-    "h h"      'helm-org-in-buffer-headings
-    "h 1"      'my/helm-org-in-buffer-h1
-    "h 2"      'my/helm-org-in-buffer-h2
+    "SPC"          'ace-link-org
+    "<C-tab>"      'org-force-cycle-archived
+    "<S-return>"   'org-table-copy-down
+    "<C-S-return>" 'org-insert-todo-heading-respect-content
+    "<tab>"        'org-cycle
+    "<S-tab>"      'org-shifttab
+    "h h"          'helm-org-in-buffer-headings
+    "h 1"          'my/helm-org-in-buffer-h1
+    "h 2"          'my/helm-org-in-buffer-h2
     )
 
   (eval-after-load 'ob-keys
