@@ -1066,8 +1066,8 @@ you should place you code here."
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
   (global-set-key "\C-a" 'move-beginning-of-line-or-text)    ;; troyp/utils.el
-  (global-set-key (kbd "<S-return>") 'open-line-below)       ;; troyp/utils.el
-  (global-set-key (kbd "<C-S-return>") 'open-line-above)     ;; troyp/utils.el
+  (global-set-key (kbd "<S-return>") 'my/open-line-below)       ;; troyp/utils.el
+  (global-set-key (kbd "<C-S-return>") 'my/open-line-above)     ;; troyp/utils.el
   (global-set-key [\C-\S-down] 'move-text-down)
   (global-set-key [\C-\S-up]   'move-text-up)
 
@@ -3268,8 +3268,8 @@ If FILE is nil, the file associated with the current buffer is used."
        ))
   (eval-after-load "emmet-mode"
     '(my/define-keys emmet-mode-keymap
-       (kbd "<C-return>")   'open-line-below
-       (kbd "<C-S-return>") 'open-line-above
+       (kbd "<C-return>")   'my/open-line-below
+       (kbd "<C-S-return>") 'my/open-line-above
        ))
 
   ;; -------------------------------------------------------------------------------

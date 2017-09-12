@@ -178,7 +178,7 @@ The actual value is the non-nil value (if any)."
 
 ;; open-line functions:
 
-(defun open-line-above (n)
+(defun my/open-line-above (n)
   "Open a new line above the current line, without moving cursor."
   (interactive "p")
   (save-excursion
@@ -186,7 +186,7 @@ The actual value is the non-nil value (if any)."
     (move-beginning-of-line nil)
     (newline)))
 
-(defun open-line-below (n)
+(defun my/open-line-below (n)
   "Open a new line below the current line, without moving cursor."
   (interactive "p")
   (save-excursion
