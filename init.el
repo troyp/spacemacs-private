@@ -1348,6 +1348,7 @@ you should place you code here."
     "a p"          'my/list-processes
     "a ="          'calculator
     "a '"          'browse-url-firefox
+    "a \""         'browse-url-elinks
     "b M"          'my/switch-to-messages-buffer
     "b S"          'my/switch-to-scratch-buffer-other-window
     "b W"          'my/switch-to-warnings-buffer
