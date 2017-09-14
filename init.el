@@ -560,6 +560,15 @@ you should place you code here."
             (fn: define-key cua-global-keymap [remap exchange-point-and-mark] nil))
   (define-key cua-global-keymap [remap exchange-point-and-mark] nil)
 
+  (defun my/cua-rectangle-toggle ()
+    (interactive)
+    (cond (cua-rectangle-mark-mode
+           (cua-rectangle-mark-mode -1)
+           (cua-cancel))
+          (t
+           (evil-emacs-state)
+           (cua-rectangle-mark-mode 1))))
+
   ;; ,-----------------,
   ;; | CUA Global Mark |
   ;; '-----------------'
