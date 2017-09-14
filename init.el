@@ -970,6 +970,7 @@ you should place you code here."
 
   (defun my/define-keys (keymap &rest bindings)
     "Define multiple keys with `define-key'\nBINDINGS has the form KEY DEFN [KEY DEFN ...]"
+    (declare (indent 1))
     (loop for (key defn) on bindings by 'cddr do
           (define-key keymap key defn)))
 
