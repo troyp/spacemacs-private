@@ -491,6 +491,13 @@ you should place you code here."
   (setq left-fringe-width 16)    ;; displays diff-hl mode well
 
   (setq lisp-indent-function 'common-lisp-indent-function)
+  (defun my/toggle-indent-function ()
+    (interactive)
+    (if (eq lisp-indent-function 'lisp-indent-function)
+        (setq lisp-indent-function 'common-lisp-indent-function)
+      (setq lisp-indent-function 'lisp-indent-function))
+    (message (format "Indent function: %S" lisp-indent-function)))
+
   (eval-after-load 'cl-indent
     `(progn
        (put 'if 'common-lisp-indent-function 2)
@@ -1413,6 +1420,7 @@ you should place you code here."
     "t '"          'evil-visual-mark-mode
     "t `"          'evil-vimish-fold-mode
     "t ~"          'variable-pitch-mode
+    "t ="          'my/toggle-indent-function
     "t |"          'fci-mode
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t :"          'nameless-mode
