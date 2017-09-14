@@ -538,6 +538,11 @@ you should place you code here."
   ;; undo
   (setq undo-outer-limit 50000000)
 
+  ;; columns
+  (defvar my/default-goto-column 80)
+  (setq fci-rule-column 80)
+  (setq fill-column 79)
+
   ;; ,------------------,
   ;; | Spacemacs Config |
   ;; '------------------'
@@ -4113,6 +4118,82 @@ See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
     (when (my/line-visible-end-position)
       (kill-ring-save (my/line-visible-beginning-position) (my/line-visible-end-position))))
 
+  ;; ==============================
+  ;; functions dealing with columns
+  ;; ==============================
+
+  (defun my/wrap-lines-in-region (beg end)
+    "An interactive function to split lines longer than `fill-column'.
+Splits long lines in the region using `fill-paragraph', but never joins lines.
+Ie., each line is treated as a distinct paragraph."
+    (interactive "r")
+    (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+    (replace-string "\n" "\n\n" nil beg end)
+    (evil-active-region 1)
+    (fill-paragraph nil t)
+    (replace-string "\n\n" "\n" nil beg end))
+
+  ;; FIXME: splits the line after region (near start of line); irregular indentation.
+  (defun wrap-region-or-comment (beg end)
+    "An interactive function to split lines longer than `fill-column'.
+Splits long lines in the region using `fill-paragraph', but never joins lines.
+Ie., each line is treated as a distinct paragraph.
+Comments are first uncommented using `evilnc-comment-or-uncomment-region' before
+wrapping and then re-commented."
+    (interactive "r")
+    (let ((comment? (evilnc--in-comment-p beg)))
+      (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+      (when comment? (evilnc--comment-or-uncomment-region beg end))
+      (replace-string "\n" "\n\n" nil beg end)
+      (evil-active-region 1)
+      (fill-paragraph nil t)
+      (replace-string "\n\n" "\n" nil beg end)
+      (when comment? (evilnc--comment-or-uncomment-region beg end))))
+
+  ;; redefine | to use a default of `fill-column' rather than 0.
+  (evil-define-motion my/evil-goto-column (count)
+    "Move point to column COUNT.
+
+Columns are indexed from zero. If COUNT is not supplied, use `fill-column'."
+    :type exclusive
+    (move-to-column (or count fill-column)))
+
+  (defun my/extend-to-column (&optional col set-fill-column)
+    "Extend line to column COL by adding spaces, if necessary.
+
+Interactively, COL is provided as a prefix argument. If COL is omitted, the
+value of `fill-column' is used.
+
+If SET-FILL-COLUMN is true, or if the prefix argument is negative, the (positive)
+value of COL is additionally set as the new value of `fill-column'."
+    (interactive "p")
+    (when (or (null col)
+              (and (called-interactively-p) (null current-prefix-arg)))
+      (setq col fill-column))
+    (when (and (called-interactively-p) (< col 0))
+      (setq set-fill-column t)
+      (setq col (abs col)))
+    (when set-fill-column
+      (setf fill-column col))
+    (move-to-column col t))
+
+  (defun my/add-column-marker (beg end &optional group spacing repeat)
+    (interactive "r")
+    (unless group (setq group 1))
+    (let ((endm (save-excursion
+                  (goto-char (1- end))
+                  (end-of-line)
+                  (point-marker))))
+      (save-excursion
+        (goto-char beg)
+        (while (<= (point) (marker-position endm))
+          (end-of-line)
+          (insert " |")
+          (beginning-of-line 2))
+        (set-marker endm (line-end-position))
+        (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
+        (set-marker endm nil))))
+
   ;; ======================
   ;; delete duplicate lines
   ;; ======================
@@ -4249,34 +4330,6 @@ command FN has been applied."
     (evil-forward-WORD-end count)
     (evil-append 1))
 
-  (defun my/wrap-lines-in-region (beg end)
-    "An interactive function to split lines longer than `fill-column'.
-Splits long lines in the region using `fill-paragraph', but never joins lines.
-Ie., each line is treated as a distinct paragraph."
-    (interactive "r")
-    (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
-    (replace-string "\n" "\n\n" nil beg end)
-    (evil-active-region 1)
-    (fill-paragraph nil t)
-    (replace-string "\n\n" "\n" nil beg end))
-
-  ;; FIXME: splits the line after region (near start of line); irregular indentation.
-  (defun wrap-region-or-comment (beg end)
-    "An interactive function to split lines longer than `fill-column'.
-Splits long lines in the region using `fill-paragraph', but never joins lines.
-Ie., each line is treated as a distinct paragraph.
-Comments are first uncommented using `evilnc-comment-or-uncomment-region' before
-wrapping and then re-commented."
-    (interactive "r")
-    (let ((comment? (evilnc--in-comment-p beg)))
-      (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
-      (when comment? (evilnc--comment-or-uncomment-region beg end))
-      (replace-string "\n" "\n\n" nil beg end)
-      (evil-active-region 1)
-      (fill-paragraph nil t)
-      (replace-string "\n\n" "\n" nil beg end)
-      (when comment? (evilnc--comment-or-uncomment-region beg end))))
-
   (defun helm-yank-symbol-at-point ()
     "Yank the symbol at point in `helm-current-buffer' into minibuffer."
     (interactive)
@@ -4330,50 +4383,6 @@ See also `rectangle-number-lines'."
     (move-end-of-line 1)
     (newline)
     (insert (sprint-keymap map)))
-
-  ;; redefine | to use a default of `fill-column' rather than 0.
-  (evil-define-motion my/evil-goto-column (count)
-    "Move point to column COUNT.
-
-Columns are indexed from zero. If COUNT is not supplied, use `fill-column'."
-    :type exclusive
-    (move-to-column (or count fill-column)))
-
-  (defun my/extend-to-column (&optional col set-fill-column)
-    "Extend line to column COL by adding spaces, if necessary.
-
-Interactively, COL is provided as a prefix argument. If COL is omitted, the
-value of `fill-column' is used.
-
-If SET-FILL-COLUMN is true, or if the prefix argument is negative, the (positive)
-value of COL is additionally set as the new value of `fill-column'."
-    (interactive "p")
-    (when (or (null col)
-              (and (called-interactively-p) (null current-prefix-arg)))
-      (setq col fill-column))
-    (when (and (called-interactively-p) (< col 0))
-      (setq set-fill-column t)
-      (setq col (abs col)))
-    (when set-fill-column
-      (setf fill-column col))
-    (move-to-column col t))
-
-  (defun my/add-column-marker (beg end &optional group spacing repeat)
-    (interactive "r")
-    (unless group (setq group 1))
-    (let ((endm (save-excursion
-                  (goto-char (1- end))
-                  (end-of-line)
-                  (point-marker))))
-      (save-excursion
-        (goto-char beg)
-        (while (<= (point) (marker-position endm))
-          (end-of-line)
-          (insert " |")
-          (beginning-of-line 2))
-        (set-marker endm (line-end-position))
-        (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
-        (set-marker endm nil))))
 
   (defun rgrep-with-ignored (regexp ignored files dir)
     (interactive "sREGEXP: \nsIGNORED: \nFILES: \nDIR: ")
