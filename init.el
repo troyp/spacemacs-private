@@ -1422,15 +1422,15 @@ you should place you code here."
     "x a C-/"      'spacemacs/align-repeat-slash-comment
     "x a C-'"      'tsp-align-quoted-column
     "x a C-\""     'tsp-align-double-quoted-column
-    "x a SPC"      'quick-pcre-align-repeat
-    "x a S-SPC"    'quick-pcre-align
-    "x a C-SPC"    'pcre-align-region
+    "x a SPC"      'my/quick-pcre-align-repeat
+    "x a S-SPC"    'my/quick-pcre-align
+    "x a C-SPC"    'my/pcre-align-region
     "x l U"        'delete-duplicate-lines-nonblank
     "x N"          'rectangle-number-lines-interactive
     "x <insert>"   'region-swap
     "x t r"        'region-swap
     "x C-k"        'evil-insert-digraph
-    "x C-l"        'quick-pcre-align-repeat
+    "x C-l"        'my/quick-pcre-align-repeat
     "x \\"         'my/evil-shell-command-replace-region
     "x |"          'my/shell-command-process-region-as-file
     "z +"          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
@@ -1440,8 +1440,8 @@ you should place you code here."
     "8"            'spacemacs/enter-ahs-forward
     "."            'repeat-complex-command
     ","            'helm-mini
-    ">"            'evil-shift-right-fine-dispatcher
-    "<"            'evil-shift-left-fine-dispatcher
+    ">"            'my/evil-shift-right-fine-dispatcher
+    "<"            'my/evil-shift-left-fine-dispatcher
     "="            'quick-calc
     "-"            'my/dired-jump-and-kill
     "("            'my/add-spacing-inside-parens
@@ -1454,15 +1454,15 @@ you should place you code here."
     "C-\""         'my/remove-spacing-inside-double-quotes
     "S-SPC"        'avy-goto-char-timer
     "SPC"          'avy-goto-char
-    "<backtab>"    'switch-to-most-recent-buffer
+    "<backtab>"    'my/switch-to-most-recent-buffer
     "<return>"     'helm-buffers-list
     "<f3>"         'kmacro-keymap
     "<f5>"         'spacemacs/safe-revert-buffer
     "<f10>"        'my/lacarte-menu-execute/lambda-a-and-exit
-    "C-l"          'quick-pcre-align-repeat
+    "C-l"          'my/quick-pcre-align-repeat
     "C-p"          'my/evil-paste-after-as-block
     "C-P"          'my/evil-paste-before-as-block
-    "C-v"          'evil-cua-toggle
+    "C-v"          'my/cua-rectangle-toggle
     "C-w"          'delete-frame
     "C-y"          'my/paste-no-properties
     "C-."          'ido-switch-buffer
@@ -1472,7 +1472,7 @@ you should place you code here."
     "C-SPC"        'cua-toggle-global-mark
     "C-S-SPC"      'just-one-blank-line
     "M-p"          'my/evil-paste-after-column-kill-height
-    "M-q"          'wrap-lines-in-region
+    "M-q"          'my/wrap-lines-in-region
     "M-x"          'helm-M-x
     "M-%"          'evil-visual-replace-query-replace
     "M-C-%"        'evil-visual-replace-replace-regexp
@@ -3430,7 +3430,7 @@ ISEARCH DOCUMENTATION.
   ;; | Keyboard Macros |
   ;; '-----------------'
 
-  (fset 'switch-to-most-recent-buffer [?\C-x ?b return])
+  (fset 'my/switch-to-most-recent-buffer [?\C-x ?b return])
 
   (fset 'just-one-space-before-open-brace
         (lambda (&optional arg)
@@ -3696,7 +3696,7 @@ temporarily enables it to allow getting help on disabled items and buttons."
   (defalias 'el 'emacs-lisp-mode)
   (defalias 'vll 'visual-line-mode)
   (defalias 'acoff 'auto-complete-mode-off)
-  (defalias 'ali 'quick-pcre-align-repeat)
+  (defalias 'ali 'my/quick-pcre-align-repeat)
   ;; aliases for discoverability
   (defalias 'alias/unset 'makunbound)
   (defalias 'alias/unfset 'fmakunbound)
@@ -4188,12 +4188,12 @@ within the region."
     (let ((evil-shift-width 1))
       (evil-visual-shift-right))
     (execute-kbd-macro "gv"))
-  (defun evil-shift-left-fine-dispatcher ()
+  (defun my/evil-shift-left-fine-dispatcher ()
     (interactive)
     (if (eq evil-state 'visual)
         (call-interactively 'evil-visual-shift-left-fine)
       (call-interactively 'evil-shift-left-fine)))
-  (defun evil-shift-right-fine-dispatcher ()
+  (defun my/evil-shift-right-fine-dispatcher ()
     (interactive)
     (if (eq evil-state 'visual)
         (call-interactively 'evil-visual-shift-right-fine)
@@ -4211,7 +4211,7 @@ within the region."
       (cua-rectangle-mark-mode 1)))
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
-  (defmacro after-motion (fn)
+  (defmacro my/after-motion (fn)
     "Builds a function to map a point to its new position after the motion
 command FN has been applied."
     `(lambda (pt)
@@ -4230,7 +4230,7 @@ command FN has been applied."
     (evil-forward-WORD-end count)
     (evil-append 1))
 
-  (defun wrap-lines-in-region (beg end)
+  (defun my/wrap-lines-in-region (beg end)
     "An interactive function to split lines longer than `fill-column'.
 Splits long lines in the region using `fill-paragraph', but never joins lines.
 Ie., each line is treated as a distinct paragraph."
@@ -4426,12 +4426,12 @@ Inserts the expansion on a new line at the end of the sexp."
 
   (defun tsp-align-quoted-column (beg end)
     (interactive "r")
-    (quick-pcre-align-repeat beg end " (?:')")
+    (my/quick-pcre-align-repeat beg end " (?:')")
     (evil-indent beg end))
 
   (defun tsp-align-double-quoted-column (beg end)
     (interactive "r")
-    (quick-pcre-align-repeat beg end " (?:\")")
+    (my/quick-pcre-align-repeat beg end " (?:\")")
     (evil-indent beg end))
 
   (defun tsp-quit-window-kill (&optional bury window)

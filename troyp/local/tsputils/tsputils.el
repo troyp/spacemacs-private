@@ -474,7 +474,7 @@ With prefix argument, comment end-delimiter is aligned with that on the previous
 
 (unless (boundp 'align-default-spacing) (setf align-default-spacing 1))
 
-(defun pcre-align-region (pcre group spacing)
+(defun my/pcre-align-region (pcre group spacing)
   "Align region using a PCRE. Requires pcre2el.
 GROUP is the number of the group to be modified (ie. spacing group).
 SPACING is the minimum number of spaces between columns."
@@ -483,7 +483,7 @@ SPACING is the minimum number of spaces between columns."
         (spaces   (if (string-empty-p group) 2 (string-to-int spacing))))
     (align-regexp (region-beginning) (region-end) (pcre-to-elisp pcre) groupnum spaces nil)))
 
-(defun pcre-align (BEG END s &optional group spacing repeat)
+(defun my/pcre-align (BEG END s &optional group spacing repeat)
   "Align region using a PCRE. Requires pcre2el."
   (interactive "r\nsPCRE (group around part to extend): ")
   (unless BEG (setq BEG (region-beginning)))
@@ -492,7 +492,7 @@ SPACING is the minimum number of spaces between columns."
   (unless spacing (setq spacing align-default-spacing))
   (align-regexp BEG END (pcre-to-elisp s) group spacing repeat))
 
-(defun quick-pcre-align (BEG END s &optional spacing repeat)
+(defun my/quick-pcre-align (BEG END s &optional spacing repeat)
   "Align region using a PCRE. PCRE doesn't require the group for expansion. Requires pcre2el."
   (interactive "r\nsPCRE to align on: ")
   (unless BEG (setq BEG (region-beginning)))
@@ -510,7 +510,7 @@ SPACING is the minimum number of spaces between columns."
   (let ((regexp (concat "\\(\\s-*\\)" s)))
     (align-regexp BEG END regexp 1 spacing repeat)))
 
-(defun quick-pcre-align-repeat (BEG END s &optional spacing)
+(defun my/quick-pcre-align-repeat (BEG END s &optional spacing)
   "Align region using repeated matches of a PCRE. Requires pcre2el."
   (interactive "r\nsPCRE to align on: ")
   (unless BEG (setq BEG (region-beginning)))
@@ -519,7 +519,7 @@ SPACING is the minimum number of spaces between columns."
   (let ((regexp (concat "(\s*)" s)))
     (align-regexp BEG END (pcre-to-elisp regexp) 1 spacing t)))
 
-(defun align-after-colon (BEG END spacing)
+(defun my/align-after-colon (BEG END spacing)
   "Align the first word after a colon in each line in the region.
 The minimum spacing is given by the prefix argument, if given, or
 otherwise is equal to 'align-default-spacing."
