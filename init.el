@@ -5232,6 +5232,8 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     `(progn
        (undefun 'move-text--last-line-is-just-newline)
        (workarounds)))
+  ;; https://bugs.debian.org/766397
+  (setq tls-program '("gnutls-cli --x509cafile %t -p %p %h"))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------,
