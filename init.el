@@ -1460,6 +1460,8 @@ you should place you code here."
     "z +"          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z ="          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
+    "C /"          'my/pick-color
+    "C ."          'my/pick-insert-color
     "3"            'spacemacs/enter-ahs-backward
     "8"            'spacemacs/enter-ahs-forward
     "."            'repeat-complex-command
@@ -5192,6 +5194,18 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (evil-signal-at-bob-or-eob count)
     (evil-backward-beginning 'evil-paragraph count)
     (evil-first-non-blank))
+
+  (defun my/pick-color ()
+    (interactive)
+    (if current-prefix-arg
+        (kill-new (s-trim (shell-command-to-string "grabc 1>/dev/null")))
+      (kill-new (s-trim (shell-command-to-string "grabc 2>/dev/null")))))
+
+  (defun my/pick-insert-color ()
+    (interactive)
+    (if current-prefix-arg
+        (insert (s-trim (shell-command-to-string "grabc 1>/dev/null")))
+      (insert (s-trim (shell-command-to-string "grabc 2>/dev/null")))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
