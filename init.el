@@ -4656,10 +4656,12 @@ If the region is not active, the entire buffer is processed."
    With a prefix-argument, launch in spacemacs private directory. The file
 manager is determined by the `my/external-file-manager' variable."
     (interactive)
-    (let ((dir (if current-prefix-arg
-                   (expand-file-name (file-name-as-directory "private")
-                                     user-emacs-directory)
-                 default-directory)))
+    (let ((dir (replace-regexp-in-string
+                "~/" "/home/troy/"
+                (if current-prefix-arg
+                    (expand-file-name (file-name-as-directory "private")
+                                      user-emacs-directory)
+                  default-directory))))
       (start-process "terminal" nil my/external-file-manager dir)))
 
   (defmacro no-helm-limit (&optional forms)
