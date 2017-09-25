@@ -2688,6 +2688,7 @@ you should place you code here."
      ("q"       . my/magit-mode-kill-buffer)
      )
     (define-key magit-blame-mode-map (kbd "C-b") 'my/magit-blame-and-center)
+    (evil-define-key 'normal magit-mode-map (kbd "-") 'dired-jump)
     (add-hook 'magit-diff-visit-file-hook #'recenter)
     (setf magit-log-revision-headers-format "\
 %+b
