@@ -2746,6 +2746,8 @@ Committer: %cN <%cE>"))
   (bind-keys :map spacemacs-markdown-mode-map
              ("i C-l"  . my/markdown-gh-linkify-heading)
              ("C-v"    . my/markdown-app-call)
+             ("M-h"    . my/github-heading-to-readme-link)
+             ("M-l"    . my/github-linkify-heading)
              )
 
   (defun my/markdown-gh-linkify-heading ()
@@ -2820,6 +2822,35 @@ If FILE is nil, the file associated with the current buffer is used."
                        (buffer-file-name)))
     (let ((code (alist-get app my/markdown-apps)))
       (eval `(let ((file ,file)) ,code))))
+
+  (defun my/github-heading-to-readme-link ()
+    (interactive)
+    (let* ((heading  (thing-at-point 'line t))
+           (stripped (replace-regexp-in-string "^#* *\\| *$" "" heading))
+           (link     (downcase
+                      (replace-regexp-in-string
+                       " " "-"
+                       (replace-regexp-in-string
+                        "[&()]" ""
+                        stripped)))))
+      (kill-new link)))
+
+  (defun my/github-linkify-heading (&optional href)
+    (interactive)
+    (let* ((heading  (thing-at-point 'line t))
+           (hashes   (replace-regexp-in-string
+                      "\n" ""
+                      (replace-regexp-in-string " .*" " " heading)))
+           (stripnl  (replace-regexp-in-string "\n" "" heading))
+           (stripped (replace-regexp-in-string "^#* *\\| *$" "" stripnl))
+           (href     (or href
+                         (replace-regexp-in-string
+                          "\n" ""
+                          (my/github-heading-to-readme-link))))
+           (result   (format "%s[%s](#%s)" hashes stripped href)))
+      (beginning-of-line)
+      (kill-line)
+      (insert result)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,------,
