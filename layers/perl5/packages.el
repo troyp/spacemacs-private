@@ -71,8 +71,7 @@ Each entry is either:
     (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
     (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
     (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
-    (if (fboundp 'mode-compile)
-        (define-key cperl-mode-map (kbd "C-c C-c") 'mode-compile))
+    (define-key cperl-mode-map (kbd "C-c C-c") 'mode-compile)
     (add-hook 'cperl-mode-hook 'perl5/add-chmod-hook)
     ))
 
