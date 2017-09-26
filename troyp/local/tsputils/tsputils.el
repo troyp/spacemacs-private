@@ -498,7 +498,7 @@ SPACING is the minimum number of spaces between columns."
   (unless BEG (setq BEG (region-beginning)))
   (unless BEG (setq BEG (region-end)))
   (unless spacing (setq spacing align-default-spacing))
-  (let ((regexp (concat "(\s*)" s)))
+  (let ((regexp (format "(\s*)(%s)" s)))
     (align-regexp BEG END (pcre-to-elisp regexp) 1 spacing repeat)))
 
 (defun quick-align (BEG END s &optional spacing repeat)
@@ -507,7 +507,7 @@ SPACING is the minimum number of spaces between columns."
   (unless BEG (setq BEG (region-beginning)))
   (unless BEG (setq BEG (region-end)))
   (unless spacing (setq spacing align-default-spacing))
-  (let ((regexp (concat "\\(\\s-*\\)" s)))
+  (let ((regexp (format "\\(\\s-*\\)\\(%s\\)" s)))
     (align-regexp BEG END regexp 1 spacing repeat)))
 
 (defun my/quick-pcre-align-repeat (BEG END s &optional spacing)
@@ -516,7 +516,7 @@ SPACING is the minimum number of spaces between columns."
   (unless BEG (setq BEG (region-beginning)))
   (unless BEG (setq BEG (region-end)))
   (unless spacing (setq spacing align-default-spacing))
-  (let ((regexp (concat "(\s*)" s)))
+  (let ((regexp (format "(\s*)(%s)" s)))
     (align-regexp BEG END (pcre-to-elisp regexp) 1 spacing t)))
 
 (defun my/align-after-colon (BEG END spacing)
