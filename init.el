@@ -793,6 +793,7 @@ you should place you code here."
   (spacemacs|define-text-object "." "dot" "." ".")
   (spacemacs|define-text-object "h" "helplink" "`" "'")
   (spacemacs|define-text-object "q" "curlquote" "‘" "’")
+  (spacemacs|define-text-object (kbd "C-]") "corner-bracket" "「" "」")
 
   (evil-define-text-object evil-inner-defun (count &optional beg end type)
     "operates on the top-level sexp around point."
