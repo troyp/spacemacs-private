@@ -4860,10 +4860,20 @@ each line."
     "Insert a string at point, formatted with a format-string and arguments."
     (insert (apply #'format string objects)))
 
+  (defun my/insert-space (&rest arg)
+    (interactive "p")
+    (insert-char ?\  (car arg)))
+
   (defun my/insert-space-after (&rest arg)
     (interactive "p")
     (insert-char ?\  (car arg))
     (backward-char (car arg)))
+
+  (defun my/insert-spaces-around-point (n)
+    (interactive (list (or current-prefix-arg 1)))
+    (insert (make-string (* 2 n) ? ))
+    (backward-char n)
+    (evil-insert-state))
 
   (defun my/install-bb-spacemacs-layers ()
     (interactive)
@@ -5082,12 +5092,6 @@ With prefix argument, do not recentre."
     (interactive)
     (spacemacs/toggle-evil-visual-mark-mode)
     (spacemacs/toggle-evil-visual-mark-mode))
-
-  (defun my/insert-spaces-around-point (n)
-    (interactive (list (or current-prefix-arg 1)))
-    (insert (make-string (* 2 n) ? ))
-    (backward-char n)
-    (evil-insert-state))
 
   (defun my/remove-blank-lines (beg end)
     (interactive "r")
