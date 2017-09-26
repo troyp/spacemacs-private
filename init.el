@@ -1590,10 +1590,12 @@ you should place you code here."
              :menu-name "user cmds"
              :prefix "S-SPC"
              :prefix-docstring "User commands."
-             ("S-SPC" . my/insert-space)
-             ("SPC"   . my/insert-space-after)
-             ("B"     . my/evil-insert-at-WORD-beginning)
-             ("F"     . my/evil-append-at-WORD-end)
+             ("S-SPC"   . my/insert-space)
+             ("SPC"     . my/insert-space-after)    ;; won't bind
+             ("C-S-SPC" . my/insert-space-after)
+             ("S-TAB"   . my/switch-to-most-recent-buffer)
+             ("B"       . my/evil-insert-at-WORD-beginning)
+             ("F"       . my/evil-append-at-WORD-end)
              )
 
   (bind-keys :map user-cmds-map
