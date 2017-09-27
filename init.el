@@ -1202,25 +1202,6 @@ Returns the function definition."
              ("<backspace>" . my/quit-help)
              )
 
-  (bind-keys :map global-map
-             :prefix-map snippets-prefix-map
-             :prefix "M-<f3>"
-             :prefix-docstring "Snippets and templates commands"
-             ("c"      . aya-create)
-             ("x"      . aya-expand)
-             ("s"      . aya-yank-snippet)
-             ("M-<f3>" . aya-open-line)
-             ("a"      . aya-create-one-line)
-             ("n"      . aya-create-snippet-with-newline)
-             ("<tab>"  . helm-yas-complete)
-             ("y"      . yas-new-snippet)
-             ("v"      . yas-visit-snippet-file)
-             )
-  (defun aya-create-snippet-with-newline ()
-    (interactive)
-    (let ((aya-create-with-newline t))
-      (call-interactively 'aya-create)))
-
   ;; ,----------------,
   ;; | Mouse bindings |
   ;; '----------------'
@@ -1371,7 +1352,7 @@ Returns the function definition."
   (define-key evil-insert-state-map (kbd "C-e")   'end-of-line)
   (define-key evil-insert-state-map (kbd "C-S-y") 'evil-copy-from-below)
   (define-key evil-insert-state-map (kbd "C-S-k") 'kill-line)
-  (define-key evil-insert-state-map (kbd "C-.")   'tsp-yas-expand)
+  (define-key evil-insert-state-map (kbd "C-.")   'my/yas-expand)
   (define-key evil-insert-state-map (kbd "M-?")   'dabbrev-expand)
   (define-key evil-insert-state-map (kbd "C-n")   'next-line)
   (define-key evil-insert-state-map (kbd "C-p")   'previous-line)
@@ -1737,6 +1718,24 @@ Returns the function definition."
              ("d" . ediff-merge-directories)
              ("D" . ediff-merge-directories-with-ancestor)
              )
+
+  (bind-keys :map user-cmds-map
+             :prefix-map my/snippets-prefix-map
+             :prefix "<f3>"
+             :prefix-docstring "Snippets and templates commands"
+             ("c"      . aya-create)
+             ("x"      . aya-expand)
+             ("s"      . aya-yank-snippet)
+             ("<f3>"   . aya-open-line)
+             ("M-<f3>" . aya-open-line)
+             ("a"      . aya-create-one-line)
+             ("n"      . my/aya-create-snippet-with-newline)
+             ("<tab>"  . helm-yas-complete)
+             ("y"      . yas-new-snippet)
+             ("v"      . yas-visit-snippet-file)
+             )
+  (global-set-key (kbd "M-<f3>") 'my/snippets-prefix-map)
+
   (which-key-add-key-based-replacements
     "S-SPC K"    "keymaps"
     "S-SPC X"    "structured text"
@@ -3343,6 +3342,11 @@ If FILE is nil, the file associated with the current buffer is used."
                 (nth 1 templates-and-pos))
            (max (if (use-region-p) (region-end) most-negative-fixnum)
                 (nth 2 templates-and-pos))))))
+
+  (defun my/aya-create-snippet-with-newline ()
+    (interactive)
+    (let ((aya-create-with-newline t))
+      (call-interactively 'aya-create)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
