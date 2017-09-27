@@ -2235,7 +2235,7 @@ Returns the function definition."
        (spacemacs/set-leader-keys-for-major-mode 'wdired-mode
          "c"    'wdired-finish-edit
          "a"    'wdired-abort-changes
-         "t"    'wdired-tidy-name-keep-square-brackets
+         "t"    'my/wdired-tidy-name-keep-square-brackets
          )
 
        )
@@ -2617,79 +2617,17 @@ Returns the function definition."
     "RET"           'my/java-quick-run
     )
 
-  ;; ================
-  ;; Keyboard Macros.
-  ;; ================
-
-  (fset 'java-fn-from-spec
-        (lambda (&optional arg)
-          "Keyboard macro."
-          (interactive "p")
-          (kmacro-exec-ring-item
-           (quote ([86 201326629 47 47 46 42 return return 102 58 120 119 104 167772192 1 102 41 108 11 1 101 112 65 32 123 125 escape 106 1] 0 "%d")) arg)))
-
-  (fset 'java-constructor-from-spec
-        (lambda (&optional arg)
-          "Keyboard macro."
-          (interactive "p")
-          (kmacro-exec-ring-item
-           (quote ([1 86 201326629 47 47 46 42 36 92 124 36 13 123 125 13 121 106 1] 0 "%d")) arg)))
-
-  (fset 'java-field-from-spec
-        (lambda
-          (&optional arg)
-          "Keyboard macro."
-          (interactive "p")
-          (kmacro-exec-ring-item
-           (quote ([1 102 58 119 100 119 1 101 97 32 escape 112 102 58 114 59 86 134217848 100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104 105 116 101 115 112 97 99 101 13 65 escape 106 1] 0 "%d")) arg)))
-
-  (fset 'my/add-spacing-inside-parens
-        (lambda (&optional arg)
-          (interactive "p")
-          (kmacro-exec-ring-item '([ ?c ?s 41 40 ] 0 "%d") arg)))
-
-  (fset 'my/remove-spacing-inside-parens
-        (lambda (&optional arg)
-          (interactive "p")
-          (kmacro-exec-ring-item '([ ?c ?s 40 41 ] 0 "%d") arg)))
-
-  (fset 'my/add-spacing-inside-brackets
-        (lambda (&optional arg)
-          (interactive "p")
-          (kmacro-exec-ring-item '([ ?c ?s 93 91 ] 0 "%d") arg)))
-
-  (fset 'my/remove-spacing-inside-brackets
-        (lambda (&optional arg)
-          (interactive "p")
-          (kmacro-exec-ring-item '([ ?c ?s 91 93 ] 0 "%d") arg)))
-
-  (fset 'my/add-spacing-inside-bracers
-        (lambda (&optional arg)
-          (interactive "p")
-          (kmacro-exec-ring-item '([ ?c ?s 125 123 ] 0 "%d") arg)))
-
-  (fset 'my/remove-spacing-inside-bracers
-        (lambda (&optional arg)
-          (interactive "p")
-          (kmacro-exec-ring-item '([ ?c ?s 123 125 ] 0 "%d") arg)))
-
-  (fset 'my/add-spacing-inside-double-quotes
-        (lambda (&optional arg)
-          (interactive "p")
-          (kmacro-exec-ring-item '([ ?c ?s 34 40 ?c ?s 41 34 ] 0 "%d") arg)))
-
-  (fset 'my/remove-spacing-inside-double-quotes
-        (lambda (&optional arg)
-          (interactive "p")
-          (kmacro-exec-ring-item '([?c ?s 40 34 ] 0 "%d") arg)))
-
-  (fset 'my/surround-symbol
-   (lambda (&optional arg)
-     (interactive "p")
-     (evil-normal-state)
-     (kmacro-exec-ring-item '([ ?v ?i ?o ] 0 "%d") arg)
-     (call-interactively #'evil-surround-region)))
-
+  ;; Java Keyboard Macros.
+  ;;
+  (fset 'my/java-fn-from-spec
+        [86 201326629 47 47 46 42 return return 102 58 120 119 104 167772192 1
+            102 41 108 11 1 101 112 65 32 123 125 escape 106 1])
+  (fset 'my/java-constructor-from-spec
+        [1 86 201326629 47 47 46 42 36 92 124 36 13 123 125 13 121 106 1])
+  (fset 'my/java-field-from-spec
+        [1 102 58 119 100 119 1 101 97 32 escape 112 102 58 114 59 86 134217848
+           100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104
+           105 116 101 115 112 97 99 101 13 65 escape 106 1])
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
@@ -3388,11 +3326,11 @@ If FILE is nil, the file associated with the current buffer is used."
        ))
 
   ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | Yasnippet |
-  ;; '-----------'
+  ;; ,----------,
+  ;; | Snippets |
+  ;; '----------'
 
-  (defun tsp-yas-expand (&optional field)
+  (defun my/yas-expand (&optional field)
     "Expand a snippet before point. Simplified version of `yas-expand'."
     (interactive)
     (setq yas--condition-cache-timestamp (current-time))
@@ -3543,33 +3481,6 @@ ISEARCH DOCUMENTATION.
 
   (fset 'my/switch-to-most-recent-buffer [?\C-x ?b return])
 
-  (fset 'just-one-space-before-open-brace
-        (lambda (&optional arg)
-          "Keyboard macro."
-          (interactive "p")
-          (kmacro-exec-ring-item
-           (quote ([102 91 104 134217848 106 117 115 116 45 111 110 101 45 115 112 97 99 101 return 106 1] 0 "%d"))
-           arg)))
-
-  (fset 'wdired-tidy-name-keep-square-brackets
-        (lambda (&optional arg)
-          "Keyboard macro. In wdired-mode, remove everything between after the first )
-except the the first [...] (preceded by a space) and everything after a dot.
-Then move to the next line (column 3).
-
-    KEEP) DELETE[KEEP]DELETE.KEEP"
-          (interactive "p")
-          (kmacro-exec-ring-item
-           (quote ([102 41 97 32 escape 118 116 91 99 32 escape 102 93 108 100 116 46 106 48 108 108] 0 "%d"))
-           arg)))
-
-  (fset 'md-sig-to-list-item
-        (fset 'md-sig-to-list-item
-              (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([118 69 121 103 118 115 93 105 42 32 escape 69 108 120 97 35 escape 80 16 97 45 escape 118 36 104 201326629 38 63 32 return 45 return] 0 "%d")) arg))))
-
-  (fset 'setq->push
-        (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([99 119 112 117 115 104 escape 119 100 119 108 100 119 104 32 107 87 escape] 0 "%d")) arg)))
-
   (defun my/delete-inside-double-quotes ()
     "Delete contents of double quotes."
     ;; TODO: rewrite as function to handle escaped quotes
@@ -3590,6 +3501,51 @@ Then move to the next line (column 3).
        while (yas-inside-string))
       (setf end (point))
       (delete-region start end)))
+
+  (fset 'my/md-sig-to-list-item
+        [118 69 121 103 118 115 93 105 42 32 escape 69 108 120 97 35 escape 80
+             16 97 45 escape 118 36 104 201326629 38 63 32 return 45 return])
+  (fset 'my/setq->push
+        [99 119 112 117 115 104 escape
+            119 100 119 108 100 119 104 32 107 87 escape])
+
+  (fset 'my/just-one-space-before-open-brace
+        [102 91 104 134217848 106 117 115 116 45 111 110 101 45 115 112 97 99
+             101 return 106 1])
+  (fset 'my/add-spacing-inside-parens [ ?c ?s 41 40 ])
+  (fset 'my/remove-spacing-inside-parens [ ?c ?s 40 41 ])
+  (fset 'my/add-spacing-inside-brackets [ ?c ?s 93 91 ])
+  (fset 'my/remove-spacing-inside-brackets [ ?c ?s 91 93 ])
+  (fset 'my/add-spacing-inside-bracers [ ?c ?s 125 123 ])
+  (fset 'my/remove-spacing-inside-bracers [ ?c ?s 123 125 ])
+  (fset 'my/add-spacing-inside-double-quotes [ ?c ?s 34 40 ?c ?s 41 34 ])
+  (fset 'my/remove-spacing-inside-double-quotes [?c ?s 40 34 ])
+
+  (fset 'my/surround-symbol
+   (lambda (&optional arg)
+     (interactive "p")
+     (evil-normal-state)
+     (kmacro-exec-ring-item '([ ?v ?i ?o ] 0 "%d") arg)
+     (call-interactively #'evil-surround-region)))
+
+  (my/kmacro-fset 'my/wdired-tidy-name-keep-square-brackets
+    "Keyboard macro. In wdired-mode, remove everything between after the first )
+except the the first [...] (preceded by a space) and everything after a dot.
+Then move to the next line (column 3).
+
+    KEEP) DELETE[KEEP]DELETE.KEEP"
+    [102 41 97 32 escape 118 116 91 99 32 escape 102 93 108 100 116 46 106 48 108 108])
+
+  (fset 'my/anime-file-names-to-multiline
+        (lambda (&optional arg)
+          "Kbd macro: convert name in format ENG・ROMAJI (JAP) to 3 lines."
+          (interactive "p")
+          (evil-force-normal-state)
+          (delete-trailing-whitespace (line-beginning-position) (line-end-position))
+          (beginning-of-line)
+          (search-forward "・")
+          (kmacro-exec-ring-item
+           '([105 backspace return 32 32 32 32 escape 36 120 70 40 120 105 backspace return escape 106 48] 0 "%d") arg)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------------------------------,
