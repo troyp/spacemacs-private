@@ -642,6 +642,8 @@ you should place you code here."
   ;; '-----------------'
   (define-key kmacro-keymap (kbd "<insert>") 'insert-kbd-macro)
   (define-key kmacro-keymap (kbd "M-l") 'helm-execute-kmacro)
+  (define-key kmacro-keymap (kbd "M-e") 'edit-last-kbd-macro)
+  (define-key kmacro-keymap (kbd "M-s") 'my/set-named-kbd-macro-as-last)
 
   (defun my/kmacro-p (sym)
     (interactive)
@@ -671,8 +673,7 @@ you should place you code here."
         (lambda (fn)
           (and (fboundp fn)
                (symbol-name fn)
-               (my/kmacro-p fn)
-               ))
+               (my/kmacro-p fn)))
         t))))
     (describe-function fn))
 
@@ -689,6 +690,22 @@ Returns the function definition."
          (when ,docstring
            (put ,symbol 'function-documentation ,docstring))
          ,definition)))
+
+  (defun my/set-last-kbd-macro (defn)
+    (setq last-kbd-macro defn))
+
+  (defun my/set-named-kbd-macro-as-last (fn)
+    (interactive
+     (list
+      (intern
+       (completing-read
+        "Kbd macro function: " obarray
+        (lambda (fn)
+          (and (fboundp fn)
+               (symbol-name fn)
+               (my/kmacro-p fn)))
+        t))))
+    (setq last-kbd-macro fn))
 
   ;; ==============================================================================
   ;; ***************
