@@ -773,6 +773,16 @@ Returns the function definition."
     (message "Loading theme %s..." spacemacs--cur-theme)
     (spacemacs/load-theme spacemacs--cur-theme))
 
+  (defvar-local my/restore-mode-line-cookies nil)
+  (defun my/face-restore-mode-line ()
+    (interactive)
+    (while my/restore-mode-line-cookies
+      (face-remap-remove-relative (pop my/restore-mode-line-cookies))))
+  (defun my/face-remap-mode-line (&rest specs)
+    (interactive)
+    (push (apply #'face-remap-add-relative 'mode-line specs)
+          my/restore-mode-line-cookies))
+
   ;; ==============================================================================
   ;;                       *****************************
   ;;                       *                           *
