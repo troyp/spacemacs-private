@@ -3558,16 +3558,13 @@ Then move to the next line (column 3).
     KEEP) DELETE[KEEP]DELETE.KEEP"
     [102 41 97 32 escape 118 116 91 99 32 escape 102 93 108 100 116 46 106 48 108 108])
 
-  (fset 'my/anime-file-names-to-multiline
-        (lambda (&optional arg)
+  (my/kmacro-fset 'my/anime-file-names-to-multiline
           "Kbd macro: convert name in format ENG・ROMAJI (JAP) to 3 lines."
-          (interactive "p")
-          (evil-force-normal-state)
-          (delete-trailing-whitespace (line-beginning-position) (line-end-position))
-          (beginning-of-line)
-          (search-forward "・")
-          (kmacro-exec-ring-item
-           '([105 backspace return 32 32 32 32 escape 36 120 70 40 120 105 backspace return escape 106 48] 0 "%d") arg)))
+        [escape ?V 134217848
+                ?d ?e ?l ?e ?t ?e ?- ?t ?r ?a ?i ?l ?i ?n ?g
+                ?- ?w ?h ?i ?t ?e ?s ?p ?a ?c ?e return
+                ?0 ?f ?・ escape ?a backspace return 32 32 32 32 escape
+                ?$ ?x ?F 40 ?x ?i backspace return escape ?j ?0])
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------------------------------,
