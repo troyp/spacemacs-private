@@ -637,10 +637,58 @@ you should place you code here."
     (setq pos-tip-foreground-color "#9a9aba")
     (setq pos-tip-background-color "#34323e"))
 
-  ;; ,--------,
-  ;; | Macros |
-  ;; '--------'
+  ;; ,-----------------,
+  ;; | Keyboard Macros |
+  ;; '-----------------'
   (define-key kmacro-keymap (kbd "<insert>") 'insert-kbd-macro)
+  (define-key kmacro-keymap (kbd "M-l") 'helm-execute-kmacro)
+
+  (defun my/kmacro-p (sym)
+    (interactive)
+    (or (get sym 'kmacro)
+        (stringp (symbol-function sym))
+        (vectorp (symbol-function sym))))
+
+  (defun my/describe-kmacro-command (cmd)
+    (interactive
+     (list
+      (intern
+       (completing-read
+        "Kbd macro command: " obarray
+        (lambda (fn)
+          (and (commandp cmd)
+               (symbol-name cmd)
+               (my/kmacro-p cmd)))
+        t))))
+    (describe-function cmd t))
+
+  (defun my/describe-kmacro-function (fn)
+    (interactive
+     (list
+      (intern
+       (completing-read
+        "Kbd macro function: " obarray
+        (lambda (fn)
+          (and (fboundp fn)
+               (symbol-name fn)
+               (my/kmacro-p fn)
+               ))
+        t))))
+    (describe-function fn))
+
+  (defmacro my/kmacro-fset (symbol arg2 &optional arg3)
+    "Set SYMBOL's function definition and kmacro property.
+
+Returns the function definition."
+    (declare (indent 1))
+    (let ((definition (or arg3 arg2))
+          (docstring  (and arg3 arg2)))
+      `(progn
+         (fset ,symbol ,definition)
+         (put ,symbol 'kmacro t)
+         (when ,docstring
+           (put ,symbol 'function-documentation ,docstring))
+         ,definition)))
 
   ;; ==============================================================================
   ;; ***************
