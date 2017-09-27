@@ -1804,12 +1804,13 @@ Returns the function definition."
     "SPC X"        "structured text"
     )
 
-  (dolist (cons '(("return"  . "RET")
+  ;; TODO: update to use 'which-key-replacement-alist
+  (dolist (pair '(("return"  . "RET")
                   ("delete"  . "Delete")
                   ("backtab" . "S-TAB")
                   ("escape"  . "ESC")
                   ))
-    (add-to-list 'which-key-key-replacement-alist cons))
+    (add-to-list 'which-key-key-replacement-alist pair))
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------,
@@ -1830,17 +1831,17 @@ Returns the function definition."
   ;; | Command Docstrings |
   ;; '--------------------'
 
-  (defmacro set-docstring (fn docstr)
+  (defmacro my/set-docstring (fn docstr)
     (eval `(put ',fn 'function-documentation ,docstr)))
 
-  (defun set-docstrings (&rest pairs)
+  (defun my/set-docstrings (&rest pairs)
     "Set a sequence of docstring functions
 
 \(fn [FN1 DOCSTR1] ...)"
     (eval `(loop for (fn docstr) on ',pairs by 'cddr do
                  (eval `(put ',fn 'function-documentation ,docstr)))))
 
-  (set-docstrings
+  (my/set-docstrings
    'evil-search-highlight-persist-remove-all    "Remove all `evil-search' highlighting"
    )
 
