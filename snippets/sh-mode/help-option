@@ -2,7 +2,7 @@
 # name: help-option
 # key: help
 # --
-if [[ "\$1" =~ ^-h$\|^--help$ ]]; then
+if [[ "\$1" =~ ^-h$|^--help$ ]]; then
     cat <<EOF
 $0
 EOF
