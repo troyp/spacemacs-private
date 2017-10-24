@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: option-case-long
+# key: ()
+# --
+(-$1${2:|--$3})
+    $0
+    shift ${4:1}; ;;
