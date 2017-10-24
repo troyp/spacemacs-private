@@ -99,6 +99,7 @@ values."
      drag-n-drop
      no-dots
      perl5
+     w3m
      troyp
      )
 
