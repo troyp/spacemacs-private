@@ -1449,6 +1449,7 @@ Returns the function definition."
     "f <insert>"   'find-file-clipboard
     "f C-."        'find-file-at-point
     "f C-k"        'bookmark-jump
+    "f C-y"        (defun! my/yank-filename "Yank buffer filename" (kill-new buffer-file-name))
     "g C-x v"      'vc-prefix-map
     ;; "h"            'help-prefix-map
     "h a"          'apropos
