@@ -7,3 +7,6 @@
 [submodule "docs/spacemacs.wiki"]
 	path = docs/spacemacs.wiki
 	url = https://github.com/syl20bnr/spacemacs.wiki.git
+[submodule "layers/w3m"]
+	path = layers/w3m
+	url = https://github.com/venmos/w3m-layer.git
