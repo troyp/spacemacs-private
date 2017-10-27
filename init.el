@@ -948,6 +948,34 @@ Returns the function definition."
                     (point))))
       (list left right)))
 
+  (evil-define-text-object evil-textobj-column-a-WORD
+      (count &optional beg end type)
+    "Select a WORD column and preceding spaces.
+
+COUNT, BEG, END, and TYPE have no effect."
+    (let* ((WORD-col (evil-textobj-column--create-range #'evil-forward-WORD-begin
+                                                        #'evil-backward-WORD-begin
+                                                        #'evil-forward-WORD-end))
+           (WORD-topleft (car WORD-col))
+           (bottomright (cadr WORD-col))
+           (topleft (save-excursion
+                      (goto-char WORD-topleft)
+                      (skip-chars-backward " \t")
+                      (point))))
+      (evil-range topleft bottomright 'rectangle)))
+
+  (evil-define-text-object evil-textobj-column-a-word
+      (count &optional beg end type)
+    "Select a WORD column and the preceding character.
+
+COUNT, BEG, END, and TYPE have no effect."
+    (let* ((word-col (evil-textobj-column--create-range #'evil-forward-word-begin
+                                                        #'evil-backward-word-begin
+                                                        #'evil-forward-word-end))
+           (topleft (car word-col))
+           (bottomright (cadr word-col)))
+      (evil-range (1- topleft) bottomright 'rectangle)))
+
   (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
   (define-key evil-outer-text-objects-map "d" 'evil-a-defun)
   (define-key evil-inner-text-objects-map "f" 'evil-inner-filename)
@@ -961,6 +989,9 @@ Returns the function definition."
   (define-key evil-inner-text-objects-map "9" 'evil-inner-paren)
   (define-key evil-outer-text-objects-map "9" 'evil-a-paren)
   (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD)
+  (define-key evil-outer-text-objects-map "C" 'evil-textobj-column-a-WORD)
+  (define-key evil-inner-text-objects-map "S" 'evil-textobj-column-word)
+  (define-key evil-outer-text-objects-map "S" 'evil-textobj-column-a-word)
   (define-key evil-inner-text-objects-map "e" 'evil-inner-element)
   (define-key evil-outer-text-objects-map "e" 'evil-a-element)
   (define-key evil-outer-text-objects-map "z" 'evil-a-charrun)
