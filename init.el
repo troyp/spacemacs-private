@@ -926,6 +926,28 @@ Returns the function definition."
     "operates on the heredoc around point."
     (-cons-to-list (bounds-of-thing-at-point 'heredoc)))
 
+  (evil-define-text-object evil-inner-charrun (count &optional beg end type)
+    (let* ((c (buffer-substring-no-properties (point) (1+ (point))))
+           (charset (if (memq c '(?^ ?- ?\\)) (concat "\\" c) c))
+           (right (save-excursion
+                    (skip-chars-forward charset)
+                    (point)))
+           (left (save-excursion
+                   (skip-chars-backward charset)
+                   (let ((l (point)))
+                     (if (< l (1- right)) (1+ l) l)))))
+      (list left right)))
+  (evil-define-text-object evil-a-charrun (count &optional beg end type)
+    (let* ((c (buffer-substring-no-properties (point) (1+ (point))))
+           (charset (if (memq c '(?^ ?- ?\\)) (concat "\\" c) c))
+           (left (save-excursion
+                   (skip-chars-backward charset)
+                   (point)))
+           (right (save-excursion
+                    (skip-chars-forward charset)
+                    (point))))
+      (list left right)))
+
   (define-key evil-inner-text-objects-map "d" 'evil-inner-defun)
   (define-key evil-outer-text-objects-map "d" 'evil-a-defun)
   (define-key evil-inner-text-objects-map "f" 'evil-inner-filename)
@@ -941,6 +963,8 @@ Returns the function definition."
   (define-key evil-inner-text-objects-map "C" 'evil-textobj-column-WORD)
   (define-key evil-inner-text-objects-map "e" 'evil-inner-element)
   (define-key evil-outer-text-objects-map "e" 'evil-a-element)
+  (define-key evil-outer-text-objects-map "z" 'evil-a-charrun)
+  (define-key evil-inner-text-objects-map "z" 'evil-inner-charrun)
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------------,
