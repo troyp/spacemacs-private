@@ -5360,6 +5360,50 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
   ;; https://bugs.debian.org/766397
   (setq tls-program '("gnutls-cli --x509cafile %t -p %p %h"))
 
+  ;; update list of paste functions to include `spacemacs/evil-mc-paste-after'
+  ;; and `spacemacs/evil-mc-paste-before'.
+  ;; see: https://github.com/syl20bnr/spacemacs/issues/8823
+  (defun evil-paste-pop (count)
+    "Replace the just-yanked stretch of killed text with a different stretch.
+This command is allowed only immediatly after a `yank',
+`evil-paste-before', `evil-paste-after' or `evil-paste-pop'.
+This command uses the same paste command as before, i.e., when
+used after `evil-paste-after' the new text is also yanked using
+`evil-paste-after', used with the same paste-count argument.
+
+The COUNT argument inserts the COUNTth previous kill.  If COUNT
+is negative this is a more recent kill."
+    (interactive "p")
+    (unless (memq last-command
+                  '(evil-paste-after
+                    evil-paste-before
+                    evil-visual-paste
+                    spacemacs/evil-mc-paste-after
+                    spacemacs/evil-mc-paste-before
+                    ))
+      (user-error "Previous command was not an evil-paste: %s" last-command))
+    (unless evil-last-paste
+      (user-error "Previous paste command used a register"))
+    (evil-undo-pop)
+    (goto-char (nth 2 evil-last-paste))
+    (setq this-command (nth 0 evil-last-paste))
+    ;; use temporary kill-ring, so the paste cannot modify it
+    (let ((kill-ring (list (current-kill
+                            (if (and (> count 0) (nth 5 evil-last-paste))
+                                ;; if was visual paste then skip the
+                                ;; text that has been replaced
+                                (1+ count)
+                              count))))
+          (kill-ring-yank-pointer kill-ring))
+      (when (eq last-command 'evil-visual-paste)
+        (let ((evil-no-display t))
+          (evil-visual-restore)))
+      (funcall (nth 0 evil-last-paste) (nth 1 evil-last-paste))
+      ;; if this was a visual paste, then mark the last paste as NOT
+      ;; being the first visual paste
+      (when (eq last-command 'evil-visual-paste)
+        (setcdr (nthcdr 4 evil-last-paste) nil))))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------,
   ;; | Load Private Data |
