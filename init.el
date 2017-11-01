@@ -199,6 +199,7 @@ values."
      (direx-grep :location (recipe :fetcher github :repo "aki2o/direx-grep"))
      dirtree
      elmacro
+     elnode
      jedi-direx
      evil-textobj-column
      evil-vimish-fold
@@ -1466,6 +1467,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "a p"          'my/list-processes
     "a ="          'calculator
     "a '"          'browse-url-firefox
+    "a -"          'elnode-stop
     "a \""         'browse-url-elinks
     "b M"          'my/switch-to-messages-buffer
     "b S"          'my/switch-to-scratch-buffer-other-window
@@ -1500,6 +1502,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "f / f"        'sudo-open-file
     "f / e"        'spacemacs/sudo-edit
     "f / b"        'sudo-edit-this-file
+    "f -"          'my/browse-buffer-directory-firefox
+    "f ="          'my/browse-buffer-file-firefox
     "f SPC"        'my/open-file-at-point
     "f <insert>"   'find-file-clipboard
     "f C-."        'find-file-at-point
@@ -1928,6 +1932,32 @@ COUNT, BEG, END, and TYPE have no effect."
   (my/set-docstrings
    'evil-search-highlight-persist-remove-all    "Remove all `evil-search' highlighting"
    )
+
+  ;; ,--------,
+  ;; | elnode |
+  ;; '--------'
+
+  (setq elnode-webserver-docroot
+        (expand-file-name "private/public_html" user-emacs-directory))
+
+  (defun my/elnode-serve-buffer-file ()
+    (interactive)
+    (elnode-make-webserver buffer-file-name 8009))
+
+  (defun my/elnode-serve-buffer-directory ()
+    (interactive)
+    (elnode-make-webserver default-directory 8009))
+
+  (defun my/browse-buffer-file-firefox ()
+    (interactive)
+    (my/elnode-serve-buffer-file)
+    (browse-url-firefox "localhost:8009"))
+
+  (defun my/browse-buffer-directory-firefox ()
+    (interactive)
+    (my/elnode-serve-buffer-directory)
+    (browse-url-firefox "localhost:8009"))
+
 
   ;; ***************
   ;; *             *
