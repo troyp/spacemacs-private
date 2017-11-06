@@ -47,6 +47,7 @@ values."
               )
      elfeed
      emacs-lisp
+     ess
      extra-langs
      git
      go
