@@ -835,6 +835,8 @@ Returns the function definition."
   (add-to-list 'auto-mode-alist '("\\.ocamlinit" . tuareg-mode))
   (add-to-list 'auto-mode-alist '("\\.vimpagerrc" . vimrc-mode))
   (add-to-list 'auto-mode-alist '("\\.jshintrc" . json-mode))
+  (add-to-list 'auto-mode-alist '("\\.maff" . archive-mode))
+  (add-to-list 'auto-mode-alist '("\\.sc" . scala-mode))
 
 
   ;; ==============================================================================
