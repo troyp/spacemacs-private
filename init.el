@@ -1223,7 +1223,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
 
-  (global-set-key "\C-a" 'move-beginning-of-line-or-text)    ;; troyp/utils.el
+  (global-set-key "\C-a" 'my/evil-beginning-of-line-or-first-non-blank)
   (global-set-key (kbd "<S-return>") 'my/open-line-below)       ;; troyp/utils.el
   (global-set-key (kbd "<C-S-return>") 'my/open-line-above)     ;; troyp/utils.el
   (global-set-key [\C-\S-down] 'move-text-down)
@@ -5360,6 +5360,14 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (evil-signal-at-bob-or-eob count)
     (evil-backward-beginning 'evil-paragraph count)
     (evil-first-non-blank))
+
+  (evil-define-motion my/evil-beginning-of-line-or-first-non-blank ()
+    "Move to the the first non-blank character or the beginning of the line."
+    :type exclusive
+    (let ((start (point)))
+      (evil-narrow-to-line (back-to-indentation))
+      (when (= (point) start)
+        (move-beginning-of-line nil))))
 
   (defun my/pick-color ()
     (interactive)
