@@ -1578,6 +1578,12 @@ COUNT, BEG, END, and TYPE have no effect."
     "x C-l"        'my/quick-pcre-align-repeat
     "x \\"         'my/evil-shell-command-replace-region
     "x |"          'my/shell-command-process-region-as-file
+    "x ; y"        'link-hint-copy-link
+    "x ; Y"        'link-hint-copy-multiple-links
+    "x . y"        'link-hint-copy-link-at-point
+    "x . Y"        'my/link-hint-copy-all-links
+    "x . o"        'link-hint-open-link-at-point
+    "x . O"        'link-hint-open-all-links
     "z +"          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z ="          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
