@@ -5417,6 +5417,33 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (setcar (cdr (assoc 'mozc-mode minor-mode-alist))
             lighter))
 
+  ;; adapted from link-hint.el (Fox Kiester, GPL3)
+  (defun my/link-hint-kill-append-link-at-point ()
+    "Append a link of any supported type at point to the latest kill-ring entry.
+See the default value of `link-hint-copy-ignore-types' for the unsupported
+types."
+    (interactive)
+    (list
+     nil
+     "Copied"
+     (link-hint--types-at-point-let-wrapper
+      (cond (shr-url (kill-append (concat shr-url "\n") nil))
+            (org-link (kill-append (concat (plist-get org-link :uri) "\n") nil))
+            (text-url (kill-append (concat text-url "\n") nil))
+            (file-link (kill-append (concat (ffap-file-at-point) "\n") nil))
+            (mu4e-url (kill-append (concat mu4e-url "\n") nil))
+            (t (message "There is no supported link at the point."))))))
+
+  ;; adapted from link-hint.el (Fox Kiester, GPL3)
+  (defun my/link-hint-copy-all-links ()
+    "Copy all visible links of a supported type.
+See `link-hint-copy-link' for more information."
+    (interactive)
+    (let ((link-hint-ignore-types (append link-hint-ignore-types
+                                          link-hint-copy-ignore-types)))
+      (kill-new "")
+      (link-hint--all-links-action #'my/link-hint-kill-append-link-at-point)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
