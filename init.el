@@ -4393,6 +4393,9 @@ within the region."
              (my/adjacent-line-blank-p))
         (delete-blank-lines)))
 
+  (defun my/remove-blank-lines ()
+    (interactive)
+    (replace-regexp "\n\\([[:space:]]*\n\\)+" "\n\n"))
 
   (defun my/remove-doubled-blank-lines ()
     (interactive)
