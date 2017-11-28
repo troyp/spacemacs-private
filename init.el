@@ -1504,7 +1504,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "f ' p"        'dired-spacemacs-private-directory
     "f / f"        'sudo-open-file
     "f / e"        'spacemacs/sudo-edit
-    "f / b"        'sudo-edit-this-file
+    "f / b"        'my/sudo-edit-this-file
     "f -"          'my/browse-buffer-directory-firefox
     "f ="          'my/browse-buffer-file-firefox
     "f SPC"        'my/open-file-at-point
@@ -1570,7 +1570,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "x a SPC"      'my/quick-pcre-align-repeat
     "x a S-SPC"    'my/quick-pcre-align
     "x a C-SPC"    'my/pcre-align-region
-    "x l U"        'delete-duplicate-lines-nonblank
+    "x l U"        'my/delete-duplicate-lines-nonblank
     "x N"          'rectangle-number-lines-interactive
     "x <insert>"   'region-swap
     "x t r"        'region-swap
@@ -1623,7 +1623,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "C-?"          'evil-search-highlight-restore
     "C-\\"         'set-input-method
     "C-SPC"        'cua-toggle-global-mark
-    "C-S-SPC"      'just-one-blank-line
+    "C-S-SPC"      'my/just-one-blank-line
     "M-p"          'my/evil-paste-after-column-kill-height
     "M-q"          'my/wrap-lines-in-region
     "M-x"          'helm-M-x
@@ -4255,7 +4255,7 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
   ;; functions dealing with lines
   ;; ============================
 
-  (defun line-at-point-string ()
+  (defun my/line-at-point-string ()
     "Return the line around point as a string.
 Similar to (thing-at-point \'line t) except it does not return a trailing newline.
 See also `thing-at-point'"
@@ -4263,23 +4263,23 @@ See also `thing-at-point'"
           (end (line-end-position)))
       (buffer-substring-no-properties beg end)))
 
-  (defun line-at-point-blank-p ()
+  (defun my/line-at-point-blank-p ()
     "Returns a non-nil value if the current line contains only whitespace."
-    (string-match-p "^[[:space:]]*$" (line-at-point-string)))
-  (defun line-above-blank-p (&optional n)
+    (string-match-p "^[[:space:]]*$" (my/line-at-point-string)))
+  (defun my/line-above-blank-p (&optional n)
     (save-excursion
       (forward-line (- (or n 1)))
-      (line-at-point-blank-p)))
-  (defun line-below-blank-p (&optional n)
+      (my/line-at-point-blank-p)))
+  (defun my/line-below-blank-p (&optional n)
     (save-excursion
       (forward-line (or n 1))
-      (line-at-point-blank-p)))
-  (defun adjacent-line-blank-p (&optional n)
+      (my/line-at-point-blank-p)))
+  (defun my/adjacent-line-blank-p (&optional n)
     "Returns a non-nil value if the Nth line above and/or below point contains
 only whitespace).
-See `line-at-point-blank-p', `line-above-blank-p', `line-below-blank-p'"
-    (or (line-above-blank-p n)
-        (line-below-blank-p n)))
+See `my/line-at-point-blank-p', `my/line-above-blank-p', `my/line-below-blank-p'"
+    (or (my/line-above-blank-p n)
+        (my/line-below-blank-p n)))
 
   (defun my/copy-current-line ()
     (interactive)
@@ -4302,7 +4302,7 @@ Ie., each line is treated as a distinct paragraph."
     (replace-string "\n\n" "\n" nil beg end))
 
   ;; FIXME: splits the line after region (near start of line); irregular indentation.
-  (defun wrap-region-or-comment (beg end)
+  (defun my/wrap-region-or-comment (beg end)
     "An interactive function to split lines longer than `fill-column'.
 Splits long lines in the region using `fill-paragraph', but never joins lines.
 Ie., each line is treated as a distinct paragraph.
@@ -4366,7 +4366,7 @@ value of COL is additionally set as the new value of `fill-column'."
   ;; delete duplicate lines
   ;; ======================
 
-  (defun delete-duplicate-lines-nonblank
+  (defun my/delete-duplicate-lines-nonblank
       (beg end &optional reverse adjacent delete-blanks interactive)
     "Delete duplicate lines within region. This is the same as
 `delete-duplicate-lines' except it keeps blank lines by default unless the
@@ -4387,23 +4387,23 @@ within the region."
         t)))
     (delete-duplicate-lines beg end reverse adjacent (not delete-blanks) interactive))
 
-  (defun just-one-blank-line ()
+  (defun my/just-one-blank-line ()
     (interactive)
-    (if (and (line-at-point-blank-p)
-             (adjacent-line-blank-p))
+    (if (and (my/line-at-point-blank-p)
+             (my/adjacent-line-blank-p))
         (delete-blank-lines)))
 
 
-  (defun remove-doubled-blank-lines ()
+  (defun my/remove-doubled-blank-lines ()
     (interactive)
     (replace-regexp "\n[[:space:]]*\n\\([[:space:]]*\n\\)+" "\n\n"))
 
-  (defun delete-adjacent-repeated-lines ()
+  (defun my/delete-adjacent-repeated-lines ()
     (interactive)
     (destructuring-bind (beg . end) (evil-get-visual-region-or-buffer)
       (delete-duplicate-lines beg end nil t nil t)))
 
-  (defun remove-trailing-space-and-blank-lines (&optional beg end)
+  (defun my/remove-trailing-space-and-blank-lines (&optional beg end)
     (interactive
      (cond ((use-region-p)   (list (region-beginning) (region-end)))
            (:else            (list (point) (point-max)))))
@@ -4413,7 +4413,7 @@ within the region."
       (while (re-search-forward "\n+" end t)
         (replace-match "\n" nil nil))))
 
-  (defun remove-trailing-space-and-doubled-blank-lines (&optional beg end)
+  (defun my/remove-trailing-space-and-doubled-blank-lines (&optional beg end)
     (interactive
      (cond ((use-region-p)   (list (region-beginning) (region-end)))
            (:else            (list (point) (point-max)))))
@@ -4423,7 +4423,7 @@ within the region."
       (while (re-search-forward "\n\n+" end t)
         (replace-match "\n\n" nil nil))))
 
-  (defun sudo-edit-this-file ()
+  (defun my/sudo-edit-this-file ()
     (interactive)
     (let ((f (concat "/sudo::" (expand-file-name buffer-file-name))))
       (find-file f)))
