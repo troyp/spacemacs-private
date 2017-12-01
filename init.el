@@ -3307,6 +3307,17 @@ If FILE is nil, the file associated with the current buffer is used."
             :buffer "*helm org inbuffer*")))
 
   ;; -------------------------------------------------------------------------------
+  ;; ,---------------,
+  ;; | PDF-View-Mode |
+  ;; '---------------'
+
+  (add-hook 'pdf-view-mode-hook 'my/pdf-view-mode-init)
+
+  (defun my/pdf-view-mode-init ()
+    (interactive)
+    (nlinum-mode -1))
+
+  ;; -------------------------------------------------------------------------------
   ;; ,--------,
   ;; | Proced |
   ;; '--------'
