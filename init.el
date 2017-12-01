@@ -45,6 +45,7 @@ values."
      (clojure :variables
               ;; clojure-enable-fancify-symbols t
               )
+     deft
      elfeed
      emacs-lisp
      ess
@@ -67,6 +68,7 @@ values."
           org-enable-github-support t
           )
      nlinum
+     pdf-tools
      python
      racket
      (ranger :variables
