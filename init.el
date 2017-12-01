@@ -548,6 +548,37 @@ you should place you code here."
   (setq fci-rule-column 80)
   (setq fill-column 79)
 
+  ;; ,--------,
+  ;; | Backup |
+  ;; '--------'
+  (setq make-backup-files        t
+        version-control          t
+        kept-new-versions        10
+        kept-old-versions        1
+        delete-old-versions      t
+        backup-by-copying        t
+        vc-make-backup-files     t
+        )
+  (setq backup-directory-alist
+        `(("" . ,(expand-file-name "backup/per-save" spacemacs-private-directory))))
+
+  ;; modified from https://stackoverflow.com/a/20824625/1261964
+  (defun so/force-backup-of-buffer ()
+    "Make a special 'per session' backup at the first save of each emacs session."
+    (when (not buffer-backed-up)
+      ;; Override the default parameters for per-session backups.
+      (let ((backup-directory-alist
+             `(("" . ,(expand-file-name "backup/per-session" spacemacs-private-directory))))
+            (kept-new-versions 3))
+        (backup-buffer)))
+    ;; Make a "per save" backup on each save.  The first save results in
+    ;; both a per-session and a per-save backup, to keep the numbering
+    ;; of per-save backups consistent.
+    (let ((buffer-backed-up nil))
+      (backup-buffer)))
+
+  (add-hook 'before-save-hook  'so/force-backup-of-buffer)
+
   ;; ,-----------,
   ;; | Find File |
   ;; '-----------'
