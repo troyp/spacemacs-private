@@ -1541,7 +1541,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "f <insert>"   'find-file-clipboard
     "f C-."        'find-file-at-point
     "f C-k"        'bookmark-jump
-    "f C-y"        (defun! my/yank-filename "Yank buffer filename" (kill-new buffer-file-name))
+    "f C-y"        'my/yank-filename
     "g C-x v"      'vc-prefix-map
     ;; "h"            'help-prefix-map
     "h a"          'apropos
@@ -5419,6 +5419,17 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (if current-prefix-arg
         (insert (s-trim (shell-command-to-string "grabc 1>/dev/null")))
       (insert (s-trim (shell-command-to-string "grabc 2>/dev/null")))))
+
+  (defun my/kill-new-and-message (string &optional replace)
+    (kill-new string replace)
+    (message string))
+
+  (defun my/yank-filename ()
+    "Yank buffer filename. With prefix arg, yank file path."
+    (interactive)
+    (if current-prefix-arg
+        (my/kill-new-and-message buffer-file-name)
+      (my/kill-new-and-message (file-name-nondirectory buffer-file-name))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
