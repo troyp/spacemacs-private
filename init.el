@@ -1212,7 +1212,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (bind-key* "M-0" 'universal-argument)
   (bind-key* "<C-tab>" 'next-multiframe-window)
   (bind-key* "<C-S-iso-lefttab>" 'previous-multiframe-window)
-  (bind-key* "<M-delete>" 'my/kill-buffer-quit-help)
+  (bind-key* "<M-delete>" 'my/kill-buffer-and-window-quit-help)
   (bind-key* "<M-S-delete>" 'kill-buffer-and-window)
   (bind-key* "C-:" 'execute-extended-command)
   (bind-key* "M-X" 'spacemacs/smex)
@@ -4768,11 +4768,13 @@ If the region is not active, the entire buffer is processed."
       (evil-visual-restore)
       (evil-visual-paste 1)))
 
-  (defun my/kill-buffer-quit-help ()
-    "Kill the current buffer, close its window, and quit the help buffer."
+  (defun my/kill-buffer-and-window-quit-help ()
+    "Kill the current buffer, close its window, and quit the help buffer.
+
+With a prefix argument, leaves any help buffer open."
     (interactive)
     (kill-buffer-and-window)
-    (quit-window nil (get-buffer-window "*Help*")))
+    (unless current-prefix-arg (quit-window nil (get-buffer-window "*Help*"))))
 
   ;; TODO: find out how to identify active window before minibuffer entry
   ;;       so this can be called with M-x
