@@ -1635,8 +1635,6 @@ COUNT, BEG, END, and TYPE have no effect."
     "x N"          'rectangle-number-lines-interactive
     "x <insert>"   'region-swap
     "x t r"        'region-swap
-    "x C-k"        'evil-insert-digraph
-    "x C-l"        'my/quick-pcre-align-repeat
     "x \\"         'my/evil-shell-command-replace-region
     "x |"          'my/shell-command-process-region-as-file
     "x ; y"        'link-hint-copy-link
@@ -1645,6 +1643,9 @@ COUNT, BEG, END, and TYPE have no effect."
     "x . Y"        'my/link-hint-copy-all-links
     "x . o"        'link-hint-open-link-at-point
     "x . O"        'link-hint-open-all-links
+    "x C-b"        'my/copy-to-empty-buffer
+    "x C-k"        'evil-insert-digraph
+    "x C-l"        'my/quick-pcre-align-repeat
     "z +"          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z ="          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
@@ -5464,6 +5465,14 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (if current-prefix-arg
         (insert (s-trim (shell-command-to-string "grabc 1>/dev/null")))
       (insert (s-trim (shell-command-to-string "grabc 2>/dev/null")))))
+
+  (defun my/copy-to-empty-buffer ()
+    "Copy the current buffer's contents to an empty buffer and open mode dialog."
+    (interactive)
+    (let ((contents (buffer-string)))
+      (spacemacs/new-empty-buffer)
+      (insert contents)
+      (helm-switch-major-mode)))
 
   (defun my/kill-new-and-message (string &optional replace)
     (kill-new string replace)
