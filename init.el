@@ -1689,6 +1689,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "M-q"          'my/wrap-lines-in-region
     "M-x"          'helm-M-x
     "M-%"          'evil-visual-replace-query-replace
+    "M-DEL"        'my/kill-other-buffer-and-window
     "M-C-%"        'evil-visual-replace-replace-regexp
     )
 
@@ -4806,6 +4807,17 @@ With a prefix argument, leaves any help buffer open."
     (interactive)
     (kill-buffer-and-window)
     (unless current-prefix-arg (quit-window nil (get-buffer-window "*Help*"))))
+
+  (defun my/kill-other-buffer-and-window ()
+    "Kill the other buffer and close its window."
+    (interactive)
+    (save-excursion
+      (let ((orig-buffer (current-buffer)))
+        (when (> (count-windows) 1)
+          (other-window 1 nil)
+          (unless (eq orig-buffer (current-buffer))
+            (kill-buffer))
+          (delete-window)))))
 
   ;; TODO: find out how to identify active window before minibuffer entry
   ;;       so this can be called with M-x
