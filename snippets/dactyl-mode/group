@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: group
+# key: group
+# --
+
+group $1 -locations=$2
+map <leader>hkc -js CommandExMode().open("map -group $1 <site>")
+map <site><C-h> -description "(show bindings)" -js CommandExMode().open("map -group $1 <site>")
+
+js <<EOF
+EOF
+
+group user

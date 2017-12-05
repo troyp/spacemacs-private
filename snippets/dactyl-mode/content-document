@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: content-document
+# key: doc
+# --
+    content.document$0
