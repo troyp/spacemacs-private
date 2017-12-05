@@ -1791,6 +1791,14 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             :prefix-map my/app-prefix-map
+             :menu-name "applications"
+             :prefix "a"
+             :prefix-docstring "Commands dealing with applications."
+             ("d d" . my/dactyl-source-dir)
+             )
+
+  (bind-keys :map user-cmds-map
              :prefix-map my/structured-text-prefix-map
              :menu-name "structured text"
              :prefix "X"
@@ -2304,6 +2312,13 @@ COUNT, BEG, END, and TYPE have no effect."
       ", /"       "/* ⌶ */"
       "M-RET /"   "/* ⌶ */"
       )
+
+  (defun my/dactyl-source-dir()
+    (interactive)
+    (dired "/home/troy/source/git-repos/dactyl/common/")
+    (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/content/")
+    (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/modules/")
+    (dired-hide-details-mode 0))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
