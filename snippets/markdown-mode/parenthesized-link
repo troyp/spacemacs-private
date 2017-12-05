@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: parenthesized link
+# key: <
+# --
+( <$0> )
