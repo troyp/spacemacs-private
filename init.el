@@ -516,6 +516,8 @@ you should place you code here."
 
   (setq scroll-preserve-screen-position 1)
 
+  (setq scroll-margin 8)
+
   (defvar spacemacs-private-directory
     (expand-file-name (file-name-as-directory "private") user-emacs-directory)
     "Location of Spacemacs private/ directory.")
