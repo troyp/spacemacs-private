@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: palemoon-target-app
+# key: palemoon
+# --
+    <!-- Pale Moon -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{8de7fcbb-c55c-4fbe-bfc5-fc555c87dbc4}</em:id>
+        <em:minVersion>25.0</em:minVersion>
+        <em:maxVersion>35.0</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+$0
