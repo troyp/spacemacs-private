@@ -2319,7 +2319,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/content/")
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/modules/")
     (dired-hide-details-mode 0)
-    (setq my/dired-reuse-buffer nil))
+    (setq-local my/dired-reuse-buffer nil))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
