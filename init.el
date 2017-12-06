@@ -2325,6 +2325,15 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; | Dired |
   ;; '-------'
 
+  (make-local-variable 'my/dired-reuse-buffer)
+  (setq-default my/dired-reuse-buffer t)
+
+  (defun my/dired-find-file-maybe-alternate ()
+    (interactive)
+    (if my/dired-reuse-buffer
+        (dired-find-alternate-file)
+      (dired-find-file)))
+
   (use-package dired+
     :init
     (spacemacs|add-toggle diredp-wrap-around-flag
@@ -2364,6 +2373,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (my/define-keys dired-mode-map
       (kbd "C-h")            nil
       (kbd "q")              'tsp-quit-window-kill
+      (kbd "<return>")       'my/dired-find-file-maybe-alternate
       (kbd "<S-return>")     'dired-find-file
       (kbd "<mouse-3>")      'diredp-mouse-3-menu
       (kbd "<down-mouse-3>") 'diredp-mouse-3-menu
