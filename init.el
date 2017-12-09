@@ -3026,24 +3026,25 @@ current prefix argument.
     (interactive
      (list (buffer-file-name)
            (let ((arg current-prefix-arg))
-             (cond ((equalp arg '(4)) (intern (completing-read "app: " my/markdown-apps)))
-                   ((equalp arg 1)    'grip/firefox)
-                   ((equalp arg 2)    'firefox/md)
+             (cond ((null arg)        (intern (completing-read "app: " my/markdown-apps)))
+                   ((equalp arg 1)    'firefox/md)
+                   ((equalp arg 2)    'grip/firefox)
                    ((equalp arg 3)    'remarkable)
+                   ((equalp arg '(4)) 'xdg/html)
                    (t                 'xdg/html)
                    ))))
     (my/markdown-app-call (or app 'remarkable) file))
 
   (defvar my/markdown-apps
-    (list '(remarkable   . (my/async-shell-command-no-window (format "remarkable '%s'" file)))
-          '(xdg/html     . (my/markdown-export-to-html-and-view))
-          '(firefox/md   . (my/async-shell-command-no-window (format "firefox '%s'" file)))
-          '(grip/firefox . (progn (my/async-shell-command-no-window
+    (list '(grip/firefox . (progn (my/async-shell-command-no-window
                                    (format "grip '%s'" (buffer-file-name)))
                                   (run-with-timer
                                    0.8 nil
                                    (fn: start-process
-                                     "localhost" nil "firefox" "http://localhost:6419")))))
+                                     "localhost" nil "firefox" "http://localhost:6419"))))
+          '(xdg/html     . (my/markdown-export-to-html-and-view))
+          '(firefox/md   . (my/async-shell-command-no-window (format "firefox '%s'" file)))
+          '(remarkable   . (my/async-shell-command-no-window (format "remarkable '%s'" file))))
     "List of (SYMBOL . FUNCTION) pairs specifying applications for opening
 markdown files.")
 
