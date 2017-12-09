@@ -3039,7 +3039,7 @@ current prefix argument.
     (list '(grip/firefox . (progn (my/async-shell-command-no-window
                                    (format "grip '%s'" (buffer-file-name)))
                                   (run-with-timer
-                                   0.8 nil
+                                   1.0 nil
                                    (fn: start-process
                                      "localhost" nil "firefox" "http://localhost:6419"))))
           '(xdg/html     . (my/markdown-export-to-html-and-view))
