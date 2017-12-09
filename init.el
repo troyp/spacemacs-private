@@ -2323,6 +2323,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (spacemacs/set-leader-keys-for-major-mode 'dactyl-mode
       "'"     (my/make-insertion-around-point "\" " " \"")
       "/"     (my/make-insertion-around-point "/* " " */")
+      "RET"   'my/dactyl-make-defn-multiline
       )
 
   (which-key-add-major-mode-key-based-replacements 'dactyl-mode
@@ -2339,6 +2340,14 @@ COUNT, BEG, END, and TYPE have no effect."
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/modules/")
     (dired-hide-details-mode 0)
     (setq-local my/dired-reuse-buffer nil))
+
+  (fset 'my/dactyl-make-defn-multiline
+        (lambda (&optional arg)
+          "Keyboard macro."
+          (interactive "p")
+          (kmacro-exec-ring-item
+           '([58 115 47 32 45 92 40 100 101 115 99 92 124 110 97 114 103 115 92 124 99 111 117 110 116 92 124 98 97 110 103 92 124 109 111 100 101 115 92 124 45 101 120 92 124 106 115 92 41 47 92 110 32 32 32 32 92 92 32 45 92 49 50 backspace 47 103 return] 0 "%d") arg)))
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
