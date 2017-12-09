@@ -103,6 +103,7 @@ values."
      no-dots
      perl5
      w3m
+     search-engine
      troyp
      )
 
@@ -534,6 +535,10 @@ you should place you code here."
   (setq-default evil-lookup-func
                 (defun man-interactive ()
                   (call-interactively 'man)))
+
+  (setq browse-url-generic-program "palemoon")
+  (setq browse-url-browser-function 'browse-url-generic)
+  (setq engine/browser-function 'browse-url-generic)
 
   ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
