@@ -2976,6 +2976,8 @@ Committer: %cN <%cE>"))
   ;; | Markdown |
   ;; '----------'
 
+  (setq-default my/markdown-browser "palemoon")
+
   (bind-keys :map spacemacs-markdown-mode-map
              ("i C-l"  . my/markdown-gh-linkify-heading)
              ("C-v"    . my/markdown-app-call)
@@ -3041,9 +3043,9 @@ current prefix argument.
                                   (run-with-timer
                                    1.0 nil
                                    (fn: start-process
-                                     "localhost" nil "firefox" "http://localhost:6419"))))
+                                     "localhost" nil my/markdown-browser "http://localhost:6419"))))
           '(xdg/html     . (my/markdown-export-to-html-and-view))
-          '(firefox/md   . (my/async-shell-command-no-window (format "firefox '%s'" file)))
+          '(firefox/md   . (my/async-shell-command-no-window (format "$s '%s'" my/markdown-browser file)))
           '(remarkable   . (my/async-shell-command-no-window (format "remarkable '%s'" file))))
     "List of (SYMBOL . FUNCTION) pairs specifying applications for opening
 markdown files.")
