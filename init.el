@@ -2983,7 +2983,7 @@ Committer: %cN <%cE>"))
   ;; | Markdown |
   ;; '----------'
 
-  (setq-default my/markdown-browser "palemoon")
+  (setq-default my/markdown-browser browse-url-generic-program)
 
   (bind-keys :map spacemacs-markdown-mode-map
              ("i C-l"  . my/markdown-gh-linkify-heading)
