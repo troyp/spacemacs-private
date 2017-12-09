@@ -1463,6 +1463,12 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
   (define-key evil-visual-state-map (kbd "O") 'evil-visual-rotate)
   (evil-visual-replace-visual-bindings :PCRE)
+  ;; Frank Fischer: move region
+  ;; Too slow for moving more than a few lines
+  (define-key evil-visual-state-map "J" (concat ":m '>+1" (kbd "RET") "gv=gv"))
+  (define-key evil-visual-state-map "K" (concat ":m '<-2" (kbd "RET") "gv=gv"))
+  (define-key evil-visual-state-map [\C-\S-down] (concat ":m '>+1" (kbd "RET") "gv=gv"))
+  (define-key evil-visual-state-map [\C-\S-up] (concat ":m '<-2" (kbd "RET") "gv=gv"))
 
 
   ;; ,--------------,
