@@ -2371,7 +2371,7 @@ COUNT, BEG, END, and TYPE have no effect."
       :off (setq diredp-wrap-around-flag nil)
       )
     (setq diredp-wrap-around-flag nil)
-    (diredp-toggle-find-file-reuse-dir 1)
+    (diredp-toggle-find-file-reuse-dir -1)
     )
 
   (require 'dired-toggle-sudo)
