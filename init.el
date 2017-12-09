@@ -165,7 +165,6 @@ values."
              )
      dired-sort-menu+
      doremi doremi-cmd doremi-frm doremi-mac
-     eyedropper
      facemenu+
      faces+
      fit-frame
@@ -864,6 +863,7 @@ Returns the function definition."
   (defvar my/dotspacemacs-additional-local-packages)
   (setf my/dotspacemacs-additional-local-packages
         '(
+          eyedropper
           find-func+
           firefox-protocol
           help-macro+
