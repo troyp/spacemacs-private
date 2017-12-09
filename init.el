@@ -3029,8 +3029,8 @@ current prefix argument.
      (list (buffer-file-name)
            (let ((arg current-prefix-arg))
              (cond ((null arg)        (intern (completing-read "app: " my/markdown-apps)))
-                   ((equalp arg 1)    'firefox/md)
-                   ((equalp arg 2)    'grip/firefox)
+                   ((equalp arg 1)    'browser/md)
+                   ((equalp arg 2)    'grip/browser)
                    ((equalp arg 3)    'remarkable)
                    ((equalp arg '(4)) 'xdg/html)
                    (t                 'xdg/html)
@@ -3038,14 +3038,14 @@ current prefix argument.
     (my/markdown-app-call (or app 'remarkable) file))
 
   (defvar my/markdown-apps
-    (list '(grip/firefox . (progn (my/async-shell-command-no-window
+    (list '(grip/browser . (progn (my/async-shell-command-no-window
                                    (format "grip '%s'" (buffer-file-name)))
                                   (run-with-timer
                                    1.0 nil
                                    (fn: start-process
                                      "localhost" nil my/markdown-browser "http://localhost:6419"))))
           '(xdg/html     . (my/markdown-export-to-html-and-view))
-          '(firefox/md   . (my/async-shell-command-no-window (format "$s '%s'" my/markdown-browser file)))
+          '(browser/md   . (my/async-shell-command-no-window (format "$s '%s'" my/markdown-browser file)))
           '(remarkable   . (my/async-shell-command-no-window (format "remarkable '%s'" file))))
     "List of (SYMBOL . FUNCTION) pairs specifying applications for opening
 markdown files.")
