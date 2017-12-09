@@ -1543,6 +1543,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "a -"          'elnode-stop
     "a \""         'browse-url-elinks
     "b M"          'my/switch-to-messages-buffer
+    "b N N"        'spacemacs/new-empty-buffer
     "b S"          'my/switch-to-scratch-buffer-other-window
     "b W"          'my/switch-to-warnings-buffer
     "b -"          'diff-buffer-with-file
