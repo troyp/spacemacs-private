@@ -870,6 +870,7 @@ Returns the function definition."
           ibuffer-hydra
           mode-compile
           mode-compile-kill
+          moz
           t
           ))
   (loop for pkg in my/dotspacemacs-additional-local-packages do
@@ -2113,6 +2114,18 @@ COUNT, BEG, END, and TYPE have no effect."
         ("c"   . flycheck-buffer)
         )
        ))
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------,
+  ;; | MozREPL |
+  ;; '---------'
+  (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
+
+  (defun my/moz-minor-mode-init ()
+    (interactive)
+    (moz-minor-mode 1))
+
+  (add-hook 'js2-mode-hook 'my/moz-minor-mode-init)
 
   ;; -------------------------------------------------------------------------------
   ;; ,------,
