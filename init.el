@@ -2371,6 +2371,7 @@ COUNT, BEG, END, and TYPE have no effect."
       :on  (setq diredp-wrap-around-flag t)
       :off (setq diredp-wrap-around-flag nil)
       )
+    :config
     (setq diredp-wrap-around-flag nil)
     (diredp-toggle-find-file-reuse-dir -1)
     )
