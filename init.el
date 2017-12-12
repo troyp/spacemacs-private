@@ -2347,13 +2347,15 @@ COUNT, BEG, END, and TYPE have no effect."
     (dired-hide-details-mode 0)
     (setq-local my/dired-reuse-buffer nil))
 
-  (fset 'my/dactyl-make-defn-multiline
-        (lambda (&optional arg)
-          "Keyboard macro."
-          (interactive "p")
-          (kmacro-exec-ring-item
-           '([58 115 47 32 45 92 40 100 101 115 99 92 124 110 97 114 103 115 92 124 99 111 117 110 116 92 124 98 97 110 103 92 124 109 111 100 101 115 92 124 45 101 120 92 124 106 115 92 41 47 92 110 32 32 32 32 92 92 32 45 92 49 50 backspace 47 103 return] 0 "%d") arg)))
-
+  (defun my/dactyl-make-defn-multiline (&optional arg)
+    (interactive "p")
+    (evil-ex-substitute
+     (region-beginning)
+     (region-end)
+     (evil-ex-make-substitute-pattern
+      " *\\(-desc\\|-nargs\\|-count\\|-bang\\|-modes\|-complete\\|-ex\\|-js\\|:\\)"
+      '(?g))
+     "\n\\\\   \\1"))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
