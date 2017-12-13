@@ -4361,7 +4361,8 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
         (evil-apply-on-block #'evil-upcase-first-letter beg end nil)
       (while (< (point) end)
         (evil-upcase (point) (+ 1 (point)))
-        (evil-forward-word-begin))))
+        (evil-forward-word-begin))
+      (goto-char end)))
 
   (defun insert-pp (object)
     "`insert' the pretty-printed representation of OBJECT into current buffer. See `pp'."
