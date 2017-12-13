@@ -1661,6 +1661,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "x C-b"        'my/copy-to-empty-buffer
     "x C-k"        'evil-insert-digraph
     "x C-l"        'my/quick-pcre-align-repeat
+    "x C-SPC"      'my/center-in-whitespace
     "z +"          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z ="          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
     "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
@@ -5627,6 +5628,43 @@ See `link-hint-copy-link' for more information."
                                           link-hint-copy-ignore-types)))
       (kill-new "")
       (link-hint--all-links-action #'my/link-hint-kill-append-link-at-point)))
+
+  (evil-define-operator my/center-in-whitespace (beg end)
+    "Center the text in [BEG, END] in the surrounding whitespace."
+    :move-point nil
+    (interactive "<r>")
+    (let* ((l-ws-end (save-excursion
+                       (goto-char beg)
+                       (search-backward " " (line-beginning-position) t)
+                       (point)))
+           (l-ws-beg (save-excursion
+                       (goto-char beg)
+                       (search-backward " " (line-beginning-position) t)
+                       (search-backward-regexp "[^ ]" (line-beginning-position) t)
+                       (1+ (point))))
+           (r-ws-beg (save-excursion
+                       (goto-char end)
+                       (search-forward " " (line-end-position) t)
+                       (point)))
+           (r-ws-end (save-excursion
+                       (goto-char end)
+                       (search-forward " " (line-end-position) t)
+                       (search-forward-regexp "[^ ]" (line-end-position) t)
+                       (1- (point))))
+           (l-ws-length (1+ (- l-ws-end l-ws-beg)))
+           (r-ws-length (1+ (- r-ws-end r-ws-beg)))
+           (ws-length-diff (- r-ws-end r-ws-beg))
+           (ws-length-adjust (/ ws-length-diff 2))
+           )
+      (cond
+        ((> ws-length-diff 1)
+         (delete-region r-ws-beg (+ r-ws-beg ws-length-adjust))
+         (goto-char l-ws-beg)
+         (insert (make-string ws-length-adjust ? )))
+        ((< ws-length-diff -1)
+         (delete-region l-ws-beg (- l-ws-beg ws-length-adjust))
+         (goto-char r-ws-beg)
+         (insert (make-string ws-length-adjust ? ))))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
