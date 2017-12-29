@@ -5671,6 +5671,60 @@ See `link-hint-copy-link' for more information."
          (goto-char r-ws-beg)
          (insert (make-string ws-length-adjust ? ))))))
 
+  (evil-define-command my/foreach-line (cmd beg end &optional type ignore-short-lines)
+    "Apply a command or lisp expression to each line of region.
+
+The user is queried for a command which is then applied to each line of the
+region. The begins in the goal column or the end of the line if it is too short.a
+The goal column is determined by point for character and block selections, or
+the start of the line for line selections.
+
+If IGNORE-SHORT-LINES is non-nil, lines which do not reach the goal column are
+omitted."
+    :move-point nil
+    (interactive
+     (let ((c (intern
+               (completing-read "Command: "
+                                obarray
+                                (lambda (s) (or (string-empty-p s) (commandp s)))
+                                t
+                                nil
+                                nil
+                                nil)))
+           (selection (evil-visual-range)))
+       (list
+        (if (eq c '##)  ;; result of interning ""
+            (setq c (read--expression "Expression: "))
+          c)
+        (nth 0 selection)
+        (nth 1 selection)
+        (nth 2 selection)
+        current-prefix-arg)))
+    (save-mark-and-excursion
+      (goto-char beg)
+      (let ((goal-col (current-column))
+            (end-row  (line-number-at-pos end))
+            (end-col  (save-excursion (goto-char end) (current-column)))
+            (row      (string-to-number (format-mode-line "%l"))))
+        (unless (commandp cmd) (setq cmd `(lambda () (interactive ,cmd))))
+        (message "%d  %d  %d  %d" goal-col end-row end-col row)
+        (save-mark-and-excursion
+          (while (< row end-row)
+            (evil-goto-column goal-col)
+            (unless (and ignore-short-lines (< (current-column) goal-col))
+              (call-interactively cmd))
+            (next-line)
+            (setq row (string-to-number (format-mode-line "%l"))))
+          (when (or (eq type 'block)
+                    (and (eq type 'inclusive)
+                         (< (current-column) end-col)))
+            (evil-goto-column goal-col)
+            (unless (and ignore-short-lines (< (current-column) goal-col))
+              (call-interactively cmd)))))))
+
+  (defun my/current-line-number ()
+    (string-to-number (format-mode-line "%l")))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
