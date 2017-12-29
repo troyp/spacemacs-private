@@ -1667,6 +1667,10 @@ COUNT, BEG, END, and TYPE have no effect."
     "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
     "C /"          'my/pick-color
     "C ."          'my/pick-insert-color
+    "1"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit
+    "2"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit
+    "3"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit
+    "4"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit
     "8"            'spacemacs/enter-ahs-forward
     "*"            'spacemacs/enter-ahs-backward
     "."            'repeat-complex-command
