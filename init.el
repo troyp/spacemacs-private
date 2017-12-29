@@ -1667,8 +1667,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
     "C /"          'my/pick-color
     "C ."          'my/pick-insert-color
-    "3"            'spacemacs/enter-ahs-backward
     "8"            'spacemacs/enter-ahs-forward
+    "*"            'spacemacs/enter-ahs-backward
     "."            'repeat-complex-command
     ","            'helm-mini
     ">"            'my/evil-shift-right-fine-dispatcher
@@ -1696,6 +1696,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "C-v"          'my/cua-rectangle-toggle
     "C-w"          'delete-frame
     "C-y"          'my/paste-no-properties
+    "C-8"          'spacemacs/helm-project-smart-do-search-region-or-symbol
     "C-."          'ido-switch-buffer
     "C-/"          'evil-search-highlight-persist-remove-all
     "C-?"          'evil-search-highlight-restore
