@@ -1248,7 +1248,7 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; '-----------------'
 
   ;; ===== High Priority: override mode bindings =====
-  (bind-key* "M-0" 'universal-argument)
+  (bind-key* "M-`" 'universal-argument)
   (bind-key* "<C-tab>" 'next-multiframe-window)
   (bind-key* "<C-S-iso-lefttab>" 'previous-multiframe-window)
   (bind-key* "<M-delete>" 'my/kill-buffer-and-window-quit-help)
