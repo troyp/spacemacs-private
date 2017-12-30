@@ -3758,27 +3758,6 @@ ISEARCH DOCUMENTATION.
 
   (fset 'my/switch-to-most-recent-buffer [?\C-x ?b return])
 
-  (defun my/delete-inside-double-quotes ()
-    "Delete contents of double quotes."
-    ;; TODO: rewrite as function to handle escaped quotes
-    (interactive)
-    (command-execute "l?\"lvNhd"))
-  (defun my/delete-double-quotes ()
-    "Delete double quotes and contents."
-    (interactive)
-    (let (start end)
-      (right-char)
-      (cl-loop do
-       (search-backward "\"")
-       while (yas-inside-string))
-      (setf start (point))
-      (right-char)
-      (cl-loop do
-       (search-forward "\"")
-       while (yas-inside-string))
-      (setf end (point))
-      (delete-region start end)))
-
   (fset 'my/md-sig-to-list-item
         [118 69 121 103 118 115 93 105 42 32 escape 69 108 120 97 35 escape 80
              16 97 45 escape 118 36 104 201326629 38 63 32 return 45 return])
@@ -5721,6 +5700,36 @@ omitted."
 
   (defun my/current-line-number ()
     (string-to-number (format-mode-line "%l")))
+
+  (defun my/delete-inside-double-quotes ()
+    "Delete contents of double quotes."
+    (interactive)
+    (let* ((quote-regexp (pcre-to-elisp (concat "(^|[^\\\\])" (string 34))))
+           (beg          (save-excursion
+                           (search-backward-regexp quote-regexp)
+                           (if (= (point) (line-beginning-position))
+                               (+ (point) 1)
+                             (+ (point) 2))))
+           (end          (save-excursion
+                           (search-forward-regexp quote-regexp)
+                             (- (point) 1))))
+      (kill-region beg end)))
+
+  (defun my/delete-double-quotes ()
+    "Delete double quotes and contents."
+    (interactive)
+    (let (start end)
+      (right-char)
+      (cl-loop do
+       (search-backward "\"")
+       while (yas-inside-string))
+      (setf start (point))
+      (right-char)
+      (cl-loop do
+       (search-forward "\"")
+       while (yas-inside-string))
+      (setf end (point))
+      (delete-region start end)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
