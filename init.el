@@ -1818,6 +1818,15 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             :prefix-map my/delete-prefix-map
+             :menu-name "delete"
+             :prefix "d"
+             :prefix-docstring "Deletion commands."
+             ("'"   . my/delete-inside-double-quotes)
+             ("a '" . my/delete-double-quotes)
+             )
+
+  (bind-keys :map user-cmds-map
              :prefix-map my/structured-text-prefix-map
              :menu-name "structured text"
              :prefix "X"
