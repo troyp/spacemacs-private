@@ -2823,7 +2823,7 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; '---------'
 
   (define-key isearch-mode-map (kbd "C-'") 'avy-isearch)
-  (define-key isearch-mode-map (kbd "C-\"") 'helm-swoop)
+  (define-key isearch-mode-map [67108898] 'helm-swoop) ;; C-doublequote
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------------,
@@ -3638,7 +3638,7 @@ If FILE is nil, the file associated with the current buffer is used."
 
   (spacemacs|create-align-repeat-x "period" "\\." t nil)
   (spacemacs|create-align-repeat-x "quote" "'")
-  (spacemacs|create-align-repeat-x "double-quote" "\"")
+  (spacemacs|create-align-repeat-x "double-quote" (string 34))
   (spacemacs|create-align-repeat-x "dash" "-")
   (spacemacs|create-align-repeat-x "hash" "#" )
   (spacemacs|create-align-repeat-x "semicolon-comment" ";;?" )
