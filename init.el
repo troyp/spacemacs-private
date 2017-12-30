@@ -5687,10 +5687,7 @@ omitted."
                (completing-read "Command: "
                                 obarray
                                 (lambda (s) (or (string-empty-p s) (commandp s)))
-                                t
-                                nil
-                                nil
-                                nil)))
+                                t)))
            (selection (evil-visual-range)))
        (list
         (if (eq c '##)  ;; result of interning ""
@@ -5707,7 +5704,6 @@ omitted."
             (end-col  (save-excursion (goto-char end) (current-column)))
             (row      (string-to-number (format-mode-line "%l"))))
         (unless (commandp cmd) (setq cmd `(lambda () (interactive ,cmd))))
-        (message "%d  %d  %d  %d" goal-col end-row end-col row)
         (save-mark-and-excursion
           (while (< row end-row)
             (evil-goto-column goal-col)
