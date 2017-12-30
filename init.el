@@ -2348,9 +2348,10 @@ COUNT, BEG, END, and TYPE have no effect."
   (defun my/dactyl-source-dir()
     (interactive)
     (dired "/home/troy/source/git-repos/dactyl/common/")
+    (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/components/")
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/content/")
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/modules/")
-    (dired-hide-details-mode 0)
+    (dired-hide-details-mode 1)
     (setq-local my/dired-reuse-buffer nil))
 
   (defun my/dactyl-make-defn-multiline (&optional arg)
