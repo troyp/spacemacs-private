@@ -464,6 +464,11 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; Source directory
   (setq source-directory "/opt/emacs25/src")
   (add-to-list 'custom-theme-load-path (concat user-emacs-directory "private/themes/"))
+
+  ;; customize
+  (setq custom-file (expand-file-name "private/.customize.el" user-emacs-directory))
+  (load custom-file)
+
   )
 
 
@@ -482,10 +487,6 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place you code here."
-
-  ;; customize
-  (setq custom-file (expand-file-name "private/.customize.el" user-emacs-directory))
-  (load custom-file)
 
   ;; (setq-default tab-always-indent t)
   (global-nlinum-mode)
@@ -5829,24 +5830,4 @@ is negative this is a more recent kill."
   ;; '-------------------'
   (when (file-readable-p "~/.emacs.d/private/private-data.el")
     (load "~/.emacs.d/private/private-data.el"))
-)
-(defun dotspacemacs/emacs-custom-settings ()
-  "Emacs custom settings.
-This is an auto-generated function, do not modify its content directly, use
-Emacs customize menu instead.
-This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (overseer mvn maven-test-mode groovy-mode groovy-imports pcache google-c-style go-tag engine-mode deft zenburn-theme yapfify yaml-mode xterm-color ws-butler winum wid-edit+ which-key wgrep-pt wgrep-helm wgrep-ag wgrep-ack web-mode web-beautify volatile-highlights vimrc-mode vi-tilde-fringe vala-snippets vala-mode uuidgen utop use-package ucs-cmds tuareg top-mode toml-mode toc-org tiny thumb-frm thrift thingatpt+ tagedit symon strings string-inflection stan-mode spaceline soothe-theme solarized-theme smex smeargle slim-mode shell-pop scss-mode scad-mode sayid sass-mode rvm ruby-tools ruby-test-mode ruby-refactor rubocop rspec-mode robe restart-emacs replace+ realgud rbenv ranger rake rainbow-delimiters racket-mode racer qml-mode pyvenv pytest pyenv-mode py-isort pug-mode plsense-direx pkgbuild-mode pip-requirements phpunit phpcbf php-extras php-auto-yasnippets persp-mode pdf-tools pde password-generator paradox palette ox-gfm orgit org-projectile org-present org-pomodoro org-download org-bullets org-brain open-junk-file ocp-indent nlinum-relative nim-mode neotree nameless naked multi-term mozc move-text move-dup monokai-theme moe-theme mmm-mode minitest merlin meghanada matlab-mode markdown-toc magit-gitflow macrostep ls lorem-ipsum logcat livid-mode live-py-mode link-hint less-css-mode lacarte kivy-mode json-mode jsfmt js2-refactor js-doc jedi-direx ivy-purpose isearch-prop isearch+ intero insert-shebang info+ indent-guide impatient-mode hy-mode hungry-delete hoon-mode hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-mode+ help-fns+ help+ helm-w3m helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-firefox helm-dired-history helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets graphviz-dot-mode gradle-mode goto-gem google-translate google-this golden-ratio godoctor go-rename go-guru go-eldoc gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md general geiser fuzzy font-lock+ fn flycheck-rust flycheck-pos-tip flycheck-package flycheck-haskell flycheck-bashate flx-ido fish-mode firefox-controller fill-column-indicator fancy-battery facemenu+ eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-replace evil-visual-mark-mode evil-vimish-fold evil-unimpaired evil-tutor evil-textobj-column evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu evil-adjust ess-R-data-view eshell-z eshell-prompt-extras esh-help ensime emmet-mode elnode elmacro elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig ebuild-mode dumb-jump drupal-mode doremi-mac doremi-frm doremi-cmd disaster dirtree direx-grep dired-toggle-sudo dired-sort-menu+ dired-rainbow dired-icon dired-du dired-collapse dired+ diminish diff-hl define-word dante dactyl-mode cython-mode csv-mode company-web company-tern company-statistics company-shell company-php company-lua company-go company-ghci company-ghc company-emacs-eclim company-cabal company-c-headers company-anaconda column-enforce-mode color-theme-sanityinc-tomorrow coffee-mode cmm-mode cmake-mode cmake-ide clojure-snippets clojure-cheatsheet clj-refactor clean-aindent-mode clang-format cl-lib-highlight cider-eval-sexp-fu chruby cargo bundler autofit-frame auto-yasnippet auto-highlight-symbol auto-compile arduino-mode alect-themes aggressive-indent afternoon-theme adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 )
