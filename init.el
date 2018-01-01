@@ -1815,6 +1815,7 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix "a"
              :prefix-docstring "Commands dealing with applications."
              ("d d" . my/dactyl-source-dir)
+             ("d D" . my/dactyl-source-dir-orig)
              )
 
   (bind-keys :map user-cmds-map
@@ -2354,9 +2355,18 @@ COUNT, BEG, END, and TYPE have no effect."
       "M-RET /"   "/* ⌶ */"
       )
 
-  (defun my/dactyl-source-dir()
+  (defun my/dactyl-source-dir-orig()
     (interactive)
     (dired "/home/troy/source/git-repos/dactyl/common/")
+    (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/components/")
+    (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/content/")
+    (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/modules/")
+    (dired-hide-details-mode 1)
+    (setq-local my/dired-reuse-buffer nil))
+
+  (defun my/dactyl-source-dir()
+    (interactive)
+    (dired "/home/troy/repos/dactyl/common/")
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/components/")
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/content/")
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/modules/")
