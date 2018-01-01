@@ -2610,16 +2610,17 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (eval-after-load "haskell-mode"
     '(progn
-       (bind-keys :map haskell-mode-map
-                  ("C-c C-h" . nil)
-                  ("C-c M-h" . haskell-hoogle)
-                  ("C-c C-v" . browse-buffer-file-firefox)
-                  )
-       (which-key-add-major-mode-key-based-replacements 'haskell-mode
-         "C-c @" "hiding"
-         )
+      (bind-keys :map haskell-mode-map
+       ("C-c C-h" . nil)
+       ("C-c M-h" . haskell-hoogle)
+       ("C-c C-v" . browse-buffer-file-firefox)
+       )
+      (which-key-add-major-mode-key-based-replacements 'haskell-mode
+          "C-c @" "hiding"
+          )
       (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-       ))
+      (add-to-list 'evil-emacs-state-modes 'haskell-interactive-mode)
+      ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
