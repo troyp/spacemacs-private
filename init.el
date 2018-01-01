@@ -5718,6 +5718,19 @@ omitted."
             (unless (and ignore-short-lines (< (current-column) goal-col))
               (call-interactively cmd)))))))
 
+  (defun my/read-function-or-expression-as-command ()
+    "Read a command, function or lisp expression and return as a command.
+
+If an atom is entered, returned it if the name of a command, or wrap it in
+an interactive lambda if it is a non-interactive function. If a list is
+entered, return a command which executes it."
+    (interactive)
+    (let ((expr (read--expression "Expression: ")))
+      (cond
+        ((and (symbolp expr) (commandp expr))   expr)
+        ((and (symbolp expr) (functionp expr))  `(lambda () (interactive) (,expr)))
+        ((listp expr)                           `(lambda () (interactive) ,expr)))))
+
   (defun my/current-line-number ()
     (string-to-number (format-mode-line "%l")))
 
