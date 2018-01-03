@@ -1184,6 +1184,13 @@ COUNT, BEG, END, and TYPE have no effect."
          (setq ,var (not ,var))
          (message "%S is %s" ',var (if ,var "enabled" "disabled")))))
 
+  (defmacro my/define-named-variable-toggle (name var)
+    `(defun ,name ()
+       "Defined with `my/def-variable-toggle'."
+       (interactive)
+       (setq ,var (not ,var))
+       (message "%S is %s" ',var (if ,var "enabled" "disabled"))))
+
   (defmacro my/def-variable-cycle (var &rest values)
     (let* ((fname `(concat "my/cycle-" (symbol-name ',var)))
            (fsym  (intern (eval fname))))
