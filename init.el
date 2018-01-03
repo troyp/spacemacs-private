@@ -2377,7 +2377,11 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; | dactyl-mode |
   ;; '-------------'
 
+  (my/define-named-variable-cycle my/dactyl-cycle-fill-prefix
+    fill-prefix (nil  "    \\ " "\" "))
+
   (spacemacs/set-leader-keys-for-major-mode 'dactyl-mode
+      ","     'my/dactyl-cycle-fill-prefix
       "'"     (my/make-insertion-around-point "\" " " \"")
       "/"     (my/make-insertion-around-point "/* " " */")
       "RET"   'my/dactyl-make-defn-multiline
