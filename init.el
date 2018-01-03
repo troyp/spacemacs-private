@@ -2425,6 +2425,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (make-local-variable 'my/dired-reuse-buffer)
   (setq-default my/dired-reuse-buffer t)
+  (my/define-named-variable-toggle my/dired-toggle-reuse-buffer my/dired-reuse-buffer)
 
   (defun my/dired-find-file-maybe-alternate ()
     (interactive)
@@ -2530,6 +2531,7 @@ COUNT, BEG, END, and TYPE have no effect."
          "to"    'dired-omit-mode
          "tl"    'dired-hide-details-mode
          "tr"    'toggle-diredp-find-file-reuse-dir
+         "tr"    'my/dired-toggle-reuse-buffer
          "tw"    'spacemacs/toggle-diredp-wrap-around-flag
          "v"     'dired-view-file    ;; for discovery - can just use \v
          "Y"     'diredp-relsymlink-this-file
