@@ -1184,6 +1184,33 @@ COUNT, BEG, END, and TYPE have no effect."
          (setq ,var (not ,var))
          (message "%S is %s" ',var (if ,var "enabled" "disabled")))))
 
+  (defmacro my/def-variable-cycle (var &rest values)
+    (let* ((fname `(concat "my/cycle-" (symbol-name ',var)))
+           (fsym  (intern (eval fname))))
+      `(defun ,fsym ()
+         "Defined with `my/def-variable-toggle'."
+         (interactive)
+         (let ((idx (-elem-index ,var ',values))
+               (n   (length ',values)))
+           (if (or (null idx)
+                   (= idx (1- n)))
+               (setq ,var (nth 0 ',values))
+             (setq ,var (nth (1+ idx) ',values))))
+         (message "%S is now: %s" ',var ,var))))
+
+  (defmacro my/define-named-variable-cycle (name var values)
+    (declare (indent 1))
+    `(defun ,name ()
+       "Defined with `my/def-variable-toggle'."
+       (interactive)
+       (let ((idx (-elem-index ,var ',values))
+             (n   (length ',values)))
+         (if (or (null idx)
+                 (= idx (1- n)))
+             (setq ,var (nth 0 ',values))
+           (setq ,var (nth (1+ idx) ',values))))
+       (message "%S is now: %s" ',var ,var)))
+
   ;; ,----------------------,
   ;; | Keybinding Functions |
   ;; '----------------------'
