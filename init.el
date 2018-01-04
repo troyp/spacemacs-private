@@ -1658,6 +1658,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "t 3"          'my/toggle-evil-mc-mode
     "t C-n"        'my/toggle-evil-mc-mode-and-cursor
     "t SPC"        (my/def-variable-toggle show-trailing-whitespace)
+    "t RET w"      'subword-mode
     "t '"          'evil-visual-mark-mode
     "t `"          'evil-vimish-fold-mode
     "t ~"          'variable-pitch-mode
@@ -2037,6 +2038,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "SPC h /"      "find-function"
     "SPC o f"      "flycheck"
     "SPC s R"      "PCRE Regex"
+    "SPC t RET"    "more toggles"
     "SPC K"        "keys/keymaps"
     "SPC X"        "structured text"
     )
