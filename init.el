@@ -1651,8 +1651,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "o f"          'flycheck-command-map
     "o m"          'modes-prefix-key-map
     "r b"          'bookmark-map
-    "s R R"          'pcre-multi-occur
-    "s R r"          'pcre-occur
+    "s R R"        'pcre-multi-occur
+    "s R r"        'pcre-occur
     "t O"          (my/def-variable-toggle which-key-show-operator-state-maps)
     "t T"          (my/def-variable-toggle indent-tabs-mode)
     "t 3"          'my/toggle-evil-mc-mode
