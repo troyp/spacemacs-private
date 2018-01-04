@@ -1371,6 +1371,8 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key [f8] 'er/contract-region)
   (global-set-key [f9] 'er/expand-region)
 
+  (global-set-key (kbd "<C-menu>") 'evil-avy-goto-word-0)
+
   (global-set-key (kbd "M-c") 'evil-upcase-first-letter)
   (global-set-key (kbd "M-C") 'capitalize-word)
 
@@ -1642,6 +1644,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "h C-?"        'evil-search-highlight-restore
     ;; "h <f1>"       'help-map
     "i -"          'tiny-expand
+    "j ,"          'evil-avy-goto-word-0
     "m <f10>"      'my/lacarte-menu-execute/lambda-l-and-exit
     "o a"          'asciiheadings-prefix-key-map
     "o c"          'character-prefix-map
