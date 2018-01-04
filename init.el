@@ -2475,6 +2475,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (defun my/dired-init ()
     (my/define-keys dired-mode-map
+      (kbd "S-SPC")          nil
       (kbd "C-h")            nil
       (kbd "q")              'tsp-quit-window-kill
       (kbd "<return>")       'my/dired-find-file-maybe-alternate
