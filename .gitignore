@@ -8,6 +8,7 @@
 .cache/
 !.cache/bookmarks
 .undo-tree-history
+customize.el
 private-data.el
 scratch.el
 working.el
