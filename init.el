@@ -3046,12 +3046,18 @@ Committer: %cN <%cE>"))
     "S"      'magit-diff-toggle-ignore-space-change
     )
   (spacemacs/set-leader-keys-for-major-mode 'magit-status-mode
-    "s"      'magit-diff-toggle-ignore-all-space
-    "S"      'magit-diff-toggle-ignore-space-change
+    "c"      magit-status-mode-map
     "d g g"  'my/magit-diff-meld
     "d g a"  'my/magit-diff-added-meld
     "d g c"  'my/magit-diff-committed-meld
     "r"      'my/magit-undo-last-commit
+    "s"      'magit-diff-toggle-ignore-all-space
+    "S"      'magit-diff-toggle-ignore-space-change
+    )
+
+  (which-key-add-major-mode-key-based-replacements 'magit-status-mode
+    ", c"      "magit-status-mode-map"
+    ", d"      "diff"
     )
 
   ;; -------------------------------------------------------------------------------
