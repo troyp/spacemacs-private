@@ -2997,6 +2997,7 @@ COUNT, BEG, END, and TYPE have no effect."
     ;; remove C-tab binding which shadows #'next-multiframe-window binding
     ;; replace with C-` binding
     (bind-key "<C-tab>" nil magit-mode-map)
+    (fset 'magit-status-mode-map magit-status-mode-map)
     (bind-keys
      :map magit-mode-map
      ("<C-tab>" . nil)
@@ -3046,7 +3047,7 @@ Committer: %cN <%cE>"))
     "S"      'magit-diff-toggle-ignore-space-change
     )
   (spacemacs/set-leader-keys-for-major-mode 'magit-status-mode
-    "c"      magit-status-mode-map
+    "c"      'magit-status-mode-map
     "d g g"  'my/magit-diff-meld
     "d g a"  'my/magit-diff-added-meld
     "d g c"  'my/magit-diff-committed-meld
