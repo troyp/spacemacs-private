@@ -1836,6 +1836,7 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; '---------------'
 
   (bind-keys :map global-map
+             ;; S-SPC
              :prefix-map user-cmds-map
              :menu-name "user cmds"
              :prefix "S-SPC"
@@ -1849,6 +1850,7 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             ;; S-SPC a
              :prefix-map my/app-prefix-map
              :menu-name "applications"
              :prefix "a"
@@ -1858,6 +1860,7 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             ;; S-SPC d
              :prefix-map my/delete-prefix-map
              :menu-name "delete"
              :prefix "d"
@@ -1867,35 +1870,7 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
-             :prefix-map my/structured-text-prefix-map
-             :menu-name "structured text"
-             :prefix "X"
-             :prefix-docstring "Commands dealing with structured text."
-             ("sn" . sort-numeric-fields)
-             )
-
-  (bind-keys :map user-cmds-map
-             :prefix-map my/rectangle-prefix-map
-             :menu-name "rectangle"
-             :prefix "X r"
-             :prefix-docstring "Commands operating on rectangles."
-             ("c" . clear-rectangle)
-             ("n" . rectangle-number-lines-interactive)
-             ("N" . rectangle-number-lines)
-             ("o" . open-rectangle)
-             ("t" . string-rectangle-history)
-             )
-
-  (bind-keys :map user-cmds-map
-             :prefix-map my/column-prefix-map
-             :menu-name "column"
-             :prefix "|"
-             :prefix-docstring "Column commands."
-             ("e" . my/extend-to-column)
-             ("|" . my/add-column-marker)
-             )
-
-  (bind-keys :map user-cmds-map
+             ;; S-SPC K
              :prefix-map my/keymaps-prefix-map
              :menu-name "keys/keymaps"
              :prefix "K"
@@ -1914,6 +1889,7 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map my/keymaps-prefix-map
+             ;; S-SPC K d
              :prefix-map keymaps-describe-prefix-map
              :prefix "d"
              :prefix-docstring "Describe commands related to keymaps and key binding."
@@ -1928,6 +1904,29 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             ;; S-SPC X
+             :prefix-map my/structured-text-prefix-map
+             :menu-name "structured text"
+             :prefix "X"
+             :prefix-docstring "Commands dealing with structured text."
+             ("sn" . sort-numeric-fields)
+             )
+
+  (bind-keys :map user-cmds-map
+             ;; S-SPC X r
+             :prefix-map my/rectangle-prefix-map
+             :menu-name "rectangle"
+             :prefix "X r"
+             :prefix-docstring "Commands operating on rectangles."
+             ("c" . clear-rectangle)
+             ("n" . rectangle-number-lines-interactive)
+             ("N" . rectangle-number-lines)
+             ("o" . open-rectangle)
+             ("t" . string-rectangle-history)
+             )
+
+  (bind-keys :map user-cmds-map
+             ;; S-SPC !
              :prefix-map my/external-apps-prefix
              :menu-name "external apps"
              :prefix "!"
@@ -1936,6 +1935,7 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             ;; S-SPC &
              :prefix-map my/diff-prefix-map
              :menu-name "diff"
              :prefix "&"
@@ -1945,6 +1945,7 @@ COUNT, BEG, END, and TYPE have no effect."
              ("3"   . ediff-buffers3)
              )
   (bind-keys :map my/diff-prefix-map
+             ;; S-SPC & m
              :prefix-map my/merge-prefix-map
              :menu-name "merge"
              :prefix "m"
@@ -1958,6 +1959,17 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             ;; S-SPC |
+             :prefix-map my/column-prefix-map
+             :menu-name "column"
+             :prefix "|"
+             :prefix-docstring "Column commands."
+             ("e" . my/extend-to-column)
+             ("|" . my/add-column-marker)
+             )
+
+  (bind-keys :map user-cmds-map
+             ;; S-SPC <f3>
              :prefix-map my/snippets-prefix-map
              :prefix "<f3>"
              :prefix-docstring "Snippets and templates commands"
