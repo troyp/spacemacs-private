@@ -5818,6 +5818,20 @@ entered, return a command which executes it."
       (setf end (point))
       (delete-region start end)))
 
+  (defun my/cvim-source-dir()
+    (interactive)
+    (dired "/home/troy/repos/chromium-vim/")
+    (dired-insert-subdir "/home/troy/repos/chromium-vim/background_scripts/")
+    (dired-insert-subdir "/home/troy/repos/chromium-vim/content_scripts")
+    (dired-insert-subdir "/home/troy/repos/chromium-vim/cvimrc_parser")
+    (dired-insert-subdir "/home/troy/repos/chromium-vim/pages")
+    (dired-insert-subdir "/home/troy/repos/chromium-vim/scripts")
+    (beginning-of-buffer)
+    (forward-paragraph)
+    (diredp-next-line 2)
+    (dired-hide-details-mode 1)
+    (setq-local my/dired-reuse-buffer nil))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
