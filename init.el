@@ -1904,6 +1904,16 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             ;; S-SPC p
+             :prefix-map my/projects-prefix-map
+             :menu-name "projects"
+             :prefix "p"
+             :prefix-docstring "Commands opening projects."
+             ("d" . my/dactyl-source-dir)
+             ("c" . my/cvim-source-dir)
+             )
+
+  (bind-keys :map user-cmds-map
              ;; S-SPC X
              :prefix-map my/structured-text-prefix-map
              :menu-name "structured text"
