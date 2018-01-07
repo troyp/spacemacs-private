@@ -1431,7 +1431,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-normal-state-map (kbd "C-S-o") 'evil-jump-forward)
   (define-key evil-normal-state-map (kbd "C-e") 'evil-end-of-line)
   ;; remove C-y (use global M-p)
-  (define-key evil-normal-state-map (kbd "C-y") nil)
+  (define-key evil-normal-state-map (kbd "C-y") 'evil-paste-before)
   ;; rebind gu to evil-upcase (rather than -downcase), use gl for -downcase:
   (define-key evil-normal-state-map (kbd "gu") 'evil-upcase)
   (define-key evil-normal-state-map (kbd "gl") 'evil-downcase)
