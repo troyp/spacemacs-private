@@ -1726,8 +1726,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "}"            'my/remove-spacing-inside-bracers
     "\""           'my/add-spacing-inside-double-quotes
     "C-\""         'my/remove-spacing-inside-double-quotes
-    "S-SPC"        'avy-goto-char-timer
-    "SPC"          'avy-goto-char
+    "SPC"          'avy-goto-char-timer
+    "S-SPC"        'spacemacs/toggle-maximize-buffer
     "<backtab>"    'my/switch-to-most-recent-buffer
     "<return>"     'helm-buffers-list
     "<f3>"         'kmacro-keymap
