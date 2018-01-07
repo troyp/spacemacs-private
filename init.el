@@ -676,6 +676,7 @@ you should place you code here."
   ;; | avy-keys |
   ;; '----------'
   (setq avy-keys (list ?j ?f ?k ?d ?l ?s ?\; ?a ?i ?e ?o ?w ?n ?v))
+  (setq avy-timeout-seconds 0.2)
 
   ;; ,----------------,
   ;; | global-hl-line |
