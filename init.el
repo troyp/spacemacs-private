@@ -2417,6 +2417,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/components/")
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/content/")
     (dired-insert-subdir "/home/troy/source/git-repos/dactyl/common/modules/")
+    (dired-insert-subdir "/home/troy/source/git-repos/dactyl/pentadactyl/content/")
     (dired-hide-details-mode 1)
     (setq-local my/dired-reuse-buffer nil))
 
@@ -2426,6 +2427,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (dired-insert-subdir "/home/troy/repos/dactyl/common/components/")
     (dired-insert-subdir "/home/troy/repos/dactyl/common/content/")
     (dired-insert-subdir "/home/troy/repos/dactyl/common/modules/")
+    (dired-insert-subdir "/home/troy/repos/dactyl/pentadactyl/content/")
     (dired-hide-details-mode 1)
     (setq-local my/dired-reuse-buffer nil))
 
