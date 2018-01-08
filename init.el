@@ -2448,7 +2448,7 @@ COUNT, BEG, END, and TYPE have no effect."
      (region-beginning)
      (region-end)
      (evil-ex-make-substitute-pattern
-      " *\\(-desc\\|-nargs\\|-count\\|-bang\\|-modes\|-complete\\|-ex\\|-js\\|:\\)"
+      " *\\(-desc\\|-nargs\\|-count\\|-bang\\|-modes\\|-complete\\|-ex\\|-js\\|:\\)"
       '(?g))
      "\n\\\\   \\1"))
 
