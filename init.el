@@ -197,6 +197,7 @@ values."
      dired-icon
      dired-rainbow
      dired-sort-menu
+     (dired-subtree :after dired)
      dired-toggle-sudo
      direx
      (direx-grep :location (recipe :fetcher github :repo "aki2o/direx-grep"))
@@ -2574,6 +2575,8 @@ COUNT, BEG, END, and TYPE have no effect."
          "p"     'my/dired-copy-files-here
          "m"     'my/dired-move-files-here
          "s"     'dired-toggle-sudo
+         ","     'dired-subtree-toggle
+         "."     'dired-subtree-cycle
          "<f2>"  'dired-do-rename
          )
        (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
