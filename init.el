@@ -3732,6 +3732,8 @@ If FILE is nil, the file associated with the current buffer is used."
   ;; | Align |
   ;; '-------'
 
+  (unless (boundp 'align-default-spacing) (setf align-default-spacing 1))
+
   (defmacro spacemacs|create-align-repeat-x (name regexp &optional justify-right default-after)
     (let* ((new-func (intern (concat "spacemacs/align-repeat-" name)))
            (new-func-defn
@@ -3780,6 +3782,52 @@ See `align-regexp' for details."
         1)
       (y-or-n-p "Repeat?")))
     (align-regexp beg end regexp group spacing repeat))
+
+(defun my/pcre-align-region (pcre group spacing)
+  "Align region using a PCRE. Requires pcre2el.
+GROUP is the number of the group to be modified (ie. spacing group).
+SPACING is the minimum number of spaces between columns."
+  (interactive "sPCRE: \nsGROUP NO.: \nsSPACING: ")
+  (let ((groupnum (if (string-empty-p group) 1 (string-to-int group)))
+        (spaces   (if (string-empty-p group) 2 (string-to-int spacing))))
+    (align-regexp (region-beginning) (region-end) (pcre-to-elisp pcre) groupnum spaces nil)))
+
+(defun my/pcre-align (BEG END s &optional group spacing repeat)
+  "Align region using a PCRE. Requires pcre2el."
+  (interactive "r\nsPCRE (group around part to extend): ")
+  (unless BEG (setq BEG (region-beginning)))
+  (unless BEG (setq BEG (region-end)))
+  (unless group (setq group 1))
+  (unless spacing (setq spacing align-default-spacing))
+  (align-regexp BEG END (pcre-to-elisp s) group spacing repeat))
+
+(defun my/quick-pcre-align (BEG END s &optional spacing repeat)
+  "Align region using a PCRE. PCRE doesn't require the group for expansion. Requires pcre2el."
+  (interactive "r\nsPCRE to align on: ")
+  (unless BEG (setq BEG (region-beginning)))
+  (unless BEG (setq BEG (region-end)))
+  (unless spacing (setq spacing align-default-spacing))
+  (let ((regexp (format "(\s*)(%s)" s)))
+    (align-regexp BEG END (pcre-to-elisp regexp) 1 spacing repeat)))
+
+(defun my/quick-pcre-align-repeat (BEG END s &optional spacing)
+  "Align region using repeated matches of a PCRE. Requires pcre2el."
+  (interactive "r\nsPCRE to align on: ")
+  (unless BEG (setq BEG (region-beginning)))
+  (unless BEG (setq BEG (region-end)))
+  (unless spacing (setq spacing align-default-spacing))
+  (let ((regexp (format "(\s*)(%s)" s)))
+    (align-regexp BEG END (pcre-to-elisp regexp) 1 spacing t)))
+
+(defun my/align-after-colon (BEG END spacing)
+  "Align the first word after a colon in each line in the region.
+The minimum spacing is given by the prefix argument, if given, or
+otherwise is equal to 'align-default-spacing."
+  (interactive "r\nP")
+  (let ((padding (cond ((null spacing) align-default-spacing)
+                       (t              (prefix-numeric-value spacing))))
+        (regexp  "\\(?:[:]\\)\\(\\s-*\\).*"))
+    (align-regexp (region-beginning) (region-end) regexp 1 padding nil)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
