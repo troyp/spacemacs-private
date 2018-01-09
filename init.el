@@ -2564,17 +2564,20 @@ COUNT, BEG, END, and TYPE have no effect."
        ;; major-mode leader-key
        (spacemacs/set-leader-keys-for-major-mode 'dired-mode
          "c"     'dired-mode-map
+         "h"     'dired-hide-subdir
+         "k"     'diredp-kill-this-tree
+         "K"     'dired-kill-tree
+         "m"     'my/dired-move-files-here
+         "p"     'my/dired-copy-files-here
+         "s"     'dired-toggle-sudo
          "to"    'dired-omit-mode
          "tl"    'dired-hide-details-mode
          "tr"    'toggle-diredp-find-file-reuse-dir
          "tr"    'my/dired-toggle-reuse-buffer
          "tw"    'spacemacs/toggle-diredp-wrap-around-flag
          "v"     'dired-view-file    ;; for discovery - can just use \v
-         "Y"     'diredp-relsymlink-this-file
          "x"     'my/dired-cut-or-copy-files
-         "p"     'my/dired-copy-files-here
-         "m"     'my/dired-move-files-here
-         "s"     'dired-toggle-sudo
+         "Y"     'diredp-relsymlink-this-file
          ","     'dired-subtree-toggle
          "."     'dired-subtree-cycle
          "<f2>"  'dired-do-rename
