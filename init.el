@@ -4972,7 +4972,10 @@ If the region is not active, the entire buffer is processed."
 With a prefix argument, leaves any help buffer open."
     (interactive)
     (kill-buffer-and-window)
-    (unless current-prefix-arg (quit-window nil (get-buffer-window "*Help*"))))
+    (unless current-prefix-arg
+      (let ((helpbuffer (get-buffer-window "*Help*")))
+        (when helpbuffer
+          (quit-window nil helpbuffer)))))
 
   (defun my/kill-other-buffer-and-window ()
     "Kill the other buffer and close its window."
