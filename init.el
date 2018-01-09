@@ -1680,6 +1680,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "x a \""       'spacemacs/align-repeat-double-quote
     "x a -"        'spacemacs/align-repeat-dash
     "x a #"        'spacemacs/align-repeat-hash
+    "x a RET"      'my/pcre-align-regexp
     "x a C-;"      'spacemacs/align-repeat-semicolon-comment
     "x a C-/"      'spacemacs/align-repeat-slash-comment
     "x a C-'"      'tsp-align-quoted-column
@@ -3760,6 +3761,25 @@ If FILE is nil, the file associated with the current buffer is used."
   (spacemacs|create-align-repeat-x "left-paren" "(")
   (spacemacs|create-align-repeat-x "right-paren" ")" t)
   (spacemacs|create-align-repeat-x "backslash" "\\\\")
+
+  (defun my/pcre-align-regexp (beg end regexp &optional group spacing repeat)
+    "Align a region using a PCRE.
+
+Interactively, operates on the current region and prompts for the PCRE, GROUP
+and REPEAT. If a prefix argument is given, also prompts for SPACING.
+
+See `align-regexp' for details."
+    (interactive
+     (list
+      (region-beginning)
+      (region-end)
+      (pcre-to-elisp (rxt--read-pcre "PCRE: "))
+      (string-to-number (read-string "Paren group (neg=insert before, pos=insert after) [-1]: " nil t "-1"))
+      (if current-prefix-arg
+          (string-to-number (read-string "Number of spaces (or column if negative) [1]: " nil t "1"))
+        1)
+      (y-or-n-p "Repeat?")))
+    (align-regexp beg end regexp group spacing repeat))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
