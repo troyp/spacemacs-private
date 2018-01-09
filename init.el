@@ -5866,6 +5866,19 @@ entered, return a command which executes it."
     (dired-hide-details-mode 1)
     (setq-local my/dired-reuse-buffer nil))
 
+  (defun my/rgrep-async (pattern dir)
+    (interactive "spattern: \nsbase files: ")
+    (let ((cmd (concat "grep -rP --exclude-dir .git " pattern " " dir)))
+      ;; (message cmd)
+      (async-shell-command cmd)
+      ;; (highlight-regexp (pcre-to-elisp "^\\w+:"))
+      ;; (highlight-regexp (pcre-to-elisp pattern) 'hi-green)
+      ))
+
+  (defun my/rgrep-async-spacemacs (pattern)
+    (interactive "spattern: ")
+    (my/rgrep pattern spacemacs-start-directory))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
