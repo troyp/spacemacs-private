@@ -358,7 +358,7 @@ inserts a divider followed by a rectangular heading."
   (push-mark (point))
   (let ((*divider-char* ?=))
     (divider n))
-  (insert-lines (indent-lines (rect-heading-lines s)
+  (insert-lines (indent-lines (rect-heading-lines s :notrailing)
 			      heading-indent))
   (open-line 1)
   (comment-region (mark) (point))
