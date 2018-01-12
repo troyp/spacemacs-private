@@ -50,6 +50,7 @@ values."
      emacs-lisp
      ess
      extra-langs
+     evil-unimpaired
      git
      go
      graphviz
@@ -213,6 +214,7 @@ values."
      helm-dired-history
      helm-firefox
      jsfmt
+     loccur
      mozc
      move-dup
      nameless
