@@ -1083,7 +1083,8 @@ COUNT, BEG, END, and TYPE have no effect."
   (asoc-put! evil-surround-pairs-alist ?, (cons "< " " >"))
   ;; add C-` as an alternative to `
   ;; so that C-` C-` can be used to backquote a symbol (using my/surround-symbol)
-  (asoc-put! evil-surround-pairs-alist 67108960 (cons "`" "`"))  ;; C-`
+  (asoc-put! evil-surround-pairs-alist (aref (kbd "C-`") 0) (cons "`" "`"))
+  (asoc-put! evil-surround-pairs-alist (aref (kbd "C-/") 0) (cons "/* " " */"))
 
   ;; ,--------,
   ;; | cursor |
