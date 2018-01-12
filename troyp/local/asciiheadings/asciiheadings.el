@@ -104,9 +104,9 @@
 	 (spc   32)    ; space
 	 (N     (+ n 2 (* 2 d)))
 	 (lspc  (if *rect-heading-omit-left* "" " "))
-   (rspc  (unless no-trailing-space (if *rect-heading-omit-right* "" " ")))
-	 (l  (if *rect-heading-omit-left* "" "|"))
-	 (r  (if *rect-heading-omit-right* "" "|"))
+         (rspc  (unless no-trailing-space (if *rect-heading-omit-right* "" " ")))
+	 (l     (if *rect-heading-omit-left* "" "|"))
+	 (r     (if *rect-heading-omit-right* "" "|"))
 
 	 (v-margin         (make-string d spc))
 	 (h-top            (concat lspc (make-string (- N 2) ?_) rspc))
@@ -148,7 +148,7 @@
      (insert-lines (,heading-lines-fn-sym s))))
 
 (defalias 'box-heading (make-heading-command 'box-heading-lines))
-(defalias 'rect-heading (make-heading-command (lambda (s) (rect-heading-lines s 'notrailing))))
+(defalias 'rect-heading (make-heading-command (lambda (s) (rect-heading-lines s :notrailing))))
 (defalias 'short-rect-heading (make-heading-command 'short-rect-heading-lines))
 
 (defun rect-heading-join-under (s)
