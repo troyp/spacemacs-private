@@ -1079,12 +1079,13 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; ,---------------,
   ;; | evil-surround |
   ;; '---------------'
-
-  (asoc-put! evil-surround-pairs-alist ?, (cons "< " " >"))
+  (add-to-list (cons (aref (kbd "C-/") 0) (cons "/* " " */")) evil-surround-pairs-alist)
   ;; add C-` as an alternative to `
   ;; so that C-` C-` can be used to backquote a symbol (using my/surround-symbol)
-  (asoc-put! evil-surround-pairs-alist (aref (kbd "C-`") 0) (cons "`" "`"))
-  (asoc-put! evil-surround-pairs-alist (aref (kbd "C-/") 0) (cons "/* " " */"))
+  (add-to-list (cons (aref (kbd "C-`") 0) (cons "`" "`"))     evil-surround-pairs-alist)
+  (add-to-list (cons         ?,           (cons "< " " >"))   evil-surround-pairs-alist)
+  (setq-default evil-surround-pairs-alist evil-surround-pairs-alist)
+
 
   ;; ,--------,
   ;; | cursor |
