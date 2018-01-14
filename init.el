@@ -3020,8 +3020,36 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive)
     (my/evil-shell-command-replace-region (region-beginning) (region-end) "inclusive" "sed 's/+/%2B/g' | xargs -0 urlencode -d"))
 
+  (defun my/lookup-chrome-webextension-api (s)
+    (interactive
+     (list
+      (let ((name-at-point (my/qualified-name-at-point)))
+        (read-string
+         (format "Search for: %s" name-at-point)
+         nil t
+         name-at-point))))
+    (browse-url-firefox
+     (concat "https://www.google.com.au/search?hl=en&q="
+             "chrome+%28webextension+OR+javascript%29+"
+             s)))
+
+  (defun my/lookup-firefox-webextension-api (s)
+    (interactive
+     (list
+      (let ((name-at-point (my/qualified-name-at-point)))
+        (read-string
+         (format "Search for: %s" name-at-point)
+         nil t
+         name-at-point))))
+    (browse-url-firefox
+     (concat "https://www.google.com.au/search?hl=en&q="
+             "firefox+%28webextension+OR+javascript%29+"
+             s)))
+
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode
     "%"    'my/js-url-decode
+    "hwc"  'my/lookup-chrome-webextension-api
+    "hwf"  'my/lookup-firefox-webextension-api
     )
 
 
