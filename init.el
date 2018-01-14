@@ -903,6 +903,7 @@ Returns the function definition."
   ;;                             *******************
 
   (add-to-list 'auto-mode-alist '("\\.jsm" . js2-mode))
+  (add-to-list 'auto-mode-alist '("\\.sh" . sh-mode))
   (add-to-list 'auto-mode-alist '("\\.zsh" . sh-mode))
   (add-to-list 'auto-mode-alist '("\\.keynavrc" . conf-mode))
   (add-to-list 'auto-mode-alist '("\\.pryrc" . ruby-mode))
