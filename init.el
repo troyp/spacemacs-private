@@ -782,6 +782,26 @@ Returns the function definition."
         t))))
     (setq last-kbd-macro fn))
 
+  ;; ,----------------,
+  ;; | thing-at-point |
+  ;; '----------------'
+
+  (defvar my/thing-at-point-qualifed-name-regexp "[a-zA-Z_][a-zA-Z_.]*")
+  (put 'qualified-name 'bounds-of-thing-at-point
+       (lambda ()
+         (let ((thing (thing-at-point-looking-at
+                       my/thing-at-point-js-qualifed-name-regexp 100)))
+           (when thing
+             (cons (match-beginning 0) (match-end 0))))))
+  (put 'qualified-name 'thing-at-point
+       (lambda ()
+         (let ((bounds (bounds-of-thing-at-point 'qualified-name)))
+           (when bounds
+             (buffer-substring-no-properties (car bounds) (cdr bounds))))))
+  (defun my/qualified-name-at-point ()
+    (interactive)
+    (thing-at-point 'qualified-name))
+
   ;; ==============================================================================
   ;; ***************
   ;; *             *
