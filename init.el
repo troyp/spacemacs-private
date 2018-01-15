@@ -1382,8 +1382,8 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (global-set-key (kbd "C-x a C-'") 'abbrev-prefix-mark)
 
-  (global-set-key (kbd "C-M-v") 'er/expand-region)
-  (global-set-key (kbd "C-S-M-v") 'er/contract-region)
+  (global-set-key (kbd "C-M-;") 'er/expand-region)
+  (global-set-key (kbd "C-S-M-;") 'er/contract-region)
 
   (global-set-key [f1] 'help-map)
   (global-set-key (kbd "<C-f1>") 'describe-prefix-bindings)
