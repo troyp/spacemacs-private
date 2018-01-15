@@ -3271,6 +3271,7 @@ If FILE is nil, the file associated with the current buffer is used."
 
   (bind-keys :map spacemacs-emacs-lisp-mode-map
              ;; common
+             ("M-RET"  . lisp-state-toggle-lisp-state)
              ("e j"    . my/eval-print-last-sexp)
              ("e p"    . my/eval-prettyprint-last-sexp)
              ("e D"    . eval-instrument-defun)
@@ -3294,6 +3295,7 @@ If FILE is nil, the file associated with the current buffer is used."
              )
   (bind-keys :map spacemacs-lisp-interaction-mode-map
              ;; common
+             ("M-RET"  . lisp-state-toggle-lisp-state)
              ("e j"    . my/eval-print-last-sexp)
              ("e p"    . my/eval-prettyprint-last-sexp)
              ("e D"    . eval-instrument-defun)
