@@ -1679,8 +1679,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "o f"          'flycheck-command-map
     "o m"          'modes-prefix-key-map
     "r b"          'bookmark-map
-    "s R R"        'pcre-multi-occur
-    "s R r"        'pcre-occur
+    "s / m"        'my/pcre-multi-occur
+    "s / o"        'my/pcre-occur
     "t O"          (my/def-variable-toggle which-key-show-operator-state-maps)
     "t T"          (my/def-variable-toggle indent-tabs-mode)
     "t 3"          'my/toggle-evil-mc-mode
@@ -2088,7 +2088,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "SPC f e SPC"  "spacemacs config"
     "SPC h /"      "find-function"
     "SPC o f"      "flycheck"
-    "SPC s R"      "PCRE Regex"
+    "SPC s /"      "PCRE Regex"
     "SPC t RET"    "more toggles"
     "SPC K"        "keys/keymaps"
     "SPC X"        "structured text"
@@ -3891,7 +3891,7 @@ otherwise is equal to 'align-default-spacing."
   ;; '-------'
 
   ;; modified emacs source: GPL3
-  (defun pcre-occur (regexp &optional nlines)
+  (defun my/pcre-occur (regexp &optional nlines)
     "Show all lines in the current buffer containing a match for REGEXP.
 If a match spreads across multiple lines, all those lines are shown.
 
@@ -3921,7 +3921,7 @@ is not modified."
     (occur-1 (pcre-to-elisp regexp) nlines (list (current-buffer))))
 
   ;; modified emacs source: GPL3
-  (defun pcre-multi-occur (bufs regexp &optional nlines)
+  (defun my/pcre-multi-occur (bufs regexp &optional nlines)
     "Show all lines in buffers BUFS containing a match for REGEXP.
 This function acts on multiple buffers; otherwise, it is exactly like
 `occur'.  When you invoke this command interactively, you must specify
