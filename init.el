@@ -1681,6 +1681,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "r b"          'bookmark-map
     "s / m"        'my/pcre-multi-occur
     "s / o"        'my/pcre-occur
+    "s / l"        'my/pcre-loccur
     "t O"          (my/def-variable-toggle which-key-show-operator-state-maps)
     "t T"          (my/def-variable-toggle indent-tabs-mode)
     "t 3"          'my/toggle-evil-mc-mode
@@ -3444,6 +3445,40 @@ If FILE is nil, the file associated with the current buffer is used."
     :mode occur-mode
     :bindings
     )
+
+  ;; ,-------------,
+  ;; | loccur-mode |
+  ;; '-------------'
+  (require 'loccur)
+
+  ;; based on `loccur': GPL3
+  (defun my/pcre-loccur (pcre)
+    (interactive
+     (list
+      (cond
+        ((region-active-p) (prog1
+                               (buffer-substring (mark) (point))
+                             (deactivate-mark)))
+        (loccur-mode       "")
+        (t                 (read-string "PCRE loccur: "
+                                         (loccur-prompt)
+                                         'loccur-history)))))
+    (let ((regex (pcre-to-elisp pcre)))
+      (if (or loccur-mode (string-empty-p pcre))
+          (progn
+            ;; Null current search and turn off loccur-mode
+            (setf loccur-current-search nil)
+            (loccur-mode 0))
+        ;; otherwise: Check that regex is different than previous search
+        (if (string-equal regex loccur-current-search)
+            (message "regex equal to loccur-current-search")
+          (cl-pushnew regex loccur-history)
+          (setf loccur-current-search regex)
+          (loccur-mode)
+         (when loccur-jump-beginning-of-line (beginning-of-line))))))
+
+  (set-face-attribute 'loccur-face nil :background "#C8E559" :foreground nil)
+
 
   ;; -------------------------------------------------------------------------------
   ;; ,----------,
