@@ -2435,7 +2435,7 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; '-------------'
 
   (my/define-named-variable-cycle my/dactyl-cycle-fill-prefix
-    fill-prefix (nil  "    \\ " "\" "))
+    fill-prefix (nil "\\" "    \\ " "\" "))
 
   (spacemacs/set-leader-keys-for-major-mode 'dactyl-mode
       ","     'my/dactyl-cycle-fill-prefix
