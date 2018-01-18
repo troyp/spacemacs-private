@@ -2441,10 +2441,19 @@ COUNT, BEG, END, and TYPE have no effect."
       ","     'my/dactyl-cycle-fill-prefix
       "'"     (my/make-insertion-around-point "\" " " \"")
       "/"     (my/make-insertion-around-point "/* " " */")
+      "a a"   'my/dactyl-align-defs-repeat
+      "a m"   'my/dactyl-align-defs-multiline
       "m d"   'my/dactyl-make-defn-multiline
+      "m 1"   'my/dactyl-make-defn-multiline-1
+      "m a"   'my/dactyl-make-defn-multiline-align-1
+      "o c"   'my/dactyl-command-occur
+      "o f"   'my/dactyl-function-occur
+      "o m"   'my/dactyl-mapping-occur
       )
 
   (which-key-add-major-mode-key-based-replacements 'dactyl-mode
+      ", o"       "occur"
+      "M-RET o"   "occur"
       ", '"       "\" ⌶ \""
       "M-RET '"   "\" ⌶ \""
       ", /"       "/* ⌶ */"
@@ -2480,6 +2489,51 @@ COUNT, BEG, END, and TYPE have no effect."
       " *\\( -desc\\| -nargs\\| -count\\| -bang\\| -modes\\| -complete\\| -ex\\| -js\\| :\\)"
       '(?g))
      "\n\\\\   \\1"))
+
+  (defun my/dactyl-make-defn-multiline-1 (&optional arg)
+    (interactive "p")
+    (evil-ex-substitute
+     (region-beginning)
+     (region-end)
+     (evil-ex-make-substitute-pattern
+      " *\\( -nargs\\| -count\\| -bang\\| -modes\\| -complete\\| -ex\\| -js\\| :\\)"
+      '(?g))
+     "\n\\\\   \\1"))
+
+  (defun my/dactyl-align-defs-multiline ()
+    (interactive)
+    (my/quick-pcre-align (region-beginning) (region-end) " -desc| :.| -[^b]"))
+
+  (defun my/dactyl-align-defs-repeat ()
+    (interactive)
+    (my/quick-pcre-align-repeat (region-beginning) (region-end) " -desc| :.| -[^b]"))
+
+  (defun my/dactyl-make-defn-multiline-align-1 (&optional arg)
+    (interactive "p")
+    (my/dactyl-make-defn-multiline-1 arg)
+    (evil-visual-restore)
+    (my/dactyl-align-defs))
+
+  (defun my/dactyl-mapping-occur (prefix)
+    "Open an `occur' buffer with statements mapping keys matching PREFIX."
+    (interactive (list (read-string "Mappings for key prefix: " nil t nil)))
+    (let ((pcre (concat "map!? +(-\\w+ +)*" prefix)))
+      (occur (pcre-to-elisp pcre))))
+
+  (defun my/dactyl-command-occur (pattern &optional case-sensitive)
+    "Open an `occur' buffer with statements defining commands matching PATTERN."
+    (interactive (list (read-string "Commands matching PATTERN: " nil t nil)
+                       current-prefix-arg))
+    (let ((pcre (concat "command!? +(-\\w+ +)*\w*" pattern "\w*")))
+      (occur (pcre-to-elisp pcre "i"))))
+
+  (defun my/dactyl-function-occur (pattern &optional case-sensitive)
+    "Open an `occur' buffer with statements defining functions matching PATTERN."
+    (interactive (list (read-string "Functions matching PATTERN: " nil t nil))
+                 current-prefix-arg)
+    (let ((pcre (concat "function +\w*" pattern "\w* *\(\)"
+                        "|" "\w*" pattern "\w* *= *function *\(\)")))
+      (occur (pcre-to-elisp pcre "i"))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
