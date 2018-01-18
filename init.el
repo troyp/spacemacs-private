@@ -2441,7 +2441,7 @@ COUNT, BEG, END, and TYPE have no effect."
       ","     'my/dactyl-cycle-fill-prefix
       "'"     (my/make-insertion-around-point "\" " " \"")
       "/"     (my/make-insertion-around-point "/* " " */")
-      "RET"   'my/dactyl-make-defn-multiline
+      "m d"   'my/dactyl-make-defn-multiline
       )
 
   (which-key-add-major-mode-key-based-replacements 'dactyl-mode
@@ -2477,7 +2477,7 @@ COUNT, BEG, END, and TYPE have no effect."
      (region-beginning)
      (region-end)
      (evil-ex-make-substitute-pattern
-      " *\\(-desc\\|-nargs\\|-count\\|-bang\\|-modes\\|-complete\\|-ex\\|-js\\|:\\)"
+      " *\\( -desc\\| -nargs\\| -count\\| -bang\\| -modes\\| -complete\\| -ex\\| -js\\| :\\)"
       '(?g))
      "\n\\\\   \\1"))
 
