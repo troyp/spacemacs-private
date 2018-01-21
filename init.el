@@ -3117,10 +3117,13 @@ COUNT, BEG, END, and TYPE have no effect."
              "firefox+%28webextension+OR+javascript%29+"
              s)))
 
+  (my/def-variable-local-cycle js-indent-level 4 2)
+
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode
     "%"    'my/js-url-decode
     "hwc"  'my/lookup-chrome-webextension-api
     "hwf"  'my/lookup-firefox-webextension-api
+    "ti"   'my/cycle-js-indent-level
     )
 
 
