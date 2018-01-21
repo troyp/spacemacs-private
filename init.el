@@ -2506,7 +2506,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (defun my/dactyl-align-defs-repeat ()
     (interactive)
-    (my/quick-pcre-align-repeat (region-beginning) (region-end) " -desc| :.| -[^b]"))
+    (my/pcre-align (region-beginning) (region-end) " :.| -" -1 1 t))
 
   (defun my/dactyl-make-defn-multiline-align-1 (&optional arg)
     (interactive "p")
