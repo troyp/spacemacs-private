@@ -3909,25 +3909,6 @@ If FILE is nil, the file associated with the current buffer is used."
   (spacemacs|create-align-repeat-x "right-paren" ")" t)
   (spacemacs|create-align-repeat-x "backslash" "\\\\")
 
-  (defun my/pcre-align-regexp (beg end regexp &optional group spacing repeat)
-    "Align a region using a PCRE.
-
-Interactively, operates on the current region and prompts for the PCRE, GROUP
-and REPEAT. If a prefix argument is given, also prompts for SPACING.
-
-See `align-regexp' for details."
-    (interactive
-     (list
-      (region-beginning)
-      (region-end)
-      (pcre-to-elisp (rxt--read-pcre "PCRE: "))
-      (string-to-number (read-string "Paren group (neg=insert before, pos=insert after) [-1]: " nil t "-1"))
-      (if current-prefix-arg
-          (string-to-number (read-string "Number of spaces (or column if negative) [1]: " nil t "1"))
-        1)
-      (y-or-n-p "Repeat?")))
-    (align-regexp beg end regexp group spacing repeat))
-
   (defun my/pcre-align-region (pcre group spacing)
     "Align region using a PCRE. Requires pcre2el.
 GROUP is the number of the group to be modified (ie. spacing group).
@@ -3937,14 +3918,33 @@ SPACING is the minimum number of spaces between columns."
           (spaces   (if (string-empty-p group) 2 (string-to-int spacing))))
       (align-regexp (region-beginning) (region-end) (pcre-to-elisp pcre) groupnum spaces nil)))
 
-  (defun my/pcre-align (BEG END s &optional group spacing repeat)
-    "Align region using a PCRE. Requires pcre2el."
-    (interactive "r\nsPCRE (group around part to extend): ")
-    (unless BEG (setq BEG (region-beginning)))
-    (unless BEG (setq BEG (region-end)))
-    (unless group (setq group 1))
+  (defun my/pcre-align (beg end pcre &optional group spacing repeat)
+    "Align a region using a PCRE. Requires pcre2el.
+
+Interactively, operates on the current region and prompts for the PCRE, GROUP,
+SPACING and REPEAT.
+
+GROUP is the number of the group to be modified (ie. spacing group). The entire
+PCRE is group 1, the first subexpression group 2, etc. A negative group value
+indicates that spaces should be added before the group, a positive value means
+spaces should be added after it.
+
+SPACING is the minimum number of spaces between columns.
+
+See `align-regexp' for details."
+    (interactive
+     (list
+      (region-beginning)
+      (region-end)
+      (pcre-to-elisp (rxt--read-pcre "PCRE: "))
+      (string-to-number (read-string "Paren group (neg=insert before, pos=insert after) [-1]: " nil t "0"))
+      (string-to-number (read-string "Number of spaces (or column if negative) [1]: " nil t "1"))
+      (my/y-or-n-p "Repeat?")))
+    (unless beg (setq beg (region-beginning)))
+    (unless beg (setq beg (region-end)))
+    (unless group (setq group 0))
     (unless spacing (setq spacing align-default-spacing))
-    (align-regexp BEG END (pcre-to-elisp s) group spacing repeat))
+    (align-regexp beg end (pcre-to-elisp (concat "(" pcre ")")) group spacing repeat))
 
   (defun my/quick-pcre-align (BEG END s &optional spacing repeat)
     "Align region using a PCRE. PCRE doesn't require the group for expansion. Requires pcre2el."
