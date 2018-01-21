@@ -6094,6 +6094,12 @@ entered, return a command which executes it."
     (interactive "spattern: ")
     (my/rgrep pattern spacemacs-start-directory))
 
+  (defun my/y-or-n-p (&optional prompt)
+    (let ((response (read-from-minibuffer (or (concat prompt " ") "y or n? "))))
+      (cond ((member response (list "yes" "y" " ")) t)
+            ((member response (list "no" "n" "")) nil)
+            (t (my/y-or-n-p prompt)))))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
