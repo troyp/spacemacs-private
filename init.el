@@ -1245,6 +1245,21 @@ COUNT, BEG, END, and TYPE have no effect."
            (setq ,var (nth (1+ idx) ',values))))
        (message "%S is now: %s" ',var ,var)))
 
+  (defmacro my/def-variable-local-cycle (var &rest values)
+    (let* ((fname `(concat "my/cycle-" (symbol-name ',var)))
+           (fsym  (intern (eval fname))))
+      `(defun ,fsym ()
+         "Defined with `my/def-variable-toggle'."
+         (interactive)
+         (let ((idx (-elem-index ,var ',values))
+               (n   (length ',values)))
+           (when (not (local-variable-p ',var)) (make-local-variable ',var))
+           (if (or (null idx)
+                   (= idx (1- n)))
+               (setq ,var (nth 0 ',values))
+             (setq ,var (nth (1+ idx) ',values))))
+         (message "%S is now: %s" ',var ,var))))
+
   ;; ,----------------------,
   ;; | Keybinding Functions |
   ;; '----------------------'
