@@ -3126,6 +3126,10 @@ COUNT, BEG, END, and TYPE have no effect."
     "ti"   'my/cycle-js-indent-level
     )
 
+  (which-key-add-major-mode-key-based-replacements 'js2-mode
+      ", t"    "toggles"
+      ", h w"  "webextension docs"
+      )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
