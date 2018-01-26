@@ -3249,6 +3249,8 @@ Committer: %cN <%cE>"))
              ("C-v"    . my/markdown-app-call)
              ("M-h"    . my/github-heading-to-readme-link)
              ("M-l"    . my/github-linkify-heading)
+             ("n"      . my/markdown-next-link)
+             ("."      . markdown-follow-link-at-point)
              )
 
   (defun my/markdown-gh-linkify-heading ()
@@ -3353,6 +3355,11 @@ If FILE is nil, the file associated with the current buffer is used."
       (beginning-of-line)
       (kill-line)
       (insert result)))
+
+  (defun my/markdown-next-link ()
+    (interactive)
+    (markdown-next-link)
+    (search-forward-regexp "://"))
 
   ;; -------------------------------------------------------------------------------
   ;; ,------,
