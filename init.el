@@ -1827,10 +1827,10 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix-map undo-prefix-map
              :prefix "o u"
              :prefix-docstring "Commands related to undo."
+             ("s" . undo-tree-switch-branch)
              ("t" . global-undo-tree-mode)
              ("v" . undo-tree-visualize)
              )
-
 
   (bind-keys :map spacemacs-cmds
              :prefix-map follow-prefix-map
