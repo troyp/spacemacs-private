@@ -1464,7 +1464,8 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; note: (evil-define-key 'normal global-map ...) takes precedence over
   ;;       (define-key evil-normal-state-map ...)
 
-  (define-key evil-normal-state-map [escape] 'my/evil-force-normal-state-and-cancel)
+  (when (fboundp 'my/evil-force-normal-state-and-cancel)
+    (define-key evil-normal-state-map [escape] 'my/evil-force-normal-state-and-cancel))
   (define-key evil-normal-state-map [delete] 'kill-this-buffer)
   (define-key evil-normal-state-map [S-delete] 'delete-window)
   (define-key evil-normal-state-map [C-delete] 'kill-buffer-and-window)
@@ -1478,16 +1479,20 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-normal-state-map (kbd "gu") 'evil-upcase)
   (define-key evil-normal-state-map (kbd "gl") 'evil-downcase)
   ;; centre after n, N, '
-  (define-key evil-normal-state-map (kbd "n") 'my/evil-search-next-and-center)
-  (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center)
+  (when (fboundp 'my/evil-search-next-and-center)
+    (define-key evil-normal-state-map (kbd "n") 'my/evil-search-next-and-center))
+  (when (fboundp 'my/evil-search-previous-and-center)
+      (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center))
   (define-key evil-normal-state-map (kbd "'") 'my/evil-goto-mark-line)
   (define-key evil-normal-state-map (kbd "gi") 'my/evil-insert-resume)
   ;; make | use `fill-column' as a default
   (define-key evil-normal-state-map (kbd "|") 'my/evil-goto-column)
 
   ;; PCRE search forward/backward
-  (define-key evil-normal-state-map (kbd "/") 'my/evil-pcre-search-forward)
-  (define-key evil-normal-state-map (kbd "?") 'my/evil-pcre-search-backward)
+  (when (fboundp 'my/evil-pcre-search-forward)
+    (define-key evil-normal-state-map (kbd "/") 'my/evil-pcre-search-forward))
+  (when (fboundp 'my/evil-pcre-search-backward)
+    (define-key evil-normal-state-map (kbd "?") 'my/evil-pcre-search-backward))
 
   ;; provide evil-repeat-find-char-reverse binding
   (define-key evil-normal-state-map (kbd "M-;") 'evil-repeat-find-char-reverse)
