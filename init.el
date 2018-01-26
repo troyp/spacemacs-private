@@ -2454,6 +2454,13 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; | dactyl-mode |
   ;; '-------------'
 
+  (defun my/dactyl-init ()
+    (interactive)
+    (setq imenu-generic-expression `((nil "^\" | .* |$" 0)))
+    )
+
+  (add-hook 'dactyl-mode-hook 'my/dactyl-init)
+
   (my/define-named-variable-cycle my/dactyl-cycle-fill-prefix
     fill-prefix (nil "\\" "    \\ " "\" "))
 
@@ -2469,6 +2476,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "o c"   'my/dactyl-command-occur
       "o f"   'my/dactyl-function-occur
       "o m"   'my/dactyl-mapping-occur
+      "SPC"   'helm-imenu
       )
 
   (which-key-add-major-mode-key-based-replacements 'dactyl-mode
