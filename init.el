@@ -540,7 +540,7 @@ you should place you code here."
                 (defun man-interactive ()
                   (call-interactively 'man)))
 
-  (setq browse-url-generic-program "palemoon")
+  (setq browse-url-generic-program "waterfox")
   (setq browse-url-browser-function 'browse-url-generic)
   (setq engine/browser-function 'browse-url-generic)
 
