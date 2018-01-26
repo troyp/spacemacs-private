@@ -6122,6 +6122,12 @@ entered, return a command which executes it."
             ((member response (list "no" "n" "")) nil)
             (t (my/y-or-n-p prompt)))))
 
+  (defun my/sort-and-uniquify-lines ()
+    (interactive)
+    (call-interactively 'sort-lines)
+    (evil-visual-refresh)
+    (call-interactively 'spacemacs/uniquify-lines))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
