@@ -4419,7 +4419,7 @@ temporarily enables it to allow getting help on disabled items and buttons."
       (concat "file://"
               (expand-file-name (or buffer-file-name default-directory))))))
 
-(setq browse-url-firefox-program "palemoon")
+  (setq browse-url-firefox-program "palemoon")
 
   (defun browse-buffer-file-with-external-application ()
     (interactive)
