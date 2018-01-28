@@ -6148,6 +6148,41 @@ entered, return a command which executes it."
     (evil-visual-refresh)
     (call-interactively 'spacemacs/uniquify-lines))
 
+  (defun my/open-my-fork (&optional sourcebase forkbase)
+    (interactive)
+    (let* ((home         (getenv "HOME"))
+           (sourcebase   (or sourcebase (format "%s/source/git-repos/" home)))
+           (forkbase     (or forkbase (format "%s/repos/" home)))
+           (sourcefile   buffer-file-name)
+           (sourcefile-p (string-match sourcebase sourcefile))
+           (forkfile     (replace-regexp-in-string sourcebase forkbase sourcefile))
+           (line         (line-number-at-pos (point))))
+      (when sourcefile-p
+       (unless current-prefix-arg (kill-buffer (current-buffer)))
+       (find-file forkfile)
+       (goto-line line)
+       (recenter-top-bottom '(4)))))
+
+  (defun my/fork-jump (linum &optional sourcebase forkbase)
+    (interactive
+     (list (or current-prefix-arg (read-number "Line number: "))))
+    (let* ((curlinepos (save-excursion (beginning-of-line) (point)))
+           (home       (getenv "HOME"))
+           (sourcebase (or sourcebase (format "%s/source/git-repos/" home)))
+           (forkbase   (or forkbase (format "%s/repos/" home)))
+           (forkfile   buffer-file-name)
+           (canonfile  (replace-regexp-in-string forkbase sourcebase forkfile))
+           (line       (s-trim
+                        (shell-command-to-string
+                         (format "tail -n+%d %s | head -n1" linum canonfile))))
+           (jumppos    (save-excursion
+                         (beginning-of-buffer)
+                         (search-forward line)
+                         (beginning-of-line)
+                         (point))))
+      (when (/= jumppos curlinepos)
+        (goto-char jumppos))))
+
   (defun printvars (vars)
     (let* ((varnames (mapcar 'symbol-name vars))
            (varvalues (mapcar 'symbol-value vars))
