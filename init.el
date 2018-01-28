@@ -6148,6 +6148,15 @@ entered, return a command which executes it."
     (evil-visual-refresh)
     (call-interactively 'spacemacs/uniquify-lines))
 
+  (defun printvars (vars)
+    (let* ((varnames (mapcar 'symbol-name vars))
+           (varvalues (mapcar 'symbol-value vars))
+           (pairs (-zip-pair varnames varvalues))
+           (strs (mapcar (fn (format "%s:\t%S" (car <>) (cdr <>))) pairs)))
+      (s-join "\n" strs)))
+  (defmacro showvars (&rest vars)
+    `(message "%s" (printvars ',vars)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
