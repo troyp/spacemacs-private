@@ -490,6 +490,12 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place you code here."
+  (eval-after-load 'tramp
+    '(progn
+      (setenv "SHELL" "/bin/bash")
+      (setq tramp-encoding-shell "/bin/bash")
+      (setq shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>].* *\\(\\[[0-9;]*[a-zA-Z] *\\)*"))
+    )
 
   ;; (setq-default tab-always-indent t)
   (global-nlinum-mode)
