@@ -915,11 +915,9 @@ Returns the function definition."
   (add-to-load-path "/home/troy/.emacs.d/private/repos/elisp-utils/")
   (require 'elisp-utils)
   (add-to-load-path "/home/troy/.emacs.d/private/repos/tempgit/")
-  (require 'tempgit)
   (add-to-load-path "/home/troy/.emacs.d/private/repos/asoc.el/")
   (require 'asoc)
   (add-to-load-path "/home/troy/.emacs.d/private/repos/asciiboxes/")
-  (add-to-load-path "/home/troy/.emacs.d/private/repos/tempgit/")
 
   ;; ==============================================================================
   ;;                             *******************
@@ -1107,12 +1105,12 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; ,---------------,
   ;; | evil-surround |
   ;; '---------------'
-  (add-to-list (cons (aref (kbd "C-/") 0) (cons "/* " " */")) evil-surround-pairs-alist)
-  ;; add C-` as an alternative to `
-  ;; so that C-` C-` can be used to backquote a symbol (using my/surround-symbol)
-  (add-to-list (cons (aref (kbd "C-`") 0) (cons "`" "`"))     evil-surround-pairs-alist)
-  (add-to-list (cons         ?,           (cons "< " " >"))   evil-surround-pairs-alist)
-  (setq-default evil-surround-pairs-alist evil-surround-pairs-alist)
+  ;; (add-to-list (cons (aref (kbd "C-/") 0) (cons "/* " " */")) evil-surround-pairs-alist)
+  ;; ;; add C-` as an alternative to `
+  ;; ;; so that C-` C-` can be used to backquote a symbol (using my/surround-symbol)
+  ;; (add-to-list (cons (aref (kbd "C-`") 0) (cons "`" "`"))     evil-surround-pairs-alist)
+  ;; (add-to-list (cons         ?,           (cons "< " " >"))   evil-surround-pairs-alist)
+  ;; (setq-default evil-surround-pairs-alist evil-surround-pairs-alist)
 
 
   ;; ,--------,
