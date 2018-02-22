@@ -2481,7 +2481,11 @@ COUNT, BEG, END, and TYPE have no effect."
       "o c"   'my/dactyl-command-occur
       "o f"   'my/dactyl-function-occur
       "o m"   'my/dactyl-mapping-occur
+      "t"     'my/dactyl-toggle-text-mode
       "SPC"   'helm-imenu
+      )
+  (spacemacs/set-leader-keys-for-major-mode 'text-mode
+      "t"     'my/dactyl-toggle-text-mode
       )
 
   (which-key-add-major-mode-key-based-replacements 'dactyl-mode
@@ -2569,6 +2573,10 @@ COUNT, BEG, END, and TYPE have no effect."
     (let ((pcre (concat "function +\w*" pattern "\w* *\(\)"
                         "|" "\w*" pattern "\w* *= *function *\(\)")))
       (occur (pcre-to-elisp pcre "i"))))
+
+  (defun my/dactyl-toggle-text-mode ()
+    (interactive)
+    (if (eq major-mode 'dactyl-mode) (text-mode) (dactyl-mode)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
