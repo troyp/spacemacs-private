@@ -2485,6 +2485,8 @@ COUNT, BEG, END, and TYPE have no effect."
       )
 
   (which-key-add-major-mode-key-based-replacements 'dactyl-mode
+      ", a"       "align"
+      ", m"       "multiline"
       ", o"       "occur"
       "M-RET o"   "occur"
       ", '"       "\" ⌶ \""
