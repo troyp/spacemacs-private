@@ -808,6 +808,29 @@ Returns the function definition."
     (interactive)
     (thing-at-point 'qualified-name))
 
+  ;; ,------,
+  ;; | TAGS |
+  ;; '------'
+
+  (setq my/evil-tags-file (expand-file-name "repos/evil" spacemacs-private-directory))
+  (setq my/spacemacs-tags-file user-emacs-directory)
+
+  (defun view-tag-other-window (tagname &optional next-p regexp-p)
+    "Same as `find-tag-other-window' but doesn't move the point"
+    ;; https://www.emacswiki.org/emacs/EmacsTags#tags
+    (interactive (find-tag-interactive "View tag other window: "))
+    (let ((window (get-buffer-window)))
+      (find-tag-other-window tagname next-p regexp-p)
+      (recenter 0)
+      (select-window window)))
+
+  ;; ctags not working
+  (defun my/dactyl-ctags-generate ()
+    (interactive)
+    (shell-command
+     "ctags-exuberant -e -R .pentadactylrc *.js *.jsm *.penta *.cpp *.h *.idl *.awk *.sh *.py"))
+
+
   ;; ==============================================================================
   ;; ***************
   ;; *             *
