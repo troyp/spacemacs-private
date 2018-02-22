@@ -1373,6 +1373,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key (kbd "C-M-p") 'my/evil-previous-paragraph-beginning)
 
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
+  (global-set-key (kbd "<C-M-return>") 'my/split-line-and-open-line-above)
 
   (global-set-key "\C-a" 'my/evil-beginning-of-line-or-first-non-blank)
   (global-set-key (kbd "<S-return>") 'my/open-line-below)       ;; troyp/utils.el
@@ -4617,6 +4618,11 @@ If SAME-LINE is non-nil, do not start a new line."
     (interactive)
     (end-of-line)
     (re-search-backward "[^ \t\n]" (line-beginning-position) 1))
+
+  (defun my/split-line-and-open-line-above ()
+    (interactive)
+    (comment-indent-new-line)
+    (evil-open-above 1))
 
   ;; TODO: maintain position if no matches
   (defun pcre-replace-regexp-in-string (PCRE REP STRING &optional FIXEDCASE LITERAL SUBEXP START)
