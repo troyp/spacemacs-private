@@ -2,7 +2,7 @@
 # name: setTimeout
 # key: timeout
 # --
-    window.setTimeout(
-        ()=>$0,
-        ${1:500}
-    )
+window.setTimeout(
+    ()=>$0,
+    ${1:500}
+);
