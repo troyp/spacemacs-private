@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: setTimeoutMultiline
+# key: timeout{
+# --
+window.setTimeout(()=>{
+    $0
+}, ${1:500});
