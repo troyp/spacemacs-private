@@ -1750,7 +1750,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "x ; Y"        'link-hint-copy-multiple-links
     "x . y"        'link-hint-copy-link-at-point
     "x . Y"        'my/link-hint-copy-all-links
-    "x . o"        'link-hint-open-link-at-point
+    "x . o"        'my/find-file-or-browse-url-at-point
     "x . O"        'link-hint-open-all-links
     "x C-b"        'my/copy-to-empty-buffer
     "x C-k"        'evil-insert-digraph
