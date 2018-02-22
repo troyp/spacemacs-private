@@ -1358,7 +1358,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (bind-key* "<C-S-iso-lefttab>" 'previous-multiframe-window)
   (bind-key* "<M-delete>" 'my/kill-buffer-and-window-quit-help)
   (bind-key* "<M-S-delete>" 'kill-buffer-and-window)
-  (bind-key* "C-:" 'execute-extended-command)
+  (bind-key* "<S-menu>" 'execute-extended-command)
   (bind-key* "M-X" 'spacemacs/smex)
   (bind-key* "M-x" 'helm-M-x)
   ;; =================================================
