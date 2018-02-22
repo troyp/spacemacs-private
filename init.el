@@ -1900,6 +1900,22 @@ COUNT, BEG, END, and TYPE have no effect."
              ("s" . dired-mark-files-regexp)
              )
 
+  (my/def-variable-toggle undo-tree-visualizer-diff)
+  (my/def-variable-toggle undo-tree-visualizer-timestamps)
+  (my/def-variable-toggle undo-tree-auto-save-history)
+  (bind-keys :map spacemacs-cmds
+             :prefix-map my/undo-prefix-map
+             :prefix "C-u"
+             :prefix-docstring "Commands related to undo."
+             ("s" . undo-tree-switch-branch)
+             ("t d" . my/toggle-undo-tree-visualizer-diff)
+             ("t h" . my/toggle-undo-tree-auto-save-history)
+             ("t t" . global-undo-tree-mode)
+             ("t w" . my/toggle-undo-tree-visualizer-timestamps)
+             ("v" . undo-tree-visualize)
+             )
+
+
   (bind-keys :map spacemacs-cmds
              :prefix-map match-lines-map
              :menu-name "match lines"
