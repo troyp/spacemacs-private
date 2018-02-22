@@ -4460,6 +4460,18 @@ temporarily enables it to allow getting help on disabled items and buttons."
     (interactive)
     (browse-file-with-external-application buffer-file-name))
 
+  (defun my/browse-url-at-point ()
+    (interactive)
+    (let ((url (url-get-url-at-point)))
+      (browse-url-firefox url)))
+
+  (defun my/find-file-or-browse-url-at-point ()
+    (interactive)
+    (let ((url (url-get-url-at-point)))
+      (if url
+          (browse-url-firefox url)
+        (find-file-at-point))))
+
 
   ;; REGION-BEGINNING and REGION-END
   ;; TODO: make these into text motions
