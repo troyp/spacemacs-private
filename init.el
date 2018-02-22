@@ -1484,13 +1484,17 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; rebind gu to evil-upcase (rather than -downcase), use gl for -downcase:
   (define-key evil-normal-state-map (kbd "gu") 'evil-upcase)
   (define-key evil-normal-state-map (kbd "gl") 'evil-downcase)
+
+  (define-key evil-normal-state-map (kbd "gi") 'my/evil-insert-resume)
+  (define-key evil-normal-state-map (kbd "gf") 'link-hint-open-all-links)
+
   ;; centre after n, N, '
   (when (fboundp 'my/evil-search-next-and-center)
     (define-key evil-normal-state-map (kbd "n") 'my/evil-search-next-and-center))
   (when (fboundp 'my/evil-search-previous-and-center)
       (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center))
+
   (define-key evil-normal-state-map (kbd "'") 'my/evil-goto-mark-line)
-  (define-key evil-normal-state-map (kbd "gi") 'my/evil-insert-resume)
   ;; make | use `fill-column' as a default
   (define-key evil-normal-state-map (kbd "|") 'my/evil-goto-column)
 
