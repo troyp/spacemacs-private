@@ -3261,6 +3261,15 @@ Committer: %cN <%cE>"))
     (interactive)
     (magit-reset "HEAD~"))
 
+  (defun my/magit-stash-changes-and-checkout ()
+    (interactive)
+    (magit-stash "*temp*")
+    (call-interactively 'magit-checkout))
+  (defun my/magit-back-to-master-pop-changes ()
+    (interactive)
+    (magit-checkout "master")
+    (magit-stash-pop "*temp*"))
+
   (spacemacs/set-leader-keys-for-major-mode 'magit-diff-mode
     "s"      'magit-diff-toggle-ignore-all-space
     "S"      'magit-diff-toggle-ignore-space-change
