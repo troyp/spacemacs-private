@@ -3943,6 +3943,22 @@ If FILE is nil, the file associated with the current buffer is used."
        ))
 
   ;; -------------------------------------------------------------------------------
+  ;; ,-----,
+  ;; | w3m |
+  ;; '-----'
+
+  (add-hook 'w3m-mode-hook 'my/w3m-mode-init)
+
+  (defun my/w3m-mode-init ()
+    (interactive)
+    (define-key w3m-mode-map (kbd "C-h") 'help-map)
+    (evilified-state-evilify-map w3m-mode-map
+        :mode w3m-mode
+        :bindings
+        (kbd "C-h")  'help-map)
+    )
+
+  ;; -------------------------------------------------------------------------------
   ;; ,----------,
   ;; | Snippets |
   ;; '----------'
