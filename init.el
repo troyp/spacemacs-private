@@ -3286,6 +3286,17 @@ Committer: %cN <%cE>"))
     (magit-checkout "master")
     (magit-stash-pop "*temp*"))
 
+  (defun my/git-browse-origin ()
+    (interactive)
+    (let* ((url (shell-command-to-string "git config --get remote.origin.url"))
+           (https-url (if (s-starts-with? "git@" url)
+                          (replace-regexp-in-string
+                           "^git@" "https://"
+                           (replace-regexp-in-string
+                            ":" "/" url))
+                        url)))
+      (browse-url-firefox https-url)))
+
   (spacemacs/set-leader-keys-for-major-mode 'magit-diff-mode
     "s"      'magit-diff-toggle-ignore-all-space
     "S"      'magit-diff-toggle-ignore-space-change
@@ -3295,6 +3306,7 @@ Committer: %cN <%cE>"))
     "d g g"  'my/magit-diff-meld
     "d g a"  'my/magit-diff-added-meld
     "d g c"  'my/magit-diff-committed-meld
+    "o"      'my/git-browse-origin
     "r"      'my/magit-undo-last-commit
     "s"      'magit-diff-toggle-ignore-all-space
     "S"      'magit-diff-toggle-ignore-space-change
