@@ -2737,6 +2737,7 @@ COUNT, BEG, END, and TYPE have no effect."
          "k"     'diredp-kill-this-tree
          "K"     'dired-kill-tree
          "m"     'my/dired-move-files-here
+         "o"     'my/git-browse-origin
          "p"     'my/dired-copy-files-here
          "s"     'dired-toggle-sudo
          "to"    'dired-omit-mode
