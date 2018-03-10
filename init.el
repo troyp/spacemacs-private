@@ -1824,7 +1824,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "C-y"          'my/paste-no-properties
     "C-8"          'spacemacs/helm-project-smart-do-search-region-or-symbol
     "C-."          'ido-switch-buffer
-    "C-/"          'evil-search-highlight-persist-remove-all
+    "C-/"          'spacemacs/evil-search-clear-highlight
     "C-?"          'evil-search-highlight-restore
     "C-\\"         'set-input-method
     "C-SPC"        'cua-toggle-global-mark
