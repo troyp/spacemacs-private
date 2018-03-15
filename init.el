@@ -2082,16 +2082,17 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix-map my/snippets-prefix-map
              :prefix "<f3>"
              :prefix-docstring "Snippets and templates commands"
+             ("a"      . aya-create-one-line)
              ("c"      . aya-create)
-             ("x"      . aya-expand)
+             ("n"      . my/aya-create-snippet-with-newline)
+             ("r"      . my/yas-reload-all-no-jit)
              ("s"      . aya-yank-snippet)
+             ("v"      . yas-visit-snippet-file)
+             ("x"      . aya-expand)
+             ("y"      . yas-new-snippet)
+             ("<tab>"  . helm-yas-complete)
              ("<f3>"   . aya-open-line)
              ("M-<f3>" . aya-open-line)
-             ("a"      . aya-create-one-line)
-             ("n"      . my/aya-create-snippet-with-newline)
-             ("<tab>"  . helm-yas-complete)
-             ("y"      . yas-new-snippet)
-             ("v"      . yas-visit-snippet-file)
              )
   (global-set-key (kbd "M-<f3>") 'my/snippets-prefix-map)
 
@@ -4005,6 +4006,8 @@ If FILE is nil, the file associated with the current buffer is used."
                 (nth 1 templates-and-pos))
            (max (if (use-region-p) (region-end) most-negative-fixnum)
                 (nth 2 templates-and-pos))))))
+
+  (defun my/yas-reload-all-no-jit () (interactive) (yas-reload-all t))
 
   (defun my/aya-create-snippet-with-newline ()
     (interactive)
