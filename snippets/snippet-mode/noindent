@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: noindent
+# key: noindent
+# --
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))$0
