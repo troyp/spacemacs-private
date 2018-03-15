@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: map
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# key: map
+# --
+map $1 -description "$2"${3:
+\   } $0
