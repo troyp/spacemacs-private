@@ -2525,6 +2525,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "t"     'my/dactyl-toggle-text-mode
       "J"     'my/collapse-single-line-function
       "SPC"   'helm-imenu
+      "\\"    'my/dactyl-move-continuation-to-column-1
       )
   (spacemacs/set-leader-keys-for-major-mode 'text-mode
       "t"     'my/dactyl-toggle-text-mode
@@ -2619,6 +2620,13 @@ COUNT, BEG, END, and TYPE have no effect."
   (defun my/dactyl-toggle-text-mode ()
     (interactive)
     (if (eq major-mode 'dactyl-mode) (text-mode) (dactyl-mode)))
+
+  (defun my/dactyl-move-continuation-to-column-1 (&optional arg)
+    (interactive "p")
+    (evil-ex-substitute
+     (region-beginning) (region-end)
+     (evil-ex-make-substitute-pattern "^    \\\\ " nil)
+     "\\\\    "))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
