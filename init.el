@@ -4234,7 +4234,7 @@ ISEARCH DOCUMENTATION.
   (fset 'my/remove-spacing-inside-bracers [ ?c ?s 123 125 ])
   (fset 'my/add-spacing-inside-double-quotes [ ?c ?s 34 40 ?c ?s 41 34 ])
   (fset 'my/remove-spacing-inside-double-quotes [?c ?s 40 34 ])
-  (fset 'my/collapse-single-line-function [escape 74 74 104 99 115 125 123])
+  (fset 'my/collapse-single-line-function [escape ?J ?J ?h ?c ?s 125 123])
 
   (fset 'my/surround-symbol
    (lambda (&optional arg)
