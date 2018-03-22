@@ -2213,24 +2213,6 @@ COUNT, BEG, END, and TYPE have no effect."
   (setq elnode-webserver-docroot
         (expand-file-name "private/public_html" user-emacs-directory))
 
-  (defun my/elnode-serve-buffer-file ()
-    (interactive)
-    (elnode-make-webserver buffer-file-name 8009))
-
-  (defun my/elnode-serve-buffer-directory ()
-    (interactive)
-    (elnode-make-webserver default-directory 8009))
-
-  (defun my/browse-buffer-file-firefox ()
-    (interactive)
-    (my/elnode-serve-buffer-file)
-    (browse-url-firefox "localhost:8009"))
-
-  (defun my/browse-buffer-directory-firefox ()
-    (interactive)
-    (my/elnode-serve-buffer-directory)
-    (browse-url-firefox "localhost:8009"))
-
 
   ;; ***************
   ;; *             *
@@ -6021,6 +6003,29 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
       (spacemacs/new-empty-buffer)
       (insert contents)
       (helm-switch-major-mode)))
+
+  ;; ,--------------------------,
+  ;; | Browser/Server Functions |
+  ;; '--------------------------'
+
+  (defun my/serve-buffer-file ()
+    (interactive)
+    (elnode-make-webserver buffer-file-name 8009))
+
+  (defun my/serve-buffer-directory ()
+    (interactive)
+    (my/async-shell-command-no-window "python2 -m SimpleHTTPServer 8009"))
+
+  (defun my/browse-buffer-file-firefox ()
+    (interactive)
+    (my/serve-buffer-directory)
+    (let ((name (file-name-nondirectory (buffer-file-name))))
+      (browse-url-firefox (concat "localhost:8009/" name))))
+
+  (defun my/browse-buffer-directory-firefox ()
+    (interactive)
+    (my/serve-buffer-directory)
+    (browse-url-firefox "localhost:8009"))
 
   (defun my/kill-new-and-message (string &optional replace)
     (kill-new string replace)
