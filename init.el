@@ -2035,6 +2035,20 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             ;; S-SPC y
+             :prefix-map my/yank-map
+             :menu-name "yank"
+             :prefix "y"
+             :prefix-docstring "Commands to copy text to clipboard and kill-ring"
+             ("d"   . my/yank-directory)
+             ("f"   . my/yank-filename)
+             ("p"   . my/yank-path)
+             (". f" . link-hint-copy-link-at-point)
+             (". s" . my/yank-sexp-at-point)
+             (". w" . my/yank-word-at-point)
+             )
+
+  (bind-keys :map user-cmds-map
              ;; S-SPC !
              :prefix-map my/external-apps-prefix
              :menu-name "external apps"
