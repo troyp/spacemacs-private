@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: parenthesized link
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
 # key: <
 # --
 ( <$0> )
