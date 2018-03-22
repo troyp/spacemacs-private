@@ -6027,16 +6027,28 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (my/serve-buffer-directory)
     (browse-url-firefox "localhost:8009"))
 
+  ;; ,----------------,
+  ;; | Yank Functions |
+  ;; '----------------'
+
   (defun my/kill-new-and-message (string &optional replace)
     (kill-new string replace)
     (message string))
 
-  (defun my/yank-filename ()
-    "Yank buffer filename. With prefix arg, yank file path."
-    (interactive)
-    (if current-prefix-arg
-        (my/kill-new-and-message buffer-file-name)
-      (my/kill-new-and-message (file-name-nondirectory buffer-file-name))))
+  (defmacro my/define-yank-cmd (name expr &optional doc)
+    (let ((fnname (intern (concat "my/yank-" (symbol-name name)))))
+      `(defun ,fnname ()
+         ,doc
+         (interactive)
+         (let ((str ,expr))
+           (kill-new str)
+           (message str)))))
+
+  (my/define-yank-cmd filename (buffer-file-name) "Yank name of current file")
+  (my/define-yank-cmd path (buffer-file-name) "Yank full path of current file")
+  (my/define-yank-cmd directory default-directory "Yank default directory")
+  (my/define-yank-cmd sexp-at-point (sexp-at-point) "Yank SEXP at point")
+  (my/define-yank-cmd word-at-point (word-at-point) "Yank word at point")
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
