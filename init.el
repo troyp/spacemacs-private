@@ -2523,6 +2523,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "o f"   'my/dactyl-function-occur
       "o m"   'my/dactyl-mapping-occur
       "t"     'my/dactyl-toggle-text-mode
+      "J"     'my/collapse-single-line-function
       "SPC"   'helm-imenu
       )
   (spacemacs/set-leader-keys-for-major-mode 'text-mode
@@ -3194,6 +3195,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "hwc"  'my/lookup-chrome-webextension-api
     "hwf"  'my/lookup-firefox-webextension-api
     "ti"   'my/cycle-js-indent-level
+    "J"    'my/collapse-single-line-function
     )
 
   (which-key-add-major-mode-key-based-replacements 'js2-mode
@@ -4232,6 +4234,7 @@ ISEARCH DOCUMENTATION.
   (fset 'my/remove-spacing-inside-bracers [ ?c ?s 123 125 ])
   (fset 'my/add-spacing-inside-double-quotes [ ?c ?s 34 40 ?c ?s 41 34 ])
   (fset 'my/remove-spacing-inside-double-quotes [?c ?s 40 34 ])
+  (fset 'my/collapse-single-line-function [escape 74 74 104 99 115 125 123])
 
   (fset 'my/surround-symbol
    (lambda (&optional arg)
