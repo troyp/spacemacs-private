@@ -3809,6 +3809,15 @@ If FILE is nil, the file associated with the current buffer is used."
     )
 
   ;; -------------------------------------------------------------------------------
+  ;; ,--------------,
+  ;; | Shell Script |
+  ;; '--------------'
+
+  (spacemacs/set-leader-keys-for-major-mode 'sh-mode
+      "J"     'my/collapse-single-line-function
+      )
+
+  ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Spacemacs-Buffer-Mode |
   ;; '-----------------------'
