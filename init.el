@@ -3476,6 +3476,7 @@ If FILE is nil, the file associated with the current buffer is used."
              ("M-RET"  . lisp-state-toggle-lisp-state)
              ("e j"    . my/eval-print-last-sexp)
              ("e p"    . my/eval-prettyprint-last-sexp)
+             ("e y"    . my/eval-yank-last-sexp)
              ("e D"    . eval-instrument-defun)
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
@@ -3500,6 +3501,7 @@ If FILE is nil, the file associated with the current buffer is used."
              ("M-RET"  . lisp-state-toggle-lisp-state)
              ("e j"    . my/eval-print-last-sexp)
              ("e p"    . my/eval-prettyprint-last-sexp)
+             ("e y"    . my/eval-yank-last-sexp)
              ("e D"    . eval-instrument-defun)
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
@@ -4628,10 +4630,15 @@ With a prefix argument, formats the value using `(format \"%S\" val)' instead."
   (defun my/eval-replace-last-sexp-core ()
     "Replace the preceding sexp with its value, formatted by pp-to-string. With a
  prefix argument, formats the value using `(format \"%S\" val)' instead."
-    (let ((val (eval (preceding-sexp))))
+    (let ((val (eval (elisp--preceding-sexp))))
       (kill-sexp -1)
       (if current-prefix-arg (insert (format "%S" val))
         (insert (replace-regexp-in-string "\n\\'" "" (pp-to-string val))))))
+
+  (defun my/eval-yank-last-sexp ()
+    "Copy the preceding sexp to the kill-ring."
+    (interactive)
+    (kill-new (format "%S" (eval (elisp--preceding-sexp)))))
 
   (defun my/evil-normal-or-visual-state? ()
     (and (boundp 'evil-state)
