@@ -2521,6 +2521,8 @@ COUNT, BEG, END, and TYPE have no effect."
       "m a"   'my/dactyl-make-defn-multiline-align-1
       "o c"   'my/dactyl-command-occur
       "o f"   'my/dactyl-function-occur
+      "o g"   'my/dactyl-show-groups
+      "o s"   'my/dactyl-show-sections
       "o m"   'my/dactyl-mapping-occur
       "t"     'my/dactyl-toggle-text-mode
       "J"     'my/collapse-single-line-function
@@ -2618,6 +2620,18 @@ COUNT, BEG, END, and TYPE have no effect."
     (let ((pcre (concat "function +\w*" pattern "\w* *\(\)"
                         "|" "\w*" pattern "\w* *= *function *\(\)")))
       (occur (pcre-to-elisp pcre "i")))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-show-groups ()
+    "Open an `occur' buffer with all group statements."
+    (interactive)
+    (occur (pcre-to-elisp "^group [a-zA-Z0-9_]+ -locations="))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-show-sections ()
+    "Open an `occur' buffer with all section headings."
+    (interactive)
+    (occur (pcre-to-elisp "^ *\" \\| .* \\|$"))
     (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-toggle-text-mode ()
