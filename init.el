@@ -2600,14 +2600,16 @@ COUNT, BEG, END, and TYPE have no effect."
     "Open an `occur' buffer with statements mapping keys matching PREFIX."
     (interactive (list (read-string "Mappings for key prefix: " nil t nil)))
     (let ((pcre (concat "map!? +(-\\w+ +)*" prefix)))
-      (occur (pcre-to-elisp pcre))))
+      (occur (pcre-to-elisp pcre)))
+    (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-command-occur (pattern &optional case-sensitive)
     "Open an `occur' buffer with statements defining commands matching PATTERN."
     (interactive (list (read-string "Commands matching PATTERN: " nil t nil)
                        current-prefix-arg))
     (let ((pcre (concat "command!? +(-\\w+ +)*\w*" pattern "\w*")))
-      (occur (pcre-to-elisp pcre "i"))))
+      (occur (pcre-to-elisp pcre "i")))
+    (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-function-occur (pattern &optional case-sensitive)
     "Open an `occur' buffer with statements defining functions matching PATTERN."
@@ -2615,7 +2617,8 @@ COUNT, BEG, END, and TYPE have no effect."
                  current-prefix-arg)
     (let ((pcre (concat "function +\w*" pattern "\w* *\(\)"
                         "|" "\w*" pattern "\w* *= *function *\(\)")))
-      (occur (pcre-to-elisp pcre "i"))))
+      (occur (pcre-to-elisp pcre "i")))
+    (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-toggle-text-mode ()
     (interactive)
