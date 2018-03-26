@@ -6384,6 +6384,19 @@ entered, return a command which executes it."
   (defmacro showvars (&rest vars)
     `(message "%s" (printvars ',vars)))
 
+  (defun my/newline-indent-insert-fill-prefix (arg)
+    (interactive "P")
+    (newline)
+    (let ((n (cond ((eq current-prefix-arg '(4)) (* 2 tab-width))
+                   ((eq current-prefix-arg '-)   1)
+                   (t                            tab-width)))
+          (leading-spaces (save-excursion (back-to-indentation) (current-column))))
+      (delete-char leading-spaces)
+      (insert (make-string n ? ))
+      (save-excursion
+        (beginning-of-line)
+        (insert fill-prefix))))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
