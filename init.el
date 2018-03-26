@@ -2522,8 +2522,8 @@ COUNT, BEG, END, and TYPE have no effect."
       "o c"   'my/dactyl-command-occur
       "o f"   'my/dactyl-function-occur
       "o g"   'my/dactyl-show-groups
-      "o s"   'my/dactyl-show-sections
       "o m"   'my/dactyl-mapping-occur
+      "o \\"  'my/dactyl-show-sections
       "t"     'my/dactyl-toggle-text-mode
       "J"     'my/collapse-single-line-function
       "SPC"   'helm-imenu
