@@ -2525,6 +2525,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "o m"   'my/dactyl-mapping-occur
       "o \\"  'my/dactyl-show-sections
       "t"     'my/dactyl-toggle-text-mode
+      "j"     'my/newline-indent-insert-fill-prefix
       "J"     'my/collapse-single-line-function
       "SPC"   'helm-imenu
       "\\"    'my/dactyl-move-continuation-to-column-1
