@@ -2570,7 +2570,7 @@ COUNT, BEG, END, and TYPE have no effect."
      (region-beginning)
      (region-end)
      (evil-ex-make-substitute-pattern
-      " *\\( -desc\\| -nargs\\| -count\\| -bang\\| -modes\\| -complete\\| -ex\\| -js\\| :\\)"
+      " *\\( -desc\\| -nargs\\| -count\\| -bang\\| -modes\\| -complete\\| -ex\\| -js\\| -b\\b\\)"
       '(?g))
      "\n\\\\   \\1"))
 
@@ -2580,7 +2580,7 @@ COUNT, BEG, END, and TYPE have no effect."
      (region-beginning)
      (region-end)
      (evil-ex-make-substitute-pattern
-      " *\\( -nargs\\| -count\\| -bang\\| -modes\\| -complete\\| -ex\\| -js\\| :\\)"
+      " *\\( -nargs\\| -count\\| -bang\\| -modes\\| -complete\\| -ex\\| -js\\| -b\\b\\)"
       '(?g))
      "\n\\\\   \\1"))
 
