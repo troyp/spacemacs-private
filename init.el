@@ -2522,6 +2522,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "o c"   'my/dactyl-command-occur
       "o f"   'my/dactyl-function-occur
       "o g"   'my/dactyl-show-groups
+      "o s"   'my/dactyl-show-styles
       "o m"   'my/dactyl-mapping-occur
       "o \\"  'my/dactyl-show-sections
       "t"     'my/dactyl-toggle-text-mode
@@ -2633,6 +2634,12 @@ COUNT, BEG, END, and TYPE have no effect."
     "Open an `occur' buffer with all section headings."
     (interactive)
     (occur (pcre-to-elisp "^ *\" \\| .* \\|$"))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-show-styles ()
+    "Open an `occur' buffer with all style commands."
+    (interactive)
+    (occur (pcre-to-elisp "^style -name="))
     (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-toggle-text-mode ()
