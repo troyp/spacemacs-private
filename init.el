@@ -2885,9 +2885,13 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; | finder-mode |
   ;; '-------------'
 
-  (evilified-state-evilify-map finder-mode-map
-      :mode finder-mode
-      )
+  (add-hook 'finder-mode-hook 'my/finder-mode-init)
+
+  (defun my/finder-mode-init ()
+    (define-key finder-mode-map (kbd "C-h") 'help-map)
+    (evilified-state-evilify-map finder-mode-map
+        :mode finder-mode
+        ))
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------------,
