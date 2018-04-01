@@ -1398,7 +1398,8 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
   (global-set-key (kbd "<C-M-return>") 'my/split-line-and-open-line-above)
 
-  (global-set-key "\C-a" 'my/evil-beginning-of-line-or-first-non-blank)
+  (when (commandp 'my/evil-beginning-of-line-or-first-non-blank)
+    (global-set-key "\C-a" 'my/evil-beginning-of-line-or-first-non-blank))
   (global-set-key (kbd "<S-return>") 'my/open-line-below)       ;; troyp/utils.el
   (global-set-key (kbd "<C-S-return>") 'my/open-line-above)     ;; troyp/utils.el
   (global-set-key [\C-\S-down] 'move-text-down)
@@ -1493,7 +1494,7 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; note: (evil-define-key 'normal global-map ...) takes precedence over
   ;;       (define-key evil-normal-state-map ...)
 
-  (when (fboundp 'my/evil-force-normal-state-and-cancel)
+  (when (commandp 'my/evil-normal-state-and-cancel)
     (define-key evil-normal-state-map [escape] 'my/evil-force-normal-state-and-cancel))
   (define-key evil-normal-state-map [delete] 'kill-this-buffer)
   (define-key evil-normal-state-map [S-delete] 'delete-window)
@@ -1512,9 +1513,9 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-normal-state-map (kbd "gf") 'link-hint-open-all-links)
 
   ;; centre after n, N, '
-  (when (fboundp 'my/evil-search-next-and-center)
+  (when (commandp 'my/evil-search-next-and-center)
     (define-key evil-normal-state-map (kbd "n") 'my/evil-search-next-and-center))
-  (when (fboundp 'my/evil-search-previous-and-center)
+  (when (commandp 'my/evil-search-previous-and-center)
       (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center))
 
   (define-key evil-normal-state-map (kbd "'") 'my/evil-goto-mark-line)
@@ -1522,9 +1523,9 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-normal-state-map (kbd "|") 'my/evil-goto-column)
 
   ;; PCRE search forward/backward
-  (when (fboundp 'my/evil-pcre-search-forward)
+  (when (commandp 'my/evil-pcre-search-forward)
     (define-key evil-normal-state-map (kbd "/") 'my/evil-pcre-search-forward))
-  (when (fboundp 'my/evil-pcre-search-backward)
+  (when (commandp 'my/evil-pcre-search-backward)
     (define-key evil-normal-state-map (kbd "?") 'my/evil-pcre-search-backward))
 
   ;; provide evil-repeat-find-char-reverse binding
@@ -1617,7 +1618,6 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; ,--------------,
   ;; | INSERT STATE |
   ;; '--------------'
-  (define-key evil-insert-state-map [escape] 'my/evil-normal-state-and-cancel)
   ;; define bindings for shift-right/left-line: frees C-d, C-t:
   (define-key evil-insert-state-map (kbd "S-<tab>")       'evil-shift-right-line)
   ;; (define-key evil-insert-state-map (kbd "S-<backspace>") 'evil-shift-left-line)
