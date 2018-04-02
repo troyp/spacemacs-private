@@ -4924,6 +4924,9 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
   ;; functions dealing with lines
   ;; ============================
 
+  (defvar my/blank-line-regexp "^[[:space:]]*$")
+  (defvar my/blank-line-no-whitespace-regexp "^$")
+
   (defun my/line-at-point-string ()
     "Return the line around point as a string.
 Similar to (thing-at-point \'line t) except it does not return a trailing newline.
@@ -4934,7 +4937,7 @@ See also `thing-at-point'"
 
   (defun my/line-at-point-blank-p ()
     "Returns a non-nil value if the current line contains only whitespace."
-    (string-match-p "^[[:space:]]*$" (my/line-at-point-string)))
+    (string-match-p my/blank-line-regexp (my/line-at-point-string)))
   (defun my/line-above-blank-p (&optional n)
     (save-excursion
       (forward-line (- (or n 1)))
