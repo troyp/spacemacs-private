@@ -3874,6 +3874,7 @@ If FILE is nil, the file associated with the current buffer is used."
 
   (spacemacs/set-leader-keys-for-major-mode 'sh-mode
       "J"     'my/collapse-single-line-function
+      "."     'find-file-at-point
       )
 
   ;; -------------------------------------------------------------------------------
