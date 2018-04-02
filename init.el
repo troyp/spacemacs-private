@@ -1837,6 +1837,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "C-l"          'my/quick-pcre-align-repeat
     "C-p"          'my/evil-paste-after-as-block
     "C-P"          'my/evil-paste-before-as-block
+    "C-r"          'my/replace-line
     "C-v"          'my/cua-rectangle-toggle
     "C-w"          'delete-frame
     "C-y"          'my/paste-no-properties
@@ -4977,6 +4978,13 @@ See `my/line-at-point-blank-p', `my/line-above-blank-p', `my/line-below-blank-p'
     (interactive)
     (when (my/line-visible-end-position)
       (kill-ring-save (my/line-visible-beginning-position) (my/line-visible-end-position))))
+
+  (defun my/replace-line (count)
+    (interactive "p")
+    (let ((s (pop kill-ring)))
+      (kill-whole-line count)
+      (kill-new s)
+      (evil-paste-before)))
 
   ;; ==============================
   ;; functions dealing with columns
