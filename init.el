@@ -1033,6 +1033,22 @@ Returns the function definition."
   (evil-define-text-object evil-a-element (count &optional beg end type)
     (list (web-mode-element-beginning-position (point)) (+ 1 (web-mode-element-end-position (point)))))
 
+  (evil-define-text-object evil-inner-simple-paragraph  (count &optional beg end type)
+    (list (save-excursion (search-backward-regexp my/blank-line-regexp) (next-line) (point))
+          (save-excursion
+            (search-forward-regexp my/blank-line-regexp)
+            ;; handle case of overshoot (when blank line at end contains whitespace)
+            (when (my/line-at-point-blank-p) (previous-line) (end-of-line) (forward-char))
+            (point))))
+  (evil-define-text-object evil-a-simple-paragraph  (count &optional beg end type)
+    (list (save-excursion (search-backward-regexp my/blank-line-regexp) (point))
+          (save-excursion
+            (search-forward-regexp my/blank-line-regexp)
+            (next-line)
+            ;; handle case of overshoot (when blank line at end contains whitespace)
+            (unless (my/line-at-point-blank-p) (previous-line) (end-of-line) (forward-char))
+            (point))))
+
   ;; heredoc object: define properties for thingatpt
   (put 'heredoc 'beginning-op
        (lambda ()
@@ -1123,6 +1139,8 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-outer-text-objects-map "e" 'evil-a-element)
   (define-key evil-outer-text-objects-map "z" 'evil-a-charrun)
   (define-key evil-inner-text-objects-map "z" 'evil-inner-charrun)
+  (define-key evil-outer-text-objects-map "" 'evil-a-simple-paragraph)
+  (define-key evil-inner-text-objects-map "" 'evil-inner-simple-paragraph)
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------------,
