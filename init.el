@@ -5588,12 +5588,7 @@ manager is determined by the `my/external-file-manager' variable."
       (set-window-buffer w2 b1)))
 
   (defun my/frame-windows (&optional frame)
-    (cl-remove
-     nil
-     (car
-      (gethash
-       (or frame (selected-frame))
-       window-numbering-table))))
+    (window-list (selected-frame)))
 
   (defun my/frame-parameter-names (&optional frame)
     (let ((frame (or frame (selected-frame))))
@@ -5603,9 +5598,9 @@ manager is determined by the `my/external-file-manager' variable."
     (interactive)
     (let* ((ws (my/frame-windows))
            (w1 (selected-window))
-           (w2 (if (equal (aref ws 1) ws)
-                   (aref ws 2)
-                 (aref ws 1))))
+           (w2 (if (equal (car ws) w1)
+                   (cadr ws)
+                 (car ws))))
       (message "(my/swap-windows %S %S)" w1 w2)
       (my/swap-windows w1 w2)))
 
