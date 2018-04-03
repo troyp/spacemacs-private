@@ -2032,6 +2032,7 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix-docstring "Commands opening projects."
              ("d" . my/dactyl-source-dir)
              ("c" . my/cvim-source-dir)
+             ("v" . my/vimperator-source-dir-orig)
              )
 
   (bind-keys :map user-cmds-map
@@ -2586,6 +2587,16 @@ COUNT, BEG, END, and TYPE have no effect."
     (dired-insert-subdir "/home/troy/repos/dactyl/common/content/")
     (dired-insert-subdir "/home/troy/repos/dactyl/common/modules/")
     (dired-insert-subdir "/home/troy/repos/dactyl/pentadactyl/content/")
+    (dired-hide-details-mode 1)
+    (setq-local my/dired-reuse-buffer nil))
+
+  (defun my/vimperator-source-dir-orig()
+    (interactive)
+    (dired "/home/troy/source/git-repos/dactyl/common/")
+    (dired-insert-subdir "/home/troy/source/git-repos/vimperator-labs/common/components/")
+    (dired-insert-subdir "/home/troy/source/git-repos/vimperator-labs/common/content/")
+    (dired-insert-subdir "/home/troy/source/git-repos/vimperator-labs/common/modules/")
+    (dired-insert-subdir "/home/troy/source/git-repos/vimperator-labs/vimperator/content/")
     (dired-hide-details-mode 1)
     (setq-local my/dired-reuse-buffer nil))
 
