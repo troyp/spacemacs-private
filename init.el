@@ -2528,6 +2528,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive)
     (setq imenu-generic-expression `((nil "^\" | .* |$" 0)))
     (setq tab-width 4)
+    (modify-syntax-entry ?_ "w")
     )
 
   (add-hook 'dactyl-mode-hook 'my/dactyl-init)
