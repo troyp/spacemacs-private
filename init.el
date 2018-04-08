@@ -2777,7 +2777,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (my/define-keys dired-mode-map
       (kbd "S-SPC")          nil
       (kbd "C-h")            nil
-      (kbd "q")              'tsp-quit-window-kill
+      (kbd "q")              'my/quit-window-kill
       (kbd "<return>")       'my/dired-find-file-maybe-alternate
       (kbd "<S-return>")     'dired-find-file
       (kbd "<mouse-3>")      'diredp-mouse-3-menu
@@ -5382,7 +5382,7 @@ Inserts the expansion on a new line at the end of the sexp."
     (my/quick-pcre-align-repeat beg end " (?:\")")
     (evil-indent beg end))
 
-  (defun tsp-quit-window-kill (&optional bury window)
+  (defun my/quit-window-kill (&optional bury window)
     (interactive "P")
     (quit-window (not bury) window))
 
