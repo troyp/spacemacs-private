@@ -2553,6 +2553,9 @@ COUNT, BEG, END, and TYPE have no effect."
       "t"     'my/dactyl-toggle-text-mode
       "j"     'my/newline-indent-insert-fill-prefix
       "J"     'my/collapse-single-line-function
+      ". c"   'my/dactyl-command-occur-at-point
+      ". f"   'my/dactyl-function-occur-at-point
+      ". m"   'my/dactyl-mapping-occur-at-point
       "SPC"   'helm-imenu
       "\\"    'my/dactyl-move-continuation-to-column-1
       )
@@ -2565,6 +2568,8 @@ COUNT, BEG, END, and TYPE have no effect."
       ", m"       "multiline"
       ", o"       "occur"
       "M-RET o"   "occur"
+      ", ."       "at-point"
+      "M-RET ."   "at-point"
       ", '"       "\" ⌶ \""
       "M-RET '"   "\" ⌶ \""
       ", /"       "/* ⌶ */"
@@ -2687,6 +2692,34 @@ COUNT, BEG, END, and TYPE have no effect."
      (region-beginning) (region-end)
      (evil-ex-make-substitute-pattern "^    \\\\ " nil)
      "\\\\    "))
+
+  (defun my/dactyl-mapping-occur-at-point (prefix)
+    "Open an `occur' buffer with statements mapping keys matching PREFIX."
+    (interactive
+     (list
+      (read-string "Mappings for key prefix: "
+                   (regexp-quote (apply 'buffer-substring (-take 2 (evil-inner-WORD))))
+                   t)))
+    (let ((pcre (concat "map!? +(-\\w+ +)*" prefix)))
+      (occur (pcre-to-elisp pcre)))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-command-occur-at-point (pattern &optional case-sensitive)
+    "Open an `occur' buffer with statements defining commands matching PATTERN."
+    (interactive (list (read-string "Commands matching PATTERN: " (regexp-quote (tap-thing-at-point 'word)) t)
+                       current-prefix-arg))
+    (let ((pcre (concat "command!? +(-\\w+ +)*\w*" pattern "\w*")))
+      (occur (pcre-to-elisp pcre "i")))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-function-occur-at-point (pattern &optional case-sensitive)
+    "Open an `occur' buffer with statements defining functions matching PATTERN."
+    (interactive (list (read-string "Functions matching PATTERN: " (regexp-quote (tap-thing-at-point 'word)) t))
+                 current-prefix-arg)
+    (let ((pcre (concat "function +\w*" pattern "\w* *\(\)"
+                        "|" "\w*" pattern "\w* *= *function *\(\)")))
+      (occur (pcre-to-elisp pcre "i")))
+    (switch-to-buffer-other-window "*Occur*"))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
