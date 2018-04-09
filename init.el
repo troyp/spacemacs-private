@@ -1982,10 +1982,10 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
-             ;; S-SPC K
+             ;; S-SPC k
              :prefix-map my/keymaps-prefix-map
              :menu-name "keys/keymaps"
-             :prefix "K"
+             :prefix "k"
              :prefix-docstring "Commands dealing with keymaps."
              ("a" . my/which-key-show-keymap-at-point)
              ("e" . edmacro-insert-key)
@@ -2001,7 +2001,7 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map my/keymaps-prefix-map
-             ;; S-SPC K d
+             ;; S-SPC k d
              :prefix-map keymaps-describe-prefix-map
              :prefix "d"
              :prefix-docstring "Describe commands related to keymaps and key binding."
@@ -2027,19 +2027,19 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
-             ;; S-SPC X
+             ;; S-SPC x
              :prefix-map my/structured-text-prefix-map
              :menu-name "structured text"
-             :prefix "X"
+             :prefix "x"
              :prefix-docstring "Commands dealing with structured text."
              ("sn" . sort-numeric-fields)
              )
 
   (bind-keys :map user-cmds-map
-             ;; S-SPC X r
+             ;; S-SPC x r
              :prefix-map my/rectangle-prefix-map
              :menu-name "rectangle"
-             :prefix "X r"
+             :prefix "x r"
              :prefix-docstring "Commands operating on rectangles."
              ("c" . clear-rectangle)
              ("n" . rectangle-number-lines-interactive)
