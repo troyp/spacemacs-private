@@ -1972,16 +1972,6 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
-             ;; S-SPC a
-             :prefix-map my/app-prefix-map
-             :menu-name "applications"
-             :prefix "a"
-             :prefix-docstring "Commands dealing with applications."
-             ("d d" . my/dactyl-source-dir)
-             ("d D" . my/dactyl-source-dir-orig)
-             )
-
-  (bind-keys :map user-cmds-map
              ;; S-SPC d
              :prefix-map my/delete-prefix-map
              :menu-name "delete"
