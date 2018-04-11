@@ -3343,13 +3343,17 @@ COUNT, BEG, END, and TYPE have no effect."
      ("<C-`>"   . magit-section-cycle)
      ("q"       . my/magit-mode-kill-buffer)
      )
-    (define-key magit-blame-mode-map (kbd "C-b") 'my/magit-blame-and-center)
     (evil-define-key 'normal magit-mode-map (kbd "-") 'dired-jump)
     (add-hook 'magit-diff-visit-file-hook #'recenter)
     (setf magit-log-revision-headers-format "\
 %+b
 Author:    %aN <%aE>
 Committer: %cN <%cE>"))
+
+  (eval-after-load 'magit-blame
+    `(progn
+       (define-key magit-blame-read-only-mode-map (kbd "C-b") 'my/magit-blame-and-center)
+       ))
 
   (eval-after-load 'magit-mode
     `(progn
