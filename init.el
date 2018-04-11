@@ -3464,7 +3464,7 @@ Committer: %cN <%cE>"))
                    (unless (buffer-file-name)
                      (write-file (make-temp-file "markdown-output")))
                    (markdown-export (markdown-export-file-name)))))
-      (browse-file-with-external-application fname)))
+      (browse-url-xdg-open fname)))
 
   (defun my/markdown-view-with-remarkable (file)
     "View FILE with remarkable (https://github.com/jamiemcg/remarkable)."
@@ -4646,13 +4646,6 @@ temporarily enables it to allow getting help on disabled items and buttons."
     "Evaluates a SEXP which is represented as a string."
     (eval (car (read-from-string s))))
 
-  (defun browse-file-with-external-application (file)
-    (if (browse-url-can-use-xdg-open)
-        (browse-url-xdg-open file)
-      (progn
-        (require 'eww)
-        (eww-browse-with-external-browser file))))
-
   (defun browse-buffer-file-firefox ()
     (interactive)
     (browse-url-firefox
@@ -4666,7 +4659,7 @@ temporarily enables it to allow getting help on disabled items and buttons."
 
   (defun browse-buffer-file-with-external-application ()
     (interactive)
-    (browse-file-with-external-application buffer-file-name))
+    (browse-url-xdg-open buffer-file-name))
 
   (defun my/browse-url-at-point ()
     (interactive)
