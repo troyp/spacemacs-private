@@ -1,0 +1,229 @@
+Sun Jul  7 23:10:47 2002  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* Release SDIC-2.1.3.
+
+Wed Jul  3 14:34:56 2002  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* contrib/edict.perl (normal, reverse): Remove markers denote
+	words of foreign origin.
+
+Tue Jul  2 20:04:57 2002  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* contrib/edict.perl, contrib/gene.perl: Update my address.  Unify
+	end of lines.
+
+	* autogen.sh, .cvsignore, lisp/cvsignore: New files.
+
+	* lisp/sdic-compat.el, lisp/sdic-gene.el, lisp/sdic.el.in,
+	lisp/sdicf.el, lisp/sdicf-client.el, lisp/stem.el,
+	contrib/eijirou.perl, AUTHORS, ChangeLog: Update my address.
+
+Fri Feb  9 10:58:00 2001  Hideyuki SHIRAI  <shirai@rdmg.mgcs.mei.co.jp>
+
+	* lisp/sdicf.el (sdicf-default-directory): New variable.
+	(sdicf-call-process): Set 'default-directory' to
+	'sdicf-default-directory'. See sdic-ML 00420.
+	(sdicf-start-process): Ditto.
+	
+Wed Jan 05 19:07:41 2000  Hideyuki SHIRAI  <shirai@rdmg.mgcs.mei.co.jp>
+
+	* lisp/sdic.el.in (sdic-word-at-point): Use sdic-split-string,
+	 when found a prepositional word.
+
+Tue Sep  7 12:42:34 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* Release SDIC-2.1.2.
+
+Fri Sep  3 14:20:35 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* sdicf.el(sdicf-buffer-live-p): Define the alternative function
+	  of `buffer-live-p'.
+
+	* sdic.el.in, sdic-compat.el, sdic-gene.el: Replace function from
+	  `sdic-buffer-live-p' to `sdicf-buffer-live-p'.
+
+Mon Aug 16 18:37:16 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* Release SDIC-2.1.1.
+
+Mon Aug 16 14:15:36 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* install.el.in: Bug fix of install.el.in (Cf. [sdic:00342]).
+
+Thu Jul 29 09:15:08 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* Release SDIC-2.1.
+
+Tue Jul 27 14:44:24 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* INSTALL: Modify documents of install procedure at UNIX
+	  environment.
+
+	* configure.in: Change range of legal values of `--with-dicttype'.
+
+	* install.el.in: Add help message for `--with-multidict'.
+
+Mon Jul 26 18:01:04 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* Release SDIC-2.1-pre2.
+
+	* configure.in: Update script to generate `WAEI_DICT_LIST' and
+ 	  `EIWA_DICT_LIST'.
+
+Mon Jul 26 16:52:34 1999  Hideyuki SHIRAI  <shirai@rdmg.mgcs.mei.co.jp>
+
+	* sdicf.el (sdic-call-process): Add local binding of
+	  `file-name-coding-system' for XEmacs.
+
+	* sdic.el.in,sdic.texi: Add exposition of key-bind.
+
+	* INSTALL,lisp/sdic.el.in: Modify document of setting for Emacs20
+	  and XEmacs.
+
+Mon Jul 26 00:41:42 1999  Satoru Takabayashi  <satoru-t@is.aist-nara.ac.jp>
+
+	* configure.in: Bug fix: substitution for EIJIROU_DIR and
+ 	WAEIJIROU_DIR
+
+Sun Jul 25 13:00:15 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* Release SDIC-2.1-pre1.
+
+Fri Jul 23 19:06:54 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* install.el.in: Following the change of dictionary naming rule.
+
+	* contrib/gene.perl (sdic_to_compat): Some fixes.
+
+1999-07-23  Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* lisp/Makefile.am, configure.in: eedict.dic support
+	  by using `contrib/gene.perl --sdic-to-compat'
+
+	* lisp/sdic.el: Apply Tsuchiya's patch [sdic:00295] and Modify it 
+	  little a bit.
+
+	* configure.in: Support multiple dictionaries.
+
+	* Makefile.am:  Add entries for edict's family.
+	  4jwords, compdic,enamdict
+
+	* lisp/elisp-comp: Modify one line.
+	  (load "sdic.el.in")  -> (load "sdic.el")
+
+Fri Jul 23 17:04:18 1999  Hideyuki Shirai <shirai@rdmg.mgcs.mei.co.jp>
+
+	* contrib/{edict.perl,eijirou.perl,gene.perl,jgene.perl}:
+	  Add code for Windows.
+
+	* install.el.in: Some bug fixes and update code to decide
+	  `make-sdic-lisp-directory' for Mule-for-Windows.
+
+1999-07-22  Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* configure.in: Change default DICTDIR.
+
+	* lisp/sdic.el: Replace %{EIWA,WAEI}_DICTIONARY_PATH% with
+	  %{EIWA,WAEI}_DICT_PATH% ; notation changed.
+	
+1999-07-21  Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* configure.in, Makefile.am: Add a feature to detect `WAEIJIROU'
+	  directory at configure time and process it make time.
+
+	* INSTALL: Update documents of install procedure for `WAEIJIROU'.
+
+Wed Jul 21 21:23:31 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* lisp/sdic.el.in: Update code for queries in upper case.
+
+	* contrib/eijirou.perl: Update code for `WAEIJIROU'. 
+
+1999-07-21  Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* configure.in, Makefile.am: Add a feature to detect `EIJIROU'
+	  directory at configure time and process it make time.
+
+	* INSTALL: Update documents of install procedure for `EIJIROU'.
+
+	* Makefile.am, configure.in: Support jedict.dic
+
+Wed Jul 21 12:49:19 1999  Masaru Tawa  <tawa@ac.mbn.or.jp>
+
+	* contrib/eijirou.perl: Fix for `WAEIJIROU'.
+
+Wed Jul 21 12:49:19 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* install.el.in: Update code to make `lisp/sdic.el'.
+
+	* configure.in, Makefile.am: Add `install.el' to package.
+
+Wed Jul 21 12:49:19 1999  Hideyuki Shirai  <shirai@rdmg.mgcs.mei.co.jp>
+
+	* lisp/sdic.el.in: Fix the too short stem problem and contribute
+	  codes for queries in upper case.
+
+Tue Jul 20 22:23:57 1999  Tsuchiya Masatoshi  <tsuchiya@namazu.org>
+
+	* install.el: Add code to make `lisp/sample.emacs'.
+
+	* INSTALL: Update documents of install procedure for Windows.
+
+Mon Jul 19 18:04:31 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* INSTALL: Add documents of install procuedure using `install.el',
+	  and update documents of `EIJIROU'.
+
+	* NEWS: Add NEWS for SDIC-2.1.
+
+	* install.el: New file.
+
+	* lisp/sdic.el.in:
+	  Add function `sdic-version' and edit comments.
+
+	* lisp/sdicf-client.el lisp/sdic-compat.el lisp/sdic-gene.el:
+	  Edited comments.
+
+	* texi/sdic.texi: Update documents for SDIC-2.1.
+
+1999-07-18  Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* Makefile.am: Fix `config' entry bug.
+	
+Fri Jul 16 19:00:39 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* lisp/sdicf.el: Bug fix of sdicf-entry-keywords.
+
+	* lisp/lp.el: Update install procedure for Windows.
+
+	* INSTALL: Update document about the install procedure using lp.el.
+
+1999-07-16  Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* configure.in: Substitute lisp/sample.emacs at configure time.
+
+	* lisp/sample.emacs.in: Be substituted at configure time.
+
+	* INSTALL: Rewrited to correspond to configured sdic.
+
+	* Makefile.am: Restore `config' entry.
+	
+Wed Jun  2 17:55:44 1999  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* lisp/Makefile.am,lp.el: Change compile method.
+
+	* lisp/sdic.el.in: (sdic-word-at-point) Bug fix (Tnx. Takashi Nishimoto)
+
+	* lisp/sdic-grep.el: (sdic-grep-open-dictionary) Disable undo in temporary buffer.
+
+	* lisp/sdic-gene.el: (sdic-gene-open-dictionary) Disable undo in temporary buffer.
+
+1999-05-16  Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* Be configurized:
+		Makefile.{am,in}, configure.in, configure, 
+		lisp/Makefile.{am,in} : New files
+		acinclude.m4, aclocal.m4, elisp-comp : Import from Lookup
+
+	* TODO, NEWS, AUTHORS, ChangeLog, THANKS: New file.
+

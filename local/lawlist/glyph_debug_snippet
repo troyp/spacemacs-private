@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# contributor: lawlist
+# key: glyph_debug
+# name: glyph_debug
+# binding: TAB g d
+# --
+`(let* (
+      (region-active-p (region-active-p))
+      (reg-beg (when region-active-p (region-beginning)))
+      (reg-end (when region-active-p (region-end))) )
+    (cond
+      (mc/mode
+        "{\\bf Â§0}")
+      ((and
+          (not mc/mode)
+          region-active-p)
+        (concat
+          "{\\bf "
+          ys-selected-text
+          "}"))
+      (t
+"#ifdef GLYPH_DEBUG
+  debug_method_add (w, \"Â§1: %d\", var);
+#endif")))`

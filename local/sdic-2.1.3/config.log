@@ -1,0 +1,22 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:570: checking for a BSD compatible install
+configure:623: checking whether build environment is sane
+configure:680: checking whether make sets ${MAKE}
+configure:726: checking for working aclocal
+configure:739: checking for working autoconf
+configure:752: checking for working automake
+configure:765: checking for working autoheader
+configure:778: checking for working makeinfo
+configure:810: checking for emacs
+configure:851: checking where emacs files are in
+configure:906: checking where .elc files should go
+configure:924: checking for nkf
+configure:964: checking for perl
+configure:1004: checking for gzip
+configure:1044: checking for bzip2
+configure:1084: checking for cp
+configure:1124: checking for sort
+configure:1216: checking for EIWA Dictionary
+configure:1268: checking for WAEI Dictionary

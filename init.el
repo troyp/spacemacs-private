@@ -159,33 +159,7 @@ values."
      ;; -------------------
      ;; Drew Adams Packages
      ;; -------------------
-     autofit-frame
      ;; bookmark+
-     (dired+ :variables
-             diredp-hide-details-initially-flag nil
-             diredp-hide-details-propagate-flag t
-             )
-     dired-sort-menu+
-     doremi doremi-cmd doremi-frm doremi-mac
-     facemenu+
-     faces+
-     fit-frame
-     font-lock+
-     frame-cmds frame-fns
-     help-fns+ help-mode+ help+
-     hexrgb
-     highlight
-     isearch+ isearch-prop
-     lacarte
-     naked
-     nim-mode
-     palette
-     replace+ strings
-     thingatpt+
-     thumb-frm
-     ucs-cmds
-     wid-edit+
-     zoom-frm
      ;; ----------------------------------------------------------------------
      ;; --------------
      ;; other packages
@@ -197,7 +171,6 @@ values."
      dired-du
      dired-icon
      dired-rainbow
-     dired-sort-menu
      (dired-subtree :after dired)
      dired-toggle-sudo
      direx
@@ -218,7 +191,6 @@ values."
      mozc
      move-dup
      nameless
-     top-mode
      vimish-fold
      wgrep
      wgrep-ack
@@ -922,14 +894,40 @@ Returns the function definition."
   (defvar my/dotspacemacs-additional-local-packages)
   (setf my/dotspacemacs-additional-local-packages
         '(
-          eyedropper
-          find-func+
           firefox-protocol
-          help-macro+
+          highlight
           ibuffer-hydra
-          mode-compile
-          mode-compile-kill
+          ;; mode-compile
+          ;; mode-compile-kill
           moz
+          top-mode
+          ;; Drew Adams packages
+          autofit-frame
+          dired+
+          dired-sort-menu
+          dired-sort-menu+
+          doremi doremi-cmd doremi-frm doremi-mac
+          eyedropper
+          facemenu+
+          faces+
+          find-func+
+          fit-frame
+          font-lock+
+          frame-cmds frame-fns
+          help-fns+ help-mode+ help+ help-macro+
+          hexrgb
+          isearch+ isearch-prop
+          lacarte
+          naked
+          nim-mode
+          palette
+          replace+ strings
+          thingatpt+
+          thumb-frm
+          ucs-cmds
+          wid-edit+
+          zoom-frm
+          ;;
           t
           ))
   (loop for pkg in my/dotspacemacs-additional-local-packages do
@@ -2735,6 +2733,8 @@ COUNT, BEG, END, and TYPE have no effect."
       :off (setq diredp-wrap-around-flag nil)
       )
     :config
+    (setq diredp-hide-details-propagate-flag t)
+    (setq diredp-hide-details-initially-flag nil)
     (setq diredp-wrap-around-flag nil)
     (diredp-toggle-find-file-reuse-dir -1)
     )
