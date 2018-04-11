@@ -50,9 +50,9 @@ values."
      emacs-lisp
      ess
      extra-langs
-     evil-unimpaired
      git
      go
+     helm
      graphviz
      (haskell :variables
               haskell-enable-shm-support t
