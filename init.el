@@ -169,7 +169,10 @@ values."
      company-quickhelp
      dired-collapse
      dired-du
+     dired-hacks-utils
      dired-icon
+     dired-filter
+     dired-open
      dired-rainbow
      (dired-subtree :after dired)
      dired-toggle-sudo
@@ -2839,6 +2842,7 @@ COUNT, BEG, END, and TYPE have no effect."
          "Y"     'diredp-relsymlink-this-file
          ","     'dired-subtree-toggle
          "."     'dired-subtree-cycle
+         "RET"   'dired-open-xdg
          "<f2>"  'dired-do-rename
          )
        (spacemacs/declare-prefix-for-mode 'dired-mode "mt" "toggles")
