@@ -5174,7 +5174,7 @@ within the region."
   (defun my/open-file-at-point ()
     "Open the file at point using xdg-open."
     (interactive)
-    (shell-command (concat "xdg-open " (ffap-file-at-point))))
+    (shell-command (concat "xdg-open " (ffap-guess-file-name-at-point))))
 
   ;; ================
   ;; shift left/right
@@ -6244,7 +6244,7 @@ types."
       (cond (shr-url (kill-append (concat shr-url "\n") nil))
             (org-link (kill-append (concat (plist-get org-link :uri) "\n") nil))
             (text-url (kill-append (concat text-url "\n") nil))
-            (file-link (kill-append (concat (ffap-file-at-point) "\n") nil))
+            (file-link (kill-append (concat (ffap-guess-file-name-at-point) "\n") nil))
             (mu4e-url (kill-append (concat mu4e-url "\n") nil))
             (t (message "There is no supported link at the point."))))))
 
