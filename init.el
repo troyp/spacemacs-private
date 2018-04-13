@@ -1970,6 +1970,7 @@ COUNT, BEG, END, and TYPE have no effect."
              ("B"       . my/evil-insert-at-WORD-beginning)
              ("F"       . my/evil-append-at-WORD-end)
              )
+  (define-key special-mode-map (kbd "S-SPC") 'user-cmds-map)
 
   (bind-keys :map user-cmds-map
              ;; S-SPC d
