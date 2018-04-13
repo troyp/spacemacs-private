@@ -1684,7 +1684,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "a d"          'dired
     "a p"          'my/list-processes
     "a ="          'calculator
-    "a '"          'browse-url-firefox
+    "a C-'"        'browse-url-firefox
     "a -"          'elnode-stop
     "a \""         'browse-url-elinks
     "b M"          'my/switch-to-messages-buffer
