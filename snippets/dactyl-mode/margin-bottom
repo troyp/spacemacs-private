@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: margin-bottom
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# key: margb
+# --
+margin-bottom: $1 !important; $0

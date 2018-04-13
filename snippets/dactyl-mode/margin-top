@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: margin-top
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# key: margt
+# --
+margin-top: $1 !important; $0
