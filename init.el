@@ -2826,6 +2826,7 @@ COUNT, BEG, END, and TYPE have no effect."
        ;; major-mode leader-key
        (spacemacs/set-leader-keys-for-major-mode 'dired-mode
          "c"     'dired-mode-map
+         "g"     'my/rgrep
          "h"     'dired-hide-subdir
          "k"     'diredp-kill-this-tree
          "K"     'dired-kill-tree
@@ -6402,16 +6403,21 @@ entered, return a command which executes it."
     (dired-hide-details-mode 1)
     (setq-local my/dired-reuse-buffer nil))
 
-  (defun my/rgrep-async (pattern dir)
-    (interactive "spattern: \nsbase files: ")
-    (let ((cmd (concat "grep -rP --exclude-dir .git " pattern " " dir)))
+  (defun my/rgrep (pattern &optional dir)
+    (interactive "sPattern: \nsFiles/Base directories [default: .]: ")
+    (when (string-empty-p (or dir "")) (setq dir "."))
+    (let ((cmd (concat "grep -nrP --exclude-dir .git " pattern " " dir)))
       ;; (message cmd)
-      (async-shell-command cmd)
-      ;; (highlight-regexp (pcre-to-elisp "^\\w+:"))
-      ;; (highlight-regexp (pcre-to-elisp pattern) 'hi-green)
-      ))
+      ;; (async-shell-command cmd)
+      (let* ((s (shell-command-to-string cmd))
+             (buf (generate-new-buffer "*Grep results*"))
+             (win (popwin:popup-buffer buf)))
+        (select-window win)
+        (insert s)
+        (grep-mode)
+        (beginning-of-buffer))))
 
-  (defun my/rgrep-async-spacemacs (pattern)
+  (defun my/rgrep-spacemacs (pattern)
     (interactive "spattern: ")
     (my/rgrep pattern spacemacs-start-directory))
 
