@@ -3824,6 +3824,8 @@ If FILE is nil, the file associated with the current buffer is used."
     "<C-tab>"      'org-force-cycle-archived
     "<S-return>"   'org-table-copy-down
     "<C-S-return>" 'org-insert-todo-heading-respect-content
+    "C-M-h v"     'my/org-describe-variable
+    "C-M-h f"     'my/org-describe-function
     "<tab>"        'org-cycle
     "<S-tab>"      'org-shifttab
     "h h"          'helm-org-in-buffer-headings
@@ -3869,6 +3871,106 @@ If FILE is nil, the file associated with the current buffer is used."
             :preselect (helm-org-in-buffer-preselect)
             :truncate-lines helm-org-truncate-lines
             :buffer "*helm org inbuffer*")))
+
+  (defun my/org-symbol-trim-= (sym)
+    (let* ((str (symbol-name sym))
+           (trimmed (replace-regexp-in-string "^=\\|=$" "" str)))
+      (intern trimmed)))
+
+
+  (defun my/org-describe-variable (variable)
+    "Display the full documentation of VARIABLE (a symbol).
+With a prefix argument, candidates are user variables (options) only.
+Default candidate is the `symbol-nearest-point'.
+Return the documentation, as a string.
+
+VARIABLE names an Emacs Lisp variable, possibly a user option.
+If VARIABLE has a buffer-local value in BUFFER or FRAME (default to
+the current buffer and current frame) then it is displayed, along with
+the global value."
+    (interactive
+     (let* ((symb0 (or (and (fboundp 'symbol-nearest-point)
+                            (my/org-symbol-trim-= (symbol-nearest-point)))
+                       (variable-at-point)))
+            (symb (if (numberp symb0) nil symb0))
+            (curbuf (current-buffer))
+            val)
+       (list
+        (intern
+         (completing-read
+          (format "Describe variable%s: "
+                  (if (and symb (boundp symb)) (format " (default %s)" symb) ""))
+          obarray
+          (if current-prefix-arg
+              `(lambda (vv)
+                 (with-current-buffer ',curbuf (user-variable-p vv)))
+            `(lambda (vv)
+               (with-current-buffer ',curbuf
+                 (or (get vv 'variable-documentation)
+                     (and (boundp vv) (not (keywordp vv)))))))
+          t nil nil
+          (and (symbolp symb) (boundp symb) (symbol-name symb))))
+        )))
+    (describe-variable variable))
+
+  ;; based on 'describe-variable (GPL3)
+  (defun my/org-describe-function (function &optional commandp)
+    "Display the full documentation of FUNCTION (a symbol).
+FUNCTION names an Emacs Lisp function, possibly a user command.
+With a prefix argument, candidates are only commands (interactive).
+
+Default candidate is: preferably the `symbol-nearest-point', or else
+the innermost function call surrounding point
+\(`function-called-at-point').
+Return the description that was displayed, as a string."
+    (interactive
+     (let* ((symnpt                        (my/org-symbol-trim-= (symbol-nearest-point)))
+            (fn                            (or (and (fboundp symnpt) symnpt)
+                                               (function-called-at-point)))
+            (enable-recursive-minibuffers  t)
+            (completion-annotate-function  (lambda (fn) (and (commandp (intern-soft fn))  "  (command)")))
+            (type                          (if current-prefix-arg 'command 'function))
+            (prompt                        (format "Describe %s%s: " type
+                                                   (if (if current-prefix-arg (commandp fn) (fboundp fn))
+                                                       (format " (default %s)" fn)
+                                                     "")))
+            val)
+       (setq val  (completing-read prompt obarray (if current-prefix-arg 'commandp 'fboundp) t nil nil
+                                   (and (if current-prefix-arg (commandp fn) (fboundp fn))  (symbol-name fn))))
+       (list (if (equal val "") fn (intern val)) current-prefix-arg)))
+    (let* ((interactivep  (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
+                                  (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                              (called-interactively-p 'interactive)
+                            (interactive-p)))
+           (err/msg-fn    (if interactivep #'message #'error))
+           (fn/cmd-txt    (if commandp 'command 'function)))
+      (if (and interactivep  (not function))
+          (funcall err/msg-fn "You did not specify a function symbol") ; Avoid "Not a defined function: `nil'".
+        (if (not (if commandp
+                     (commandp function)
+                   (or (functionp function) ; Allow anonymous functions (Emacs bug #24221).
+                       (and function  (fboundp (intern-soft function)))))) ; Allow macros and special forms.
+            (funcall err/msg-fn "Not a defined %s: `%S'" fn/cmd-txt function)
+          (help-setup-xref (list #'describe-function function)
+                           (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
+                                   (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                               (called-interactively-p 'interactive)
+                             (interactive-p)))
+          (save-excursion
+            (if (fboundp 'with-help-window)
+                (with-help-window  (help-buffer) ; Emacs 24.4 needs this - see Emacs bug #17109.
+                  (prin1 function)
+                  ;; Use " is " instead of ": " so it is easier to get the function name using `forward-sexp'.
+                  (princ " is ")
+                  (describe-function-1 function)
+                  (with-current-buffer standard-output (buffer-string))) ; Return help text.
+              (with-output-to-temp-buffer (help-buffer)
+                (prin1 function)
+                ;; Use " is " instead of ": " so it is easier to get the function name using `forward-sexp'.
+                (princ " is ")
+                (describe-function-1 function)
+                (print-help-return-message)
+                (with-current-buffer standard-output (buffer-string)))))))))
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------------,
