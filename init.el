@@ -2630,7 +2630,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive "p")
     (my/dactyl-make-defn-multiline-1 arg)
     (evil-visual-restore)
-    (my/dactyl-align-defs))
+    (my/dactyl-align-defs-multiline))
 
   (defun my/dactyl-mapping-occur (prefix)
     "Open an `occur' buffer with statements mapping keys matching PREFIX."
