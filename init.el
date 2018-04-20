@@ -1440,7 +1440,7 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; just-one-space
   ;; This is available by default, since it translates to M-SPC (which can't be used itself since it's intercepted by KWin)
   ;; This just makes it explicit
-  (global-set-key (kbd "M-S-SPC") 'just-one-space)
+  (global-set-key (kbd "M-S-SPC") 'cycle-spacing)
 
   (global-set-key (kbd "C-`") 'my/surround-symbol)
 
