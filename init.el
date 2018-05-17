@@ -2128,6 +2128,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (which-key-add-key-based-replacements
     "S-SPC K"    "keymaps"
     "S-SPC X"    "structured text"
+    "S-SPC y ."  "at-point"
     "S-SPC !"    "external apps"
     "S-SPC &"    "diff"
     "S-SPC & m"  "merge"
