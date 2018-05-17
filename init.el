@@ -2714,6 +2714,10 @@ COUNT, BEG, END, and TYPE have no effect."
       (occur (pcre-to-elisp pcre "i")))
     (switch-to-buffer-other-window "*Occur*"))
 
+  (defun my/dactyl-make-xpi ()
+    (interactive)
+    (async-shell-command "cd ~/repos/dactyl/pentadactyl && make xpi"))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
   ;; | Dired |
