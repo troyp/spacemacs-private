@@ -1684,9 +1684,10 @@ COUNT, BEG, END, and TYPE have no effect."
     "a d"          'dired
     "a p"          'my/list-processes
     "a ="          'calculator
-    "a C-'"        'browse-url-firefox
     "a -"          'elnode-stop
     "a \""         'browse-url-elinks
+    "a SPC"        'helm-run-external-command
+    "a C-'"        'browse-url-firefox
     "b M"          'my/switch-to-messages-buffer
     "b S"          'my/switch-to-scratch-buffer-other-window
     "b W"          'my/switch-to-warnings-buffer
