@@ -2667,7 +2667,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (defun my/dactyl-show-sections ()
     "Open an `occur' buffer with all section headings."
     (interactive)
-    (occur (pcre-to-elisp "^ *\" \\| .* \\|$"))
+    (occur (pcre-to-elisp "^ *\" *\\|.*\\|( *\")? *$"))
     (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-show-styles ()
