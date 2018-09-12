@@ -1654,6 +1654,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key (kbd "<S-mouse-5>") 'my/text-scale-decrease-under-mouse)
   (global-set-key (kbd "<C-mouse-4>") 'spacemacs/zoom-frm-in)
   (global-set-key (kbd "<C-mouse-5>") 'spacemacs/zoom-frm-out)
+  (global-set-key (kbd "<double-mouse-1>") 'evil-toggle-fold)
 
 
   ;; -------------------------------------------------------------------------------
