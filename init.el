@@ -3662,15 +3662,16 @@ current prefix argument.
     (my/markdown-app-call (or app 'remarkable) file))
 
   (defvar my/markdown-apps
-    (list '(grip/browser . (progn (my/async-shell-command-no-window
-                                   (format "grip '%s'" (buffer-file-name)))
-                                  (run-with-timer
-                                   1.0 nil
-                                   (fn: start-process
-                                     "localhost" nil my/markdown-browser "http://localhost:6419"))))
-          '(xdg/html     . (my/markdown-export-to-html-and-view))
-          '(browser/md   . (my/async-shell-command-no-window (format "$s '%s'" my/markdown-browser file)))
-          '(remarkable   . (my/async-shell-command-no-window (format "remarkable '%s'" file))))
+    (list
+     '(grip/browser . (progn (my/async-shell-command-no-window
+                              (format "grip '%s'" (buffer-file-name)))
+                             (run-with-timer
+                              1.0 nil
+                              (fn: start-process
+                                   "localhost" nil my/markdown-browser "http://localhost:6419"))))
+     '(xdg/html     . (my/markdown-export-to-html-and-view))
+     '(browser/md   . (my/async-shell-command-no-window (format "%s 'file://%s'" my/markdown-browser file)))
+     '(remarkable   . (my/async-shell-command-no-window (format "remarkable '%s'" file))))
     "List of (SYMBOL . FUNCTION) pairs specifying applications for opening
 markdown files.")
 
@@ -3777,9 +3778,9 @@ If FILE is nil, the file associated with the current buffer is used."
              )
 
   (which-key-add-major-mode-key-based-replacements 'emacs-lisp-mode
-    ", d"         "macrostep"
-    ", <f3>"      "kmacro"
-    )
+      ", d"         "macrostep"
+      ", <f3>"      "kmacro"
+      )
 
   (defun emacs-lisp-init-fn ()
     (interactive)
