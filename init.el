@@ -1353,6 +1353,7 @@ COUNT, BEG, END, and TYPE have no effect."
           ;; compose combinations
           ((?. ?.) . ?\x2026)    ;; (horizontal) ellipsis (replaces ‥)
           ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
+          ((?0 ?9) . ?\x3000)    ;; CJK full-width space
           ((?. ?-) . ?\x00b7)    ;; middle-dot
           ((?i 34) . ?\x00ef)    ;; ï (also on i:)
           ((?\x22 ?<) . ?\x201c) ;; “
