@@ -49,7 +49,7 @@ values."
      elfeed
      emacs-lisp
      ess
-     extra-langs
+     major-modes
      git
      go
      helm
@@ -68,8 +68,7 @@ values."
      (org :variables
           org-enable-github-support t
           )
-     nlinum
-     pdf-tools
+     pdf
      python
      racket
      (ranger :variables
@@ -473,7 +472,7 @@ you should place you code here."
     )
 
   ;; (setq-default tab-always-indent t)
-  (global-nlinum-mode)
+  (spacemacs/toggle-line-numbers-on)
   (menu-bar-mode)
   (scroll-bar-mode)
   (minibuffer-depth-indicate-mode 1)
@@ -3987,7 +3986,7 @@ Return the description that was displayed, as a string."
 
   (defun my/pdf-view-mode-init ()
     (interactive)
-    (nlinum-mode -1))
+    (spacemacs/toggle-line-numbers-on))
 
   ;; -------------------------------------------------------------------------------
   ;; ,--------,
