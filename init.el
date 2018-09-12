@@ -6455,7 +6455,7 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
            (kill-new str)
            (message str)))))
 
-  (my/define-yank-cmd filename (buffer-file-name) "Yank name of current file")
+  (my/define-yank-cmd filename (file-name-nondirectory (buffer-file-name)) "Yank name of current file")
   (my/define-yank-cmd path (buffer-file-name) "Yank full path of current file")
   (my/define-yank-cmd directory default-directory "Yank default directory")
   (my/define-yank-cmd sexp-at-point (sexp-at-point) "Yank SEXP at point")
