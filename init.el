@@ -988,7 +988,8 @@ Returns the function definition."
       (add-to-list 'Info-directory-list dir)))
 
   ;; Shell-command switches
-  (setq shell-command-switch "-ic")
+  (my/def-variable-cycle shell-command-switch "-c" "-ic")
+
 
   ;; ===============================================================================
   ;;                                      ________
@@ -1927,6 +1928,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
     "t :"          'nameless-mode
     "t ["          'diff-hl-flydiff-mode
+    "t <f4>"       'my/cycle-shell-command-switch
     "t C-l"        'toggle-truncate-lines
     "t C-s"        'my/undo-auto-save-make-local-and-toggle
     "t C-/"        'evil-search-highlight-persist
