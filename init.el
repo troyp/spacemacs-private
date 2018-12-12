@@ -49,7 +49,7 @@ values."
      elfeed
      emacs-lisp
      ess
-     major-modes
+     ;; major-modes
      git
      go
      helm
@@ -148,12 +148,13 @@ values."
      ;; (evil-visual-replace :local :location "~/.emacs.d/private/repos/evil-visual-replace/evil-visual-replace.el")
      ;; (fn :location (recipe :fetcher github :repo "troyp/fn.el" :files ("fn.el")))
      fn
-     (ls :location (recipe :fetcher github :repo "troyp/ls.el" :files ("ls.el")))
-     (evil-adjust :location (recipe :fetcher github :repo "troyp/evil-adjust"))
+     ;; (ls :location (recipe :fetcher github :repo "troyp/ls.el" :files ("ls.el")))
+     ;; (evil-adjust :local :location "~/.emacs.d/private/repos/evil-adjust/evil-adjust.el")
+     ;; (evil-adjust :location (recipe :fetcher github :repo "troyp/evil-adjust"))
      ;; --------
      ;; My Forks
      ;; --------
-     (undo-tree :location (recipe :fetcher github :repo "troyp/undo-tree.el"))
+     ;; (undo-tree :location (recipe :fetcher github :repo "troyp/undo-tree.el"))
      ;; ----------------------------------------------------------------------
      ;; -------------------
      ;; Drew Adams Packages
@@ -176,7 +177,7 @@ values."
      (dired-subtree :after dired)
      dired-toggle-sudo
      direx
-     (direx-grep :location (recipe :fetcher github :repo "aki2o/direx-grep"))
+     ;; (direx-grep :location (recipe :fetcher github :repo "aki2o/direx-grep"))
      dirtree
      elmacro
      elnode
@@ -185,7 +186,7 @@ values."
      evil-vimish-fold
      firefox-controller
      flycheck-package
-     (goto-gem :location (recipe :fetcher github :repo "pidu/goto-gem"))
+     ;; (goto-gem :location (recipe :fetcher github :repo "pidu/goto-gem"))
      helm-dired-history
      helm-firefox
      jsfmt
