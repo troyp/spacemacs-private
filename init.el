@@ -620,6 +620,72 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place you code here."
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,--------------------------,
+  ;; | Custom definition macros |
+  ;; '--------------------------'
+
+  (defmacro my/def-variable-toggle (var)
+    (let* ((fname `(concat "my/toggle-" (symbol-name ',var)))
+           (fsym  (intern (eval fname))))
+      `(defun ,fsym ()
+         "Defined with `my/def-variable-toggle'."
+         (interactive)
+         (setq ,var (not ,var))
+         (message "%S is %s" ',var (if ,var "enabled" "disabled")))))
+
+  (defmacro my/define-named-variable-toggle (name var)
+    `(defun ,name ()
+       "Defined with `my/def-variable-toggle'."
+       (interactive)
+       (setq ,var (not ,var))
+       (message "%S is %s" ',var (if ,var "enabled" "disabled"))))
+
+  (defmacro my/def-variable-cycle (var &rest values)
+    (let* ((fname `(concat "my/cycle-" (symbol-name ',var)))
+           (fsym  (intern (eval fname))))
+      `(defun ,fsym ()
+         "Defined with `my/def-variable-toggle'."
+         (interactive)
+         (let ((idx (-elem-index ,var ',values))
+               (n   (length ',values)))
+           (if (or (null idx)
+                   (= idx (1- n)))
+               (setq ,var (nth 0 ',values))
+             (setq ,var (nth (1+ idx) ',values))))
+         (message "%S is now: %s" ',var ,var))))
+
+  (defmacro my/define-named-variable-cycle (name var values)
+    (declare (indent 1))
+    `(defun ,name ()
+       "Defined with `my/def-variable-toggle'."
+       (interactive)
+       (let ((idx (-elem-index ,var ',values))
+             (n   (length ',values)))
+         (if (or (null idx)
+                 (= idx (1- n)))
+             (setq ,var (nth 0 ',values))
+           (setq ,var (nth (1+ idx) ',values))))
+       (message "%S is now: %s" ',var ,var)))
+
+  (defmacro my/def-variable-local-cycle (var &rest values)
+    (let* ((fname `(concat "my/cycle-" (symbol-name ',var)))
+           (fsym  (intern (eval fname))))
+      `(defun ,fsym ()
+         "Defined with `my/def-variable-toggle'."
+         (interactive)
+         (let ((idx (-elem-index ,var ',values))
+               (n   (length ',values)))
+           (when (not (local-variable-p ',var)) (make-local-variable ',var))
+           (if (or (null idx)
+                   (= idx (1- n)))
+               (setq ,var (nth 0 ',values))
+             (setq ,var (nth (1+ idx) ',values))))
+         (message "%S is now: %s" ',var ,var))))
+
+;; -------------------------------------------------------------------------------
+
   (eval-after-load 'tramp
     '(progn
       (setenv "SHELL" "/bin/bash")
@@ -1405,64 +1471,6 @@ COUNT, BEG, END, and TYPE have no effect."
   ;;                                 * KEY-BINDINGS *
   ;;                                 *              *
   ;;                                 ****************
-
-  (defmacro my/def-variable-toggle (var)
-    (let* ((fname `(concat "my/toggle-" (symbol-name ',var)))
-           (fsym  (intern (eval fname))))
-      `(defun ,fsym ()
-         "Defined with `my/def-variable-toggle'."
-         (interactive)
-         (setq ,var (not ,var))
-         (message "%S is %s" ',var (if ,var "enabled" "disabled")))))
-
-  (defmacro my/define-named-variable-toggle (name var)
-    `(defun ,name ()
-       "Defined with `my/def-variable-toggle'."
-       (interactive)
-       (setq ,var (not ,var))
-       (message "%S is %s" ',var (if ,var "enabled" "disabled"))))
-
-  (defmacro my/def-variable-cycle (var &rest values)
-    (let* ((fname `(concat "my/cycle-" (symbol-name ',var)))
-           (fsym  (intern (eval fname))))
-      `(defun ,fsym ()
-         "Defined with `my/def-variable-toggle'."
-         (interactive)
-         (let ((idx (-elem-index ,var ',values))
-               (n   (length ',values)))
-           (if (or (null idx)
-                   (= idx (1- n)))
-               (setq ,var (nth 0 ',values))
-             (setq ,var (nth (1+ idx) ',values))))
-         (message "%S is now: %s" ',var ,var))))
-
-  (defmacro my/define-named-variable-cycle (name var values)
-    (declare (indent 1))
-    `(defun ,name ()
-       "Defined with `my/def-variable-toggle'."
-       (interactive)
-       (let ((idx (-elem-index ,var ',values))
-             (n   (length ',values)))
-         (if (or (null idx)
-                 (= idx (1- n)))
-             (setq ,var (nth 0 ',values))
-           (setq ,var (nth (1+ idx) ',values))))
-       (message "%S is now: %s" ',var ,var)))
-
-  (defmacro my/def-variable-local-cycle (var &rest values)
-    (let* ((fname `(concat "my/cycle-" (symbol-name ',var)))
-           (fsym  (intern (eval fname))))
-      `(defun ,fsym ()
-         "Defined with `my/def-variable-toggle'."
-         (interactive)
-         (let ((idx (-elem-index ,var ',values))
-               (n   (length ',values)))
-           (when (not (local-variable-p ',var)) (make-local-variable ',var))
-           (if (or (null idx)
-                   (= idx (1- n)))
-               (setq ,var (nth 0 ',values))
-             (setq ,var (nth (1+ idx) ',values))))
-         (message "%S is now: %s" ',var ,var))))
 
   ;; ,----------------------,
   ;; | Keybinding Functions |
