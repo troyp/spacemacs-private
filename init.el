@@ -2011,6 +2011,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "C-P"          'my/evil-paste-before-as-block
     "C-r"          'my/replace-line
     "C-v"          'my/cua-rectangle-toggle
+    "C-x C-o"      'my/remove-blank-lines
     "C-w"          'delete-frame
     "C-y"          'my/paste-no-properties
     "C-8"          'spacemacs/helm-project-smart-do-search-region-or-symbol
