@@ -2018,6 +2018,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "C-."          'ido-switch-buffer
     "C-/"          'spacemacs/evil-search-clear-highlight
     "C-?"          'evil-search-highlight-restore
+    "C-'"          'my/quote-to-end-of-line
     "C-\\"         'set-input-method
     "C-SPC"        'cua-toggle-global-mark
     "C-S-SPC"      'my/just-one-blank-line
@@ -4638,6 +4639,7 @@ ISEARCH DOCUMENTATION.
   (fset 'my/add-spacing-inside-double-quotes [ ?c ?s 34 40 ?c ?s 41 34 ])
   (fset 'my/remove-spacing-inside-double-quotes [?c ?s 40 34 ])
   (fset 'my/collapse-single-line-function [escape ?J ?J ?h ?c ?s 125 123])
+  (fset 'my/quote-to-end-of-line [escape ?v 5 left ?s 34])
 
   (fset 'my/surround-symbol
    (lambda (&optional arg)
