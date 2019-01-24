@@ -1950,7 +1950,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "x a \""       'spacemacs/align-repeat-double-quote
     "x a -"        'spacemacs/align-repeat-dash
     "x a #"        'spacemacs/align-repeat-hash
-    "x a RET"      'my/pcre-align-regexp
+    "x a RET"      'my/pcre-align
     "x a C-;"      'spacemacs/align-repeat-semicolon-comment
     "x a C-/"      'spacemacs/align-repeat-slash-comment
     "x a C-'"      'tsp-align-quoted-column
