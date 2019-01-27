@@ -2722,11 +2722,53 @@ COUNT, BEG, END, and TYPE have no effect."
       "SPC"   'helm-imenu
       "\\"    'my/dactyl-move-continuation-to-column-1
       )
-  (spacemacs/set-leader-keys-for-major-mode 'text-mode
-      "t"     'my/dactyl-toggle-text-mode
-      )
 
   (which-key-add-major-mode-key-based-replacements 'dactyl-mode
+      ", a"       "align"
+      ", m"       "multiline"
+      ", o"       "occur"
+      "M-RET o"   "occur"
+      ", ."       "at-point"
+      "M-RET ."   "at-point"
+      ", '"       "\" ⌶ \""
+      "M-RET '"   "\" ⌶ \""
+      ", /"       "/* ⌶ */"
+      "M-RET /"   "/* ⌶ */"
+      )
+
+  (define-derived-mode
+      dactyl-text-mode text-mode "Dactyl Text"
+      "Text mode variant for editing .pentadactylrc. Use when dactyl-mode is too slow."
+      (setq imenu-generic-expression `((nil "^\" | .* |$" 0)))
+      (setq tab-width 4)
+      (modify-syntax-entry ?_ "w"))
+
+  (spacemacs/set-leader-keys-for-major-mode 'dactyl-text-mode
+      ","     'my/dactyl-cycle-fill-prefix
+      "'"     (my/make-insertion-around-point "\" " " \"")
+      "/"     (my/make-insertion-around-point "/* " " */")
+      "a a"   'my/dactyl-align-defs-repeat
+      "a m"   'my/dactyl-align-defs-multiline
+      "j"     'my/newline-indent-insert-fill-prefix
+      "J"     'my/collapse-single-line-function
+      "m d"   'my/dactyl-make-defn-multiline
+      "m 1"   'my/dactyl-make-defn-multiline-1
+      "m a"   'my/dactyl-make-defn-multiline-align-1
+      "o c"   'my/dactyl-command-occur
+      "o f"   'my/dactyl-function-occur
+      "o g"   'my/dactyl-show-groups
+      "o s"   'my/dactyl-show-styles
+      "o m"   'my/dactyl-mapping-occur
+      "o \\"  'my/dactyl-show-sections
+      "t"     'my/dactyl-toggle-text-mode
+      ". c"   'my/dactyl-command-occur-at-point
+      ". f"   'my/dactyl-function-occur-at-point
+      ". m"   'my/dactyl-mapping-occur-at-point
+      "SPC"   'helm-imenu
+      "\\"    'my/dactyl-move-continuation-to-column-1
+      )
+
+  (which-key-add-major-mode-key-based-replacements 'dactyl-text-mode
       ", a"       "align"
       ", m"       "multiline"
       ", o"       "occur"
@@ -2847,7 +2889,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (defun my/dactyl-toggle-text-mode ()
     (interactive)
-    (if (eq major-mode 'dactyl-mode) (text-mode) (dactyl-mode)))
+    (if (eq major-mode 'dactyl-mode) (dactyl-text-mode) (dactyl-mode)))
 
   (defun my/dactyl-move-continuation-to-column-1 (&optional arg)
     (interactive "p")
