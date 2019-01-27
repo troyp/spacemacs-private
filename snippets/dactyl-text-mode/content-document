@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: content-document
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# key: doc
+# --
+content.document$0

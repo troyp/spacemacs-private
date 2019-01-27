@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: padding-bottom
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# key: padb
+# --
+padding-bottom: $1 !important; $0

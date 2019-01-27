@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: group
+# key: group
+# --
+
+group $1 -locations=$2
+
+js <<EOF
+EOF
+
+group user

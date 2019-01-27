@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: js-block
+# key: js
+# --
+js <<EOF
+$0
+EOF

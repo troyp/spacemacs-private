@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: boolean-preference-commands
+# key: boolpref
+# --
+command! $1set$2    :set! $3=true
+command! $1unset$2  :set! $3=false
+command! $1toggle$2 toggleconfig $3
+command! $1get$2    getboolpref  $3
