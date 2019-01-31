@@ -5498,6 +5498,12 @@ within the region."
     (interactive)
     (shell-command (concat "xdg-open " (ffap-guess-file-name-at-point))))
 
+  (defun my/new-script (name &optional interpreter)
+    "Create an empty executable script file in the current directory"
+    (interactive "sName:\nsInterpreter:")
+    (let ((cmd (concat "echo '#! " (or interpreter "") "' > " name)))
+      (shell-command cmd)))
+
   ;; ================
   ;; shift left/right
   ;; ================
