@@ -1701,10 +1701,10 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-normal-state-map (kbd "gf") 'link-hint-open-all-links)
 
   ;; centre after n, N, '
-  (when (commandp 'my/evil-search-next-and-center)
-    (define-key evil-normal-state-map (kbd "n") 'my/evil-search-next-and-center))
-  (when (commandp 'my/evil-search-previous-and-center)
-      (define-key evil-normal-state-map (kbd "N") 'my/evil-search-previous-and-center))
+  (when (commandp 'my/evil-ex-search-next-and-center)
+    (define-key evil-normal-state-map (kbd "n") 'my/evil-ex-search-next-and-center))
+  (when (commandp 'my/evil-ex-search-previous-and-center)
+      (define-key evil-normal-state-map (kbd "N") 'my/evil-ex-search-previous-and-center))
 
   (define-key evil-normal-state-map (kbd "'") 'my/evil-goto-mark-line)
   ;; make | use `fill-column' as a default
@@ -6295,8 +6295,8 @@ With prefix argument, do not recentre."
   (my/define-command-and-center spacemacs/jump-to-definition)
   (my/define-command-and-center push-button)
   (my/define-command-and-center magit-blame)
-  (my/define-evil-motion-and-center evil-search-previous)
-  (my/define-evil-motion-and-center evil-search-next)
+  (my/define-evil-motion-and-center evil-ex-search-previous)
+  (my/define-evil-motion-and-center evil-ex-search-next)
 
   (defun my/mouse-toggle-fold (ev)
     (interactive "e")
