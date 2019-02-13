@@ -8,4 +8,6 @@ group $1 -locations=$2
 js <<EOF
 EOF
 
+$0
+
 group user
