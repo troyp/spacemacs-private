@@ -2028,6 +2028,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "M-%"          'evil-visual-replace-query-replace
     "M-DEL"        'my/kill-other-buffer-and-window
     "M-C-%"        'evil-visual-replace-replace-regexp
+    "ESC ESC"      'my/keyboard-escape-quit-and-clear-highlight
     )
 
   (bind-keys :map spacemacs-cmds
@@ -6816,6 +6817,11 @@ entered, return a command which executes it."
       (save-excursion
         (beginning-of-line)
         (insert fill-prefix))))
+
+  (defun my/keyboard-escape-quit-and-clear-highlight()
+    (interactive)
+    (keyboard-escape-quit)
+    (spacemacs/evil-search-clear-highlight))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
