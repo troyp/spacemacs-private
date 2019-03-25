@@ -1950,6 +1950,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "x a \""       'spacemacs/align-repeat-double-quote
     "x a -"        'spacemacs/align-repeat-dash
     "x a #"        'spacemacs/align-repeat-hash
+    "x a *"        'spacemacs/align-repeat-star
+    "x a C-."      'spacemacs/align-repeat-decimal
     "x a RET"      'my/pcre-align
     "x a C-;"      'spacemacs/align-repeat-semicolon-comment
     "x a C-/"      'spacemacs/align-repeat-slash-comment
@@ -4481,6 +4483,7 @@ Return the description that was displayed, as a string."
   (spacemacs|create-align-repeat-x "double-quote" (string 34))
   (spacemacs|create-align-repeat-x "dash" "-")
   (spacemacs|create-align-repeat-x "hash" "#" )
+  (spacemacs|create-align-repeat-x "star" "\\*")
   (spacemacs|create-align-repeat-x "semicolon-comment" ";;?" )
   (spacemacs|create-align-repeat-x "slash-comment" "//" )
 
