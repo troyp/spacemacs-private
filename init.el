@@ -746,9 +746,6 @@ you should place you code here."
   (setq browse-url-browser-function 'browse-url-generic)
   (setq engine/browser-function 'browse-url-generic)
 
-  ;; disable warnings about setting path in rc files (caused by nvm or rvm)
-  (setq exec-path-from-shell-check-startup-files nil)
-
   ;; follow VC'ed symlinks
   (setq vc-follow-symlinks t)
 
@@ -1037,7 +1034,7 @@ Returns the function definition."
   ;; (setenv "PATH" (concat "/home/troy/.nvm/versions/node/v0.12.7/bin" ":" (getenv "PATH")))
   ;; (add-to-list 'exec-path "/home/troy/.nvm/versions/node/v0.12.7/bin")
 
-  ;; disable warning about setting PATH in .zshrc
+  ;; disable warnings about setting path in rc files (caused by nvm or rvm)
   (setq exec-path-from-shell-check-startup-files nil)
 
   ;; C Source Directories
