@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: count?"here":"tab"
+# key: cht
+# --
+count?"here":"tab"
