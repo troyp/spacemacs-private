@@ -2788,7 +2788,8 @@ COUNT, BEG, END, and TYPE have no effect."
       "Text mode variant for editing .pentadactylrc. Use when dactyl-mode is too slow."
       (setq imenu-generic-expression `((nil "^\" | .* |$" 0)))
       (setq tab-width 4)
-      (modify-syntax-entry ?_ "w"))
+      (modify-syntax-entry ?_ "w")
+      (yas-minor-mode 1))
 
   (spacemacs/set-leader-keys-for-major-mode 'dactyl-text-mode
       ","     'my/dactyl-cycle-fill-prefix
