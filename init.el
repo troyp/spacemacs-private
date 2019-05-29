@@ -6559,10 +6559,10 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
 
   (defmacro my/define-yank-cmd (name expr &optional doc)
     (let ((fnname (intern (concat "my/yank-" (symbol-name name)))))
-      `(defun ,fnname ()
+      `(defun ,fnname (arg)
          ,doc
-         (interactive)
-         (let ((str ,expr))
+         (interactive "P")
+         (let ((str (if arg (my/string-double-quote ,expr) ,expr)))
            (kill-new str)
            (message str)))))
 
