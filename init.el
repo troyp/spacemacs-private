@@ -3615,6 +3615,7 @@ COUNT, BEG, END, and TYPE have no effect."
      ("q"       . my/magit-mode-kill-buffer)
      )
     (evil-define-key 'normal magit-mode-map (kbd "-") 'dired-jump)
+    (evil-define-key 'normal magit-mode-map (kbd "S-SPC") nil)
     (add-hook 'magit-diff-visit-file-hook #'recenter)
     (setf magit-log-revision-headers-format "\
 %+b
@@ -3689,6 +3690,7 @@ Committer: %cN <%cE>"))
     "r"      'my/magit-undo-last-commit
     "s"      'magit-diff-toggle-ignore-all-space
     "S"      'magit-diff-toggle-ignore-space-change
+    "SPC"    'magit-diff-show-or-scroll-up
     )
 
   (which-key-add-major-mode-key-based-replacements 'magit-status-mode
