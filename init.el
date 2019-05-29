@@ -6735,6 +6735,8 @@ entered, return a command which executes it."
   (defun my/current-line-number ()
     (string-to-number (format-mode-line "%l")))
 
+  (defun my/string-double-quote (s) (concat "\"" s "\""))
+
   (defun my/delete-inside-double-quotes ()
     "Delete contents of double quotes."
     (interactive)
