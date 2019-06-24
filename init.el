@@ -1948,7 +1948,6 @@ COUNT, BEG, END, and TYPE have no effect."
     "h :"          (defun! my/info-eintr "Open Elisp intro" (info "eintr"))
     "h ."          'count-words
     "h /"          'find-function-prefix-map
-    "h \\"         'shell-command-on-region
     "h 1"          'evil-goto-definition
     "h C-f"        'find-library-other-window
     "h C-m"        'lacarte-execute-menu-command
@@ -2008,6 +2007,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "x N"          'rectangle-number-lines-interactive
     "x <insert>"   'region-swap
     "x t r"        'region-swap
+    "x /"          'shell-command-on-region
     "x \\"         'my/evil-shell-command-replace-region
     "x |"          'my/shell-command-process-region-as-file
     "x ; y"        'link-hint-copy-link
