@@ -3711,6 +3711,7 @@ Committer: %cN <%cE>"))
              ("M-h"    . my/github-heading-to-readme-link)
              ("M-l"    . my/github-linkify-heading)
              ("n"      . my/markdown-next-link)
+             ("1"      . my/markdown-underline-heading)
              ("."      . markdown-follow-link-at-point)
              )
 
@@ -3822,6 +3823,16 @@ If FILE is nil, the file associated with the current buffer is used."
     (interactive)
     (markdown-next-link)
     (search-forward-regexp "://"))
+
+  (defun my/markdown-underline-heading (&optional remove-first-WORD)
+    (interactive "P")
+    (beginning-of-line 1)
+    (when remove-first-WORD
+      (delete-region (point)
+                     (min
+                      (save-excursion (evil-forward-WORD-begin) (point))
+                      (line-end-position))))
+    (kmacro-exec-ring-item '([ ?y ?y ?p ?v ?i ?l ?r ?= ] 0 "%d") 1))
 
   ;; -------------------------------------------------------------------------------
   ;; ,------,
