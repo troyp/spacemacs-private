@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: prefix-completion-mapping
+# key: pref
+# --
+map $1 -description "(show bindings: $2)" -js CommandExMode().open("showkeys $1");
