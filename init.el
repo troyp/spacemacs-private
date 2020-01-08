@@ -1472,6 +1472,8 @@ COUNT, BEG, END, and TYPE have no effect."
           ((?\x22 ?>) . ?\x201d) ;; ”
           ((?o ?o) . ?\x00b0)    ;; °
           ((?8 ?8) . ?\x221e)    ;; ∞
+          ((?- ?0) . ?\x203f)    ;; ‿
+          ((?- ?9) . ?\x2040)    ;; ⁀
           ;; kragen compose combinations
           ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
           ((?T ?,) . ?\x01ae)    ;; Ʈ (replaces Ţ which is also available on ,T) - for consistency
