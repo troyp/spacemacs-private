@@ -3715,6 +3715,7 @@ Committer: %cN <%cE>"))
              ("n"      . my/markdown-next-link)
              ("1"      . my/markdown-underline-heading)
              ("."      . markdown-follow-link-at-point)
+             ("TAB"    . markdown-show-all)
              )
 
   (defun my/markdown-gh-linkify-heading ()
