@@ -3717,6 +3717,13 @@ Committer: %cN <%cE>"))
              ("."      . markdown-follow-link-at-point)
              ("TAB"    . markdown-show-all)
              )
+  (define-key markdown-mode-mouse-map (kbd "<mouse-2>") 'my/mouse-set-point-and-browse-url)
+
+  (defun my/mouse-set-point-and-browse-url (event)
+    (interactive "e")
+    (let ((p (posn-point (event-start event))))
+      (goto-char p)
+      (my/browse-url-at-point p)))
 
   (defun my/markdown-gh-linkify-heading ()
     (interactive)
