@@ -3717,7 +3717,16 @@ Committer: %cN <%cE>"))
              ("."      . markdown-follow-link-at-point)
              ("TAB"    . markdown-show-all)
              )
-  (define-key markdown-mode-mouse-map (kbd "<mouse-2>") 'my/mouse-set-point-and-browse-url)
+
+  (defun markdown-init-fn ()
+    (interactive)
+    (define-key markdown-mode-mouse-map (kbd "<mouse-2>") 'my/mouse-set-point-and-browse-url)
+    )
+
+  (eval-after-load 'markdown-mode
+    `(progn
+       (add-hook 'markdown-mode-hook 'markdown-init-fn)
+       ))
 
   (defun my/mouse-set-point-and-browse-url (event)
     (interactive "e")
