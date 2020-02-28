@@ -4624,7 +4624,7 @@ See `align-regexp' for details."
     (unless beg (setq beg (region-end)))
     (unless group (setq group 0))
     (unless spacing (setq spacing align-default-spacing))
-    (align-regexp beg end (pcre-to-elisp (concat "(" pcre ")")) group spacing repeat))
+    (align-regexp beg end (pcre-to-elisp pcre) group spacing repeat))
 
   (defun my/quick-pcre-align (BEG END s &optional spacing repeat)
     "Align region using a PCRE. PCRE doesn't require the group for expansion. Requires pcre2el."
