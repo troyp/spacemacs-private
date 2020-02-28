@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: window.X=X
+# key: win=
+# --
+window.$1 = $1;

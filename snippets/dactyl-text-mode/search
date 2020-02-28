@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: search map/command/function
+# key: search
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region nil))
+# --
+function $1(terms, where="here") {
+    openOrSelectTab("$0", where);
+}
+command! ${1:$(downcase yas/text)} -bang -nargs + -js $1(args, bang?"adjacent":"here");
+map <site>$2
+\    -description "Search $3 in current (count:adjacent) tab"
+\    -count
+\    -js CommandExMode().open("${1:$(downcase yas/text)}"+(count?"! ":" "));

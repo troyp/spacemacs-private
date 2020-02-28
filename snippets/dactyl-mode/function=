@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: function; window.fn=fn
+# key: fn=
+# --
+function $1() {
+    $0
+}
+window.$1 = $1;

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: command!
+# key: cmd
+# --
+command! $1 -description "$2" -nargs ${3:+} -${4:js }$0
