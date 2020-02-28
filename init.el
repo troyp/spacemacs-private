@@ -1999,12 +1999,13 @@ COUNT, BEG, END, and TYPE have no effect."
     "x a C-."      'spacemacs/align-repeat-decimal
     "x a RET"      'my/pcre-align
     "x a C-;"      'spacemacs/align-repeat-semicolon-comment
+    "x a C-:"      'my/align-after-colon
     "x a C-/"      'spacemacs/align-repeat-slash-comment
     "x a C-'"      'tsp-align-quoted-column
     "x a C-\""     'tsp-align-double-quoted-column
     "x a SPC"      'my/quick-pcre-align-repeat
     "x a S-SPC"    'my/quick-pcre-align
-    "x a C-SPC"    'my/pcre-align-region
+    "x a C-SPC"    'my/align-whitespace
     "x l U"        'my/delete-duplicate-lines-nonblank
     "x N"          'rectangle-number-lines-interactive
     "x <insert>"   'region-swap
@@ -4653,6 +4654,12 @@ otherwise is equal to 'align-default-spacing."
                          (t              (prefix-numeric-value spacing))))
           (regexp  "\\(?:[:]\\)\\(\\s-*\\).*"))
       (align-regexp (region-beginning) (region-end) regexp 1 padding nil)))
+
+  (defun my/align-whitespace (BEG END spacing &optional repeat)
+    "Align the first whitespace region on each line (or all if REPEAT is t)."
+    (interactive "r\np")
+    (unless spacing (setq spacing align-default-spacing))
+    (align-regexp BEG END (pcre-to-elisp "\\s+") 0 spacing repeat))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
