@@ -4590,15 +4590,6 @@ Return the description that was displayed, as a string."
   (spacemacs|create-align-repeat-x "right-paren" ")" t)
   (spacemacs|create-align-repeat-x "backslash" "\\\\")
 
-  (defun my/pcre-align-region (pcre group spacing)
-    "Align region using a PCRE. Requires pcre2el.
-GROUP is the number of the group to be modified (ie. spacing group).
-SPACING is the minimum number of spaces between columns."
-    (interactive "sPCRE: \nsGROUP NO.: \nsSPACING: ")
-    (let ((groupnum (if (string-empty-p group) 1 (string-to-int group)))
-          (spaces   (if (string-empty-p group) 2 (string-to-int spacing))))
-      (align-regexp (region-beginning) (region-end) (pcre-to-elisp pcre) groupnum spaces nil)))
-
   (defun my/pcre-align (beg end pcre &optional group spacing repeat)
     "Align a region using a PCRE. Requires pcre2el.
 
