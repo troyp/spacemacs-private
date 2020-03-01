@@ -2899,7 +2899,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (my/dactyl-align-defs-multiline))
 
   (defun my/dactyl-goto-group (group)
-    "Open an `occur' buffer with all group statements."
+    "Jump to specified group"
     (interactive "sGroup: ")
     (let ((start-pos (point)))
       (beginning-of-buffer)
