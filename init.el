@@ -2755,6 +2755,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "a a"   'my/dactyl-align-defs-repeat
       "a m"   'my/dactyl-align-defs-multiline
       "g g"   'my/dactyl-goto-group
+      "g f"   'my/dactyl-goto-function
       "m d"   'my/dactyl-make-defn-multiline
       "m 1"   'my/dactyl-make-defn-multiline-1
       "m a"   'my/dactyl-make-defn-multiline-align-1
@@ -2801,6 +2802,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "/"     (my/make-insertion-around-point "/* " " */")
       "a a"   'my/dactyl-align-defs-repeat
       "a m"   'my/dactyl-align-defs-multiline
+      "g f"   'my/dactyl-goto-function
       "g g"   'my/dactyl-goto-group
       "j"     'my/newline-indent-insert-fill-prefix
       "J"     'my/collapse-single-line-function
@@ -2904,6 +2906,17 @@ COUNT, BEG, END, and TYPE have no effect."
     (let ((start-pos (point)))
       (beginning-of-buffer)
       (if (re-search-forward (pcre-to-elisp (concat "^ *group " group)) nil t)
+          (progn
+            (recenter 4)
+            (beginning-of-line))
+        (goto-point pos))))
+
+  (defun my/dactyl-goto-function (fn)
+    "Jump to specified function"
+    (interactive "sFunction: ")
+    (let ((start-pos (point)))
+      (beginning-of-buffer)
+      (if (re-search-forward (pcre-to-elisp (concat "^ *function " fn)) nil t)
           (progn
             (recenter 4)
             (beginning-of-line))
