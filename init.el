@@ -2916,7 +2916,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive "sFunction: ")
     (let ((start-pos (point)))
       (beginning-of-buffer)
-      (if (re-search-forward (pcre-to-elisp (concat "^ *function " fn)) nil t)
+      (if (re-search-forward (pcre-to-elisp (concat "^ *function " fn) "i") nil t)
           (progn
             (recenter 4)
             (beginning-of-line))
