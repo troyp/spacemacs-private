@@ -2795,6 +2795,8 @@ COUNT, BEG, END, and TYPE have no effect."
       (setq imenu-generic-expression `((nil "^\" | .* |$" 0)))
       (setq tab-width 4)
       (modify-syntax-entry ?_ "w")
+      (setq-local comment-start "\"")
+      (setq-local comment-end "")
       (yas-minor-mode 1))
 
   (spacemacs/set-leader-keys-for-major-mode 'dactyl-text-mode
