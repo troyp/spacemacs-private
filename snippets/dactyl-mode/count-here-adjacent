@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: count?"here":"adjacent"
+# key: cha
+# --
+count?"here":"adjacent"

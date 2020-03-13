@@ -3,4 +3,4 @@
 # expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
 # key: openorselect
 # --
-openOrSelectTab("$0", count?"tab":"here")
+openOrSelectTab("$0", count?"adjacent":"here")
