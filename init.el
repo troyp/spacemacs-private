@@ -1420,6 +1420,24 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; (add-to-list (cons         ?,           (cons "< " " >"))   evil-surround-pairs-alist)
   ;; (setq-default evil-surround-pairs-alist evil-surround-pairs-alist)
 
+  (setq-default
+   evil-surround-pairs-alist
+   '(
+     (40 "( " . " )")
+     (91 "[ " . " ]")
+     (123 "{ " . " }")
+     (41 "(" . ")")
+     (93 "[" . "]")
+     (125 "{" . "}")
+     (35 "#{" . "}")
+     (98 "(" . ")")
+     (66 "{" . "}")
+     (62 "<" . ">")
+     (116 . evil-surround-read-tag)
+     (60 . evil-surround-read-tag)
+     (102 . evil-surround-function)
+     (106 "${" "}")
+     ))
 
   ;; ,--------,
   ;; | cursor |
