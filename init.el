@@ -1413,31 +1413,57 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; ,---------------,
   ;; | evil-surround |
   ;; '---------------'
-  ;; (add-to-list (cons (aref (kbd "C-/") 0) (cons "/* " " */")) evil-surround-pairs-alist)
-  ;; ;; add C-` as an alternative to `
-  ;; ;; so that C-` C-` can be used to backquote a symbol (using my/surround-symbol)
-  ;; (add-to-list (cons (aref (kbd "C-`") 0) (cons "`" "`"))     evil-surround-pairs-alist)
-  ;; (add-to-list (cons         ?,           (cons "< " " >"))   evil-surround-pairs-alist)
-  ;; (setq-default evil-surround-pairs-alist evil-surround-pairs-alist)
 
   (setq-default
    evil-surround-pairs-alist
    '(
-     (40 "( " . " )")
-     (91 "[ " . " ]")
-     (123 "{ " . " }")
-     (41 "(" . ")")
-     (93 "[" . "]")
-     (125 "{" . "}")
-     (35 "#{" . "}")
-     (98 "(" . ")")
-     (66 "{" . "}")
-     (62 "<" . ">")
-     (116 . evil-surround-read-tag)
-     (60 . evil-surround-read-tag)
-     (102 . evil-surround-function)
-     (106 "${" "}")
+     (40  "( " . " )")
+     (91  "[ " . " ]")
+     (?{  "{ " . " }")
+     (41   "(" . ")")
+     (93   "[" . "]")
+     (?}   "{" . "}")
+     (?#  "#{" . "}")
+     (?b   "(" . ")")
+     (?B   "{" . "}")
+     (?>   "<" . ">")
+     (?t . evil-surround-read-tag)
+     (?< . evil-surround-read-tag)
+     (?f . evil-surround-function)
+     (?,      "< " . " >")
+     (?$      "${" . "}")
+     (?\C-/  "/* " . " */")
+     (?\C-`    "`" . "`")
+     (?f . my/evil-surround-function-defn)
+     (?c . my/evil-surround-character)
+     (?s . my/evil-surround-string)
+     (?z . my/evil-surround-string-mirrored)
      ))
+
+  (defun my/evil-surround-function-defn ()
+    "Read a functionname from the minibuffer and wrap selection in function call"
+    ;; adapted from evil-surround-function
+    (let ((fname (evil-surround-read-from-minibuffer "" "")))
+      (cond
+        ((member major-mode evil-surround-lisp-modes) (cons (format "(defun %s()" (or fname "")) ")"))
+        ((eq major-mode python-mode) (cons (format "def %s():" (or fname "")) ""))
+        ( t (cons (format "function %s() {" (or fname "")) "}"))
+        )))
+
+  (defun my/evil-surround-character ()
+    (interactive)
+    (let ((c (read-char)))
+      (cons (string c) (string c))))
+
+  (defun my/evil-surround-string ()
+    (interactive)
+    (let ((s (read-string "String: ")))
+      (cons s s)))
+
+  (defun my/evil-surround-string-mirrored ()
+    (interactive)
+    (let ((s (read-string "String: ")))
+      (cons s (reverse s))))
 
   ;; ,--------,
   ;; | cursor |
