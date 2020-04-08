@@ -1937,6 +1937,8 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
   (progn
+    (put 'spacemacs/set-leader-keys 'lisp-indent-function '(2))
+
     (defun my/set-my-leader-keys ()
       (interactive)
       (spacemacs/set-leader-keys
