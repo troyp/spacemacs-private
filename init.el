@@ -1936,193 +1936,200 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; '----------------------'
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
-  (spacemacs/set-leader-keys
-    "a d"          'dired
-    "a p"          'my/list-processes
-    "a ="          'calculator
-    "a -"          'elnode-stop
-    "a \""         'browse-url-elinks
-    "a SPC"        'helm-run-external-command
-    "a C-'"        'browse-url-firefox
-    "b M"          'my/switch-to-messages-buffer
-    "b S"          'my/switch-to-scratch-buffer-other-window
-    "b W"          'my/switch-to-warnings-buffer
-    "b -"          'diff-buffer-with-file
-    "b +"          'my/switch-to-changelog-buffer
-    "b SPC"        'spacemacs/new-empty-buffer
-    "b C-b"        'ibuffer
-    "b C-e"        'bury-buffer
-    "b C-f"        'buffer-face-set
-    "b C-u"        'undo-tree-clear
-    "b <insert>"   'buffer-major-mode
-    "b <f1>"       'about-emacs
-    "c SPC"        'mode-compile
-    "c DEL"        'mode-compile-kill
-    "e F"          'flycheck-mode
-    "e TAB"        'flycheck-next-error
-    "e S-TAB"      'flycheck-previous-error
-    "f e s s"      'spacemacs-rgrep
-    "f e s p"      'spacemacs-private-rgrep
-    "f e s o"      'spacemacs-only-rgrep
-    "f e s e"      'elpa-rgrep
-    "f e SPC c"    'my/dotspacemacs/refresh-user-config
-    "f e SPC i"    'my/dotspacemacs/refresh-init
-    "f e SPC l"    'my/configuration-layer/sync
-    "f e SPC t"    'dotspacemacs/test-dotfile
-    "f e SPC u"    'my/dotspacemacs/refresh-user-init
-    "f ."          'find-alternate-file
-    "f >"          'find-alternate-file-other-window
-    "f ' e"        'dired-spacemacs-directory
-    "f ' p"        'dired-spacemacs-private-directory
-    "f / f"        'sudo-open-file
-    "f / e"        'spacemacs/sudo-edit
-    "f / b"        'my/sudo-edit-this-file
-    "f -"          'my/browse-buffer-directory-firefox
-    "f ="          'my/browse-buffer-file-firefox
-    "f SPC"        'my/open-file-at-point
-    "f <insert>"   'find-file-clipboard
-    "f C-."        'find-file-at-point
-    "f C-k"        'bookmark-jump
-    "f C-y"        'my/yank-filename
-    "g C-x v"      'vc-prefix-map
-    ;; "h"            'help-prefix-map
-    "h a"          'apropos
-    "h d C-b"      'describe-personal-keybindings
-    "h d C-i"      'my/evil-interactive-alist-view
-    "h w"          'help-download-prefix-map
-    "h ;"          (defun! my/info-elisp "Open Elisp manual" (info "elisp"))
-    "h :"          (defun! my/info-eintr "Open Elisp intro" (info "eintr"))
-    "h ."          'count-words
-    "h /"          'find-function-prefix-map
-    "h 1"          'evil-goto-definition
-    "h C-f"        'find-library-other-window
-    "h C-m"        'lacarte-execute-menu-command
-    "h C-y"        'tsp-info-goto-node
-    "h C-/"        'evil-search-highlight-persist-remove-all
-    "h C-?"        'evil-search-highlight-restore
-    ;; "h <f1>"       'help-map
-    "i -"          'tiny-expand
-    "j ,"          'evil-avy-goto-word-0
-    "m <f10>"      'my/lacarte-menu-execute/lambda-l-and-exit
-    "o a"          'asciiheadings-prefix-key-map
-    "o c"          'character-prefix-map
-    "o f"          'flycheck-command-map
-    "o m"          'modes-prefix-key-map
-    "r b"          'bookmark-map
-    "s / m"        'my/pcre-multi-occur
-    "s / o"        'my/pcre-occur
-    "s / l"        'my/pcre-loccur
-    "t O"          (my/def-variable-toggle which-key-show-operator-state-maps)
-    "t T"          (my/def-variable-toggle indent-tabs-mode)
-    "t 3"          'my/toggle-evil-mc-mode
-    "t C-n"        'my/toggle-evil-mc-mode-and-cursor
-    "t SPC"        (my/def-variable-toggle show-trailing-whitespace)
-    "t RET w"      'subword-mode
-    "t '"          'evil-visual-mark-mode
-    "t `"          'evil-vimish-fold-mode
-    "t ~"          'variable-pitch-mode
-    "t ="          'my/toggle-indent-function
-    "t |"          'fci-mode
-    "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
-    "t :"          'nameless-mode
-    "t ["          'diff-hl-flydiff-mode
-    "t <f4>"       'my/cycle-shell-command-switch
-    "t C-l"        'toggle-truncate-lines
-    "t C-s"        'my/undo-auto-save-make-local-and-toggle
-    "t C-/"        'evil-search-highlight-persist
-    "t C-'"        (my/def-variable-toggle fit-frame-inhibit-fitting-flag)
-    "T |"          'scroll-bar-mode
-    "w TAB"        'ace-swap-window
-    "w DEL"        'my/delete-window-ace-move-buffer-quit-help
-    "x a ."        'spacemacs/align-repeat-period
-    "x a '"        'spacemacs/align-repeat-quote
-    "x a \""       'spacemacs/align-repeat-double-quote
-    "x a -"        'spacemacs/align-repeat-dash
-    "x a #"        'spacemacs/align-repeat-hash
-    "x a *"        'spacemacs/align-repeat-star
-    "x a C-."      'spacemacs/align-repeat-decimal
-    "x a RET"      'my/pcre-align
-    "x a C-;"      'spacemacs/align-repeat-semicolon-comment
-    "x a C-:"      'my/align-after-colon
-    "x a C-/"      'spacemacs/align-repeat-slash-comment
-    "x a C-'"      'tsp-align-quoted-column
-    "x a C-\""     'tsp-align-double-quoted-column
-    "x a SPC"      'my/quick-pcre-align-repeat
-    "x a S-SPC"    'my/quick-pcre-align
-    "x a C-SPC"    'my/align-whitespace
-    "x l U"        'my/delete-duplicate-lines-nonblank
-    "x N"          'rectangle-number-lines-interactive
-    "x <insert>"   'region-swap
-    "x t r"        'region-swap
-    "x /"          'shell-command-on-region
-    "x \\"         'my/evil-shell-command-replace-region
-    "x |"          'my/shell-command-process-region-as-file
-    "x ; y"        'link-hint-copy-link
-    "x ; Y"        'link-hint-copy-multiple-links
-    "x . y"        'link-hint-copy-link-at-point
-    "x . Y"        'my/link-hint-copy-all-links
-    "x . o"        'my/find-file-or-browse-url-at-point
-    "x . O"        'link-hint-open-all-links
-    "x C-b"        'my/copy-to-empty-buffer
-    "x C-k"        'evil-insert-digraph
-    "x C-l"        'my/quick-pcre-align-repeat
-    "x C-SPC"      'my/center-in-whitespace
-    "z +"          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
-    "z ="          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
-    "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
-    "C /"          'my/pick-color
-    "C ."          'my/pick-insert-color
-    "1"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit
-    "2"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit
-    "3"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit
-    "4"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit
-    "8"            'spacemacs/enter-ahs-forward
-    "*"            'spacemacs/enter-ahs-backward
-    "."            'repeat-complex-command
-    ","            'helm-mini
-    ">"            'my/evil-shift-right-fine-dispatcher
-    "<"            'my/evil-shift-left-fine-dispatcher
-    "="            'quick-calc
-    "-"            'my/dired-jump-and-kill
-    "("            'my/add-spacing-inside-parens
-    ")"            'my/remove-spacing-inside-parens
-    "["            'my/add-spacing-inside-brackets
-    "]"            'my/remove-spacing-inside-brackets
-    "\""           'my/add-spacing-inside-double-quotes
-    "C-\""         'my/remove-spacing-inside-double-quotes
-    "SPC"          'avy-goto-char-timer
-    "S-SPC"        'spacemacs/toggle-maximize-buffer
-    "<backtab>"    'my/switch-to-most-recent-buffer
-    "<return>"     'helm-buffers-list
-    "<f3>"         'kmacro-keymap
-    "<f5>"         'spacemacs/safe-revert-buffer
-    "<f10>"        'my/lacarte-menu-execute/lambda-a-and-exit
-    "C-l"          'my/quick-pcre-align-repeat
-    "C-p"          'my/evil-paste-after-as-block
-    "C-P"          'my/evil-paste-before-as-block
-    "C-r"          'my/replace-line
-    "C-v"          'my/cua-rectangle-toggle
-    "C-x C-o"      'my/remove-blank-lines
-    "C-w"          'delete-frame
-    "C-y"          'my/paste-no-properties
-    "C-8"          'spacemacs/helm-project-smart-do-search-region-or-symbol
-    "C-."          'ido-switch-buffer
-    "C-/"          'spacemacs/evil-search-clear-highlight
-    "C-?"          'evil-search-highlight-restore
-    "C-'"          'my/quote-to-end-of-line
-    "C-\\"         'set-input-method
-    "C-SPC"        'cua-toggle-global-mark
-    "C-S-SPC"      'my/just-one-blank-line
-    "M-p"          'my/evil-paste-after-column-kill-height
-    "M-q"          'my/wrap-lines-in-region
-    "M-x"          'helm-M-x
-    "M-%"          'evil-visual-replace-query-replace
-    "M-DEL"        'my/kill-other-buffer-and-window
-    "M-C-%"        'evil-visual-replace-replace-regexp
-    "ESC ESC"      'my/keyboard-escape-quit-and-clear-highlight
-    )
-    "{"            'my/add-spacing-inside-braces
-    "}"            'my/remove-spacing-inside-braces
+  (progn
+    (defun my/set-my-leader-keys ()
+      (interactive)
+      (spacemacs/set-leader-keys
+        "a d"          'dired
+        "a p"          'my/list-processes
+        "a ="          'calculator
+        "a -"          'elnode-stop
+        "a \""         'browse-url-elinks
+        "a SPC"        'helm-run-external-command
+        "a C-'"        'browse-url-firefox
+        "b M"          'my/switch-to-messages-buffer
+        "b S"          'my/switch-to-scratch-buffer-other-window
+        "b W"          'my/switch-to-warnings-buffer
+        "b -"          'diff-buffer-with-file
+        "b +"          'my/switch-to-changelog-buffer
+        "b SPC"        'spacemacs/new-empty-buffer
+        "b C-b"        'ibuffer
+        "b C-e"        'bury-buffer
+        "b C-f"        'buffer-face-set
+        "b C-u"        'undo-tree-clear
+        "b <insert>"   'buffer-major-mode
+        "b <f1>"       'about-emacs
+        "b <backtab>"    'my/switch-to-most-recent-buffer-other-window
+        "c SPC"        'mode-compile
+        "c DEL"        'mode-compile-kill
+        "e F"          'flycheck-mode
+        "e TAB"        'flycheck-next-error
+        "e S-TAB"      'flycheck-previous-error
+        "f e s s"      'spacemacs-rgrep
+        "f e s p"      'spacemacs-private-rgrep
+        "f e s o"      'spacemacs-only-rgrep
+        "f e s e"      'elpa-rgrep
+        "f e SPC c"    'my/dotspacemacs/refresh-user-config
+        "f e SPC i"    'my/dotspacemacs/refresh-init
+        "f e SPC l"    'my/configuration-layer/sync
+        "f e SPC t"    'dotspacemacs/test-dotfile
+        "f e SPC u"    'my/dotspacemacs/refresh-user-init
+        "f ."          'find-alternate-file
+        "f >"          'find-alternate-file-other-window
+        "f ' e"        'dired-spacemacs-directory
+        "f ' p"        'dired-spacemacs-private-directory
+        "f / f"        'sudo-open-file
+        "f / e"        'spacemacs/sudo-edit
+        "f / b"        'my/sudo-edit-this-file
+        "f -"          'my/browse-buffer-directory-firefox
+        "f ="          'my/browse-buffer-file-firefox
+        "f SPC"        'my/open-file-at-point
+        "f <insert>"   'find-file-clipboard
+        "f C-."        'find-file-at-point
+        "f C-k"        'bookmark-jump
+        "f C-y"        'my/yank-filename
+        "g C-x v"      'vc-prefix-map
+        ;; "h"            'help-prefix-map
+        "h a"          'apropos
+        "h d C-b"      'describe-personal-keybindings
+        "h d C-i"      'my/evil-interactive-alist-view
+        "h w"          'help-download-prefix-map
+        "h ;"          (defun! my/info-elisp "Open Elisp manual" (info "elisp"))
+        "h :"          (defun! my/info-eintr "Open Elisp intro" (info "eintr"))
+        "h ."          'count-words
+        "h /"          'find-function-prefix-map
+        "h 1"          'evil-goto-definition
+        "h C-f"        'find-library-other-window
+        "h C-m"        'lacarte-execute-menu-command
+        "h C-y"        'tsp-info-goto-node
+        "h C-/"        'evil-search-highlight-persist-remove-all
+        "h C-?"        'evil-search-highlight-restore
+        ;; "h <f1>"       'help-map
+        "i -"          'tiny-expand
+        "j ,"          'evil-avy-goto-word-0
+        "m <f10>"      'my/lacarte-menu-execute/lambda-l-and-exit
+        "o a"          'asciiheadings-prefix-key-map
+        "o c"          'character-prefix-map
+        "o f"          'flycheck-command-map
+        "o m"          'modes-prefix-key-map
+        "r b"          'bookmark-map
+        "s / m"        'my/pcre-multi-occur
+        "s / o"        'my/pcre-occur
+        "s / l"        'my/pcre-loccur
+        "t O"          (my/def-variable-toggle which-key-show-operator-state-maps)
+        "t T"          (my/def-variable-toggle indent-tabs-mode)
+        "t 3"          'my/toggle-evil-mc-mode
+        "t C-n"        'my/toggle-evil-mc-mode-and-cursor
+        "t SPC"        (my/def-variable-toggle show-trailing-whitespace)
+        "t RET w"      'subword-mode
+        "t '"          'evil-visual-mark-mode
+        "t `"          'evil-vimish-fold-mode
+        "t ~"          'variable-pitch-mode
+        "t ="          'my/toggle-indent-function
+        "t |"          'fci-mode
+        "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
+        "t :"          'nameless-mode
+        "t ["          'diff-hl-flydiff-mode
+        "t <f4>"       'my/cycle-shell-command-switch
+        "t C-l"        'toggle-truncate-lines
+        "t C-s"        'my/undo-auto-save-make-local-and-toggle
+        "t C-/"        'evil-search-highlight-persist
+        "t C-'"        (my/def-variable-toggle fit-frame-inhibit-fitting-flag)
+        "T |"          'scroll-bar-mode
+        "w TAB"        'ace-swap-window
+        "w DEL"        'my/delete-window-ace-move-buffer-quit-help
+        "x a ."        'spacemacs/align-repeat-period
+        "x a '"        'spacemacs/align-repeat-quote
+        "x a \""       'spacemacs/align-repeat-double-quote
+        "x a -"        'spacemacs/align-repeat-dash
+        "x a #"        'spacemacs/align-repeat-hash
+        "x a *"        'spacemacs/align-repeat-star
+        "x a C-."      'spacemacs/align-repeat-decimal
+        "x a RET"      'my/pcre-align
+        "x a C-;"      'spacemacs/align-repeat-semicolon-comment
+        "x a C-:"      'my/align-after-colon
+        "x a C-/"      'spacemacs/align-repeat-slash-comment
+        "x a C-'"      'tsp-align-quoted-column
+        "x a C-\""     'tsp-align-double-quoted-column
+        "x a SPC"      'my/quick-pcre-align-repeat
+        "x a S-SPC"    'my/quick-pcre-align
+        "x a C-SPC"    'my/align-whitespace
+        "x l U"        'my/delete-duplicate-lines-nonblank
+        "x N"          'rectangle-number-lines-interactive
+        "x <insert>"   'region-swap
+        "x t r"        'region-swap
+        "x /"          'shell-command-on-region
+        "x \\"         'my/evil-shell-command-replace-region
+        "x |"          'my/shell-command-process-region-as-file
+        "x ; y"        'link-hint-copy-link
+        "x ; Y"        'link-hint-copy-multiple-links
+        "x . y"        'link-hint-copy-link-at-point
+        "x . Y"        'my/link-hint-copy-all-links
+        "x . o"        'my/find-file-or-browse-url-at-point
+        "x . O"        'link-hint-open-all-links
+        "x C-b"        'my/copy-to-empty-buffer
+        "x C-k"        'evil-insert-digraph
+        "x C-l"        'my/quick-pcre-align-repeat
+        "x C-SPC"      'my/center-in-whitespace
+        "z +"          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
+        "z ="          'spacemacs/scale-font-transient-state/spacemacs/scale-up-font
+        "z -"          'spacemacs/scale-font-transient-state/spacemacs/scale-down-font
+        "C /"          'my/pick-color
+        "C ."          'my/pick-insert-color
+        "1"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-1-and-exit
+        "2"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-2-and-exit
+        "3"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-3-and-exit
+        "4"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit
+        "8"            'spacemacs/enter-ahs-forward
+        "*"            'spacemacs/enter-ahs-backward
+        "."            'repeat-complex-command
+        ","            'helm-mini
+        ">"            'my/evil-shift-right-fine-dispatcher
+        "<"            'my/evil-shift-left-fine-dispatcher
+        "="            'quick-calc
+        "-"            'my/dired-jump-and-kill
+        "("            'my/add-spacing-inside-parens
+        ")"            'my/remove-spacing-inside-parens
+        "["            'my/add-spacing-inside-brackets
+        "]"            'my/remove-spacing-inside-brackets
+        "{"            'my/add-spacing-inside-braces
+        "}"            'my/remove-spacing-inside-braces
+        "\""           'my/add-spacing-inside-double-quotes
+        "C-\""         'my/remove-spacing-inside-double-quotes
+        "SPC"          'avy-goto-char-timer
+        "S-SPC"        'spacemacs/toggle-maximize-buffer
+        "<backtab>"    'my/switch-to-most-recent-buffer
+        "<return>"     'helm-buffers-list
+        "<f3>"         'kmacro-keymap
+        "<f5>"         'spacemacs/safe-revert-buffer
+        "<f10>"        'my/lacarte-menu-execute/lambda-a-and-exit
+        "C-l"          'my/quick-pcre-align-repeat
+        "C-p"          'my/evil-paste-after-as-block
+        "C-P"          'my/evil-paste-before-as-block
+        "C-r"          'my/replace-line
+        "C-v"          'my/cua-rectangle-toggle
+        "C-x C-o"      'my/remove-blank-lines
+        "C-w"          'delete-frame
+        "C-y"          'my/paste-no-properties
+        "C-8"          'spacemacs/helm-project-smart-do-search-region-or-symbol
+        "C-."          'ido-switch-buffer
+        "C-/"          'spacemacs/evil-search-clear-highlight
+        "C-?"          'evil-search-highlight-restore
+        "C-'"          'my/quote-to-end-of-line
+        "C-\\"         'set-input-method
+        "C-SPC"        'cua-toggle-global-mark
+        "C-S-SPC"      'my/just-one-blank-line
+        "M-p"          'my/evil-paste-after-column-kill-height
+        "M-q"          'my/wrap-lines-in-region
+        "M-x"          'helm-M-x
+        "M-%"          'evil-visual-replace-query-replace
+        "M-DEL"        'my/kill-other-buffer-and-window
+        "M-C-%"        'evil-visual-replace-replace-regexp
+        "ESC ESC"      'my/keyboard-escape-quit-and-clear-highlight
+        )
+      )
+
+    (my/set-my-leader-keys))
 
   (bind-keys :map spacemacs-cmds
              :prefix-map help-download-prefix-map
