@@ -1433,6 +1433,7 @@ COUNT, BEG, END, and TYPE have no effect."
      (?,      "< " . " >")
      (?$      "${" . "}")
      (?\C-/  "/* " . " */")
+     ;; note: binding C-` as an alternative for ` means C-` C-` can be used to backquote a symbol
      (?\C-`    "`" . "`")
      (?f . my/evil-surround-function-defn)
      (?c . my/evil-surround-character)
