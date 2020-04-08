@@ -2088,8 +2088,6 @@ COUNT, BEG, END, and TYPE have no effect."
     ")"            'my/remove-spacing-inside-parens
     "["            'my/add-spacing-inside-brackets
     "]"            'my/remove-spacing-inside-brackets
-    "{"            'my/add-spacing-inside-bracers
-    "}"            'my/remove-spacing-inside-bracers
     "\""           'my/add-spacing-inside-double-quotes
     "C-\""         'my/remove-spacing-inside-double-quotes
     "SPC"          'avy-goto-char-timer
@@ -2123,6 +2121,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "M-C-%"        'evil-visual-replace-replace-regexp
     "ESC ESC"      'my/keyboard-escape-quit-and-clear-highlight
     )
+    "{"            'my/add-spacing-inside-braces
+    "}"            'my/remove-spacing-inside-braces
 
   (bind-keys :map spacemacs-cmds
              :prefix-map help-download-prefix-map
@@ -4840,8 +4840,8 @@ ISEARCH DOCUMENTATION.
   (fset 'my/remove-spacing-inside-parens [ ?c ?s 40 41 ])
   (fset 'my/add-spacing-inside-brackets [ ?c ?s 93 91 ])
   (fset 'my/remove-spacing-inside-brackets [ ?c ?s 91 93 ])
-  (fset 'my/add-spacing-inside-bracers [ ?c ?s 125 123 ])
-  (fset 'my/remove-spacing-inside-bracers [ ?c ?s 123 125 ])
+  (fset 'my/add-spacing-inside-braces [ ?c ?s 125 123 ])
+  (fset 'my/remove-spacing-inside-braces [ ?c ?s 123 125 ])
   (fset 'my/add-spacing-inside-double-quotes [ ?c ?s 34 40 ?c ?s 41 34 ])
   (fset 'my/remove-spacing-inside-double-quotes [?c ?s 40 34 ])
   (fset 'my/collapse-single-line-function [escape ?J ?J ?h ?c ?s 125 123])
