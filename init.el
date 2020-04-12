@@ -1641,6 +1641,8 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key universal-argument-map (kbd "M-`") 'universal-argument-more)
   ;; =================================================
 
+  (global-set-key (kbd "C-M-j") 'evil-avy-goto-char-timer)
+
   (global-set-key (kbd "C-h y") 'describe-symbol)
 
   (global-set-key (kbd "M-S-x") 'execute-extended-command)
