@@ -2973,7 +2973,10 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (defun my/dactyl-goto-function (fn)
     "Jump to specified function"
-    (interactive "sFunction: ")
+    (interactive
+     (list
+      (let ((fap (thing-at-point 'symbol)))
+        (read-string (format "Function [default %s]: " fap) nil nil fap))))
     (let ((start-pos (point)))
       (beginning-of-buffer)
       (if (re-search-forward (pcre-to-elisp (concat "^ *function " fn) "i") nil t)
