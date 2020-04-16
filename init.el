@@ -2969,7 +2969,7 @@ COUNT, BEG, END, and TYPE have no effect."
           (progn
             (recenter 4)
             (beginning-of-line))
-        (goto-point pos))))
+        (goto-char start-pos))))
 
   (defun my/dactyl-goto-function (fn)
     "Jump to specified function"
@@ -2980,7 +2980,7 @@ COUNT, BEG, END, and TYPE have no effect."
           (progn
             (recenter 4)
             (beginning-of-line))
-        (goto-point pos))))
+        (goto-char start-pos))))
 
   (defun my/dactyl-goto-heading (h)
     "Jump to specified boxed heading"
@@ -2991,7 +2991,7 @@ COUNT, BEG, END, and TYPE have no effect."
           (progn
             (recenter 4)
             (beginning-of-line))
-        (goto-point pos))))
+        (goto-char start-pos))))
 
   (defun my/dactyl-mapping-occur (prefix)
     "Open an `occur' buffer with statements mapping keys matching PREFIX."
