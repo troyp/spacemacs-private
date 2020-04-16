@@ -2810,6 +2810,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "/"     (my/make-insertion-around-point "/* " " */")
       "a a"   'my/dactyl-align-defs-repeat
       "a m"   'my/dactyl-align-defs-multiline
+      "g c"   'my/dactyl-goto-command
       "g f"   'my/dactyl-goto-function
       "g g"   'my/dactyl-goto-group
       "g h"   'my/dactyl-goto-heading
@@ -2861,6 +2862,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "/"     (my/make-insertion-around-point "/* " " */")
       "a a"   'my/dactyl-align-defs-repeat
       "a m"   'my/dactyl-align-defs-multiline
+      "g c"   'my/dactyl-goto-command
       "g f"   'my/dactyl-goto-function
       "g g"   'my/dactyl-goto-group
       "g h"   'my/dactyl-goto-heading
@@ -2980,6 +2982,20 @@ COUNT, BEG, END, and TYPE have no effect."
     (let ((start-pos (point)))
       (beginning-of-buffer)
       (if (re-search-forward (pcre-to-elisp (concat "^ *function " fn) "i") nil t)
+          (progn
+            (recenter 4)
+            (beginning-of-line))
+        (goto-char start-pos))))
+
+  (defun my/dactyl-goto-command (cmd)
+    "Jump to specified command"
+    (interactive
+     (list
+      (let ((cap (thing-at-point 'symbol)))
+        (read-string (format "Function [default %s]: " cap) nil nil cap))))
+    (let ((start-pos (point)))
+      (beginning-of-buffer)
+      (if (re-search-forward (pcre-to-elisp (concat "^ *command! " cmd) "i") nil t)
           (progn
             (recenter 4)
             (beginning-of-line))
