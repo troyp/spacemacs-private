@@ -3007,8 +3007,9 @@ COUNT, BEG, END, and TYPE have no effect."
     "Open an `occur' buffer with statements defining commands matching PATTERN."
     (interactive (list (read-string "Commands matching PATTERN: " nil t nil)
                        current-prefix-arg))
-    (let ((pcre (concat "command!? +(-\\w+ +)*\w*" pattern "\w*")))
-      (occur (pcre-to-elisp pcre "i")))
+    (let ((pcre (concat "command!? +(-\\w+ +)*\w*" pattern "\w*"))
+          (flags (if case-sensitive "" "i")))
+      (occur (pcre-to-elisp pcre flags)))
     (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-function-occur (pattern &optional case-sensitive)
@@ -3016,8 +3017,9 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive (list (read-string "Functions matching PATTERN: " nil t nil))
                  current-prefix-arg)
     (let ((pcre (concat "function +\w*" pattern "\w* *\(\)"
-                        "|" "\w*" pattern "\w* *= *function *\(\)")))
-      (occur (pcre-to-elisp pcre "i")))
+                        "|" "\w*" pattern "\w* *= *function *\(\)"))
+          (flags (if case-sensitive "" "i")))
+      (occur (pcre-to-elisp pcre flags)))
     (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-show-groups ()
