@@ -2338,6 +2338,7 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix "y"
              :prefix-docstring "Commands to copy text to clipboard and kill-ring"
              ("d"   . my/yank-directory)
+             ("i"   . my/yank-buffer-initial-integers)
              ("n"   . my/yank-filename)
              ("l a" . my/link-hint-copy-all-links)
              ("l f" . link-hint-copy-link)
