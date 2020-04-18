@@ -4011,6 +4011,7 @@ If FILE is nil, the file associated with the current buffer is used."
              ("e RET"  . my/eval-replace-last-sexp)
              ("C-M-x"  . eval-defun)
              ("g g"    . my/spacemacs/jump-to-definition-and-center)
+             ("g h"    . my/emacs-lisp-goto-heading)
              ("t i"    . ert-run-tests-interactively)
              ("j"      . my/eval-print-last-sexp)
              ("v"      . my/evil-select-sexp-at-point)
@@ -4075,6 +4076,17 @@ If FILE is nil, the file associated with the current buffer is used."
     (apply #'evil-delete (evil-inner-symbol))
     (sp-unwrap-sexp -1)
     (evil-normal-state))
+
+  (defun my/emacs-lisp-goto-heading (h)
+    "Jump to specified boxed heading"
+    (interactive "sHeading: ")
+    (let ((start-pos (point)))
+      (beginning-of-buffer)
+      (if (re-search-forward (pcre-to-elisp (concat "^ *;;? *\\| +" h ".* \\|") "i") nil t)
+          (progn
+            (recenter 4)
+            (beginning-of-line))
+        (goto-char start-pos))))
 
   (evil-define-motion my/forward-evil-defun (count)
     "Move to the end of the COUNT-th next paragraph."
