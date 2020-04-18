@@ -2066,12 +2066,6 @@ COUNT, BEG, END, and TYPE have no effect."
         "x /"          'shell-command-on-region
         "x \\"         'my/evil-shell-command-replace-region
         "x |"          'my/shell-command-process-region-as-file
-        "x ; y"        'link-hint-copy-link
-        "x ; Y"        'link-hint-copy-multiple-links
-        "x . y"        'link-hint-copy-link-at-point
-        "x . Y"        'my/link-hint-copy-all-links
-        "x . o"        'my/find-file-or-browse-url-at-point
-        "x . O"        'link-hint-open-all-links
         "x C-b"        'my/copy-to-empty-buffer
         "x C-k"        'evil-insert-digraph
         "x C-l"        'my/quick-pcre-align-repeat
@@ -2293,6 +2287,18 @@ COUNT, BEG, END, and TYPE have no effect."
              )
 
   (bind-keys :map user-cmds-map
+             ;; S-SPC j
+             :prefix-map my/jump-prefix-map
+             :menu-name "jump"
+             :prefix "j"
+             :prefix-docstring "Jump commands."
+             ("l ."   . my/find-file-or-browse-url-at-point)
+             ("l a"   . link-hint-open-all-links)
+             ("l f"   . link-hint-open-link)
+             ("l F"   . link-hint-open-multiple-links)
+             )
+
+  (bind-keys :map user-cmds-map
              ;; S-SPC p
              :prefix-map my/projects-prefix-map
              :menu-name "projects"
@@ -2333,8 +2339,12 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix-docstring "Commands to copy text to clipboard and kill-ring"
              ("d"   . my/yank-directory)
              ("n"   . my/yank-filename)
+             ("l a" . my/link-hint-copy-all-links)
+             ("l f" . link-hint-copy-link)
+             ("l F" . link-hint-copy-multiple-links)
+             ("l ." . link-hint-copy-link-at-point)
              ("p"   . my/yank-path)
-             (". f" . link-hint-copy-link-at-point)
+             (". l" . link-hint-copy-link-at-point)
              (". s" . my/yank-sexp-at-point)
              (". w" . my/yank-word-at-point)
              )
