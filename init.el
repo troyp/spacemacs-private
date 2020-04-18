@@ -2810,6 +2810,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "/"     (my/make-insertion-around-point "/* " " */")
       "a a"   'my/dactyl-align-defs-repeat
       "a m"   'my/dactyl-align-defs-multiline
+      "g b"   'my/dactyl-goto-binding
       "g c"   'my/dactyl-goto-command
       "g f"   'my/dactyl-goto-function
       "g g"   'my/dactyl-goto-group
@@ -2862,6 +2863,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "/"     (my/make-insertion-around-point "/* " " */")
       "a a"   'my/dactyl-align-defs-repeat
       "a m"   'my/dactyl-align-defs-multiline
+      "g b"   'my/dactyl-goto-binding
       "g c"   'my/dactyl-goto-command
       "g f"   'my/dactyl-goto-function
       "g g"   'my/dactyl-goto-group
@@ -2996,6 +2998,17 @@ COUNT, BEG, END, and TYPE have no effect."
     (let ((start-pos (point)))
       (beginning-of-buffer)
       (if (re-search-forward (pcre-to-elisp (concat "^ *command! " cmd) "i") nil t)
+          (progn
+            (recenter 4)
+            (beginning-of-line))
+        (goto-char start-pos))))
+
+  (defun my/dactyl-goto-binding (b)
+    "Jump to specified binding"
+    (interactive "sKeys: ")
+    (let ((start-pos (point)))
+      (beginning-of-buffer)
+      (if (re-search-forward (pcre-to-elisp (concat "^ *map " b) "") nil t)
           (progn
             (recenter 4)
             (beginning-of-line))
