@@ -1316,6 +1316,16 @@ Returns the function definition."
             (unless (my/line-at-point-blank-p) (previous-line) (end-of-line) (forward-char))
             (point))))
 
+  (setq my/dividerRegexp (pcre-to-elisp "^ *.?.? *(---+|===+) *$|^$"))
+  (evil-define-text-object evil-inner-divider (count &optional beg end type)
+      (list
+       (save-excursion (search-backward-regexp my/dividerRegexp) (next-line) (point))
+       (save-excursion (search-forward-regexp my/dividerRegexp) (beginning-of-line) (point))))
+  (evil-define-text-object evil-a-divider (count &optional beg end type)
+      (list
+       (save-excursion (search-backward-regexp my/dividerRegexp) (next-line) (point))
+       (save-excursion (search-forward-regexp my/dividerRegexp) (next-line) (beginning-of-line) (point))))
+
   ;; heredoc object: define properties for thingatpt
   (put 'heredoc 'beginning-op
        (lambda ()
@@ -1404,10 +1414,12 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-outer-text-objects-map "S" 'evil-textobj-column-a-word)
   (define-key evil-inner-text-objects-map "e" 'evil-inner-element)
   (define-key evil-outer-text-objects-map "e" 'evil-a-element)
-  (define-key evil-outer-text-objects-map "z" 'evil-a-charrun)
   (define-key evil-inner-text-objects-map "z" 'evil-inner-charrun)
-  (define-key evil-outer-text-objects-map "" 'evil-a-simple-paragraph)
+  (define-key evil-outer-text-objects-map "z" 'evil-a-charrun)
   (define-key evil-inner-text-objects-map "" 'evil-inner-simple-paragraph)
+  (define-key evil-outer-text-objects-map "" 'evil-a-simple-paragraph)
+  (define-key evil-inner-text-objects-map "" 'evil-inner-divider)
+  (define-key evil-outer-text-objects-map "" 'evil-a-divider)
 
   ;; -------------------------------------------------------------------------------
   ;; ,---------------,
