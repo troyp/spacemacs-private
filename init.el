@@ -3003,7 +3003,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "Jump to specified function"
     (interactive
      (list
-      (let ((fap (thing-at-point 'symbol)))
+      (let* ((fap1 (thing-at-point 'symbol))
+             (fap  (replace-regexp-in-string "^\\(.*=> *\\)" "" fap1 nil nil 1)))
         (read-string (format "Function [default %s]: " fap) nil nil fap))))
     (let ((start-pos (point)))
       (beginning-of-buffer)
