@@ -2316,8 +2316,9 @@ COUNT, BEG, END, and TYPE have no effect."
              :menu-name "projects"
              :prefix "p"
              :prefix-docstring "Commands opening projects."
-             ("d" . my/dactyl-source-dir)
              ("c" . my/cvim-source-dir)
+             ("d" . my/dactyl-source-dir)
+             ("s" . my/scripts-dir)
              ("v" . my/vimperator-source-dir-orig)
              )
 
@@ -6971,6 +6972,18 @@ entered, return a command which executes it."
     (dired-insert-subdir "/home/troy/repos/chromium-vim/cvimrc_parser")
     (dired-insert-subdir "/home/troy/repos/chromium-vim/pages")
     (dired-insert-subdir "/home/troy/repos/chromium-vim/scripts")
+    (beginning-of-buffer)
+    (forward-paragraph)
+    (diredp-next-line 2)
+    (dired-hide-details-mode 1)
+    (setq-local my/dired-reuse-buffer nil))
+
+  (defun my/scripts-dir()
+    (interactive)
+    (dired "/home/troy/.scripts/")
+    (let ((subdirs (directory-files "~/.scripts/script-directories" t "^\[^.\]")))
+         (dolist (dir subdirs)
+           (dired-insert-subdir dir)))
     (beginning-of-buffer)
     (forward-paragraph)
     (diredp-next-line 2)
