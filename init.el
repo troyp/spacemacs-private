@@ -3017,8 +3017,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "Jump to specified command"
     (interactive
      (list
-      (let ((cap (thing-at-point 'symbol)))
-        (read-string (format "Function [default %s]: " cap) nil nil cap))))
+      (let ((cap (s-chop-suffix "<Space>" (thing-at-point 'symbol))))
+        (read-string (format "Command [default %s]: " cap) nil nil cap))))
     (let ((start-pos (point)))
       (beginning-of-buffer)
       (if (re-search-forward (pcre-to-elisp (concat "^ *command! " cmd) "i") nil t)
