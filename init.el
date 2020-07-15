@@ -1654,6 +1654,7 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; =================================================
 
   (global-set-key (kbd "C-M-j") 'evil-avy-goto-char-timer)
+  (global-set-key (kbd "C-M-y") 'avy-copy-line)
 
   (global-set-key (kbd "C-h y") 'describe-symbol)
 
