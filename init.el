@@ -1690,8 +1690,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
   (global-set-key (kbd "<C-M-return>") 'my/split-line-and-open-line-above)
 
-  (when (commandp 'my/evil-beginning-of-line-or-first-non-blank)
-    (global-set-key "\C-a" 'my/evil-beginning-of-line-or-first-non-blank))
+  (global-set-key "\C-a" 'move-beginning-of-line)
   (global-set-key (kbd "<S-return>") 'my/open-line-below)       ;; troyp/utils.el
   (global-set-key (kbd "<C-S-return>") 'my/open-line-above)     ;; troyp/utils.el
   (global-set-key [\C-\S-down] 'move-text-down)
