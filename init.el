@@ -1169,6 +1169,7 @@ Returns the function definition."
           ;; mode-compile
           ;; mode-compile-kill
           moz
+          sort-group-lines
           top-mode
           ;; Drew Adams packages
           autofit-frame
@@ -2071,6 +2072,7 @@ COUNT, BEG, END, and TYPE have no effect."
         "x a SPC"      'my/quick-pcre-align-repeat
         "x a S-SPC"    'my/quick-pcre-align
         "x a C-SPC"    'my/align-whitespace
+        "x l g"        'my/pcre-group-lines
         "x l U"        'my/delete-duplicate-lines-nonblank
         "x N"          'rectangle-number-lines-interactive
         "x <insert>"   'region-swap
@@ -2139,7 +2141,6 @@ COUNT, BEG, END, and TYPE have no effect."
         "ESC ESC"      'my/keyboard-escape-quit-and-clear-highlight
         )
       )
-
     (my/set-my-leader-keys))
 
   (bind-keys :map spacemacs-cmds
@@ -7082,6 +7083,19 @@ entered, return a command which executes it."
     (interactive)
     (keyboard-escape-quit)
     (spacemacs/evil-search-clear-highlight))
+
+  (defun my/pcre-group-lines (beg end reverse-order regexps)
+    (interactive
+     (list (region-beginning) (region-end) current-prefix-arg
+           (let (regexps current)
+             (while
+                 (progn
+                   (setq current (read-string "Enter PCRE (<Enter> to finish): "))
+                   (when (not (string= current ""))
+                     (setq regexps (cons (concat ".*" current ".*") regexps)))))
+             regexps)))
+    (setq regexps (reverse (cons "" regexps)))
+    (sort-group-lines reverse-order beg end regexps))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
