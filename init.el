@@ -3867,13 +3867,14 @@ Committer: %cN <%cE>"))
 
   (bind-keys :map spacemacs-markdown-mode-map
              ("i C-l"  . my/markdown-gh-linkify-heading)
-             ("C-v"    . my/markdown-app-call)
-             ("M-h"    . my/github-heading-to-readme-link)
-             ("M-l"    . my/github-linkify-heading)
              ("n"      . my/markdown-next-link)
+             ("x ="    . my/uppercase-double-underline)
              ("1"      . my/markdown-underline-heading)
              ("."      . markdown-follow-link-at-point)
              ("TAB"    . markdown-show-all)
+             ("C-v"    . my/markdown-app-call)
+             ("M-h"    . my/github-heading-to-readme-link)
+             ("M-l"    . my/github-linkify-heading)
              )
 
   (defun markdown-init-fn ()
