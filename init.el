@@ -4930,6 +4930,9 @@ ISEARCH DOCUMENTATION.
   (fset 'my/remove-spacing-inside-double-quotes [?c ?s 40 34 ])
   (fset 'my/collapse-single-line-function [escape ?J ?J ?h ?c ?s 125 123])
   (fset 'my/quote-to-end-of-line [escape ?v 5 left ?s 34])
+  (fset 'my/double-slash-comment-to-delimited
+    [escape ?: ?: ?s ?/ ?\\ ?/ ?\\ ?/ ?\\ ?\( ?. ?* ?\\ ?\) ?/ ?\\ ?/ ?\\ ?* ?\\ ?1 ?  ?\\ ?* ?\\ ?/ ?/ ?c return])
+  (fset 'my/uppercase-double-underline [escape ?v ?i ?l ?g ?u ?y ?y ?p ?v ?i ?l ?r ?=])
 
   (fset 'my/surround-symbol
    (lambda (&optional arg)
