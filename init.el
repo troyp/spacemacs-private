@@ -2993,7 +2993,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "Jump to specified group"
     (interactive "sGroup: ")
     (let ((start-pos (point)))
-      (beginning-of-buffer)
+      (unless (string-empty-p group) (beginning-of-buffer))
       (if (re-search-forward (pcre-to-elisp (concat "^ *group " group)) nil t)
           (progn
             (recenter 4)
@@ -3008,7 +3008,7 @@ COUNT, BEG, END, and TYPE have no effect."
              (fap  (if fap1 (replace-regexp-in-string "^\\(.*=> *\\)" "" fap1 nil nil 1) "")))
         (s-trim (read-string (format "Function [default %s]: " fap) nil nil fap)))))
     (let ((start-pos (point)))
-      (beginning-of-buffer)
+      (unless (string-empty-p fn) (beginning-of-buffer))
       (if (re-search-forward (pcre-to-elisp (concat "^ *function " fn) "i") nil t)
           (progn
             (recenter 4)
@@ -3022,7 +3022,7 @@ COUNT, BEG, END, and TYPE have no effect."
       (let ((cap (or (s-chop-suffix "<Space>" (thing-at-point 'symbol)) "")))
         (s-trim (read-string (format "Command [default %s]: " cap) nil nil cap)))))
     (let ((start-pos (point)))
-      (beginning-of-buffer)
+      (unless (string-empty-p cmd) (beginning-of-buffer))
       (if (re-search-forward (pcre-to-elisp (concat "^ *command! " cmd) "i") nil t)
           (progn
             (recenter 4)
@@ -3033,7 +3033,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "Jump to specified binding"
     (interactive "sKeys: ")
     (let ((start-pos (point)))
-      (beginning-of-buffer)
+      (unless (string-empty-p b) (beginning-of-buffer))
       (if (re-search-forward (pcre-to-elisp (concat "^ *map " b) "") nil t)
           (progn
             (recenter 4)
@@ -3044,7 +3044,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "Jump to specified boxed heading"
     (interactive "sHeading: ")
     (let ((start-pos (point)))
-      (beginning-of-buffer)
+      (unless (string-empty-p h) (beginning-of-buffer))
       (if (re-search-forward (pcre-to-elisp (concat "^ *\" *\\| +" h ".* \\|") "i") nil t)
           (progn
             (recenter 4)
