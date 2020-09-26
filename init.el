@@ -3019,7 +3019,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "Jump to specified command"
     (interactive
      (list
-      (let ((cap (s-chop-suffix "<Space>" (thing-at-point 'symbol))))
+      (let ((cap (or (s-chop-suffix "<Space>" (thing-at-point 'symbol)) "")))
         (read-string (format "Command [default %s]: " cap) nil nil cap))))
     (let ((start-pos (point)))
       (beginning-of-buffer)
