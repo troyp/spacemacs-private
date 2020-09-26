@@ -3006,7 +3006,7 @@ COUNT, BEG, END, and TYPE have no effect."
      (list
       (let* ((fap1 (thing-at-point 'symbol))
              (fap  (if fap1 (replace-regexp-in-string "^\\(.*=> *\\)" "" fap1 nil nil 1) "")))
-        (read-string (format "Function [default %s]: " fap) nil nil fap))))
+        (s-trim (read-string (format "Function [default %s]: " fap) nil nil fap)))))
     (let ((start-pos (point)))
       (beginning-of-buffer)
       (if (re-search-forward (pcre-to-elisp (concat "^ *function " fn) "i") nil t)
@@ -3020,7 +3020,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive
      (list
       (let ((cap (or (s-chop-suffix "<Space>" (thing-at-point 'symbol)) "")))
-        (read-string (format "Command [default %s]: " cap) nil nil cap))))
+        (s-trim (read-string (format "Command [default %s]: " cap) nil nil cap)))))
     (let ((start-pos (point)))
       (beginning-of-buffer)
       (if (re-search-forward (pcre-to-elisp (concat "^ *command! " cmd) "i") nil t)
