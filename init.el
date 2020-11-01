@@ -5237,9 +5237,9 @@ temporarily enables it to allow getting help on disabled items and buttons."
     (interactive)
     (browse-url-xdg-open buffer-file-name))
 
-  (defun my/browse-url-at-point ()
+  (defun my/browse-url-at-point (&optional point)
     (interactive)
-    (let ((url (url-get-url-at-point)))
+    (let ((url (url-get-url-at-point point)))
       (browse-url-firefox url)))
 
   (defun my/find-file-or-browse-url-at-point ()
