@@ -6759,15 +6759,16 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (my/serve-buffer-directory)
     (browse-url-firefox "localhost:8009"))
 
-  ;; ,----------------,
-  ;; | Yank Functions |
-  ;; '----------------'
+  ;; ,----------------------,
+  ;; | Yank/Paste Functions |
+  ;; '----------------------'
 
   (defun my/kill-new-and-message (string &optional replace)
     (kill-new string replace)
     (message string))
 
   (defmacro my/define-yank-cmd (name expr &optional doc)
+    (declare (indent 2))
     (let ((fnname (intern (concat "my/yank-" (symbol-name name)))))
       `(defun ,fnname (arg)
          ,doc
@@ -6775,6 +6776,19 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
          (let ((str (if arg (my/string-double-quote ,expr) ,expr)))
            (kill-new str)
            (message str)))))
+
+  ;; TODO: WIP - instead of quoting, universal argument is passed into expression
+  (defmacro my/define-yank-cmd-pass-argument (name expr &optional interactive-code doc)
+    "Define a command NAME which evaluates EXPR and yanks the value.
+EXPR may contain the anaphoric variable N containing the universal argument.
+INTERACTIVE-CODE describes how N is obtained. By default, the interactive code P is used
+(nil if no argument, otherwise the numeric value). DOC is an optional documentation string."
+    nil)
+
+  ;; TODO: WIP
+  (defmacro my/define-yank-at-point-cmd  (name expr &optional doc)
+    nil)
+
 
   (my/define-yank-cmd filename (file-name-nondirectory (buffer-file-name)) "Yank name of current file")
   (my/define-yank-cmd path (buffer-file-name) "Yank full path of current file")
