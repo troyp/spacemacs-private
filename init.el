@@ -2309,6 +2309,7 @@ COUNT, BEG, END, and TYPE have no effect."
              ("l a"   . link-hint-open-all-links)
              ("l f"   . link-hint-open-link)
              ("l F"   . link-hint-open-multiple-links)
+             ("."   . my/find-file-or-browse-url-at-point)
              )
 
   (bind-keys :map user-cmds-map
@@ -5243,7 +5244,7 @@ temporarily enables it to allow getting help on disabled items and buttons."
 
   (defun my/find-file-or-browse-url-at-point ()
     (interactive)
-    (let ((url (url-get-url-at-point)))
+    (let ((url (or (markdown-link-url) (url-get-url-at-point))))
       (if url
           (browse-url-firefox url)
         (find-file-at-point))))
