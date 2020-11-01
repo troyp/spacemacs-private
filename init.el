@@ -972,6 +972,10 @@ before packages are loaded."
         (stringp (symbol-function sym))
         (vectorp (symbol-function sym))))
 
+  (defun my/kmacro-call (kmac)
+    (interactive)
+    (kmacro-exec-ring-item (list kmac 0 "%d") nil))
+
   (defun my/describe-kmacro-command (cmd)
     (interactive
      (list
@@ -4912,6 +4916,8 @@ ISEARCH DOCUMENTATION.
 
   (fset 'my/switch-to-most-recent-buffer [?\C-x ?b return])
 
+  ;; note: (fset 'foo [...]) -- keyboard macros set this way only in bindings.
+  ;;       Can't be called from lisp: use my/kmacro-call to call if necessary.
   (fset 'my/md-sig-to-list-item
         [118 69 121 103 118 115 93 105 42 32 escape 69 108 120 97 35 escape 80
              16 97 45 escape 118 36 104 201326629 38 63 32 return 45 return])
