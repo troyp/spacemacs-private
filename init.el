@@ -1232,7 +1232,7 @@ Returns the function definition."
   (add-to-list 'auto-mode-alist '("\\.maff" . archive-mode))
   (add-to-list 'auto-mode-alist '("\\.sc" . scala-mode))
   (add-to-list 'auto-mode-alist '("\\.mlterm\.*" . conf-mode))
-  (add-to-list 'auto-mode-alist '("\\.penta.*" . dactyl-text-mode))
+  (add-to-list 'auto-mode-alist '("\\.penta[dactylrc]$" . dactyl-text-mode))
 
   ;; ==============================================================================
   ;;                                *************
