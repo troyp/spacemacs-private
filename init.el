@@ -2854,6 +2854,8 @@ COUNT, BEG, END, and TYPE have no effect."
       "o s"   'my/dactyl-show-styles
       "o m"   'my/dactyl-mapping-occur
       "o \\"  'my/dactyl-show-sections
+      "o /"   'my/dactyl-show-slash-star-sections
+      "o '"   'my/dactyl-show-quote-sections
       "t"     'my/dactyl-toggle-text-mode
       "j"     'my/newline-indent-insert-fill-prefix
       "J"     'my/collapse-single-line-function
@@ -2909,6 +2911,8 @@ COUNT, BEG, END, and TYPE have no effect."
       "o s"   'my/dactyl-show-styles
       "o m"   'my/dactyl-mapping-occur
       "o \\"  'my/dactyl-show-sections
+      "o /"   'my/dactyl-show-slash-star-sections
+      "o '"   'my/dactyl-show-quote-sections
       "t"     'my/dactyl-toggle-text-mode
       ". c"   'my/dactyl-command-occur-at-point
       ". f"   'my/dactyl-function-occur-at-point
@@ -3086,6 +3090,18 @@ COUNT, BEG, END, and TYPE have no effect."
     "Open an `occur' buffer with all group statements."
     (interactive)
     (occur (pcre-to-elisp "^group [a-zA-Z0-9_]+ -locations="))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-show-slash-star-sections ()
+    "Open an `occur' buffer with all section headings."
+    (interactive)
+    (occur (pcre-to-elisp "^ */\\* +\\| .* \\| +\\*/$"))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-show-quote-sections ()
+    "Open an `occur' buffer with all section headings."
+    (interactive)
+    (occur (pcre-to-elisp "^ *\" *\\| .* \\| *\"?$"))
     (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-show-sections ()
