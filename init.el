@@ -1269,6 +1269,7 @@ Returns the function definition."
   (spacemacs|define-text-object "h" "helplink" "`" "'")
   (spacemacs|define-text-object "q" "curlquote" "‘" "’")
   (spacemacs|define-text-object (kbd "C-]") "corner-bracket" "「" "」")
+  (spacemacs|define-text-object "m" "comment" "/* " " */")
 
   (evil-define-text-object evil-inner-defun (count &optional beg end type)
     "operates on the top-level sexp around point."
@@ -1447,11 +1448,12 @@ COUNT, BEG, END, and TYPE have no effect."
      (?t . evil-surround-read-tag)
      (?< . evil-surround-read-tag)
      (?f . evil-surround-function)
-     (?,      "< " . " >")
-     (?$      "${" . "}")
+     (?,     "< " . " >")
+     (?$     "${" . "}")
      (?\C-/  "/* " . " */")
+     (?m     "/* " . " */")
      ;; note: binding C-` as an alternative for ` means C-` C-` can be used to backquote a symbol
-     (?\C-`    "`" . "`")
+     (?\C-`  "`" . "`")
      (?f . my/evil-surround-function-defn)
      (?c . my/evil-surround-character)
      (?s . my/evil-surround-string)
