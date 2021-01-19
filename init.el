@@ -1698,7 +1698,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key (kbd "<C-return>") 'evil-cua-toggle)
   (global-set-key (kbd "<C-M-return>") 'my/split-line-and-open-line-above)
 
-  (global-set-key "\C-a" 'move-beginning-of-line)
+  (global-set-key "\C-a" 'move-beginning-of-line-or-text)       ;; troyp/utils.el
   (global-set-key (kbd "<S-return>") 'my/open-line-below)       ;; troyp/utils.el
   (global-set-key (kbd "<C-S-return>") 'my/open-line-above)     ;; troyp/utils.el
   (global-set-key [\C-\S-down] 'move-text-down)
