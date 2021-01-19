@@ -2974,7 +2974,8 @@ COUNT, BEG, END, and TYPE have no effect."
      (evil-ex-make-substitute-pattern
       " *\\( -desc\\| -nargs\\| -count\\| -bang\\| -modes\\| -complete\\| -ex\\| -js\\| -b\\b\\)"
       '(?g))
-     "\n\\\\   \\1"))
+     "\n\\\\   \\1")
+     (flush-lines "^ *\\\\? *$" (region-beginning) (region-end)))
 
   (defun my/dactyl-make-defn-multiline-1 (&optional arg)
     (interactive "p")
