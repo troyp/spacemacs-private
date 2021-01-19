@@ -3045,7 +3045,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive "sKeys: ")
     (let ((start-pos (point)))
       (unless (string-empty-p b) (beginning-of-buffer))
-      (if (re-search-forward (pcre-to-elisp (concat "^ *map " b) "") nil t)
+      (if (re-search-forward (pcre-to-elisp (concat "^ *map (-modes [-,a-z]+ +)?" b) "") nil t)
           (progn
             (recenter 4)
             (beginning-of-line))
