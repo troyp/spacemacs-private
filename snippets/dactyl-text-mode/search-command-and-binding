@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: search-command-and-binding
+# key: searchcmd
+# --
+command! $1
+\ -bang -description "$2"
+\ -js jishoSearch(args.join(" "), bang?"here":"adjacent");
+map $3 -description "$2" -js CommandExMode().open("$1" + (count?"! ":" "))
+$0
