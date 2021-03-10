@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: dolines
+# key: dolines
+# --
+while read -r ${1:x} || [[ -n $$1 ]]; do$0
+done;
