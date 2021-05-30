@@ -2040,25 +2040,6 @@ COUNT, BEG, END, and TYPE have no effect."
         "s / m"        'my/pcre-multi-occur
         "s / o"        'my/pcre-occur
         "s / l"        'my/pcre-loccur
-        "t O"          (my/def-variable-toggle which-key-show-operator-state-maps)
-        "t T"          (my/def-variable-toggle indent-tabs-mode)
-        "t 3"          'my/toggle-evil-mc-mode
-        "t C-n"        'my/toggle-evil-mc-mode-and-cursor
-        "t SPC"        (my/def-variable-toggle show-trailing-whitespace)
-        "t RET w"      'subword-mode
-        "t '"          'evil-visual-mark-mode
-        "t `"          'evil-vimish-fold-mode
-        "t ~"          'variable-pitch-mode
-        "t ="          'my/toggle-indent-function
-        "t |"          'fci-mode
-        "t ?"          'helm-descbinds-mode  ;; reactivated by helm - TODO: investigate
-        "t :"          'nameless-mode
-        "t ["          'diff-hl-flydiff-mode
-        "t <f4>"       'my/cycle-shell-command-switch
-        "t C-l"        'toggle-truncate-lines
-        "t C-s"        'my/undo-auto-save-make-local-and-toggle
-        "t C-/"        'evil-search-highlight-persist
-        "t C-'"        (my/def-variable-toggle fit-frame-inhibit-fitting-flag)
         "T |"          'scroll-bar-mode
         "w TAB"        'ace-swap-window
         "w DEL"        'my/delete-window-ace-move-buffer-quit-help
@@ -2328,6 +2309,37 @@ COUNT, BEG, END, and TYPE have no effect."
              ("d" . my/dactyl-source-dir)
              ("s" . my/scripts-dir)
              ("v" . my/vimperator-source-dir-orig)
+             )
+
+  (my/def-variable-toggle which-key-show-operator-state-maps)
+  (my/def-variable-toggle show-trailing-whitespace)
+  (my/def-variable-toggle indent-tabs-mode)
+  (my/def-variable-toggle fit-frame-inhibit-fitting-flag)
+  (bind-keys :map user-cmds-map
+             ;; S-SPC t
+             :prefix-map my/toggles-prefix-map
+             :menu-name "toggles"
+             :prefix "t"
+             :prefix-docstring "Commands toggling options."
+             ("O"     . my/toggle-which-key-show-operator-state-maps)
+             ("T"     . my/toggle-indent-tabs-mode)
+             ("w"     . my/toggle-show-trailing-whitespace)
+             ("3"     . my/toggle-evil-mc-mode)
+             ("C-n"   . my/toggle-evil-mc-mode-and-cursor)
+             ("RET w" . subword-mode)
+             ("'"     . evil-visual-mark-mode)
+             ("`"     . evil-vimish-fold-mode)
+             ("~"     . variable-pitch-mode)
+             ("="     . my/toggle-indent-function)
+             ("|"     . fci-mode)
+             ("?"     . helm-descbinds-mode)  ;; reactivated by helm - TODO: investigate
+             (":"     . nameless-mode)
+             ("["     . diff-hl-flydiff-mode)
+             ("<F4>"  . MY/CYCLE-SHELL-COMMAND-SWITCH)
+             ("C-L"   . TOGGLE-TRUNCATE-LINES)
+             ("C-s"   . my/undo-auto-save-make-local-and-toggle)
+             ("C-/"   . evil-search-highlight-persist)
+             ("C-'"   . my/toggle-fit-frame-inhibit-fitting-flag)
              )
 
   (bind-keys :map user-cmds-map
