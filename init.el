@@ -2322,6 +2322,7 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix "t"
              :prefix-docstring "Commands toggling options."
              ("O"     . my/toggle-which-key-show-operator-state-maps)
+             ("s"     . evil-surround-mode)
              ("T"     . my/toggle-indent-tabs-mode)
              ("w"     . my/toggle-show-trailing-whitespace)
              ("3"     . my/toggle-evil-mc-mode)
