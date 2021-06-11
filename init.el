@@ -2860,6 +2860,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "g f"   'my/dactyl-goto-function
       "g g"   'my/dactyl-goto-group
       "g h"   'my/dactyl-goto-heading
+      "g ;"   'my/dactyl-goto-hint-mode
       "m d"   'my/dactyl-make-defn-multiline
       "m 1"   'my/dactyl-make-defn-multiline-1
       "m a"   'my/dactyl-make-defn-multiline-align-1
@@ -2867,6 +2868,8 @@ COUNT, BEG, END, and TYPE have no effect."
       "o f"   'my/dactyl-function-occur
       "o g"   'my/dactyl-show-groups
       "o s"   'my/dactyl-show-styles
+      "o ;"   'my/dactyl-hint-mode-occur
+      "o :"   'my/dactyl-hint-mode-occur-by-definition
       "o m"   'my/dactyl-mapping-occur
       "o \\"  'my/dactyl-show-sections
       "o /"   'my/dactyl-show-slash-star-sections
@@ -2877,6 +2880,7 @@ COUNT, BEG, END, and TYPE have no effect."
       ". c"   'my/dactyl-command-occur-at-point
       ". f"   'my/dactyl-function-occur-at-point
       ". m"   'my/dactyl-mapping-occur-at-point
+      ". ;"   'my/dactyl-hint-mode-occur-at-point
       "SPC"   'helm-imenu
       "\\"    'my/dactyl-move-continuation-to-column-1
       )
@@ -2915,6 +2919,7 @@ COUNT, BEG, END, and TYPE have no effect."
       "g f"   'my/dactyl-goto-function
       "g g"   'my/dactyl-goto-group
       "g h"   'my/dactyl-goto-heading
+      "g ;"   'my/dactyl-goto-hint-mode
       "j"     'my/newline-indent-insert-fill-prefix
       "J"     'my/collapse-single-line-function
       "m d"   'my/dactyl-make-defn-multiline
@@ -2925,6 +2930,8 @@ COUNT, BEG, END, and TYPE have no effect."
       "o g"   'my/dactyl-show-groups
       "o s"   'my/dactyl-show-styles
       "o m"   'my/dactyl-mapping-occur
+      "o ;"   'my/dactyl-hint-mode-occur
+      "o :"   'my/dactyl-hint-mode-occur-by-definition
       "o \\"  'my/dactyl-show-sections
       "o /"   'my/dactyl-show-slash-star-sections
       "o '"   'my/dactyl-show-quote-sections
@@ -2932,6 +2939,7 @@ COUNT, BEG, END, and TYPE have no effect."
       ". c"   'my/dactyl-command-occur-at-point
       ". f"   'my/dactyl-function-occur-at-point
       ". m"   'my/dactyl-mapping-occur-at-point
+      ". ;"   'my/dactyl-hint-mode-occur-at-point
       "SPC"   'helm-imenu
       "\\"    'my/dactyl-move-continuation-to-column-1
       )
@@ -3014,6 +3022,9 @@ COUNT, BEG, END, and TYPE have no effect."
     (evil-visual-restore)
     (my/dactyl-align-defs-multiline))
 
+  ;; ,------------------,
+  ;; | my/dactyl/goto-* |
+  ;; '------------------'
   (defun my/dactyl-goto-group (group)
     "Jump to specified group"
     (interactive "sGroup: ")
@@ -3065,6 +3076,20 @@ COUNT, BEG, END, and TYPE have no effect."
             (beginning-of-line))
         (goto-char start-pos))))
 
+  (defun my/dactyl-goto-hint-mode (hint)
+    "Jump to specified hint mode"
+    (interactive
+     (list
+      (let ((cap (or (s-chop-suffix "<Space>" (thing-at-point 'symbol)) "")))
+        (s-trim (read-string (format "Command [default %s]: " cap) nil nil cap)))))
+    (let ((start-pos (point)))
+      (unless (string-empty-p hint) (beginning-of-buffer))
+      (if (re-search-forward (pcre-to-elisp (concat "^( *js)? *hints.addMode\\(['\"]\\\\?" hint "['\"]")) nil t)
+          (progn
+            (recenter 4)
+            (beginning-of-line))
+        (goto-char start-pos))))
+
   (defun my/dactyl-goto-heading (h)
     "Jump to specified boxed heading"
     (interactive "sHeading: ")
@@ -3076,10 +3101,27 @@ COUNT, BEG, END, and TYPE have no effect."
             (beginning-of-line))
         (goto-char start-pos))))
 
+  ;; ,-------------------,
+  ;; | my/dactyl-*-occur |
+  ;; '-------------------'
   (defun my/dactyl-mapping-occur (prefix)
     "Open an `occur' buffer with statements mapping keys matching PREFIX."
     (interactive (list (read-string "Mappings for key prefix: " nil t nil)))
     (let ((pcre (concat "map!? +(-\\w+ +)*" prefix)))
+      (occur (pcre-to-elisp pcre)))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-hint-mode-occur (pattern)
+    "Open an `occur' buffer with hint mode definitions matching PATTERN."
+    (interactive (list (read-string "Hint modes matching: " nil t nil)))
+    (let ((pcre (concat "^( *js)? *hints.addMode\\(['\"]\\\\?" (if (string-empty-p pattern) ".*" pattern) "['\"]")))
+      (occur (pcre-to-elisp pcre)))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-hint-mode-occur-by-definition (pattern)
+    "Open an `occur' buffer with hint modes matching PATTERN."
+    (interactive (list (read-string "Hint modes matching: " nil t nil)))
+    (let ((pcre (concat "^( *js)? *hints.addMode\\(.*" pattern ".*\\)")))
       (occur (pcre-to-elisp pcre)))
     (switch-to-buffer-other-window "*Occur*"))
 
@@ -3102,6 +3144,51 @@ COUNT, BEG, END, and TYPE have no effect."
       (occur (pcre-to-elisp pcre flags)))
     (switch-to-buffer-other-window "*Occur*"))
 
+  ;; ,----------------------------,
+  ;; | my/dactyl-*-occur-at-point |
+  ;; '----------------------------'
+  (defun my/dactyl-mapping-occur-at-point (prefix)
+    "Open an `occur' buffer with statements mapping keys matching PREFIX."
+    (interactive
+     (list
+      (read-string "Mappings for key prefix: "
+                   (regexp-quote (apply 'buffer-substring (-take 2 (evil-inner-WORD))))
+                   t)))
+    (let ((pcre (concat "map!? +(-\\w+ +)*" prefix)))
+      (occur (pcre-to-elisp pcre)))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-hint-mode-occur-at-point (pattern)
+    "Open an `occur' buffer with statements defining hint mode matching PATTERN."
+    (interactive
+     (list
+      (read-string "Hint mode: "
+                   (regexp-quote (apply 'buffer-substring (-take 2 (evil-inner-WORD))))
+                   t)))
+    (let ((pcre (concat "^( *js)? *hints.addMode\\(['\"]\\\\?" (if (string-empty-p pattern) ".*" pattern) "['\"]")))
+      (occur (pcre-to-elisp pcre)))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-command-occur-at-point (pattern &optional case-sensitive)
+    "Open an `occur' buffer with statements defining commands matching PATTERN."
+    (interactive (list (read-string "Commands matching PATTERN: " (regexp-quote (tap-thing-at-point 'word)) t)
+                       current-prefix-arg))
+    (let ((pcre (concat "command!? +(-\\w+ +)*\w*" pattern "\w*")))
+      (occur (pcre-to-elisp pcre "i")))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  (defun my/dactyl-function-occur-at-point (pattern &optional case-sensitive)
+    "Open an `occur' buffer with statements defining functions matching PATTERN."
+    (interactive (list (read-string "Functions matching PATTERN: " (regexp-quote (tap-thing-at-point 'word)) t))
+                 current-prefix-arg)
+    (let ((pcre (concat "function +\w*" pattern "\w* *\(\)"
+                        "|" "\w*" pattern "\w* *= *function *\(\)")))
+      (occur (pcre-to-elisp pcre "i")))
+    (switch-to-buffer-other-window "*Occur*"))
+
+  ;; ,------------------,
+  ;; | my/dactyl-show-* |
+  ;; '------------------'
   (defun my/dactyl-show-groups ()
     "Open an `occur' buffer with all group statements."
     (interactive)
@@ -3143,33 +3230,6 @@ COUNT, BEG, END, and TYPE have no effect."
      (evil-ex-make-substitute-pattern "^    \\\\ " nil)
      "\\\\    "))
 
-  (defun my/dactyl-mapping-occur-at-point (prefix)
-    "Open an `occur' buffer with statements mapping keys matching PREFIX."
-    (interactive
-     (list
-      (read-string "Mappings for key prefix: "
-                   (regexp-quote (apply 'buffer-substring (-take 2 (evil-inner-WORD))))
-                   t)))
-    (let ((pcre (concat "map!? +(-\\w+ +)*" prefix)))
-      (occur (pcre-to-elisp pcre)))
-    (switch-to-buffer-other-window "*Occur*"))
-
-  (defun my/dactyl-command-occur-at-point (pattern &optional case-sensitive)
-    "Open an `occur' buffer with statements defining commands matching PATTERN."
-    (interactive (list (read-string "Commands matching PATTERN: " (regexp-quote (tap-thing-at-point 'word)) t)
-                       current-prefix-arg))
-    (let ((pcre (concat "command!? +(-\\w+ +)*\w*" pattern "\w*")))
-      (occur (pcre-to-elisp pcre "i")))
-    (switch-to-buffer-other-window "*Occur*"))
-
-  (defun my/dactyl-function-occur-at-point (pattern &optional case-sensitive)
-    "Open an `occur' buffer with statements defining functions matching PATTERN."
-    (interactive (list (read-string "Functions matching PATTERN: " (regexp-quote (tap-thing-at-point 'word)) t))
-                 current-prefix-arg)
-    (let ((pcre (concat "function +\w*" pattern "\w* *\(\)"
-                        "|" "\w*" pattern "\w* *= *function *\(\)")))
-      (occur (pcre-to-elisp pcre "i")))
-    (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-make-xpi ()
     (interactive)
