@@ -3835,6 +3835,16 @@ COUNT, BEG, END, and TYPE have no effect."
       ", h w"  "webextension docs"
       )
 
+  ;; Greasemonkey script fix for js-mode
+  (eval-after-load 'js
+    '(progn
+      (setq js--regexp-literal-fix
+       "[^=][=(,:]\\(?:\\s-\\|\n\\)*\\(/\\)\\(?:\\\\.\\|[^/*\\]\\)\\(?:\\\\.\\|[^/\\]\\)*\\(/\\)")
+      (setq js-font-lock-syntactic-keywords-fix
+       ;; "|" means generic string fence
+       `((,js--regexp-literal-fix (1 "|") (2 "|"))))
+      (setq js-font-lock-syntactic-keywords js-font-lock-syntactic-keywords-fix)))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-----------,
   ;; | JSON-Mode |
