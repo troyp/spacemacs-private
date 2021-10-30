@@ -128,6 +128,11 @@
 	(*box-heading-symbol* "--||,,''"))
     (box-heading-lines s)))
 
+(defun unicode-rect-heading-lines (s)
+  (let ((*box-heading-vmargin* 0)
+	(*box-heading-symbol* "──││╭╮╰╯"))
+    (box-heading-lines s)))
+
 
 ;; ===========================================================================
 ;;        __________________
@@ -150,6 +155,7 @@
 (defalias 'box-heading (make-heading-command 'box-heading-lines))
 (defalias 'rect-heading (make-heading-command (lambda (s) (rect-heading-lines s :notrailing))))
 (defalias 'short-rect-heading (make-heading-command 'short-rect-heading-lines))
+(defalias 'unicode-rect-heading (make-heading-command 'unicode-rect-heading-lines))
 
 (defun rect-heading-join-under (s)
   (let ((*rect-heading-omit-top* 't))    (rect-heading s)))
@@ -177,6 +183,7 @@
 (defalias 'box-heading-comment  (make-heading-comment 'box-heading))
 (defalias 'rect-heading-comment (make-heading-comment 'rect-heading))
 (defalias 'short-rect-heading-comment (make-heading-comment 'short-rect-heading))
+(defalias 'unicode-rect-heading-comment (make-heading-comment 'unicode-rect-heading))
 
 ;; -----------------------------------------------------------------------------
 ;; ,--------------------,
@@ -318,6 +325,13 @@ rather than a string of regular characters by default.")
     (insert (make-string n *divider-char*))
     (newline)))
 
+(defun divider-unicode (n)
+  (let ((*divider-char* ?─))
+    (if (= n 1) (setf n 79))
+    (move-beginning-of-line nil)
+    (insert (make-string n *divider-char*))
+    (newline)))
+
 (defun divider-comment (n)
   (interactive "p")
   (with-comment divider n))
@@ -325,6 +339,10 @@ rather than a string of regular characters by default.")
 (defun divider-thick-comment (n)
   (interactive "p")
   (with-comment divider-thick n))
+
+(defun divider-unicode-comment (n)
+  (interactive "p")
+  (with-comment divider-unicode n))
 
 ;; ---------------------------------------------------------------------------
 ;; ,------------------,
@@ -340,6 +358,22 @@ divider followed by a simple rectangular heading."
   (push-mark (point))
   (divider n)
   (insert-lines (short-rect-heading-lines s))
+  (open-line 1)
+  (comment-region (mark) (point))
+  (indent-region  (mark) (point))
+  (push-mark (point))
+  (next-line)
+  (pop-mark))
+
+(defun urh-section-comment (s &optional n)
+  "Unicode rectangular section heading. Using comment syntax, inserts a
+divider followed by a simple rectangular heading."
+  (interactive "sheading: \np")
+  (if (= n 1) (setf n 79))
+  (beginning-of-line)
+  (push-mark (point))
+  (divider-unicode n)
+  (insert-lines (unicode-rect-heading-lines s))
   (open-line 1)
   (comment-region (mark) (point))
   (indent-region  (mark) (point))
@@ -398,6 +432,8 @@ inserts a divider followed by a rectangular heading."
 (define-key 'asciiheadings-prefix-key-map   ";r"  'short-rect-heading-comment)
 (define-key 'asciiheadings-prefix-key-map   "S"   'rh-section-comment)
 (define-key 'asciiheadings-prefix-key-map   "s"   'srh-section-comment)
+(define-key 'asciiheadings-prefix-key-map   "u"   'unicode-rect-heading)
+(define-key 'asciiheadings-prefix-key-map   ";u"  'unicode-rect-heading-comment)
 (define-key 'asciiheadings-prefix-key-map   "="   'banner-heading-comment-current-line)
 (define-key 'asciiheadings-prefix-key-map   "-"   'comment-bar-heading-5=)
 
