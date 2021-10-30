@@ -3,6 +3,11 @@
 # key: group
 # --
 
+" ----------------------------------------------------------------------------- "
+" ,-${1:$(make-string (length yas/text) ?-)}-,"
+" | $1 |"
+" '-${1:$(make-string (length yas/text) ?-)}-'"
+
 group $1 -locations=$2
 
 js <<EOF
