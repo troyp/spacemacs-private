@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: escape-single-quote
-# key: '
+# condition: 'force-in-comment
+# key: q
 # --
-'"'"'
+'"'"'$0
