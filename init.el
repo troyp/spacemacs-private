@@ -3095,7 +3095,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "Jump to specified command"
     (interactive
      (list
-      (let ((cap (or (s-chop-suffix "<Space>" (thing-at-point 'symbol)) "")))
+      (let ((cap (or (s-chop-suffixes '("<Space>" "<SPACE>") (thing-at-point 'symbol)) "")))
         (s-trim (read-string (format "Command [default %s]: " cap) nil nil cap)))))
     (let ((start-pos (point)))
       (unless (string-empty-p cmd) (beginning-of-buffer))
@@ -3120,8 +3120,8 @@ COUNT, BEG, END, and TYPE have no effect."
     "Jump to specified hint mode"
     (interactive
      (list
-      (let ((cap (or (s-chop-suffix "<Space>" (thing-at-point 'symbol)) "")))
-        (s-trim (read-string (format "Command [default %s]: " cap) nil nil cap)))))
+      (let ((cap (or (s-chop-suffix "<Space>" (thing-at-point 'char)) "")))
+        (s-trim (read-string (format "Hint mode [default %s]: " cap) nil nil cap)))))
     (let ((start-pos (point)))
       (unless (string-empty-p hint) (beginning-of-buffer))
       (if (re-search-forward (pcre-to-elisp (concat "^( *js)? *hints.addMode\\(['\"]\\\\?" hint "['\"]")) nil t)
@@ -3135,7 +3135,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive "sHeading: ")
     (let ((start-pos (point)))
       (unless (string-empty-p h) (beginning-of-buffer))
-      (if (re-search-forward (pcre-to-elisp (concat "^ *\" *\\| +" h ".* \\|") "i") nil t)
+      (if (re-search-forward (pcre-to-elisp (concat "^ *\" *[|│] +" h ".* [|│]") "i") nil t)
           (progn
             (recenter 4)
             (beginning-of-line))
@@ -3238,19 +3238,19 @@ COUNT, BEG, END, and TYPE have no effect."
   (defun my/dactyl-show-slash-star-sections ()
     "Open an `occur' buffer with all section headings."
     (interactive)
-    (occur (pcre-to-elisp "^ */\\* +\\| .* \\| +\\*/$"))
+    (occur (pcre-to-elisp "^ */\\* +[|│] .* [|│] +\\*/$"))
     (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-show-quote-sections ()
     "Open an `occur' buffer with all section headings."
     (interactive)
-    (occur (pcre-to-elisp "^ *\" *\\| .* \\| *\"?$"))
+    (occur (pcre-to-elisp "^ *\" *[|│] .* [|│] *\"?$"))
     (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-show-sections ()
     "Open an `occur' buffer with all section headings."
     (interactive)
-    (occur (pcre-to-elisp "^ *\" *\\| .* \\| *\"?$|^ */\\* +\\| .* \\| +\\*/$"))
+    (occur (pcre-to-elisp "^ *\" *[|│] .* [|│] *\"?$|^ */\\* +[|│] .* [|│] +\\*/$"))
     (switch-to-buffer-other-window "*Occur*"))
 
   (defun my/dactyl-show-styles ()
