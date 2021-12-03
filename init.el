@@ -1839,6 +1839,8 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (define-key evil-normal-state-map (kbd "gi") 'my/evil-insert-resume)
   (define-key evil-normal-state-map (kbd "gf") 'link-hint-open-all-links)
+  ;; quit other window
+  (define-key evil-normal-state-map (kbd "gq") 'my/other-window-quit)
 
   ;; centre after n, N, '
   (when (commandp 'my/evil-ex-search-next-and-center)
@@ -5057,6 +5059,8 @@ ISEARCH DOCUMENTATION.
   ;; '-----------------'
 
   (fset 'my/switch-to-most-recent-buffer [?\C-x ?b return])
+  (fset 'my/other-window-quit [C-tab ?q])
+
 
   ;; note: (fset 'foo [...]) -- keyboard macros set this way only in bindings.
   ;;       Can't be called from lisp: use my/kmacro-call to call if necessary.
