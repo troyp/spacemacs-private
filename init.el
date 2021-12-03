@@ -1959,6 +1959,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-insert-state-map (kbd "C-a")   'move-beginning-of-line-or-text)
   (define-key evil-insert-state-map (kbd "C-e")   'end-of-line)
   (define-key evil-insert-state-map (kbd "C-M-y") 'evil-copy-from-below)
+  (define-key evil-insert-state-map (kbd "C-S-y") 'evil-copy-from-below)
   (define-key evil-insert-state-map (kbd "C-S-k") 'kill-line)    ;; or C-o C-k
   (define-key evil-insert-state-map (kbd "C-.")   'my/yas-expand)
   (define-key evil-insert-state-map (kbd "M-?")   'dabbrev-expand)
