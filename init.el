@@ -1612,7 +1612,16 @@ COUNT, BEG, END, and TYPE have no effect."
   ;;                     bind-keys-form bind-map-add-to-major-mode-list
   ;;                     bind-map-set-keys bind-map-kbd-keys unbind-key
   ;; builtin: global-key-binding local-set-key local-unset-key
-  ;; other:   defhydra
+  ;; other packages:
+  ;;   general <https://github.com/noctuid/general.el#simulating-keypresses>:
+  ;;   defhydra
+  ;;   hercules <https://gitlab.com/jjzmajic/hercules.el>:
+  ;;       provides hydra functionality using which-key
+  ;;   smartrep <https://github.com/myuhe/smartrep.el>:
+  ;;       allows prefix key for repeating commands
+  ;;       eg. C-c n n n ... rather than C-c n C-c n C-c n ...
+  ;;   which-key <https://github.com/justbur/emacs-which-key>:
+  ;;       display popup showing keybinding completions
 
   (defun my/define-keys (keymap &rest bindings)
     "Define multiple keys with `define-key'\nBINDINGS has the form KEY DEFN [KEY DEFN ...]"
