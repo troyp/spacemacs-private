@@ -2162,14 +2162,6 @@ COUNT, BEG, END, and TYPE have no effect."
     (my/set-my-leader-keys))
 
   (bind-keys :map spacemacs-cmds
-             :prefix-map help-download-prefix-map
-             :prefix "h w"
-             :prefix-docstring "Commands to download additional documentation."
-             ("r" . github-download-README)
-             ("w" . github-clone-wiki)
-             )
-
-  (bind-keys :map spacemacs-cmds
              :prefix-map character-prefix-map
              :prefix "o c"
              :prefix-docstring "Commands that act on the character at point."
@@ -2189,27 +2181,6 @@ COUNT, BEG, END, and TYPE have no effect."
              ("s" . undo-tree-switch-branch)
              ("t" . global-undo-tree-mode)
              ("v" . undo-tree-visualize)
-             )
-
-  (bind-keys :map spacemacs-cmds
-             :prefix-map follow-prefix-map
-             :prefix "w f"
-             :prefix-docstring "Commands dealing with follow-mode."
-             ("f"   . follow-delete-other-windows-and-split)
-             ("SPC" . follow-mode)
-             )
-
-  (bind-keys :map spacemacs-cmds
-             :prefix-map find-function-prefix-map
-             :menu-name "find-function-"
-             :prefix "h /"
-             ("f" . find-function)
-             ("k" . find-function-on-key)
-             ("h" . describe-function)
-             ("w" . find-function-other-window)
-             ("W" . find-function-other-window-noselect)
-             ("5" . find-function-other-frame)
-             ("." . find-function-at-point)
              )
 
   (bind-keys :map spacemacs-cmds
@@ -2233,6 +2204,7 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix-map my/undo-prefix-map
              :prefix "C-u"
              :prefix-docstring "Commands related to undo."
+
              ("s" . undo-tree-switch-branch)
              ("t d" . my/toggle-undo-tree-visualizer-diff)
              ("t h" . my/toggle-undo-tree-auto-save-history)
@@ -2283,6 +2255,27 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix-docstring "Deletion commands."
              ("'"   . my/delete-inside-double-quotes)
              ("a '" . my/delete-double-quotes)
+             )
+
+  (bind-keys :map user-cmds-map
+             :prefix-map help-download-prefix-map
+             :prefix "h w"
+             :prefix-docstring "Commands to download additional documentation."
+             ("r" . github-download-README)
+             ("w" . github-clone-wiki)
+             )
+
+  (bind-keys :map user-cmds-map
+             :prefix-map find-function-prefix-map
+             :menu-name "find-function-"
+             :prefix "h /"
+             ("f" . find-function)
+             ("k" . find-function-on-key)
+             ("h" . describe-function)
+             ("w" . find-function-other-window)
+             ("W" . find-function-other-window-noselect)
+             ("5" . find-function-other-frame)
+             ("." . find-function-at-point)
              )
 
   (bind-keys :map user-cmds-map
@@ -2354,11 +2347,14 @@ COUNT, BEG, END, and TYPE have no effect."
              :menu-name "toggles"
              :prefix "t"
              :prefix-docstring "Commands toggling options."
+             ("m"     . evil-matchit-mode)
+             ("M"     . global-evil-matchit-mode)
              ("O"     . my/toggle-which-key-show-operator-state-maps)
              ("s"     . evil-surround-mode)
              ("T"     . my/toggle-indent-tabs-mode)
              ("w"     . my/toggle-show-trailing-whitespace)
              ("3"     . my/toggle-evil-mc-mode)
+             ("8"     . evil-visualstar-mode)
              ("C-n"   . my/toggle-evil-mc-mode-and-cursor)
              ("RET w" . subword-mode)
              ("'"     . evil-visual-mark-mode)
@@ -2374,6 +2370,14 @@ COUNT, BEG, END, and TYPE have no effect."
              ("C-s"   . my/undo-auto-save-make-local-and-toggle)
              ("C-/"   . evil-search-highlight-persist)
              ("C-'"   . my/toggle-fit-frame-inhibit-fitting-flag)
+             )
+
+  (bind-keys :map user-cmds-map
+             :prefix-map follow-prefix-map
+             :prefix "w f"
+             :prefix-docstring "Commands dealing with follow-mode."
+             ("f"   . follow-delete-other-windows-and-split)
+             ("SPC" . follow-mode)
              )
 
   (bind-keys :map user-cmds-map
@@ -2406,6 +2410,7 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix-docstring "Commands to copy text to clipboard and kill-ring"
              ("d"   . my/yank-directory)
              ("i"   . my/yank-buffer-initial-integers)
+             ("I"   . my/yank-buffer-first-integers)
              ("n"   . my/yank-filename)
              ("l a" . my/link-hint-copy-all-links)
              ("l f" . link-hint-copy-link)
@@ -2415,6 +2420,7 @@ COUNT, BEG, END, and TYPE have no effect."
              (". l" . link-hint-copy-link-at-point)
              (". s" . my/yank-sexp-at-point)
              (". w" . my/yank-word-at-point)
+             ("\""  . my/avy-yank-inner-quotes)
              )
 
   (bind-keys :map user-cmds-map
