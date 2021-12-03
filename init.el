@@ -1343,7 +1343,7 @@ Returns the function definition."
             (unless (my/line-at-point-blank-p) (previous-line) (end-of-line) (forward-char))
             (point))))
 
-  (setq my/dividerRegexp (pcre-to-elisp "^ *.?.? *(---+|===+) *$|^$"))
+  (setq my/dividerRegexp (pcre-to-elisp "^ *.?.? *(----------------------------------------------------------------------+|======================================================================|──────────────────────────────────────────────────────────────────────+)|^ "))
   (evil-define-text-object evil-inner-divider (count &optional beg end type)
       (list
        (save-excursion (search-backward-regexp my/dividerRegexp) (next-line) (point))
