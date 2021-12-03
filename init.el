@@ -1970,7 +1970,8 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; (define-key evil-insert-state-map (kbd "C-M-SPC") 'hippie-expand)
 
   ;; unicode insertion
-  (define-key evil-insert-state-map (kbd "C-v") 'insert-char)
+  ;; (define-key evil-insert-state-map (kbd "C-v") 'insert-char)
+  (define-key evil-insert-state-map (kbd "C-v") 'helm-unicode)
   (define-key evil-insert-state-map (kbd "M-v") 'iso-transl-ctl-x-8-map)
   (define-key evil-insert-state-map (kbd "C-k") 'evil-insert-digraph)
 
@@ -2177,6 +2178,8 @@ COUNT, BEG, END, and TYPE have no effect."
              ("a" . what-cursor-position)
              ("p" . palette-foreground-at-point)  ;; palette.el (dadams)
              ("f" . get-char-face)
+             ("u" . helm-ucs)
+             ("U" . helm-unicode)
              )
 
   (bind-keys :map spacemacs-cmds
