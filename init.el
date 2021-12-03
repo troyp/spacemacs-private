@@ -2009,6 +2009,7 @@ COUNT, BEG, END, and TYPE have no effect."
         "b C-b"        'ibuffer
         "b C-e"        'bury-buffer
         "b C-f"        'buffer-face-set
+        "b C-n"        'spacemacs/new-empty-buffer
         "b C-u"        'undo-tree-clear
         "b <insert>"   'buffer-major-mode
         "b <f1>"       'about-emacs
