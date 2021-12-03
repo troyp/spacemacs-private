@@ -2878,8 +2878,9 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (defun my/dactyl-init ()
     (interactive)
-    (setq imenu-generic-expression `((nil "^\" | .* |$" 0)))
-    (setq tab-width 4)
+    (setq-local imenu-generic-expression `((nil "^\" | .* |$" 0)))
+    (setq-local tab-width 4)
+    (setq-local comment-end "\"")
     (modify-syntax-entry ?_ "w")
     )
 
@@ -2944,7 +2945,7 @@ COUNT, BEG, END, and TYPE have no effect."
       (setq tab-width 4)
       (modify-syntax-entry ?_ "w")
       (setq-local comment-start "\"")
-      (setq-local comment-end "")
+      (setq-local comment-end "\"")
       (yas-minor-mode 1))
 
   (spacemacs/set-leader-keys-for-major-mode 'dactyl-text-mode
