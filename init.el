@@ -1221,18 +1221,21 @@ Returns the function definition."
   ;;                             *                 *
   ;;                             *******************
 
-  (add-to-list 'auto-mode-alist '("\\.jsm" . js2-mode))
-  (add-to-list 'auto-mode-alist '("\\.sh" . sh-mode))
-  (add-to-list 'auto-mode-alist '("\\.zsh" . sh-mode))
-  (add-to-list 'auto-mode-alist '("\\.keynavrc" . conf-mode))
-  (add-to-list 'auto-mode-alist '("\\.pryrc" . ruby-mode))
-  (add-to-list 'auto-mode-alist '("\\.ocamlinit" . tuareg-mode))
-  (add-to-list 'auto-mode-alist '("\\.vimpagerrc" . vimrc-mode))
+  (add-to-list 'auto-mode-alist '("\\.dired" . dired-virtual-mode))
   (add-to-list 'auto-mode-alist '("\\.jshintrc" . json-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsm" . js2-mode))
+  (add-to-list 'auto-mode-alist '("\\.keynavrc" . conf-mode))
   (add-to-list 'auto-mode-alist '("\\.maff" . archive-mode))
-  (add-to-list 'auto-mode-alist '("\\.sc" . scala-mode))
   (add-to-list 'auto-mode-alist '("\\.mlterm\.*" . conf-mode))
-  (add-to-list 'auto-mode-alist '("\\.penta[dactylrc]$" . dactyl-text-mode))
+  (add-to-list 'auto-mode-alist '("\\.ocamlinit" . tuareg-mode))
+  (add-to-list 'auto-mode-alist '("\\.penta\\(dactylrc\\)?" . dactyl-text-mode))
+  (add-to-list 'auto-mode-alist '("\\.pryrc" . ruby-mode))
+  (add-to-list 'auto-mode-alist '("\\.sc" . scala-mode))
+  (add-to-list 'auto-mode-alist '("\\.sh" . sh-mode))
+  (add-to-list 'auto-mode-alist '("\\.vimpagerrc" . vimrc-mode))
+  (add-to-list 'auto-mode-alist '("\\.zsh" . sh-mode))
+  (add-to-list 'auto-mode-alist '("mimeapps\\.list" . conf-mode))
+  (add-to-list 'auto-mode-alist '("tridactylrc" . tridactyl-mode))
 
   ;; ==============================================================================
   ;;                                *************
