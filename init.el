@@ -1153,12 +1153,26 @@ Returns the function definition."
           my/restore-mode-line-cookies))
 
   ;; ==============================================================================
-  ;;                       *****************************
-  ;;                       *                           *
-  ;;                       * ADDITIONAL LOCAL PACKAGES *
-  ;;                       *                           *
-  ;;                       *****************************
+  ;;                       ***********************
+  ;;                       *                     *
+  ;;                       * ADDITIONAL PACKAGES *
+  ;;                       *                     *
+  ;;                       ***********************
 
+  ;; ;; install quelpa-use-package using quelpa
+  ;; (quelpa
+  ;;  '(quelpa-use-package
+  ;;    :fetcher github
+  ;;    :repo "quelpa/quelpa-use-package"))
+  ;; (require 'quelpa-use-package)
+  ;; (package-install 'quelpa-use-package)
+  (require 'quelpa-use-package)
+  ;; (setq use-package-ensure-function 'use-package-ensure-elpa)
+
+  ;; -------------------------------------------------------------------------------
+  ;; ,---------------------------,
+  ;; | Additional local packages |
+  ;; '---------------------------'
   (add-to-load-path "~/.emacs.d/private/local/")
   (add-to-load-path "~/.emacs.d/private/local/firefox-protocol")
   ;; MY PACKAGES
@@ -1167,6 +1181,7 @@ Returns the function definition."
   (defvar my/dotspacemacs-additional-local-packages)
   (setf my/dotspacemacs-additional-local-packages
         '(
+          csv-mode
           firefox-protocol
           highlight
           ibuffer-hydra
@@ -1175,7 +1190,10 @@ Returns the function definition."
           moz
           sort-group-lines
           top-mode
+          tridactyl-mode
           ;; Drew Adams packages
+          apu
+          ascii-art-to-unicode
           autofit-frame
           dired+
           dired-sort-menu
