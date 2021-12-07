@@ -349,37 +349,23 @@ rather than a string of regular characters by default.")
 ;; | Section Commands |
 ;; '------------------'
 
-(defun srh-section-comment (s &optional n)
-  "Simple rectangular section heading. Using comment syntax, inserts a
-divider followed by a simple rectangular heading."
-  (interactive "sheading: \np")
-  (if (= n 1) (setf n 79))
-  (beginning-of-line)
-  (push-mark (point))
-  (divider n)
-  (insert-lines (short-rect-heading-lines s))
-  (open-line 1)
-  (comment-region (mark) (point))
-  (indent-region  (mark) (point))
-  (push-mark (point))
-  (next-line)
-  (pop-mark))
+(defun make-section-comment (lines-fn-sym)
+  `(lambda (s &optional n)
+     (interactive "sheading: \np")
+     (if (= n 1) (setf n 79))
+     (beginning-of-line)
+     (push-mark (point))
+     (divider-unicode n)
+     (insert-lines (,lines-fn-sym s))
+     (open-line 1)
+     (comment-region (mark) (point))
+     (indent-region  (mark) (point))
+     (push-mark (point))
+     (next-line)
+     (pop-mark)))
 
-(defun urh-section-comment (s &optional n)
-  "Unicode rectangular section heading. Using comment syntax, inserts a
-divider followed by a simple rectangular heading."
-  (interactive "sheading: \np")
-  (if (= n 1) (setf n 79))
-  (beginning-of-line)
-  (push-mark (point))
-  (divider-unicode n)
-  (insert-lines (unicode-rect-heading-lines s))
-  (open-line 1)
-  (comment-region (mark) (point))
-  (indent-region  (mark) (point))
-  (push-mark (point))
-  (next-line)
-  (pop-mark))
+(defalias 'srh-section-comment (make-section-comment 'short-rect-heading-lines))
+(defalias 'urh-section-comment (make-section-comment 'unicode-rect-heading-lines))
 
 (defun rh-section-comment (s &optional n &optional heading-indent)
   "Rectangular section heading. Using comment syntax,
