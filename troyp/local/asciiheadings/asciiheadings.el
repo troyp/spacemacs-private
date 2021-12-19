@@ -1,4 +1,4 @@
-;;; asciiheadings --- Functions for ascii headings and comments.
+;;; asciiheadings.el --- Functions for ascii headings and comments.
 
 ;; Copyright (C) 2016 Troy Pracy
 
@@ -334,6 +334,7 @@ rather than a string of regular characters by default.")
     (newline)))
 
 (defun divider-unicode (n)
+  (interactive "p")
   (let ((*divider-char* ?─))
     (if (= n 1) (setf n 79))
     (move-beginning-of-line nil)
@@ -433,6 +434,8 @@ inserts a divider followed by a rectangular heading."
 (define-key 'asciiheadings-prefix-key-map   ";u"  'unicode-rect-heading-comment)
 (define-key 'asciiheadings-prefix-key-map   "U"   'unicode-large-rect-heading)
 (define-key 'asciiheadings-prefix-key-map   ";U"  'unicode-large-rect-heading-comment)
+(define-key 'asciiheadings-prefix-key-map   "w"   'divider-unicode)
+(define-key 'asciiheadings-prefix-key-map   ";w"  'divider-unicode-comment)
 (define-key 'asciiheadings-prefix-key-map   "="   'banner-heading-comment-current-line)
 (define-key 'asciiheadings-prefix-key-map   "-"   'comment-bar-heading-5=)
 
