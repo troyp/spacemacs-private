@@ -1838,7 +1838,8 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-normal-state-map (kbd "gl") 'evil-downcase)
 
   (define-key evil-normal-state-map (kbd "gi") 'my/evil-insert-resume)
-  (define-key evil-normal-state-map (kbd "gf") 'link-hint-open-all-links)
+  (define-key evil-normal-state-map (kbd "gf") 'link-hint-open-multiple-links)
+  (define-key evil-normal-state-map (kbd "gp") 'my/paste-multi)
   ;; quit other window
   (define-key evil-normal-state-map (kbd "gq") 'my/other-window-quit)
 
@@ -1906,7 +1907,6 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; | VISUAL STATE |
   ;; '--------------'
   (defun insert-space-visual () (interactive) (execute-kbd-macro " ") (evil-visual-restore))
-  (define-key evil-visual-state-map (kbd "S-SPC") 'insert-space-visual)
   (define-key evil-visual-state-map (kbd "C-SPC") 'evil-forward-char-or-extend)
   (define-key evil-visual-state-map (kbd "C-\\") 'my/shell-command-replace-region)
   (define-key evil-visual-state-map (kbd "M-u") 'evil-upcase)
@@ -1962,6 +1962,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-insert-state-map (kbd "C-e")   'end-of-line)
   (define-key evil-insert-state-map (kbd "C-M-y") 'evil-copy-from-below)
   (define-key evil-insert-state-map (kbd "C-S-y") 'evil-copy-from-below)
+  (define-key evil-insert-state-map (kbd "C-S-o") 'evil-open-above)
   (define-key evil-insert-state-map (kbd "C-S-k") 'kill-line)    ;; or C-o C-k
   (define-key evil-insert-state-map (kbd "C-.")   'my/yas-expand)
   (define-key evil-insert-state-map (kbd "M-?")   'dabbrev-expand)
