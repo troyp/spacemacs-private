@@ -2215,20 +2215,6 @@ COUNT, BEG, END, and TYPE have no effect."
              ("v" . undo-tree-visualize)
              )
 
-
-  (bind-keys :map spacemacs-cmds
-             :prefix-map match-lines-map
-             :menu-name "match lines"
-             :prefix "s L"
-             :prefix-docstring "Commands matching lines against a pattern."
-             ("m" . keep-lines)
-             ("n" . flush-lines)
-             ("c" . how-many)
-             ("h" . highlight-lines-matching-regexp)
-             ("y" . my/copy-matching-lines)
-             ("Y" . my/copy-non-matching-lines)
-             )
-
   ;; -------------------------------------------------------------------------------
   ;; ,---------------,
   ;; | user-cmds-map |
@@ -2325,6 +2311,29 @@ COUNT, BEG, END, and TYPE have no effect."
              ("l f"   . link-hint-open-link)
              ("l F"   . link-hint-open-multiple-links)
              ("."   . my/find-file-or-browse-url-at-point)
+             )
+
+  (bind-keys :map user-cmds-map
+             :prefix-map match-lines-map
+             :menu-name "match lines"
+             :prefix "l"
+             :prefix-docstring "Commands matching lines against a pattern."
+             ("m" . keep-lines)
+             ("n" . flush-lines)
+             ("c" . how-many)
+             ("h" . highlight-lines-matching-regexp)
+             ("y" . my/copy-matching-lines)
+             ("Y" . my/copy-non-matching-lines)
+             )
+
+  (bind-keys :map match-lines-map
+             :prefix-map occur-map
+             :menu-name "occur"
+             :prefix "o"
+             :prefix-docstring "Show matching lines in occur buffer."
+             ("m" . my/pcre-multi-occur)
+             ("o" . my/pcre-occur)
+             ("l" . my/pcre-loccur)
              )
 
   (bind-keys :map user-cmds-map
