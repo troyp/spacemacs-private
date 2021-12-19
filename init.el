@@ -3075,6 +3075,21 @@ COUNT, BEG, END, and TYPE have no effect."
     (evil-visual-restore)
     (my/dactyl-align-defs-multiline))
 
+  (defun my/dactyl-toggle-text-mode ()
+    (interactive)
+    (if (eq major-mode 'dactyl-mode) (dactyl-text-mode) (dactyl-mode)))
+
+  (defun my/dactyl-move-continuation-to-column-1 (&optional arg)
+    (interactive "p")
+    (evil-ex-substitute
+     (region-beginning) (region-end)
+     (evil-ex-make-substitute-pattern "^    \\\\ " nil)
+     "\\\\    "))
+
+  (defun my/dactyl-make-xpi ()
+    (interactive)
+    (async-shell-command "cd ~/repos/dactyl/pentadactyl && make xpi"))
+
   ;; ,------------------,
   ;; | my/dactyl/goto-* |
   ;; '------------------'
@@ -3272,21 +3287,7 @@ COUNT, BEG, END, and TYPE have no effect."
     (occur (pcre-to-elisp "^style -name="))
     (switch-to-buffer-other-window "*Occur*"))
 
-  (defun my/dactyl-toggle-text-mode ()
-    (interactive)
-    (if (eq major-mode 'dactyl-mode) (dactyl-text-mode) (dactyl-mode)))
 
-  (defun my/dactyl-move-continuation-to-column-1 (&optional arg)
-    (interactive "p")
-    (evil-ex-substitute
-     (region-beginning) (region-end)
-     (evil-ex-make-substitute-pattern "^    \\\\ " nil)
-     "\\\\    "))
-
-
-  (defun my/dactyl-make-xpi ()
-    (interactive)
-    (async-shell-command "cd ~/repos/dactyl/pentadactyl && make xpi"))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
