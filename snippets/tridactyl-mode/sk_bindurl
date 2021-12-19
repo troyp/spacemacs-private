@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sk_bindurl
+# key: sku
+# --
+bindurl $1 $2<C-h> showkeysurl $1 $2$0

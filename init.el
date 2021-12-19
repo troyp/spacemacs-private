@@ -3288,6 +3288,68 @@ COUNT, BEG, END, and TYPE have no effect."
     (switch-to-buffer-other-window "*Occur*"))
 
 
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────────╮
+  ;; │                  │
+  ;; │  tridactyl-mode  │
+  ;; │                  │
+  ;; ╰──────────────────╯
+  (defun my/tridactyl-init ()
+    (interactive)
+    (setq-local imenu-generic-expression `((nil "^\" [|│] .* [|│]$" 0)))
+    (setq-local tab-width 4)
+    (modify-syntax-entry ?_ "w")
+    (add-to-list 'tridactyl-keywords "ghbind")
+    )
+
+  (add-hook 'tridactyl-mode-hook 'my/tridactyl-init)
+
+  (defun my/tri-toggle-penta-mode ()
+    (interactive)
+    (if (eq major-mode 'dactyl-text-mode) (tridactyl-mode) (dactyl-text-mode)))
+
+  (fset 'my/tri-map-to-bind
+        (lambda (&optional arg)
+          "Keyboard macro."
+          (interactive "p")
+          (kmacro-exec-ring-item
+           '([58 115 47 109 97 112 32 92 40 91 94 32 93 43 92 41 32 45 100 101 115 99 114 105 112
+              116 105 111 110 32 34 92 40 91 94 34 93 43 92 41 34 32 45 92 40 46 42 92 41 47 34 32
+              92 50 92 110 98 105 110 100 32 92 49 32 92 51 47 return] 0 "%d") arg)))
+
+  (fset 'my/tri-js-openorselect-to-tabopenorswitch
+        (lambda (&optional arg)
+          "Keyboard macro."
+          (interactive "p")
+          (kmacro-exec-ring-item
+           '([58 115 47 106 115 32 111 112 101 110 79 114 83 101 108 101 99 116 84 97 98 40 91
+              39 34 93 92 40 46 42 92 41 91 39 34 93 41 59 63 47 116 97 98 111 112 101 110 111
+              114 115 119 105 116 99 104 99 32 92 49 47 return] 0 "%d") arg)))
+
+  (fset 'my/tri-add-key-to-description
+        (lambda (&optional arg)
+          "With cursor on comma above definition (bind/command), adds the keyword in from of definition"
+          (interactive "p")
+          (kmacro-exec-ring-item '([106 1 119 121 101 107 1 108 112 97 32 45 45 32 escape 106 106 1] 0 "%d") arg)))
+
+  (fset 'my/tri-comment-to-inline-description
+        (lambda (&optional arg)
+          "Convert a comment above a bind/command/etc definition to an inline description in a bindd/etc definition"
+          (interactive "p")
+          (kmacro-exec-ring-item
+           '([1 119 118 36 104 121 106 1 101 97 100 escape 87 87 105 34 34 32 escape 104 80 escape
+              107 100 100 106 1] 0 "%d") arg)))
+
+  (spacemacs/set-leader-keys-for-major-mode 'tridactyl-mode
+      ","     'my/dactyl-cycle-fill-prefix
+      "/"     (my/make-insertion-around-point "/* " " */")
+      "cb"    'my/tri-map-to-bind
+      "cc"    'my/tri-comment-to-inline-description
+      "ct"    'my/tri-js-openorselect-to-tabopenorswitch
+      "o '"   'my/dactyl-show-quote-sections
+      "t"     'my/tri-toggle-penta-mode
+      "SPC"   'helm-imenu
+      )
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------,
