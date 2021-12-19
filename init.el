@@ -1567,6 +1567,7 @@ COUNT, BEG, END, and TYPE have no effect."
           ((?n ?,) . ?\x0273)    ;; ɳ (replaces ţ which is also available on ,n)
           ((?, ?n) . ?\x0146)    ;; ņ (default, but obscured by binding above)
           ((?, ?N) . ?\x0145)    ;; Ņ (default, but obscured by binding above)
+          ((?x ?x) . ?\x00d7)    ;; ×
           ))
 
   (defun my/evil-enter-digraphs ()
