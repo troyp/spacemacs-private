@@ -1254,6 +1254,8 @@ Returns the function definition."
   (add-to-list 'auto-mode-alist '("\\.zsh" . sh-mode))
   (add-to-list 'auto-mode-alist '("mimeapps\\.list" . conf-mode))
   (add-to-list 'auto-mode-alist '("tridactylrc" . tridactyl-mode))
+  (add-to-list 'auto-mode-alist '("tridactyl.*\\.el" . emacs-lisp-mode))
+  (add-to-list 'auto-mode-alist '("\\.tri$" . tridactyl-mode))
 
   ;; ==============================================================================
   ;;                                *************
@@ -3308,44 +3310,59 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive)
     (if (eq major-mode 'dactyl-text-mode) (tridactyl-mode) (dactyl-text-mode)))
 
-  (fset 'my/tri-map-to-bind
-        (lambda (&optional arg)
-          "Keyboard macro."
-          (interactive "p")
-          (kmacro-exec-ring-item
-           '([58 115 47 109 97 112 32 92 40 91 94 32 93 43 92 41 32 45 100 101 115 99 114 105 112
-              116 105 111 110 32 34 92 40 91 94 34 93 43 92 41 34 32 45 92 40 46 42 92 41 47 34 32
-              92 50 92 110 98 105 110 100 32 92 49 32 92 51 47 return] 0 "%d") arg)))
+  (my/kmacro-fset 'my/tri-map-to-bind
+    ""
+    [58 115 47 109 97 112 32 92 40 91 94 32 93 43 92 41 32 45 100 101 115 99 114 105 112
+        116 105 111 110 32 34 92 40 91 94 34 93 43 92 41 34 32 45 92 40 46 42 92 41 47 34 32
+        92 50 92 110 98 105 110 100 32 92 49 32 92 51 47 return])
 
-  (fset 'my/tri-js-openorselect-to-tabopenorswitch
-        (lambda (&optional arg)
-          "Keyboard macro."
-          (interactive "p")
-          (kmacro-exec-ring-item
-           '([58 115 47 106 115 32 111 112 101 110 79 114 83 101 108 101 99 116 84 97 98 40 91
-              39 34 93 92 40 46 42 92 41 91 39 34 93 41 59 63 47 116 97 98 111 112 101 110 111
-              114 115 119 105 116 99 104 99 32 92 49 47 return] 0 "%d") arg)))
+  (my/kmacro-fset 'my/tri-js-openorselect-to-tabopenorswitch
+        "Keyboard macro."
+        [58 115 47 106 115 32 111 112 101 110 79 114 83 101 108 101 99 116 84 97 98 40 91
+            39 34 93 92 40 46 42 92 41 91 39 34 93 41 59 63 47 116 97 98 111 112 101 110 111
+            114 115 119 105 116 99 104 99 32 92 49 47 return])
 
-  (fset 'my/tri-add-key-to-description
-        (lambda (&optional arg)
-          "With cursor on comma above definition (bind/command), adds the keyword in from of definition"
-          (interactive "p")
-          (kmacro-exec-ring-item '([106 1 119 121 101 107 1 108 112 97 32 45 45 32 escape 106 106 1] 0 "%d") arg)))
+  (my/kmacro-fset 'my/tri-add-key-to-description
+    "With cursor on comma above definition (bind/command), adds the keyword in from of definition"
+    [106 1 119 121 101 107 1 108 112 97 32 45 45 32 escape 106 106 1])
 
-  (fset 'my/tri-comment-to-inline-description
-        (lambda (&optional arg)
-          "Convert a comment above a bind/command/etc definition to an inline description in a bindd/etc definition"
-          (interactive "p")
-          (kmacro-exec-ring-item
-           '([1 119 118 36 104 121 106 1 101 97 100 escape 87 87 105 34 34 32 escape 104 80 escape
-              107 100 100 106 1] 0 "%d") arg)))
+  (my/kmacro-fset 'my/tri-comment-to-inline-description
+    "Convert a comment above a bind/command/etc definition to an inline description in a bindd/etc definition"
+    [1 119 118 36 104 121 106 1 101 97 100 escape 87 87 105 34 34 32 escape
+       104 80 escape 107 100 100 106 1])
+
+  (my/kmacro-fset 'my/tri-add-commdoc-above
+    "Add a `commdoc` statement above a command definition"
+    [94 87 121 105 87 79 99 111 109 109 100 111 99 32 escape 112 97 32 34 34 2])
+
+  (my/kmacro-fset 'my/tri-bind-with-above-desc-to-bind:
+    "Convert a bind statement with commented description above to a bind: statement with inline description"
+    [107 48 108 108 118 36 104 121 106 48 69 97 58 escape 87 69 97 32 34 34 escape 80 107 100 100])
+
+  (my/kmacro-fset 'my/tri-bind:-to-bdoc
+    "Convert a bdoc: command to a bind command with a bdoc command above"
+    [121 121 112 69 120 102 34 100 102 34 120 107 48 99 69 98 100 111 99 escape 102 34 59 108 100 36 106 36])
+
+  (my/kmacro-fset 'my/tri-command:-to-commdoc
+    "Convert a command: definition into a command definition with description in a commdoc command above"
+    [121 121 112 69 120 102 34 100 59 120 107 48 52 108 99 69 100 111 99 escape 59 59 108 100 36 106 36])
+
+  (my/kmacro-fset 'my/tri-bar-subheading-to-unibox
+    "Convert a | bar heading | into a unicode box heading"
+    [48 52 108 118 36 104 104 104 121 99 99 escape 32 111 97 59 117 25 134217849 return])
 
   (spacemacs/set-leader-keys-for-major-mode 'tridactyl-mode
       ","     'my/dactyl-cycle-fill-prefix
       "/"     (my/make-insertion-around-point "/* " " */")
-      "cb"    'my/tri-map-to-bind
+      "cb"    'my/tri-bind-with-above-desc-to-bind:
       "cc"    'my/tri-comment-to-inline-description
+      "cD"    'my/tri-command:-to-commdoc
+      "cd"    'my/tri-bind:-to-bdoc
+      "cf"    'my/js-fn-to-method
+      "cm"    'my/tri-map-to-bind
       "ct"    'my/tri-js-openorselect-to-tabopenorswitch
+      "c\\"   'my/tri-bar-subheading-to-unibox
+      "dc"    'my/tri-add-commdoc-above
       "o '"   'my/dactyl-show-quote-sections
       "t"     'my/tri-toggle-penta-mode
       "SPC"   'helm-imenu
