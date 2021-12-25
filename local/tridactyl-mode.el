@@ -201,12 +201,22 @@
         "yankimage"
         "zoom"
         ;; user-defined
-        "bindd"
-        "bindurld"
-        "commandd"
+        "bdoc"
+        "bind:"
+        "exbind:"
+        "ibind:"
+        "vbind:"
+        "bindurl:"
+        "command:"
+        "commdoc"
+        "docbindmode"
         "docdef"
+        "set:"
+        ;; site-specific
         "ghbind"
-        "setd"
+        "ghbind:"
+        "primevbind"
+        "primevbind:"
         ))
 
 ;;;###autoload
