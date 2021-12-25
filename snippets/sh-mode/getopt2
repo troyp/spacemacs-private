@@ -1,0 +1,34 @@
+# -*- mode: snippet -*-
+# name: getopt2
+# key: getopt2
+# --
+
+# ╭─────────╮
+# │ options │
+# ╰─────────╯
+PARSED=\$(getopt -a -n $1 --options ${2:a,b:} --longoptions ${3:opt-a,opt-b-with-arg} -- "\$@")
+
+eval set -- "$PARSED"
+
+while :
+do
+    case "\$1" in
+        -h | --help)
+            cat <<EOF
+USAGE: $1 [OPTION...]
+    $4
+
+Options:
+  -h     --help             show help
+  $5
+
+EOF
+            exit 0
+            ;;
+        $6 )
+            $7; shift; ;;
+        -- )
+            shift; break ;;
+        * ) echo "unrecognized option: \$1" >&2 ; exit 1; ;;
+    esac
+done

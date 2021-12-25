@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Map command call
+# key: map:
+# --
+map $1 -description "$2" -js CommandExMode().open("$3"+(count?"! ":" "));
+$0

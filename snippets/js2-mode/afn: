@@ -1,0 +1,7 @@
+# -*- m# -*- mode: snippet -*-
+# name: async fn: function(){},
+# key: afn:
+# --
+$1: async function($2) {
+$0
+},

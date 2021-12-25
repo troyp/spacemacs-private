@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: NOTE
+# key: nb
+# --
+`(if (string= comment-start ";") ";;" comment-start)` NOTE: $0
