@@ -2140,6 +2140,7 @@ COUNT, BEG, END, and TYPE have no effect."
         "<f3>"         'kmacro-keymap
         "<f5>"         'spacemacs/safe-revert-buffer
         "<f10>"        'my/lacarte-menu-execute/lambda-a-and-exit
+        "C-k"          'my/yank-to-end-of-line
         "C-l"          'my/quick-pcre-align-repeat
         "C-p"          'my/evil-paste-after-as-block
         "C-P"          'my/evil-paste-before-as-block
@@ -5178,6 +5179,7 @@ ISEARCH DOCUMENTATION.
   (fset 'my/double-slash-comment-to-delimited
     [escape ?: ?: ?s ?/ ?\\ ?/ ?\\ ?/ ?\\ ?\( ?. ?* ?\\ ?\) ?/ ?\\ ?/ ?\\ ?* ?\\ ?1 ?  ?\\ ?* ?\\ ?/ ?/ ?c return])
   (fset 'my/uppercase-double-underline [escape ?v ?i ?l ?g ?u ?y ?y ?p ?v ?i ?l ?r ?=])
+  (fset 'my/yank-inside-double-quotes [?y ?i 34])
   (fset 'my/short-rect-comment-to-unicode-rect
         [?: ?s ?/ ?- ?/ ?─ ?/ ?g return
             ?g ?v ?: ?s ?/ ?| ?/ ?│ ?/ ?g return
@@ -7021,6 +7023,10 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
            (kill-new str)
            (message str)))))
 
+  (defun my/yank-to-end-of-line (n)
+    (interactive "p")
+    (evil-yank (point) (line-end-position n)))
+
   ;; TODO: WIP - instead of quoting, universal argument is passed into expression
   (defmacro my/define-yank-cmd-pass-argument (name expr &optional interactive-code doc)
     "Define a command NAME which evaluates EXPR and yanks the value.
@@ -7039,6 +7045,19 @@ INTERACTIVE-CODE describes how N is obtained. By default, the interactive code P
   (my/define-yank-cmd directory default-directory "Yank default directory")
   (my/define-yank-cmd sexp-at-point (sexp-at-point) "Yank SEXP at point")
   (my/define-yank-cmd word-at-point (word-at-point) "Yank word at point")
+
+  (defun my/avy-yank-inner-quotes ()
+    (interactive)
+    (avy-goto-char 34)
+    (my/kmacro-call 'my/yank-inside-double-quotes))
+
+  ;; TODO: improve
+  (defun my/paste-multi (n)
+    (interactive "p")
+    (do ((i 1))
+        ((>= i n))
+      (yank i)
+      (incf i)))
 
   ;; -------------------------------------------------------------------------------
   ;; ,-------------,
