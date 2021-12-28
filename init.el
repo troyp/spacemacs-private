@@ -3928,6 +3928,16 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive)
     (my/evil-shell-command-replace-region (region-beginning) (region-end) "inclusive" "sed 's/+/%2B/g' | xargs -0 urlencode -d"))
 
+  (my/kmacro-fset 'my/js-fn-to-method
+          "Convert a named function to an object property anonymous function"
+          [58 115 47 94 92 40 32 42 92 125 92 41 36 47 92 49 44 47 return
+              103 118 58 115 47 94 32 42 102 117 110 99 116 105 111 110 32 92 40 91 94 32 40 93 43 92 41 47 92 49 58 32 102 117 110 99 116 105 111 110 47 return
+              103 118 tab])
+
+  (my/kmacro-fset 'my/js-method-to-fn
+    "Convert an object property anonymous function to a named function"
+    [86 58 115 47 92 40 91 94 32 93 43 92 41 58 32 42 102 117 110 99 116 105 111 110 47 102 117 110 99 116 105 111 110 32 92 49 47 return 5 37 108 120])
+
   (defun my/lookup-chrome-webextension-api (s)
     (interactive
      (list
@@ -3955,13 +3965,16 @@ COUNT, BEG, END, and TYPE have no effect."
              s)))
 
   (my/def-variable-local-cycle js-indent-level 4 2)
+  (setq js-switch-indent-offset 2)
 
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode
-    "%"    'my/js-url-decode
     "hwc"  'my/lookup-chrome-webextension-api
     "hwf"  'my/lookup-firefox-webextension-api
-    "ti"   'my/cycle-js-indent-level
     "J"    'my/collapse-single-line-function
+    "ti"   'my/cycle-js-indent-level
+    "vm"   'my/js-fn-to-method
+    "vf"   'my/js-method-to-fn
+    "%"    'my/js-url-decode
     )
 
   (which-key-add-major-mode-key-based-replacements 'js2-mode
