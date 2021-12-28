@@ -3352,9 +3352,14 @@ COUNT, BEG, END, and TYPE have no effect."
     "Convert a | bar heading | into a unicode box heading"
     [48 52 108 118 36 104 104 104 121 99 99 escape 32 111 97 59 117 25 134217849 return])
 
+  (my/kmacro-fset 'my/tri-prefix-subheading-above
+   "Add a subheading for a keybinding prefix above the current line"
+  [48 87 118 47 32 92 124 60 return 104 121 79 34 32 124 32 escape 112 97 32 45 45 32 32 124 2 2])
+
   (spacemacs/set-leader-keys-for-major-mode 'tridactyl-mode
       ","     'my/dactyl-cycle-fill-prefix
       "/"     (my/make-insertion-around-point "/* " " */")
+      "'"     'my/tri-prefix-subheading-above
       "cb"    'my/tri-bind-with-above-desc-to-bind:
       "cc"    'my/tri-comment-to-inline-description
       "cD"    'my/tri-command:-to-commdoc
