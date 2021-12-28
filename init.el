@@ -4013,7 +4013,11 @@ COUNT, BEG, END, and TYPE have no effect."
      :map magit-mode-map
      ("<C-tab>" . nil)
      ("<C-`>"   . magit-section-cycle)
+     ("m"       . evil-set-marker)
      ("q"       . my/magit-mode-kill-buffer)
+     ("R"       . magit-remote-popup)
+     ("S"       . magit-submodule-popup)
+     ("'"       . my/evil-goto-mark-line)
      )
     (evil-define-key 'normal magit-mode-map (kbd "-") 'dired-jump)
     (evil-define-key 'normal magit-mode-map (kbd "S-SPC") nil)
@@ -4092,6 +4096,7 @@ Committer: %cN <%cE>"))
     "s"      'magit-diff-toggle-ignore-all-space
     "S"      'magit-diff-toggle-ignore-space-change
     "SPC"    'magit-diff-show-or-scroll-up
+    "<F2>"   'magit-file-rename
     )
 
   (which-key-add-major-mode-key-based-replacements 'magit-status-mode
