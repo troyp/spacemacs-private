@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: documentation-comment
+# key: **
+# --
+/** $0
+ */
