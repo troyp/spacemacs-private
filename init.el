@@ -2604,6 +2604,21 @@ COUNT, BEG, END, and TYPE have no effect."
     '(define-key haskell-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox))
   (define-key text-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox)
 
+  ;; -------------------------------------------------------------------------------
+  ;; ,------------,
+  ;; | Minibuffer |
+  ;; '------------'
+
+  (defmacro my/minibuffer-yank-thing-command (type)
+    "Yank thing at point of type TYPE into the minibuffer"
+    `(lambda ()
+       (interactive)
+       (with-selected-window (minibuffer-selected-window)
+         (let ((thing (thing-at-point ,type)))
+           (with-selected-window (active-minibuffer-window)
+             (insert thing))))))
+
+  (define-key minibuffer-local-map "\C-w" (my/minibuffer-yank-thing-command 'symbol))
 
   ;; ,--------------------,
   ;; | Command Docstrings |
