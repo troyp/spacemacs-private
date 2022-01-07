@@ -3380,8 +3380,12 @@ COUNT, BEG, END, and TYPE have no effect."
     [48 52 108 118 36 104 104 104 121 99 99 escape 32 111 97 59 117 25 134217849 return])
 
   (my/kmacro-fset 'my/tri-prefix-subheading-above
-   "Add a subheading for a keybinding prefix above the current line"
-  [48 87 118 47 32 92 124 60 return 104 121 79 34 32 124 32 escape 112 97 32 45 45 32 32 124 2 2])
+    "Add a subheading for a keybinding prefix above the current line"
+    "0WvEhyO\" | p --  |")
+
+  (my/kmacro-fset 'my/tri-commdoc-to-command:
+    "Convert a command definition with commdoc above to a command: definition with inline description"
+    [107 48 87 87 100 36 106 112 97 32 escape 48 101 97 58 escape 107 100 100])
 
   (spacemacs/set-leader-keys-for-major-mode 'tridactyl-mode
       ","     'my/dactyl-cycle-fill-prefix
