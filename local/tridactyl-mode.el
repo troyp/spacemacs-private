@@ -215,8 +215,13 @@
         ;; site-specific
         "ghbind"
         "ghbind:"
+        "googlebind"
+        "googlebind:"
         "primevbind"
         "primevbind:"
+        "woolbind"
+        "woolbind:"
+        "woolbdoc"
         ))
 
 ;;;###autoload
