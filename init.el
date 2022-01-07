@@ -2913,11 +2913,12 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (evil-set-initial-state 'calculator-mode 'emacs)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------------,
-  ;; | dactyl-mode |
-  ;; '-------------'
-
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────╮
+  ;; │               │
+  ;; │  dactyl-mode  │
+  ;; │               │
+  ;; ╰───────────────╯
   (defun my/dactyl-init ()
     (interactive)
     (setq-local imenu-generic-expression `((nil "^\" | .* |$" 0)))
@@ -3338,16 +3339,16 @@ COUNT, BEG, END, and TYPE have no effect."
     (if (eq major-mode 'dactyl-text-mode) (tridactyl-mode) (dactyl-text-mode)))
 
   (my/kmacro-fset 'my/tri-map-to-bind
-    ""
-    [58 115 47 109 97 112 32 92 40 91 94 32 93 43 92 41 32 45 100 101 115 99 114 105 112
-        116 105 111 110 32 34 92 40 91 94 34 93 43 92 41 34 32 45 92 40 46 42 92 41 47 34 32
-        92 50 92 110 98 105 110 100 32 92 49 32 92 51 47 return])
+    "Convert .pentadactylrc definition using map to tridactylrc one with bind"
+    [58 115 47 106 115 32 111 112 101 110 79 114 83 101 108 101 99 116 84 97 98 40 91
+        39 34 93 92 40 46 42 92 41 91 39 34 93 41 59 63 47 116 97 98 111 112 101 110 111
+        114 115 119 105 116 99 104 99 32 92 49 47 return])
 
   (my/kmacro-fset 'my/tri-js-openorselect-to-tabopenorswitch
-        "Keyboard macro."
-        [58 115 47 106 115 32 111 112 101 110 79 114 83 101 108 101 99 116 84 97 98 40 91
-            39 34 93 92 40 46 42 92 41 91 39 34 93 41 59 63 47 116 97 98 111 112 101 110 111
-            114 115 119 105 116 99 104 99 32 92 49 47 return])
+    "Convert .pentadactylrc definition using openOrSelect() to tridactylrc one with tabopenorswitch"
+    [58 115 47 106 115 32 111 112 101 110 79 114 83 101 108 101 99 116 84 97 98 40 91
+        39 34 93 92 40 46 42 92 41 91 39 34 93 41 59 63 47 116 97 98 111 112 101 110 111
+        114 115 119 105 116 99 104 99 32 92 49 47 return])
 
   (my/kmacro-fset 'my/tri-add-key-to-description
     "With cursor on comma above definition (bind/command), adds the keyword in from of definition"
