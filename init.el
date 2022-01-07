@@ -3650,6 +3650,20 @@ COUNT, BEG, END, and TYPE have no effect."
         ))
 
   ;; -------------------------------------------------------------------------------
+  ;; ,-----------,
+  ;; | gitconfig |
+  ;; '-----------'
+
+  (spacemacs/set-leader-keys-for-major-mode 'giconfig-mode
+      "cm"    'my/gitconfig-convert-master
+      )
+
+
+  (my/kmacro-fset 'my/gitconfig-convert-master
+    "Convert a .gitconfig alias involving master to detect the default branch name"
+    [48 102 61 97 32 33 103 105 116 escape 86 58 115 47 109 97 115 116 101 114 47 36 40 115 101 100 32 39 115 124 46 42 92 47 124 124 39 32 46 103 105 116 92 47 114 101 102 115 92 47 114 101 109 111 116 101 115 92 47 111 114 105 103 105 110 92 47 72 69 65 68 41 47 103 return])
+
+  ;; -------------------------------------------------------------------------------
   ;; ,--------------,
   ;; | Haskell-Mode |
   ;; '--------------'
