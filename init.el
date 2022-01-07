@@ -3974,6 +3974,14 @@ COUNT, BEG, END, and TYPE have no effect."
     "Convert an object property anonymous function to a named function"
     [86 58 115 47 92 40 91 94 32 93 43 92 41 58 32 42 102 117 110 99 116 105 111 110 47 102 117 110 99 116 105 111 110 32 92 49 47 return 5 37 108 120])
 
+  (defun my/quoted-string-to-delimited-comment ()
+    (interactive)
+    (evil-ex-substitute
+     (region-beginning)
+     (region-end)
+     '("^\\( *\\)\"\\([^\"]*\\)\";? *$")
+     '(replace-eval-replacement . "\\1/* \\2 */")))
+
   (defun my/lookup-chrome-webextension-api (s)
     (interactive
      (list
@@ -4010,6 +4018,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "ti"   'my/cycle-js-indent-level
     "vm"   'my/js-fn-to-method
     "vf"   'my/js-method-to-fn
+    "vq"   'my/quoted-string-to-delimited-comment
     "%"    'my/js-url-decode
     )
 
