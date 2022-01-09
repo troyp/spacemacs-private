@@ -789,7 +789,7 @@ before packages are loaded."
                 (defun man-interactive ()
                   (call-interactively 'man)))
 
-  (setq browse-url-generic-program "/opt/waterfox/waterfox")
+  (setq browse-url-generic-program "/opt/firefox/firefox")
   (setq browse-url-browser-function 'browse-url-generic)
   (setq engine/browser-function 'browse-url-generic)
 
@@ -5581,7 +5581,7 @@ temporarily enables it to allow getting help on disabled items and buttons."
       (concat "file://"
               (expand-file-name (or buffer-file-name default-directory))))))
 
-  (setq browse-url-firefox-program "waterfox")
+  (setq browse-url-firefox-program "firefox")
 
   (defun browse-buffer-file-with-external-application ()
     (interactive)
