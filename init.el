@@ -1463,6 +1463,16 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-inner-text-objects-map "" 'evil-inner-divider)
   (define-key evil-outer-text-objects-map "" 'evil-a-divider)
 
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────────╮
+  ;; │ evil-snipe │
+  ;; ╰────────────╯
+  (require 'evil-snipe)
+  (evil-snipe-mode +1)
+  (setq evil-snipe-scope 'whole-visible)
+  (setq evil-snipe-repeat-scope 'whole-buffer)
+  (setq evil-snipe-spillover-scope 'whole-buffer)
+
   ;; -------------------------------------------------------------------------------
   ;; ,---------------,
   ;; | evil-surround |
@@ -1521,9 +1531,17 @@ COUNT, BEG, END, and TYPE have no effect."
     (let ((s (read-string "String: ")))
       (cons s (reverse s))))
 
-  ;; ,--------,
-  ;; | cursor |
-  ;; '--------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────────╮
+  ;; │ evil-visualstar │
+  ;; ╰─────────────────╯
+  ;; maintain selection, allowing repeated * #
+  (setq-default evil-visualstar/persistent t)
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────╮
+  ;; │ cursor │
+  ;; ╰────────╯
   (defun my/evil-insert-overwrite-cursor ()
     (set-cursor-color "chartreuse3")
     (setq cursor-type (if overwrite-mode (cons 'hbar 2) (cons 'bar 2))))
