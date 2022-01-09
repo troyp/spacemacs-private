@@ -2187,7 +2187,8 @@ COUNT, BEG, END, and TYPE have no effect."
         "C-'"          'my/quote-to-end-of-line
         "C-\\"         'set-input-method
         "C-SPC"        'cua-toggle-global-mark
-        "C-S-SPC"      'my/just-one-blank-line
+        "C-TAB"        'ace-window
+        "M-S-SPC"      'my/just-one-blank-line
         "M-p"          'my/evil-paste-after-column-kill-height
         "M-q"          'my/wrap-lines-in-region
         "M-x"          'helm-M-x
