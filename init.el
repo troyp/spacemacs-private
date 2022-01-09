@@ -5290,6 +5290,11 @@ ISEARCH DOCUMENTATION.
   (fset 'my/switch-to-most-recent-buffer [?\C-x ?b return])
   (fset 'my/other-window-quit [C-tab ?q])
 
+  (defun my/switch-to-most-recent-buffer-other-window ()
+    (interactive)
+    (other-window 1)
+    (my/kmacro-call #'my/switch-to-most-recent-buffer)
+    (other-window 1))
 
   ;; note: (fset 'foo [...]) -- keyboard macros set this way only in bindings.
   ;;       Can't be called from lisp: use my/kmacro-call to call if necessary.
