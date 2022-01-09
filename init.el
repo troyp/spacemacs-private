@@ -3404,6 +3404,14 @@ COUNT, BEG, END, and TYPE have no effect."
     "Convert a bdoc: command to a bind command with a bdoc command above"
     [121 121 112 69 120 102 34 100 102 34 120 107 48 99 69 98 100 111 99 escape 102 34 59 108 100 36 106 36])
 
+  (defun my/tri-bind:-to-bdoc ()
+    (interactive)
+    (my/evil-substitute-region "bind: +([^ ]+) +\"([^\"]+)\" +(.*)" "bdoc \\1 \"\\2\"\nbind \\1 \\3"))
+
+  (defun my/tri-bdoc-to-bind: ()
+    (interactive)
+    (my/evil-substitute-region "bdoc +([^ ]+) +\"(.*)\"\\nbind +([^ ]+) +(.*)" "bind: \\1 \"\\2\" \\4"))
+
   (my/kmacro-fset 'my/tri-command:-to-commdoc
     "Convert a command: definition into a command definition with description in a commdoc command above"
     [121 121 112 69 120 102 34 100 59 120 107 48 52 108 99 69 100 111 99 escape 59 59 108 100 36 106 36])
@@ -3420,17 +3428,29 @@ COUNT, BEG, END, and TYPE have no effect."
     "Convert a command definition with commdoc above to a command: definition with inline description"
     [107 48 87 87 100 36 106 112 97 32 escape 48 101 97 58 escape 107 100 100])
 
+  (defun my/tri-js-d-to-js-p ()
+    (interactive)
+    (my/evil-substitute-region "js(b?) -d¦ (.*)JS_ARGS\\[1\\](.*)¦" "js\\1 -p \\2JS_ARG\\3"))
+
+  (defun my/tri-js-p-to-js-d ()
+    (interactive)
+    (my/evil-substitute-region "js(b?) -p (.*)JS_ARG(.*)" "js\\1 -d¦ \\2JS_ARGS[1]\\3¦"))
+
   (spacemacs/set-leader-keys-for-major-mode 'tridactyl-mode
       ","     'my/dactyl-cycle-fill-prefix
       "/"     (my/make-insertion-around-point "/* " " */")
       "'"     'my/tri-prefix-subheading-above
-      "cb"    'my/tri-bind-with-above-desc-to-bind:
-      "cc"    'my/tri-comment-to-inline-description
-      "cD"    'my/tri-command:-to-commdoc
-      "cd"    'my/tri-bind:-to-bdoc
+      "ca"    'my/tri-bind-with-above-desc-to-bind:
+      "cb"    'my/tri-bind:-to-bdoc
+      "cB"    'my/tri-bdoc-to-bind:
+      "cc"    'my/tri-command:-to-commdoc
+      "cC"    'my/tri-commdoc-to-command:
       "cf"    'my/js-fn-to-method
       "cm"    'my/tri-map-to-bind
       "ct"    'my/tri-js-openorselect-to-tabopenorswitch
+      "c'"    'my/tri-comment-to-inline-description
+      "c-"    'my/tri-js-d-to-js-p
+      "c_"    'my/tri-js-p-to-js-d
       "c\\"   'my/tri-bar-subheading-to-unibox
       "dc"    'my/tri-add-commdoc-above
       "o '"   'my/dactyl-show-quote-sections
