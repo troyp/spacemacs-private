@@ -3562,9 +3562,10 @@ COUNT, BEG, END, and TYPE have no effect."
 
        ;; T is the prefix key for the tags commands
        (which-key-add-major-mode-key-based-replacements 'dired-mode
-         "T"    "tags"
-         "M-+"  "diredp-recursive-map"
-         "y"    "copy--as-kill"
+         "T"      "tags"
+         "M-+"    "diredp-recursive-map"
+         "y"      "copy--as-kill"
+         ", t s"  "toggle/sort"
          )
        ;; set function definition of 'dired-mode-map (same as value)
        (fset 'dired-mode-map dired-mode-map)
@@ -3583,6 +3584,7 @@ COUNT, BEG, END, and TYPE have no effect."
          "tl"    'dired-hide-details-mode
          "tr"    'toggle-diredp-find-file-reuse-dir
          "tr"    'my/dired-toggle-reuse-buffer
+         "tsf"   'dired-sort-menu-toggle-dirs-first
          "tw"    'spacemacs/toggle-diredp-wrap-around-flag
          "v"     'dired-view-file    ;; for discovery - can just use \v
          "x"     'my/dired-cut-or-copy-files
