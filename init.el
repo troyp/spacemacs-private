@@ -2363,6 +2363,18 @@ COUNT, BEG, END, and TYPE have no effect."
              ("Y" . my/copy-non-matching-lines)
              )
 
+  (bind-keys :map user-cmds-map
+             ;; S-SPC m
+             :prefix-map my/move-prefix-map
+             :menu-name "move"
+             :prefix "m"
+             :prefix-docstring "Move/copy code."
+             ("m"  . avy-move-line)
+             ("r"  . avy-move-region)
+             ("cc" . avy-copy-line)
+             ("cr" . avy-copy-region)
+             )
+
   (bind-keys :map match-lines-map
              :prefix-map occur-map
              :menu-name "occur"
