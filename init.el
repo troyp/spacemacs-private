@@ -2343,10 +2343,10 @@ COUNT, BEG, END, and TYPE have no effect."
              :menu-name "jump"
              :prefix "j"
              :prefix-docstring "Jump commands."
-             ("l ."   . my/find-file-or-browse-url-at-point)
-             ("l a"   . link-hint-open-all-links)
-             ("l f"   . link-hint-open-link)
-             ("l F"   . link-hint-open-multiple-links)
+             ("l ." . my/find-file-or-browse-url-at-point)
+             ("l a" . link-hint-open-all-links)
+             ("l f" . link-hint-open-link)
+             ("l F" . link-hint-open-multiple-links)
              ("."   . my/find-file-or-browse-url-at-point)
              )
 
@@ -2413,8 +2413,8 @@ COUNT, BEG, END, and TYPE have no effect."
              ("?"     . helm-descbinds-mode)  ;; reactivated by helm - TODO: investigate
              (":"     . nameless-mode)
              ("["     . diff-hl-flydiff-mode)
-             ("<F4>"  . MY/CYCLE-SHELL-COMMAND-SWITCH)
-             ("C-L"   . TOGGLE-TRUNCATE-LINES)
+             ("<f4>"  . my/cycle-shell-command-switch)
+             ("C-l"   . toggle-truncate-lines)
              ("C-s"   . my/undo-auto-save-make-local-and-toggle)
              ("C-/"   . evil-search-highlight-persist)
              ("C-'"   . my/toggle-fit-frame-inhibit-fitting-flag)
