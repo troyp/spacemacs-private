@@ -1,4 +1,5 @@
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
+
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -49,14 +50,12 @@ This function should only modify configuration layer settings."
    '(
      yaml
      php
-     csv
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      auto-completion
-     ;; better-defaults
      c-c++
      (clojure :variables
               ;; clojure-enable-fancify-symbols t
@@ -74,17 +73,16 @@ This function should only modify configuration layer settings."
               haskell-enable-shm-support t
               )
      html
-     ;; ivy
      java
      javascript
      lua
      markdown
+     nim
      ocaml
      octave
      (org :variables
           org-enable-github-support t
           )
-     pdf
      python
      racket
      (ranger :variables
@@ -106,11 +104,9 @@ This function should only modify configuration layer settings."
             )
      shell-scripts
      smex
-     ;; spell-checking
      (syntax-checking :variables
                       syntax-checking-enable-by-default t
                       )
-     ;; version-control
      (vinegar :variables
               vinegar-reuse-dired-buffer t)
      vimscript
@@ -147,78 +143,45 @@ This function should only modify configuration layer settings."
      f
      general
      google-this
-     ivy
      names
      s
      tiny
-     ;; TODO: work out why local packages aren't working
-     ;; ;; Local
-     ;; (dired+ :location local)
-     ;; (find-func+ :location local)
-     ;; (firefox-protocol :location local)
-     ;; ;; My Local
-     ;; (ibuffer-hydra :location local)
-     ;; (t :location local)
-     ;; ----------------------------------------------------------------------
-     ;; -----------
-     ;; My Packages
-     ;; -----------
-     evil-visual-replace
-     ;; (evil-visual-replace :local :location "~/.emacs.d/private/repos/evil-visual-replace/evil-visual-replace.el")
-     ;; (fn :location (recipe :fetcher github :repo "troyp/fn.el" :files ("fn.el")))
-     fn
-     ;; (ls :location (recipe :fetcher github :repo "troyp/ls.el" :files ("ls.el")))
-     ;; (evil-adjust :local :location "~/.emacs.d/private/repos/evil-adjust/evil-adjust.el")
-     ;; (evil-adjust :location (recipe :fetcher github :repo "troyp/evil-adjust"))
-     ;; --------
-     ;; My Forks
-     ;; --------
-     ;; (undo-tree :location (recipe :fetcher github :repo "troyp/undo-tree.el"))
-     ;; ----------------------------------------------------------------------
-     ;; -------------------
-     ;; Drew Adams Packages
-     ;; -------------------
-     ;; bookmark+
-     ;; ----------------------------------------------------------------------
      ;; --------------
      ;; other packages
      ;; --------------
-     ;; quelpa-use-package
+     quelpa-use-package
      column-enforce-mode
      company-quickhelp
-     dired-collapse
-     dired-du
-     dired-hacks-utils
-     dired-icon
      dired-filter
      dired-open
-     dired-rainbow
      (dired-subtree :after dired)
      dired-toggle-sudo
-     direx
-     ;; (direx-grep :location (recipe :fetcher github :repo "aki2o/direx-grep"))
      dirtree
      elmacro
      elnode
      jedi-direx
+     evil-snipe
      evil-textobj-column
      evil-vimish-fold
-     firefox-controller
+     expand-region
      flycheck-package
-     ;; (goto-gem :location (recipe :fetcher github :repo "pidu/goto-gem"))
-     helm-dired-history
-     helm-firefox
+     helm-unicode
      jsfmt
      loccur
+     magit-todos
      mozc
      move-dup
      nameless
+     org-web-tools
+     origami
      vimish-fold
+     visual-regexp-steroids
      wgrep
      wgrep-ack
      wgrep-ag
      wgrep-helm
      wgrep-pt
+     yequake
      )
 
    ;; -------------------------------------------------------------------------------
