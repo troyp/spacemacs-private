@@ -928,7 +928,6 @@ before packages are loaded."
   (define-key kmacro-keymap (kbd "M-s") 'my/set-named-kbd-macro-as-last)
 
   (defun my/kmacro-p (sym)
-    (interactive)
     (or (get sym 'kmacro)
         (stringp (symbol-function sym))
         (vectorp (symbol-function sym))))
