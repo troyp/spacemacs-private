@@ -617,6 +617,8 @@ variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
   (spacemacs/load-spacemacs-env)
   )
+;; WARNING: if the spacemacs installation is messed up (eg shell commands won't work), the
+;; .spacemacs.env file is a likely suspect.
 
 ;; *************
 ;; *           *
