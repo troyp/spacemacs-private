@@ -748,6 +748,8 @@ before packages are loaded."
   (setq evil-search-highlight-persist nil)
   (setq left-fringe-width 16)    ;; displays diff-hl mode well
 
+  (setq switch-to-visible-buffer nil)
+
   (setq lisp-indent-function 'common-lisp-indent-function)
   (defun my/toggle-indent-function ()
     (interactive)
