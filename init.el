@@ -735,12 +735,6 @@ before packages are loaded."
 
 ;; -------------------------------------------------------------------------------
 
-  (eval-after-load 'tramp
-    '(progn
-      (setenv "SHELL" "/bin/bash")
-      (setq tramp-encoding-shell "/bin/bash")
-      (setq shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>].* *\\(\\[[0-9;]*[a-zA-Z] *\\)*"))
-    )
 
   ;; (setq-default tab-always-indent t)
   (spacemacs/toggle-line-numbers-on)
@@ -1102,9 +1096,6 @@ FLAGS is a list of characters, eg '(?g)"
   ;; (setenv "PATH" (concat "/home/troy/.nvm/versions/node/v0.12.7/bin" ":" (getenv "PATH")))
   ;; (add-to-list 'exec-path "/home/troy/.nvm/versions/node/v0.12.7/bin")
 
-  ;; disable warnings about setting path in rc files (caused by nvm or rvm)
-  (setq exec-path-from-shell-check-startup-files nil)
-
   ;; C Source Directories
   (setq find-function-C-source-directory "/opt/emacs25/src")
 
@@ -1118,10 +1109,6 @@ FLAGS is a list of characters, eg '(?g)"
           )))
     (dolist (dir extra-Info-dirs)
       (add-to-list 'Info-directory-list dir)))
-
-  ;; Shell-command switches
-  (my/def-variable-cycle shell-command-switch "-c" "-ic")
-
 
   ;; ===============================================================================
   ;;                                      ________
