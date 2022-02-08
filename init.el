@@ -4030,6 +4030,14 @@ COUNT, BEG, END, and TYPE have no effect."
              "firefox+%28webextension+OR+javascript%29+"
              s)))
 
+  (defun my/js-method-to-arrow-function ()
+    (interactive)
+    (let ((p (evil-a-paragraph)))
+      (goto-char (car p))
+      (re-search-forward "\\([a-zA-Z0-9_!]+\\): function() {\n *\\(.*[^;]\\);?\n *}," (cadr p))
+      (replace-match "\\1: () => \\2,")
+      ))
+
   (my/def-variable-local-cycle js-indent-level 4 2)
   (setq js-switch-indent-offset 2)
 
@@ -4038,8 +4046,9 @@ COUNT, BEG, END, and TYPE have no effect."
     "hwf"  'my/lookup-firefox-webextension-api
     "J"    'my/collapse-single-line-function
     "ti"   'my/cycle-js-indent-level
-    "vm"   'my/js-fn-to-method
+    "va"   'my/js-method-to-arrow-function
     "vf"   'my/js-method-to-fn
+    "vm"   'my/js-fn-to-method
     "vq"   'my/quoted-string-to-delimited-comment
     "%"    'my/js-url-decode
     )
