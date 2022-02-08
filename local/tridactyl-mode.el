@@ -218,7 +218,12 @@
         "docbindmode"
         "docdef"
         "set:"
+        "urlmodorsummon_g"
         ;; site-specific
+        "amazbind"
+        "amazbind:"
+        "ebaybind"
+        "ebaybind:"
         "ghbind"
         "ghbind:"
         "googlebind"
