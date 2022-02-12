@@ -2422,6 +2422,7 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix "y"
              :prefix-docstring "Commands to copy text to clipboard and kill-ring"
              ("d"   . my/yank-directory)
+             ("g g" . my/git-yank-commit-messages)
              ("i"   . my/yank-buffer-initial-integers)
              ("I"   . my/yank-buffer-first-integers)
              ("n"   . my/yank-filename)
@@ -2501,6 +2502,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (which-key-add-key-based-replacements
     "S-SPC K"    "keymaps"
     "S-SPC X"    "structured text"
+    "S-SPC y g"  "git"
     "S-SPC y ."  "at-point"
     "S-SPC !"    "external apps"
     "S-SPC &"    "diff"
@@ -4176,6 +4178,12 @@ Committer: %cN <%cE>"))
                         url)))
       (browse-url-firefox https-url)))
 
+  (defun my/git-yank-commit-messages (n)
+    (interactive "p")
+    (let ((s (s-trim (shell-command-to-string (format "git log --format=%%B -n 1 HEAD~%d" (decf n))))))
+       (kill-new s)
+       (message s)))
+
   (spacemacs/set-leader-keys-for-major-mode 'magit-diff-mode
     "s"      'magit-diff-toggle-ignore-all-space
     "S"      'magit-diff-toggle-ignore-space-change
@@ -4189,6 +4197,7 @@ Committer: %cN <%cE>"))
     "r"      'my/magit-undo-last-commit
     "s"      'magit-diff-toggle-ignore-all-space
     "S"      'magit-diff-toggle-ignore-space-change
+    "y c"    'my/git-yank-commit-messages
     "SPC"    'magit-diff-show-or-scroll-up
     "<F2>"   'magit-file-rename
     )
@@ -4196,6 +4205,7 @@ Committer: %cN <%cE>"))
   (which-key-add-major-mode-key-based-replacements 'magit-status-mode
     ", c"      "magit-status-mode-map"
     ", d"      "diff"
+    ", y"      "yank"
     )
 
   ;; -------------------------------------------------------------------------------
