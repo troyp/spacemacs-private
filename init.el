@@ -1699,17 +1699,22 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; change C-x - from 'shrink-window-if-larger-than-buffer to 'fit-window-to-buffer
   (global-set-key (kbd "\C-x -") 'fit-window-to-buffer)
 
-  (global-set-key (kbd "M-n") 'evil-scroll-line-down)
-  (global-set-key (kbd "M-p") 'evil-scroll-line-up)
-  (global-set-key (kbd "C-S-j")
-                  (lambda () (interactive) (scroll-other-window 1)))
-  (global-set-key (kbd "C-S-k")
-                  (lambda () (interactive) (scroll-other-window-down 1)))
+  ;; NOTE: M-n/M-p/M-N/M-P are now free
+  (global-set-key (kbd "M-p") 'evil-scroll-line-down)
+  (global-set-key (kbd "M-n") 'evil-scroll-line-up)
+  (global-set-key (kbd "M-k") 'scroll-up-line)
+  (global-set-key (kbd "M-j") 'scroll-down-line)
+  (global-set-key (kbd "M-K")
+                  (lambda ()
+                    (interactive) (scroll-other-window 1)))
+  (global-set-key (kbd "M-J")
+                  (lambda ()
+                    "Scroll other window down"
+                    (interactive) (scroll-other-window-down 1)))
+
   (global-set-key (kbd "C-M-d") 'scroll-other-window)
   (global-set-key (kbd "C-M-u") 'scroll-other-window-down)
   (global-set-key (kbd "C-M-S-d") 'scroll-other-window-down)
-  (global-set-key (kbd "M-J") 'scroll-up-line)
-  (global-set-key (kbd "M-K") 'scroll-down-line)
 
   (global-set-key (kbd "M-[") (fn! (forward-symbol -1)))
   (global-set-key (kbd "M-]") 'forward-symbol)
@@ -1725,8 +1730,8 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key "\C-a" 'move-beginning-of-line-or-text)       ;; troyp/utils.el
   (global-set-key (kbd "<S-return>") 'my/open-line-below)       ;; troyp/utils.el
   (global-set-key (kbd "<C-S-return>") 'my/open-line-above)     ;; troyp/utils.el
-  (global-set-key [\C-\S-down] 'move-text-down)
-  (global-set-key [\C-\S-up]   'move-text-up)
+  (global-set-key (kbd "C-S-J") 'move-text-down)
+  (global-set-key (kbd "C-S-K") 'move-text-up)
 
   ;; evil-arg
   (global-set-key (kbd "M-j") 'evil-forward-arg)
