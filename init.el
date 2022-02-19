@@ -3,11 +3,12 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
-;; **********
-;; *        *
-;; * LAYERS *
-;; *        *
-;; **********
+
+;; ╭──────────╮
+;; │          │
+;; │  LAYERS  │
+;; │          │
+;; ╰──────────╯
 
 (defun dotspacemacs/layers ()
   "Layer configuration:
@@ -39,10 +40,10 @@ This function should only modify configuration layer settings."
 
    dotspacemacs-configuration-layer-path '()
 
-   ;; -------------------------------------------------------------------------------
-   ;; ,----------------------,
-   ;; | Configuration Layers |
-   ;; '----------------------'
+   ;; ───────────────────────────────────────────────────────────────────────────────
+   ;; ╭──────────────────────╮
+   ;; │ configuration layers │
+   ;; ╰──────────────────────╯
    ;;
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
@@ -119,10 +120,10 @@ This function should only modify configuration layer settings."
      troyp
      )
 
-   ;; -------------------------------------------------------------------------------
-   ;; ,---------------------,
-   ;; | Additional Packages |
-   ;; '---------------------'
+   ;; ───────────────────────────────────────────────────────────────────────────────
+   ;; ╭─────────────────────╮
+   ;; │ additional packages │
+   ;; ╰─────────────────────╯
    ;;
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -133,9 +134,10 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages
    '(
-     ;; ---------
-     ;; libraries
-     ;; ---------
+     ;; ───────────────────────────────────────────────────────────────────────────────
+     ;; ╭───────────╮
+     ;; │ libraries │
+     ;; ╰───────────╯
      cl-lib-highlight
      (dash            :location (recipe :fetcher github :repo "magnars/dash.el" :files ("dash.el")))
      (dash-functional :location (recipe :fetcher github :repo "magnars/dash.el" :files ("dash-functional.el")))
@@ -146,9 +148,14 @@ This function should only modify configuration layer settings."
      names
      s
      tiny
-     ;; --------------
-     ;; other packages
-     ;; --------------
+     ;; ───────────────────────────────────────────────────────────────────────────────
+     ;; ╭─────────────╮
+     ;; │ my packages │
+     ;; ╰─────────────╯
+     ;; ───────────────────────────────────────────────────────────────────────────────
+     ;; ╭────────────────╮
+     ;; │ other packages │
+     ;; ╰────────────────╯
      quelpa-use-package
      column-enforce-mode
      company-quickhelp
@@ -184,11 +191,11 @@ This function should only modify configuration layer settings."
      yequake
      )
 
-   ;; -------------------------------------------------------------------------------
-   ;; ,-------------------,
-   ;; | Excluded Packages |
-   ;; '-------------------'
-   ;;
+   ;; ───────────────────────────────────────────────────────────────────────────────
+   ;; ╭───────────────────╮
+   ;; │ excluded packages │
+   ;; ╰───────────────────╯
+
    ;; A list of packages that will not be installed and loaded.
    dotspacemacs-excluded-packages '()
 
@@ -202,12 +209,11 @@ This function should only modify configuration layer settings."
    dotspacemacs-install-packages 'used-only))
 
 
-;; ********
-;; *      *
-;; * INIT *
-;; *      *
-;; ********
-;;
+;; ╭────────╮
+;; │        │
+;; │  INIT  │
+;; │        │
+;; ╰────────╯
 
 (defun dotspacemacs/init ()
   "Initialization:
@@ -567,11 +573,12 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-pretty-docs nil)
   )
 
-;; ************
-;; *          *
-;; * USER-ENV *
-;; *          *
-;; ************
+;; ╭────────────╮
+;; │            │
+;; │  USER-ENV  │
+;; │            │
+;; ╰────────────╯
+
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
 This function defines the environment variables for your Emacs session. By
@@ -583,12 +590,12 @@ See the header of this file for more information."
 ;; WARNING: if the spacemacs installation is messed up (eg shell commands won't work), the
 ;; .spacemacs.env file is a likely suspect.
 
-;; *************
-;; *           *
-;; * USER-INIT *
-;; *           *
-;; *************
-;;
+;; ╭─────────────╮
+;; │             │
+;; │  USER-INIT  │
+;; │             │
+;; ╰─────────────╯
+
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
 This function is called immediately after `dotspacemacs/init', before layer
@@ -605,11 +612,11 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (load custom-file)
   )
 
-  ;; *************
-  ;; *           *
-  ;; * USER-LOAD *
-  ;; *           *
-  ;; *************
+;; ╭─────────────╮
+;; │             │
+;; │  USER-LOAD  │
+;; │             │
+;; ╰─────────────╯
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
@@ -618,14 +625,14 @@ This function is called only while dumping Spacemacs configuration. You can
 dump."
   )
 
-;; ============================================================================
-;; =========================== ******************** ===========================
-;; =========================== *                  * ===========================
-;; =========================== * SPACEMACS CONFIG * ===========================
-;; =========================== *                  * ===========================
-;; =========================== ******************** ===========================
-;; ============================================================================
-;;
+;; ════════════════════════════════════════════════════════════════════════════
+;; ═══════════════════════════ ╭────────────────────╮ ═════════════════════════
+;; ═══════════════════════════ │                    │ ═════════════════════════
+;; ═══════════════════════════ │  SPACEMACS CONFIG  │ ═════════════════════════
+;; ═══════════════════════════ │                    │ ═════════════════════════
+;; ═══════════════════════════ ╰────────────────────╯ ═════════════════════════
+;; ════════════════════════════════════════════════════════════════════════════
+
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
 This function is called at the very end of Spacemacs startup, after layer
@@ -633,10 +640,10 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------------------------,
-  ;; | Custom definition macros |
-  ;; '--------------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────────────────╮
+  ;; │ custom definition macros │
+  ;; ╰──────────────────────────╯
 
   (defmacro my/def-variable-toggle (var)
     (let* ((fname `(concat "my/toggle-" (symbol-name ',var)))
@@ -696,8 +703,7 @@ before packages are loaded."
              (setq ,var (nth (1+ idx) ',values))))
          (message "%S is now: %s" ',var ,var))))
 
-;; -------------------------------------------------------------------------------
-
+;; ───────────────────────────────────────────────────────────────────────────────
 
   ;; (setq-default tab-always-indent t)
   (spacemacs/toggle-line-numbers-on)
@@ -765,9 +771,9 @@ before packages are loaded."
   (setq fci-rule-column 80)
   (setq fill-column 79)
 
-  ;; ,--------,
-  ;; | Backup |
-  ;; '--------'
+  ;; ╭────────╮
+  ;; │ Backup │
+  ;; ╰────────╯
   (setq make-backup-files        t
         version-control          t
         kept-new-versions        10
@@ -796,9 +802,9 @@ before packages are loaded."
 
   (add-hook 'before-save-hook  'so/force-backup-of-buffer)
 
-  ;; ,-----------,
-  ;; | Find File |
-  ;; '-----------'
+  ;; ╭───────────╮
+  ;; │ Find File │
+  ;; ╰───────────╯
   ;; https://stackoverflow.com/a/18026067/1261964
 
   ;; Open files and go places like we see from error messages, i e: path:line:col
@@ -824,9 +830,9 @@ before packages are loaded."
           (when (> col-no 0)
             (forward-char (1- col-no)))))))
 
-  ;; ,------------------,
-  ;; | Spacemacs Config |
-  ;; '------------------'
+  ;; ╭──────────────────╮
+  ;; │ Spacemacs Config │
+  ;; ╰──────────────────╯
 
   (defun my/dotspacemacs/refresh-init ()
     (interactive)
@@ -842,9 +848,9 @@ before packages are loaded."
     (configuration-layer/sync))
 
 
-  ;; ,---------------,
-  ;; | CUA Rectangle |
-  ;; '---------------'
+  ;; ╭───────────────╮
+  ;; │ CUA Rectangle │
+  ;; ╰───────────────╯
 
   (setq cua-enable-cua-keys nil)
   (cua-mode t)
@@ -862,15 +868,15 @@ before packages are loaded."
            (evil-emacs-state)
            (cua-rectangle-mark-mode 1))))
 
-  ;; ,-----------------,
-  ;; | CUA Global Mark |
-  ;; '-----------------'
   (defun my/keyboard-quit ()
     (interactive)
     (if (equal last-command 'my/keyboard-quit)
         (evil-normal-state)
       (keyboard-quit)))
 
+  ;; ╭─────────────────╮
+  ;; │ CUA Global Mark │
+  ;; ╰─────────────────╯
 
   (defun my/cua-global-mark-remove-nonregion-remappings ()
     (interactive)
@@ -888,15 +894,15 @@ before packages are loaded."
     :init (my/cua-global-mark-remove-nonregion-remappings)
     )
 
-  ;; ,----------,
-  ;; | avy-keys |
-  ;; '----------'
+  ;; ╭──────────╮
+  ;; │ avy─keys │
+  ;; ╰──────────╯
   (setq avy-keys (list ?j ?f ?k ?d ?l ?s ?\; ?a ?i ?e ?o ?w ?n ?v))
   (setq avy-timeout-seconds 0.2)
 
-  ;; ,----------------,
-  ;; | global-hl-line |
-  ;; '----------------'
+  ;; ╭────────────────╮
+  ;; │ global─hl─line │
+  ;; ╰────────────────╯
   (require 'color)
   (defun auto-set-hl-line-face ()
     "Set `hl-line' face to slightly darker than default background."
@@ -908,9 +914,9 @@ before packages are loaded."
                         ))
   (add-hook 'global-hl-line-mode-hook 'auto-set-hl-line-face)
 
-  ;; ,---------,
-  ;; | pos-tip |
-  ;; '---------'
+  ;; ╭─────────╮
+  ;; │ pos─tip │
+  ;; ╰─────────╯
   (setq x-gtk-use-system-tooltips nil)
   (defun my/pos-tip-set-brown-on-yellow ()
     (interactive)
@@ -925,9 +931,9 @@ before packages are loaded."
     (setq pos-tip-foreground-color "#9a9aba")
     (setq pos-tip-background-color "#34323e"))
 
-  ;; ,-----------------,
-  ;; | Keyboard Macros |
-  ;; '-----------------'
+  ;; ╭─────────────────╮
+  ;; │ Keyboard Macros │
+  ;; ╰─────────────────╯
   (define-key kmacro-keymap (kbd "<insert>") 'insert-kbd-macro)
   (define-key kmacro-keymap (kbd "M-l") 'helm-execute-kmacro)
   (define-key kmacro-keymap (kbd "M-e") 'edit-last-kbd-macro)
@@ -1011,9 +1017,9 @@ FLAGS is a list of characters, eg '(?g)"
        (evil-ex-make-substitute-pattern (pcre-to-elisp pcre) flags)
        `(replace-eval-replacement . ,replacement))))
 
-  ;; ,----------------,
-  ;; | thing-at-point |
-  ;; '----------------'
+  ;; ╭────────────────╮
+  ;; │ thing─at─point │
+  ;; ╰────────────────╯
 
   (defvar my/thing-at-point-qualifed-name-regexp "[a-zA-Z_][a-zA-Z_.]*")
   (put 'qualified-name 'bounds-of-thing-at-point
@@ -1031,9 +1037,9 @@ FLAGS is a list of characters, eg '(?g)"
     (interactive)
     (thing-at-point 'qualified-name))
 
-  ;; ,------,
-  ;; | TAGS |
-  ;; '------'
+  ;; ╭──────╮
+  ;; │ TAGS │
+  ;; ╰──────╯
 
   (setq my/evil-tags-file (expand-file-name "repos/evil" spacemacs-private-directory))
   (setq my/spacemacs-tags-file user-emacs-directory)
@@ -1053,13 +1059,12 @@ FLAGS is a list of characters, eg '(?g)"
     (shell-command
      "ctags-exuberant -e -R .pentadactylrc *.js *.jsm *.penta *.cpp *.h *.idl *.awk *.sh *.py"))
 
-
-  ;; ==============================================================================
-  ;; ***************
-  ;; *             *
-  ;; * ENVIRONMENT *
-  ;; *             *
-  ;; ***************
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────╮
+  ;; │               │
+  ;; │  ENVIRONMENT  │
+  ;; │               │
+  ;; ╰───────────────╯
 
   ;; (setenv "PATH" (concat "/home/troy/.nvm/versions/node/v0.12.7/bin" ":" (getenv "PATH")))
   ;; (add-to-list 'exec-path "/home/troy/.nvm/versions/node/v0.12.7/bin")
@@ -1078,11 +1083,12 @@ FLAGS is a list of characters, eg '(?g)"
     (dolist (dir extra-Info-dirs)
       (add-to-list 'Info-directory-list dir)))
 
-  ;; ===============================================================================
-  ;;                                      ________
-  ;;                                     |        |
-  ;;                                     | THEMES |
-  ;;                                     |________|
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │          │
+  ;; │  THEMES  │
+  ;; │          │
+  ;; ╰──────────╯
 
   (spacemacs|define-transient-state my/cycle-theme
     :title "Theme Cycling Transient State"
@@ -1124,12 +1130,12 @@ FLAGS is a list of characters, eg '(?g)"
     (push (apply #'face-remap-add-relative 'mode-line specs)
           my/restore-mode-line-cookies))
 
-  ;; ==============================================================================
-  ;;                       ***********************
-  ;;                       *                     *
-  ;;                       * ADDITIONAL PACKAGES *
-  ;;                       *                     *
-  ;;                       ***********************
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────────────╮
+  ;; │                       │
+  ;; │  additional packages  │
+  ;; │                       │
+  ;; ╰───────────────────────╯
 
   ;; ;; install quelpa-use-package using quelpa
   ;; (quelpa
@@ -1141,10 +1147,11 @@ FLAGS is a list of characters, eg '(?g)"
   (require 'quelpa-use-package)
   ;; (setq use-package-ensure-function 'use-package-ensure-elpa)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------------------------,
-  ;; | Additional local packages |
-  ;; '---------------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────────────────╮
+  ;; │ additional local packages │
+  ;; ╰───────────────────────────╯
+
   (add-to-load-path "~/.emacs.d/private/local/")
   (add-to-load-path "~/.emacs.d/private/local/firefox-protocol")
   ;; MY PACKAGES
@@ -1204,12 +1211,12 @@ FLAGS is a list of characters, eg '(?g)"
   (require 'asoc)
   (add-to-load-path "/home/troy/.emacs.d/private/repos/asciiboxes/")
 
-  ;; ==============================================================================
-  ;;                             *******************
-  ;;                             *                 *
-  ;;                             * AUTO-MODE-ALIST *
-  ;;                             *                 *
-  ;;                             *******************
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────────╮
+  ;; │                   │
+  ;; │  auto-mode alist  │
+  ;; │                   │
+  ;; ╰───────────────────╯
 
   (add-to-list 'auto-mode-alist '("\\.dired" . dired-virtual-mode))
   (add-to-list 'auto-mode-alist '("\\.jshintrc" . json-mode))
@@ -1229,19 +1236,19 @@ FLAGS is a list of characters, eg '(?g)"
   (add-to-list 'auto-mode-alist '("tridactyl.*\\.el" . emacs-lisp-mode))
   (add-to-list 'auto-mode-alist '("\\.tri$" . tridactyl-mode))
 
-  ;; ==============================================================================
-  ;;                                *************
-  ;;                                *           *
-  ;;                                * EVIL-MODE *
-  ;;                                *           *
-  ;;                                *************
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────╮
+  ;; │             │
+  ;; │  evil-mode  │
+  ;; │             │
+  ;; ╰─────────────╯
 
   ;; ;; prevent cursor from moving back a space at the end of a line
   ;; (setq evil-move-cursor-back nil)
 
-  ;; ,-------------------------,
-  ;; | evil-symbol-word-search |
-  ;; '-------------------------'
+  ;; ╭─────────────────────────╮
+  ;; │ evil─symbol─word─search │
+  ;; ╰─────────────────────────╯
 
   ;; Use symbols rather than words for * and # search
   ;; eg. in lisp modes, this will not stop at dashes, etc.
@@ -1256,9 +1263,9 @@ FLAGS is a list of characters, eg '(?g)"
     (message (if evil-symbol-word-search "symbols" "words")))
   (defalias 'evsw 'toggle-evil-symbol-word-search)
 
-  ;; ,--------------,
-  ;; | Text Objects |
-  ;; '--------------'
+  ;; ╭──────────────╮
+  ;; │ Text Objects │
+  ;; ╰──────────────╯
 
   (spacemacs|define-text-object "." "dot" "." ".")
   (spacemacs|define-text-object "h" "helplink" "`" "'")
@@ -1432,10 +1439,10 @@ COUNT, BEG, END, and TYPE have no effect."
   (setq evil-snipe-repeat-scope 'whole-buffer)
   (setq evil-snipe-spillover-scope 'whole-buffer)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------------,
-  ;; | evil-surround |
-  ;; '---------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────╮
+  ;; │ evil─surround │
+  ;; ╰───────────────╯
 
   (setq-default
    evil-surround-pairs-alist
@@ -1514,9 +1521,9 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (define-key evil-insert-state-map (kbd "<insert>") 'my/enter-overwrite-mode)
 
-  ;; ,------------------------,
-  ;; | evil interactive codes |
-  ;; '------------------------'
+  ;; ╭────────────────────────╮
+  ;; │ evil interactive codes │
+  ;; ╰────────────────────────╯
   (setq my/evil-interactive-alist-source
         `((name . "evil-interactive-alist")
           (candidates . ,(asoc--map (list (format "%s\t\t\t%s" key value)) evil-interactive-alist))))
@@ -1525,15 +1532,17 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive)
     (helm :sources '(my/evil-interactive-alist-source)))
 
-  ;; ===============================================================================
-  ;;                                      _________
-  ;;                                     |         |
-  ;;                                     | UNICODE |
-  ;;                                     |_________|
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │           │
+  ;; │  unicode  │
+  ;; │           │
+  ;; ╰───────────╯
 
-  ;; ,----------,
-  ;; | Digraphs |
-  ;; '----------'
+  ;; ╭──────────╮
+  ;; │ Digraphs │
+  ;; ╰──────────╯
+
 
   (setq evil-digraphs-table-user
         '(
@@ -1579,26 +1588,23 @@ COUNT, BEG, END, and TYPE have no effect."
     (evil-ex-show-digraphs)
     (helm-occur))
 
-
-  ;; ,-------------,
-  ;; | Compose Key |
-  ;; '-------------'
+  ;; ╭─────────────╮
+  ;; │ Compose Key │
+  ;; ╰─────────────╯
 
   (define-helm-occur-function "compose"
     "/usr/share/X11/locale/en_US.UTF-8/Compose")
 
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────────────╮
+  ;; │                │
+  ;; │  KEY BINDINGS  │
+  ;; │                │
+  ;; ╰────────────────╯
 
-
-  ;; ==============================================================================
-  ;;                                 ****************
-  ;;                                 *              *
-  ;;                                 * KEY-BINDINGS *
-  ;;                                 *              *
-  ;;                                 ****************
-
-  ;; ,----------------------,
-  ;; | Keybinding Functions |
-  ;; '----------------------'
+  ;; ╭──────────────────────╮
+  ;; │ Keybinding Functions │
+  ;; ╰──────────────────────╯
   ;; spacemacs macros:   evil-map evil-define-key evil-define-minor-mode-key
   ;;                     evil-define-keymap spacemacs|define-micro-state
   ;; bindkey fns/macros: bind-map bind-key bind-key* bind-keys bind-keys*
@@ -1649,9 +1655,10 @@ COUNT, BEG, END, and TYPE have no effect."
   (defmacro fn! (&rest body) `(lambda () (interactive) ,@body))
   (defmacro defun! (name doc &rest body) `(defun ,name () ,doc (interactive) ,@body))
 
-  ;; ,--------------------------------,
-  ;; | Macros for generating commands |
-  ;; '--------------------------------'
+  ;; ╭────────────────────────────────╮
+  ;; │ Macros for generating commands │
+  ;; ╰────────────────────────────────╯
+
   (defmacro my/make-insertion-around-point (before after)
     `(lambda ()
        (interactive)
@@ -1665,9 +1672,9 @@ COUNT, BEG, END, and TYPE have no effect."
        (insert ,before ,after)
        (backward-char (length ,after))))
 
-  ;; ,-----------------,
-  ;; | Global Bindings |
-  ;; '-----------------'
+  ;; ╭─────────────────╮
+  ;; │ Global Bindings │
+  ;; ╰─────────────────╯
 
   ;; ===== High Priority: override mode bindings =====
   (bind-key* "<C-tab>" 'next-multiframe-window)
@@ -1793,9 +1800,10 @@ COUNT, BEG, END, and TYPE have no effect."
              ("<backspace>" . my/quit-help)
              )
 
-  ;; ,----------------,
-  ;; | Mouse bindings |
-  ;; '----------------'
+  ;; ╭────────────────╮
+  ;; │ Mouse bindings │
+  ;; ╰────────────────╯
+
   (global-set-key (kbd "<mouse-3>")   'my/mouse-toggle-fold)
   (global-set-key (kbd "<mouse-4>")   'mwheel-scroll)
   (global-set-key (kbd "<mouse-5>")   'mwheel-scroll)
@@ -1805,15 +1813,16 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key (kbd "<C-mouse-5>") 'spacemacs/zoom-frm-out)
   (global-set-key (kbd "<double-mouse-1>") 'evil-toggle-fold)
 
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────────────────╮
+  ;; │                           │
+  ;; │  EVIL STATE KEY BINDINGS  │
+  ;; │                           │
+  ;; ╰───────────────────────────╯
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------------------------,
-  ;; | Evil State Key Bindings |
-  ;; '-------------------------'
-  ;;
-  ;; ,--------------,
-  ;; | NORMAL STATE |
-  ;; '--------------'
+  ;; ╭──────────────╮
+  ;; │ normal state │
+  ;; ╰──────────────╯
   ;; note: evilified state map uses the bindings for keys:
   ;; / : h j k l n N v V gg G C-f C-b C-e C-y C-d C-u C-z
   ;; when rebinding them for normal-state, rebind for evilified-state also
@@ -1890,9 +1899,9 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; save
   (define-key evil-normal-state-map "ZC" 'save-buffers-kill-terminal)
 
-  ;; ,-----------------,
-  ;; | EVILIFIED STATE |
-  ;; '-----------------'
+  ;; ╭─────────────────╮
+  ;; │ evilified state │
+  ;; ╰─────────────────╯
 
   (defun evilified-state-init ()
     (my/define-keys evil-evilified-state-map
@@ -1902,9 +1911,10 @@ COUNT, BEG, END, and TYPE have no effect."
       ))
   (add-hook 'evil-evilified-state-entry-hook 'evilified-state-init)
 
-  ;; ,--------------,
-  ;; | VISUAL STATE |
-  ;; '--------------'
+  ;; ╭──────────────╮
+  ;; │ visual state │
+  ;; ╰──────────────╯
+
   (defun insert-space-visual () (interactive) (execute-kbd-macro " ") (evil-visual-restore))
   (define-key evil-visual-state-map (kbd "C-SPC") 'evil-forward-char-or-extend)
   (define-key evil-visual-state-map (kbd "C-\\") 'my/shell-command-replace-region)
@@ -1922,10 +1932,10 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-visual-state-map [\C-\S-down] (concat ":m '>+1" (kbd "RET") "gv=gv"))
   (define-key evil-visual-state-map [\C-\S-up] (concat ":m '<-2" (kbd "RET") "gv=gv"))
 
+  ;; ╭──────────────╮
+  ;; │ motion state │
+  ;; ╰──────────────╯
 
-  ;; ,--------------,
-  ;; | MOTION STATE |
-  ;; '--------------'
   (define-key evil-motion-state-map (kbd "C-e") 'end-of-line)
   (define-key evil-motion-state-map (kbd "[") 'evil-motion-open-bracket-prefix-map)
   (define-key evil-motion-state-map (kbd "]") 'evil-motion-close-bracket-prefix-map)
@@ -1944,9 +1954,10 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key 'evil-motion-close-bracket-prefix-map "b" "t)")
   (define-key 'evil-motion-close-bracket-prefix-map "B" "t(")
 
-  ;; ,--------------,
-  ;; | INSERT STATE |
-  ;; '--------------'
+  ;; ╭──────────────╮
+  ;; │ insert state │
+  ;; ╰──────────────╯
+
   ;; define bindings for shift-right/left-line: frees C-d, C-t:
   (define-key evil-insert-state-map (kbd "S-<tab>")       'evil-shift-right-line)
   ;; (define-key evil-insert-state-map (kbd "S-<backspace>") 'evil-shift-left-line)
@@ -1977,17 +1988,18 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-insert-state-map (kbd "M-v") 'iso-transl-ctl-x-8-map)
   (define-key evil-insert-state-map (kbd "C-k") 'evil-insert-digraph)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------------------,
-  ;; | Keymap Definitions |
-  ;; '--------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────────────────╮
+  ;; │ keymap definitions │
+  ;; ╰────────────────────╯
+
   ;; set function definition to value for keymaps defined only as values
   (fset 'help-map help-map)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------------------,
-  ;; | Evil Leader Bindings |
-  ;; '----------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────────────╮
+  ;; │ evil leader bindings │
+  ;; ╰──────────────────────╯
   ;; can use bind-keys to define prefix maps (Leader map is 'spacemacs-cmds, see below)
 
   (progn
@@ -2217,10 +2229,10 @@ COUNT, BEG, END, and TYPE have no effect."
              ("v" . undo-tree-visualize)
              )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------------,
-  ;; | user-cmds-map |
-  ;; '---------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────╮
+  ;; │ user-cmds-map │
+  ;; ╰───────────────╯
 
   (bind-keys :map global-map
              ;; S-SPC
@@ -2522,10 +2534,10 @@ COUNT, BEG, END, and TYPE have no effect."
     "S-SPC |"    "column"
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------------------------,
-  ;; | which-key Configuration |
-  ;; '-------------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────────────────╮
+  ;; │ which─key Configuration │
+  ;; ╰─────────────────────────╯
 
   ;; ;; enable which-key for motions - breaks t/f
   ;; (setq which-key-show-operator-state-maps t)
@@ -2590,10 +2602,10 @@ COUNT, BEG, END, and TYPE have no effect."
                   ))
     (add-to-list 'which-key-key-replacement-alist pair))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | C-c C-v |
-  ;; '---------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────╮
+  ;; │ C─c C─v │
+  ;; ╰─────────╯
 
   (global-set-key (kbd "C-c C-v") 'browse-buffer-file-firefox)
   (eval-after-load "markdown-mode"
@@ -2604,10 +2616,10 @@ COUNT, BEG, END, and TYPE have no effect."
     '(define-key haskell-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox))
   (define-key text-mode-map (kbd "C-c C-v") 'browse-buffer-file-firefox)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,------------,
-  ;; | Minibuffer |
-  ;; '------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────────╮
+  ;; │ Minibuffer │
+  ;; ╰────────────╯
 
   (defmacro my/minibuffer-yank-thing-command (type)
     "Yank thing at point of type TYPE into the minibuffer"
@@ -2620,9 +2632,9 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (define-key minibuffer-local-map "\C-w" (my/minibuffer-yank-thing-command 'symbol))
 
-  ;; ,--------------------,
-  ;; | Command Docstrings |
-  ;; '--------------------'
+  ;; ╭────────────────────╮
+  ;; │ Command Docstrings │
+  ;; ╰────────────────────╯
 
   (defmacro my/set-docstring (fn docstr)
     (eval `(put ',fn 'function-documentation ,docstr)))
@@ -2638,24 +2650,23 @@ COUNT, BEG, END, and TYPE have no effect."
    'evil-search-highlight-persist-remove-all    "Remove all `evil-search' highlighting"
    )
 
-  ;; ,--------,
-  ;; | elnode |
-  ;; '--------'
+  ;; ╭────────╮
+  ;; │ elnode │
+  ;; ╰────────╯
 
   (setq elnode-webserver-docroot
         (expand-file-name "private/public_html" user-emacs-directory))
 
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────╮
+  ;; │               │
+  ;; │  MINOR MODES  │
+  ;; │               │
+  ;; ╰───────────────╯
 
-  ;; ***************
-  ;; *             *
-  ;; * MINOR MODES *
-  ;; *             *
-  ;; ***************
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------------,
-  ;; | evil-mc-mode |
-  ;; '--------------'
+  ;; ╭──────────────╮
+  ;; │ evil─mc─mode │
+  ;; ╰──────────────╯
 
   (defun my/toggle-evil-mc-mode()
     (interactive)
@@ -2676,10 +2687,10 @@ COUNT, BEG, END, and TYPE have no effect."
       (evil-mc-make-and-goto-next-match)
       (message "evil-mc-mode enabled")))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,------------------,
-  ;; | evil-vimish-fold |
-  ;; '------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────────╮
+  ;; │ evil─vimish─fold │
+  ;; ╰──────────────────╯
 
   (defun my/evil-vimish-fold-mode-hook ()
     (interactive)
@@ -2688,10 +2699,10 @@ COUNT, BEG, END, and TYPE have no effect."
   (eval-after-load 'evil-vimish-fold
     (add-hook 'evil-vimish-fold-mode-hook #'my/evil-vimish-fold-mode-hook))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | Flycheck |
-  ;; '----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │ Flycheck │
+  ;; ╰──────────╯
 
   (eval-after-load "flycheck"
     '(progn
@@ -2719,10 +2730,10 @@ COUNT, BEG, END, and TYPE have no effect."
         )
        ))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | MozREPL |
-  ;; '---------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────╮
+  ;; │ MozREPL │
+  ;; ╰─────────╯
   (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
 
   (defun my/moz-minor-mode-init ()
@@ -2731,10 +2742,10 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (add-hook 'js2-mode-hook 'my/moz-minor-mode-init)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,------,
-  ;; | Mozc |
-  ;; '------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────╮
+  ;; │ Mozc │
+  ;; ╰──────╯
   ;; Note: requires mozc_emacs_helper program -- debian pkg emacs-mozc-bin
   (require 'mozc)
   (setq default-input-method "japanese-mozc")
@@ -2744,19 +2755,19 @@ COUNT, BEG, END, and TYPE have no effect."
   (setcar (cdr (assoc 'mozc-mode minor-mode-alist))
           "日")
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | Nameless |
-  ;; '----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │ Nameless │
+  ;; ╰──────────╯
   (use-package nameless
     :config
     (setq nameless-private-prefix t)
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------------,
-  ;; | Whitespace-Mode |
-  ;; '-----------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────────╮
+  ;; │ Whitespace─Mode │
+  ;; ╰─────────────────╯
   (setq whitespace-style-heavy
         '(face tabs spaces trailing lines-tail space-before-tab newline indentation empty
                space-after-tab space-mark tab-mark newline-mark))
@@ -2764,16 +2775,17 @@ COUNT, BEG, END, and TYPE have no effect."
         '(face tabs spaces trailing space-before-tab indentation space-after-tab space-mark tab-mark))
   (setq-default whitespace-style whitespace-style-light)
 
-  ;; ***************
-  ;; *             *
-  ;; * MAJOR MODES *
-  ;; *             *
-  ;; ***************
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────╮
+  ;; │               │
+  ;; │  MAJOR MODES  │
+  ;; │               │
+  ;; ╰───────────────╯
 
-  ;; -------------------------------------------------------------------------------
-  ;; =====,------------------------,=====
-  ;; =====| Terminal & Shell Modes |=====
-  ;; ====='------------------------'=====
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ═════╭──────────────────────────╮═════
+  ;; ═════│ terminal and shell modes │═════
+  ;; ═════╰──────────────────────────╯═════
 
   (defun shell-pop-shell-type-set (shell-type)
     (cl-case shell-type
@@ -2808,9 +2820,9 @@ COUNT, BEG, END, and TYPE have no effect."
     ("ESC" nil "abort"))
   (global-set-key (kbd "C-x <f12>") 'shell-pop-choose/body)
 
-  ;;           ,-----------,
-  ;;           | ansi-term |
-  ;;           '-----------'
+  ;; ╭───────────╮
+  ;; │ ansi-term │
+  ;; ╰───────────╯
 
   (evil-set-initial-state 'term-mode 'emacs)
   (eval-after-load "term"
@@ -2820,10 +2832,9 @@ COUNT, BEG, END, and TYPE have no effect."
        (define-key term-raw-map (kbd "C-c C-y")  'term-paste)
        ))
 
-  ;; -------------------------------------------------------------------------------
-  ;;            ,------------,
-  ;;            | shell-mode |
-  ;;            '------------'
+  ;; ╭────────────╮
+  ;; │ shell-mode │
+  ;; ╰────────────╯
 
   (eval-after-load 'shell
     '(progn
@@ -2848,9 +2859,9 @@ COUNT, BEG, END, and TYPE have no effect."
     (sit-for 1)
     (kill-buffer-and-window))
 
-  ;;            ,-----------,
-  ;;            | term-mode |
-  ;;            '-----------'
+  ;; ╭───────────╮
+  ;; │ term-mode │
+  ;; ╰───────────╯
 
   ;; Toggle between term-mode and shell-mode
   ;; https://www.emacswiki.org/emacs/ShellMode#toc12
@@ -2881,15 +2892,14 @@ COUNT, BEG, END, and TYPE have no effect."
         (term-switch-to-shell-mode)
       (term-switch-back-from-shell-mode)))
 
-  ;;            ,-----------------,
-  ;;            | multi-term-mode |
-  ;;            '-----------------'
+  ;; ╭─────────────────╮
+  ;; │ multi-term-mode │
+  ;; ╰─────────────────╯
 
-
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------------------,
-  ;; | bookmark-bmenu-mode |
-  ;; '---------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────────────╮
+  ;; │ bookmark─bmenu─mode │
+  ;; ╰─────────────────────╯
 
   ;; eval-after-load "bookmark.el" isn't working? (nor with 'bookmark)
   (defun bookmark-bmenu-mode-init ()
@@ -2897,19 +2907,18 @@ COUNT, BEG, END, and TYPE have no effect."
       :mode bookmark-bmenu-mode))
   (add-hook 'bookmark-bmenu-mode-hook 'bookmark-bmenu-mode-init)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,------,
-  ;; | Calc |
-  ;; '------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────╮
+  ;; │ Calc │
+  ;; ╰──────╯
   ;; calc: bypass calc-dispatch and bind C-x * directly to calc-dispatch-map
   ;;       (allow introspection of keybindings)
   (require 'calc)
   (global-set-key (kbd "C-x *") calc-dispatch-map)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,------------,
-  ;; | Calculator |
-  ;; '------------'
+  ;; ╭────────────╮
+  ;; │ calculator │
+  ;; ╰────────────╯
 
   (evil-set-initial-state 'calculator-mode 'emacs)
 
@@ -3120,9 +3129,10 @@ COUNT, BEG, END, and TYPE have no effect."
     (interactive)
     (async-shell-command "cd ~/repos/dactyl/pentadactyl && make xpi"))
 
-  ;; ,------------------,
-  ;; | my/dactyl/goto-* |
-  ;; '------------------'
+  ;; ╭────────────────────╮
+  ;; │ my/dactyl/goto-... │
+  ;; ╰────────────────────╯
+
   (defun my/dactyl-goto-group (group)
     "Jump to specified group"
     (interactive "sGroup: ")
@@ -3199,9 +3209,10 @@ COUNT, BEG, END, and TYPE have no effect."
             (beginning-of-line))
         (goto-char start-pos))))
 
-  ;; ,-------------------,
-  ;; | my/dactyl-*-occur |
-  ;; '-------------------'
+  ;; ╭─────────────────────╮
+  ;; │ my/dactyl-...-occur │
+  ;; ╰─────────────────────╯
+
   (defun my/dactyl-mapping-occur (prefix)
     "Open an `occur' buffer with statements mapping keys matching PREFIX."
     (interactive (list (read-string "Mappings for key prefix: " nil t nil)))
