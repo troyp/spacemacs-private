@@ -7562,6 +7562,9 @@ entered, return a command which executes it."
     (when (file-readable-p "~/.emacs.d/private/local/workarounds.el")
       (load "~/.emacs.d/private/local/workarounds.el")))
 
+  (when (string< emacs-version "26.1")
+    (spacemacs/set-leader-keys "t n" 'linum-mode))
+
   ;; -------------------------------------------------------------------------------
   ;; ,-------------------,
   ;; | Load Private Data |
