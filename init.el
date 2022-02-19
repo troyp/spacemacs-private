@@ -7214,6 +7214,32 @@ INTERACTIVE-CODE describes how N is obtained. By default, the interactive code P
   (my/define-yank-cmd sexp-at-point (sexp-at-point) "Yank SEXP at point")
   (my/define-yank-cmd word-at-point (word-at-point) "Yank word at point")
 
+  ;; TODO: redefine using my/define-yank-cmd-pass-argument so universal arg -> signed
+  (my/define-yank-cmd
+      buffer-initial-integers
+      (my/get-buffer-initial-integers)
+    "Yank a space-separated list of the integers beginning each line")
+  (my/define-yank-cmd
+      buffer-first-integers
+      (my/get-buffer-first-integers)
+    "Yank a space-separated list of the first integers occurring on each line")
+
+  (defun my/get-buffer-initial-integers (&optional signed)
+    (let* ((lines (s-split "[\n]" (buffer-string)))
+           (regex (if signed "^ *\\([-+]?[0-9]*\\).*"
+                    "^ *\\([0-9]*\\).*"))
+           (lines_ (-map (lambda (s) (s-replace-regexp regex "\\1" s)) lines))
+           (s (s-join " " lines_)))
+      s))
+
+  (defun my/get-buffer-first-integers (&optional signed)
+    (let* ((lines (s-split "[\n]" (buffer-string)))
+           (regex (if signed "^\\(?:[^0-9]*[^0-9+-]\\)\\([-+]?[0-9]*\\).*"
+                    "^[^0-9]*\\([0-9]*\\).*"))
+           (lines_ (-map (lambda (s) (s-replace-regexp regex "\\1" s)) lines))
+           (s (s-join " " lines_)))
+      s))
+
   (defun my/avy-yank-inner-quotes ()
     (interactive)
     (avy-goto-char 34)
