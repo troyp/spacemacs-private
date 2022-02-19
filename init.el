@@ -4167,22 +4167,26 @@ Committer: %cN <%cE>"))
     (interactive)
     (my/async-shell-command-no-window
      "GIT_EXTERNAL_DIFF='meld $2 $5 | cat' git diff --color-words"))
+
   (defun my/magit-diff-added-meld ()
     (interactive)
     (my/async-shell-command-no-window
      "GIT_EXTERNAL_DIFF='meld $2 $5 | cat' git diff --cached --color-words"))
+
   (defun my/magit-diff-committed-meld ()
     (interactive)
     (my/async-shell-command-no-window
      "GIT_EXTERNAL_DIFF='meld $2 $5 | cat' git diff HEAD --color-words"))
+
   (defun my/magit-undo-last-commit ()
     (interactive)
-    (magit-reset "HEAD~"))
+    (magit-reset-soft "HEAD~"))
 
   (defun my/magit-stash-changes-and-checkout ()
     (interactive)
     (magit-stash "*temp*")
     (call-interactively 'magit-checkout))
+
   (defun my/magit-back-to-master-pop-changes ()
     (interactive)
     (magit-checkout "master")
