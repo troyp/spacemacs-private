@@ -865,6 +865,12 @@ before packages are loaded."
   ;; ,-----------------,
   ;; | CUA Global Mark |
   ;; '-----------------'
+  (defun my/keyboard-quit ()
+    (interactive)
+    (if (equal last-command 'my/keyboard-quit)
+        (evil-normal-state)
+      (keyboard-quit)))
+
 
   (defun my/cua-global-mark-remove-nonregion-remappings ()
     (interactive)
@@ -1676,6 +1682,7 @@ COUNT, BEG, END, and TYPE have no effect."
   (bind-key* "M-`" 'universal-argument)
   (define-key universal-argument-map (kbd "M-`") 'universal-argument-more)
   ;; =================================================
+  (global-set-key (kbd "C-g") 'my/keyboard-quit)
 
   (global-set-key (kbd "C-M-j") 'evil-avy-goto-char-timer)
   (global-set-key (kbd "C-M-y") 'avy-copy-line)
