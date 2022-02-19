@@ -7594,19 +7594,6 @@ entered, return a command which executes it."
     (keyboard-escape-quit)
     (spacemacs/evil-search-clear-highlight))
 
-  (defun my/pcre-group-lines (beg end reverse-order regexps)
-    (interactive
-     (list (region-beginning) (region-end) current-prefix-arg
-           (let (regexps current)
-             (while
-                 (progn
-                   (setq current (read-string "Enter PCRE (<Enter> to finish): "))
-                   (when (not (string= current ""))
-                     (setq regexps (cons (concat ".*" current ".*") regexps)))))
-             regexps)))
-    (setq regexps (reverse (cons "" regexps)))
-    (sort-group-lines reverse-order beg end regexps))
-
   ;; -------------------------------------------------------------------------------
   ;; ,-----------------------,
   ;; | Temporary Workarounds |
