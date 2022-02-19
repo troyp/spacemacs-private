@@ -3307,6 +3307,27 @@ COUNT, BEG, END, and TYPE have no effect."
 
 
   ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────────╮
+  ;; │ shell-script-mode │
+  ;; ╰───────────────────╯
+  (defun my/sh-alias-to-fn ()
+    (interactive)
+    (my/evil-substitute-region
+     "^([# ]*)alias +([^ ]+)=[\"'](.*)[\"']$"
+     "\\1\\2 () { \\3 }"))
+
+  (defun my/sh-alias-and-comment-to-fn ()
+    (interactive)
+    (my/evil-substitute-region
+     "^([# ]*)alias +([^ ]+)=[\"'](.*)[\"'] *(#.*)$"
+     "\\4\n\\1\\2 () { \\3 }"))
+
+  (spacemacs/set-leader-keys-for-major-mode 'sh-mode
+      "ca"    'my/sh-alias-to-fn
+      "cA"    'my/sh-alias-and-comment-to-fn
+      )
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭──────────────────╮
   ;; │                  │
   ;; │  tridactyl-mode  │
