@@ -1770,7 +1770,8 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key [\C-f5] 'which-key-show-top-level)
   (global-set-key (kbd "<C-f9>") 'evil-normal-state)
   (global-set-key (kbd "<M-f9>") 'evil-evilified-state)
-  (global-set-key (kbd "<S-f9>") 'current-mode-and-state)
+  (global-set-key (kbd "<S-f9>") 'my/current-mode-and-state)
+  (global-set-key (kbd "<M-S-f9>") 'my/show-last-command)
 
   (global-set-key [f7] 'exchange-point-and-mark)
   (global-set-key [f8] 'er/contract-region)
@@ -6260,13 +6261,17 @@ See also `rectangle-number-lines'."
     (let ((current-prefix-arg 4))
       (call-interactively #'rectangle-number-lines)))
 
-  (defun current-mode-and-state()
+  (defun my/current-mode-and-state()
     "Display the current `evil-state' and `major-mode' in the minibuffer."
     (interactive)
     (let ((s (format "evil-state: %S || major-mode: %S"
                      evil-state
                      major-mode)))
       (message s)))
+
+  (defun my/show-last-command ()
+    (interactive)
+    (message (format "%S" last-command)))
 
   (defun sprint-keymap (map)
     (with-temp-buffer
