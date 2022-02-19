@@ -2087,7 +2087,8 @@ COUNT, BEG, END, and TYPE have no effect."
         "s / o"        'my/pcre-occur
         "s / l"        'my/pcre-loccur
         "T |"          'scroll-bar-mode
-        "w TAB"        'ace-swap-window
+        "w w"          'ace-swap-window
+        "w TAB"        'other-window
         "w DEL"        'my/delete-window-ace-move-buffer-quit-help
         "x a ."        'spacemacs/align-repeat-period
         "x a '"        'spacemacs/align-repeat-quote
