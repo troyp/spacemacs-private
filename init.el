@@ -6853,6 +6853,7 @@ In particular, rectangular selections are yanked as whole lines."
     (interactive)
     (insert (current-kill 0)))
 
+  ;; FIXME: always converts tabs->spaces, ignoring untabify
   (defun my/evil-convert-kill-to-block(&optional untabify)
     "Convert the latest selection to an evil block selection and push on kill-ring.
 
@@ -6884,7 +6885,7 @@ If UNTABIFY is non-nil (or if no argument is given interactively), then tabs
 are replaced by spaces before conversion."
     (interactive)
     (my/evil-convert-kill-to-block t)
-    (evil-paste-after))
+    (call-interactively #'evil-paste-after))
 
   (defun my/evil-paste-before-as-block ()
     "Paste the latest selection before point after converting to a block.
@@ -6893,7 +6894,7 @@ If UNTABIFY is non-nil (or if no argument is given interactively), then tabs
 are replaced by spaces before conversion."
     (interactive)
     (my/evil-convert-kill-to-block t)
-    (evil-paste-before))
+    (call-interactively #'evil-paste-before))
 
   (defun my/number-of-lines-in-kill ()
     "Return the number of lines in the latest selection."
