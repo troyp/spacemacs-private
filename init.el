@@ -2106,7 +2106,7 @@ COUNT, BEG, END, and TYPE have no effect."
         "x a SPC"      'my/quick-pcre-align-repeat
         "x a S-SPC"    'my/quick-pcre-align
         "x a C-SPC"    'my/align-whitespace
-        "x l g"        'my/pcre-group-lines
+        "x l g"        'sort-group-lines
         "x l U"        'my/delete-duplicate-lines-nonblank
         "x N"          'rectangle-number-lines-interactive
         "x <insert>"   'region-swap
@@ -2337,9 +2337,19 @@ COUNT, BEG, END, and TYPE have no effect."
              ("m" . keep-lines)
              ("n" . flush-lines)
              ("c" . how-many)
+             ("g" . sort-group-lines)
              ("h" . highlight-lines-matching-regexp)
              ("y" . my/copy-matching-lines)
              ("Y" . my/copy-non-matching-lines)
+             )
+
+  (bind-keys :map match-lines-map
+             :prefix-map delete-lines-map
+             :menu-name "delete lines"
+             :prefix "d"
+             :prefix-docstring "Commands deleting lines against a pattern."
+             ("u" . my/delete-duplicate-lines-nonblank)
+             ("U" . delete-duplicate-lines)
              )
 
   (bind-keys :map user-cmds-map
@@ -2350,8 +2360,16 @@ COUNT, BEG, END, and TYPE have no effect."
              :prefix-docstring "Move/copy code."
              ("m"  . avy-move-line)
              ("r"  . avy-move-region)
-             ("cc" . avy-copy-line)
-             ("cr" . avy-copy-region)
+             )
+
+  (bind-keys :map my/move-prefix-map
+             ;; S-SPC mc
+             :prefix-map my/copy-map
+             :menu-name "copy"
+             :prefix "c"
+             :prefix-docstring "copy code."
+             ("c" . avy-copy-line)
+             ("r" . avy-copy-region)
              )
 
   (bind-keys :map match-lines-map
@@ -2461,6 +2479,16 @@ COUNT, BEG, END, and TYPE have no effect."
              (". s" . my/yank-sexp-at-point)
              (". w" . my/yank-word-at-point)
              ("\""  . my/avy-yank-inner-quotes)
+             )
+
+  (bind-keys :map user-cmds-map
+             ;; S-SPC -
+             :prefix-map my/diff-prefix-map
+             :menu-name "diff"
+             :prefix "-"
+             :prefix-docstring "Commands for diffing files or text."
+             ("r r" . ediff-regions-linewise)
+             ("r w" . ediff-regions-wordwise)
              )
 
   (bind-keys :map user-cmds-map
