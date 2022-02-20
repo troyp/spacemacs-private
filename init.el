@@ -847,7 +847,6 @@ before packages are loaded."
     (interactive)
     (configuration-layer/sync))
 
-
   ;; ╭───────────────╮
   ;; │ CUA Rectangle │
   ;; ╰───────────────╯
@@ -895,13 +894,13 @@ before packages are loaded."
     )
 
   ;; ╭──────────╮
-  ;; │ avy─keys │
+  ;; │ avy-keys │
   ;; ╰──────────╯
   (setq avy-keys (list ?j ?f ?k ?d ?l ?s ?\; ?a ?i ?e ?o ?w ?n ?v))
   (setq avy-timeout-seconds 0.2)
 
   ;; ╭────────────────╮
-  ;; │ global─hl─line │
+  ;; │ global-hl-line │
   ;; ╰────────────────╯
   (require 'color)
   (defun auto-set-hl-line-face ()
@@ -915,7 +914,7 @@ before packages are loaded."
   (add-hook 'global-hl-line-mode-hook 'auto-set-hl-line-face)
 
   ;; ╭─────────╮
-  ;; │ pos─tip │
+  ;; │ pos-tip │
   ;; ╰─────────╯
   (setq x-gtk-use-system-tooltips nil)
   (defun my/pos-tip-set-brown-on-yellow ()
@@ -1018,7 +1017,7 @@ FLAGS is a list of characters, eg '(?g)"
        `(replace-eval-replacement . ,replacement))))
 
   ;; ╭────────────────╮
-  ;; │ thing─at─point │
+  ;; │ thing-at-point │
   ;; ╰────────────────╯
 
   (defvar my/thing-at-point-qualifed-name-regexp "[a-zA-Z_][a-zA-Z_.]*")
@@ -1247,7 +1246,7 @@ FLAGS is a list of characters, eg '(?g)"
   ;; (setq evil-move-cursor-back nil)
 
   ;; ╭─────────────────────────╮
-  ;; │ evil─symbol─word─search │
+  ;; │ evil-symbol-word-search │
   ;; ╰─────────────────────────╯
 
   ;; Use symbols rather than words for * and # search
@@ -1441,7 +1440,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭───────────────╮
-  ;; │ evil─surround │
+  ;; │ evil-surround │
   ;; ╰───────────────╯
 
   (setq-default
@@ -2566,15 +2565,15 @@ COUNT, BEG, END, and TYPE have no effect."
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭─────────────────────────╮
-  ;; │ which─key Configuration │
+  ;; │ which-key Configuration │
   ;; ╰─────────────────────────╯
 
   ;; ;; enable which-key for motions - breaks t/f
   ;; (setq which-key-show-operator-state-maps t)
 
-  (bind-keys :map which-key-C-h-map
-             ("C-h" . which-key-abort)
-             )
+  (bind-keys
+   :map which-key-C-h-map
+   ("C-h" . which-key-abort))
 
   (which-key-add-key-based-replacements
     "z RET"        "MACRO: z t ^"
@@ -2634,7 +2633,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭─────────╮
-  ;; │ C─c C─v │
+  ;; │ C-c C-v │
   ;; ╰─────────╯
 
   (global-set-key (kbd "C-c C-v") 'browse-buffer-file-firefox)
@@ -2695,7 +2694,7 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; ╰───────────────╯
 
   ;; ╭──────────────╮
-  ;; │ evil─mc─mode │
+  ;; │ evil-mc-mode │
   ;; ╰──────────────╯
 
   (defun my/toggle-evil-mc-mode()
@@ -2719,7 +2718,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭──────────────────╮
-  ;; │ evil─vimish─fold │
+  ;; │ evil-vimish-fold │
   ;; ╰──────────────────╯
 
   (defun my/evil-vimish-fold-mode-hook ()
@@ -2796,7 +2795,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭─────────────────╮
-  ;; │ Whitespace─Mode │
+  ;; │ Whitespace-Mode │
   ;; ╰─────────────────╯
   (setq whitespace-style-heavy
         '(face tabs spaces trailing lines-tail space-before-tab newline indentation empty
@@ -2928,7 +2927,7 @@ COUNT, BEG, END, and TYPE have no effect."
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭─────────────────────╮
-  ;; │ bookmark─bmenu─mode │
+  ;; │ bookmark-bmenu-mode │
   ;; ╰─────────────────────╯
 
   ;; eval-after-load "bookmark.el" isn't working? (nor with 'bookmark)
@@ -3283,9 +3282,9 @@ COUNT, BEG, END, and TYPE have no effect."
       (occur (pcre-to-elisp pcre flags)))
     (switch-to-buffer-other-window "*Occur*"))
 
-  ;; ,----------------------------,
-  ;; | my/dactyl-*-occur-at-point |
-  ;; '----------------------------'
+  ;; ╭────────────────────────────╮
+  ;; │ my/dactyl-*-occur-at-point │
+  ;; ╰────────────────────────────╯
   (defun my/dactyl-mapping-occur-at-point (prefix)
     "Open an `occur' buffer with statements mapping keys matching PREFIX."
     (interactive
@@ -3325,9 +3324,9 @@ COUNT, BEG, END, and TYPE have no effect."
       (occur (pcre-to-elisp pcre "i")))
     (switch-to-buffer-other-window "*Occur*"))
 
-  ;; ,------------------,
-  ;; | my/dactyl-show-* |
-  ;; '------------------'
+  ;; ╭──────────────────╮
+  ;; │ my/dactyl-show-* │
+  ;; ╰──────────────────╯
   (defun my/dactyl-show-groups ()
     "Open an `occur' buffer with all group statements."
     (interactive)
@@ -3487,10 +3486,10 @@ COUNT, BEG, END, and TYPE have no effect."
       "SPC"   'helm-imenu
       )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------,
-  ;; | Dired |
-  ;; '-------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────╮
+  ;; │ Dired │
+  ;; ╰───────╯
 
   (make-local-variable 'my/dired-reuse-buffer)
   (setq-default my/dired-reuse-buffer t)
@@ -3686,10 +3685,10 @@ COUNT, BEG, END, and TYPE have no effect."
     (diredp-dired-union union-buffer-name nil nil files))
 
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------,
-  ;; | Direx |
-  ;; '-------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────╮
+  ;; │ Direx │
+  ;; ╰───────╯
 
   (require 'direx)
   (push '(direx:direx-mode :position left :width 25 :dedicated t)
@@ -3697,10 +3696,10 @@ COUNT, BEG, END, and TYPE have no effect."
   (global-set-key (kbd "C-x C-j") 'direx:jump-to-directory-other-window)
 
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------------,
-  ;; | Edmacro-Mode |
-  ;; '--------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────╮
+  ;; │ Edmacro-Mode │
+  ;; ╰──────────────╯
 
   ;; FIXME: major-mode leader key not working
   (spacemacs/set-leader-keys-for-major-mode 'edmacro-mode
@@ -3709,10 +3708,10 @@ COUNT, BEG, END, and TYPE have no effect."
     )
 
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------,
-  ;; | Elfeed |
-  ;; '--------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────╮
+  ;; │ Elfeed │
+  ;; ╰────────╯
 
   ;; auto-evilification can't remap 'elfeed-search-fetch
   (eval-after-load "elfeed"
@@ -3720,10 +3719,10 @@ COUNT, BEG, END, and TYPE have no effect."
        (define-key elfeed-search-mode-map (kbd "C-x G") 'elfeed-search-fetch)
        ))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------------,
-  ;; | finder-mode |
-  ;; '-------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────╮
+  ;; │ finder-mode │
+  ;; ╰─────────────╯
 
   (add-hook 'finder-mode-hook 'my/finder-mode-init)
 
@@ -3733,10 +3732,10 @@ COUNT, BEG, END, and TYPE have no effect."
         :mode finder-mode
         ))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | gitconfig |
-  ;; '-----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ gitconfig │
+  ;; ╰───────────╯
 
   (spacemacs/set-leader-keys-for-major-mode 'giconfig-mode
       "cm"    'my/gitconfig-convert-master
@@ -3747,12 +3746,12 @@ COUNT, BEG, END, and TYPE have no effect."
     "Convert a .gitconfig alias involving master to detect the default branch name"
     [48 102 61 97 32 33 103 105 116 escape 86 58 115 47 109 97 115 116 101 114 47 36 40 115 101 100 32 39 115 124 46 42 92 47 124 124 39 32 46 103 105 116 92 47 114 101 102 115 92 47 114 101 109 111 116 101 115 92 47 111 114 105 103 105 110 92 47 72 69 65 68 41 47 103 return])
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------------,
-  ;; | Haskell-Mode |
-  ;; '--------------'
   ;; structured-haskell-mode - issues with evil:
   ;;     https://github.com/chrisdone/structured-haskell-mode/issues/81
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────╮
+  ;; │ Haskell-Mode │
+  ;; ╰──────────────╯
 
   (eval-after-load "haskell-mode"
     '(progn
@@ -3768,10 +3767,10 @@ COUNT, BEG, END, and TYPE have no effect."
       (add-to-list 'evil-emacs-state-modes 'haskell-interactive-mode)
       ))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | helm-mode |
-  ;; '-----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ helm-mode │
+  ;; ╰───────────╯
 
   (use-package helm-mode
     ;;
@@ -3816,10 +3815,10 @@ COUNT, BEG, END, and TYPE have no effect."
       )
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------------,
-  ;; | helm-firefox |
-  ;; '--------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────╮
+  ;; │ helm-firefox │
+  ;; ╰──────────────╯
 
   (defgroup firefox nil
     "Customization variables for interacting with the Firefox browser."
@@ -3856,10 +3855,10 @@ COUNT, BEG, END, and TYPE have no effect."
        (defun firefox-protocol--get-firefox-user-init-dir ()
          firefox-default-user-path)))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | help-mode |
-  ;; '-----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ help-mode │
+  ;; ╰───────────╯
 
   (eval-after-load "help-mode"
     `(progn
@@ -3870,10 +3869,10 @@ COUNT, BEG, END, and TYPE have no effect."
        (define-key button-map [remap push-button] #'my/push-button-and-center)
        ))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | Hy-Mode |
-  ;; '---------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────╮
+  ;; │ Hy-Mode │
+  ;; ╰─────────╯
 
   (which-key-add-major-mode-key-based-replacements 'hy-mode
     "SPC m s"    "evaluate"
@@ -3882,10 +3881,10 @@ COUNT, BEG, END, and TYPE have no effect."
     ", V"        "pyvenv"
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | ibuffer |
-  ;; '---------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────╮
+  ;; │ ibuffer │
+  ;; ╰─────────╯
 
   (evil-set-initial-state 'ibuffer-mode 'evilified)
   (eval-after-load 'ibuffer
@@ -3895,10 +3894,10 @@ COUNT, BEG, END, and TYPE have no effect."
        (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
        ))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | ido-mode |
-  ;; '----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │ ido-mode │
+  ;; ╰──────────╯
 
   (defun ido-init ()
     (bind-keys :map ido-completion-map
@@ -3912,10 +3911,10 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; (spacemacs/set-leader-keys-for-minor-mode 'ido-mode
   ;;   )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | Info-Mode |
-  ;; '-----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ Info-Mode │
+  ;; ╰───────────╯
 
   (bind-keys :map Info-mode-map
              ("M-h" . Info-history-back)
@@ -3983,25 +3982,25 @@ COUNT, BEG, END, and TYPE have no effect."
          )
        ))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | ISearch |
-  ;; '---------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────╮
+  ;; │ ISearch │
+  ;; ╰─────────╯
 
   (define-key isearch-mode-map (kbd "C-'") 'avy-isearch)
   (define-key isearch-mode-map [67108898] 'helm-swoop) ;; C-doublequote
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------------,
-  ;; | Indent-Guide |
-  ;; '--------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────╮
+  ;; │ Indent-Guide │
+  ;; ╰──────────────╯
 
   (setq indent-guide-recursive t)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---,
-  ;; | J |
-  ;; '---'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───╮
+  ;; │ J │
+  ;; ╰───╯
 
   (add-to-load-path "~/.emacs.d/private/local/j-mode")
   (autoload 'j-mode "j-mode.el" "Major mode for editing J files" t)
@@ -4015,10 +4014,10 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . j-mode))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,------,
-  ;; | Java |
-  ;; '------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────╮
+  ;; │ Java │
+  ;; ╰──────╯
 
   (defun java-init () (interactive)
          (define-key java-mode-map (kbd "M-c") 'evil-upcase-first-letter)
@@ -4053,10 +4052,10 @@ COUNT, BEG, END, and TYPE have no effect."
            100 101 108 101 116 101 45 116 114 97 105 108 105 110 103 45 119 104
            105 116 101 115 112 97 99 101 13 65 escape 106 1])
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | js2-mode |
-  ;; '----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │ js2-mode │
+  ;; ╰──────────╯
 
   (defun my/js-url-decode ()
     (interactive)
@@ -4144,10 +4143,10 @@ COUNT, BEG, END, and TYPE have no effect."
        `((,js--regexp-literal-fix (1 "|") (2 "|"))))
       (setq js-font-lock-syntactic-keywords js-font-lock-syntactic-keywords-fix)))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | JSON-Mode |
-  ;; '-----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ JSON-Mode │
+  ;; ╰───────────╯
 
   (spacemacs/set-leader-keys-for-major-mode 'json-mode
     "ed"            'js-eval-defun
@@ -4162,10 +4161,10 @@ COUNT, BEG, END, and TYPE have no effect."
     ", h"       "json-snatcher"
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------,
-  ;; | Magit |
-  ;; '-------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────╮
+  ;; │ Magit │
+  ;; ╰───────╯
 
 
   (defun magit-init-fn ()
@@ -4286,10 +4285,10 @@ Committer: %cN <%cE>"))
     ", y"      "yank"
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | Markdown |
-  ;; '----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │ Markdown │
+  ;; ╰──────────╯
 
   (setq-default my/markdown-browser browse-url-generic-program)
 
@@ -4440,10 +4439,10 @@ If FILE is nil, the file associated with the current buffer is used."
                       (line-end-position))))
     (kmacro-exec-ring-item '([ ?y ?y ?p ?v ?i ?l ?r ?= ] 0 "%d") 1))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,------,
-  ;; | Lisp |
-  ;; '------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────╮
+  ;; │ Lisp │
+  ;; ╰──────╯
 
   (bind-keys :map spacemacs-emacs-lisp-mode-map
              ;; common
@@ -4579,9 +4578,9 @@ If FILE is nil, the file associated with the current buffer is used."
              ("C-o" . evil-execute-in-normal-state)
              )
 
-  ;; ,--------------------------,
-  ;; | CIDER Overlays for Elisp |
-  ;; '--------------------------'
+  ;; ╭──────────────────────────╮
+  ;; │ CIDER Overlays for Elisp │
+  ;; ╰──────────────────────────╯
   ;; http://endlessparentheses.com/eval-result-overlays-in-emacs-lisp.html
 
   (autoload 'cider--make-result-overlay "cider-overlays")
@@ -4609,10 +4608,10 @@ If FILE is nil, the file associated with the current buffer is used."
     (advice-remove 'eval-defun #'endless/eval-defun-advice))
 
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------,
-  ;; | Ocaml |
-  ;; '-------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────╮
+  ;; │ Ocaml │
+  ;; ╰───────╯
 
   (which-key-add-major-mode-key-based-replacements 'tuareg-mode
     ", c"     "compile"
@@ -4625,19 +4624,19 @@ If FILE is nil, the file associated with the current buffer is used."
     ", s"     "utop"
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,------------,
-  ;; | Occur-Mode |
-  ;; '------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────────╮
+  ;; │ Occur-Mode │
+  ;; ╰────────────╯
 
   (evilified-state-evilify-map occur-mode-map
     :mode occur-mode
     :bindings
     )
 
-  ;; ,-------------,
-  ;; | loccur-mode |
-  ;; '-------------'
+  ;; ╭─────────────╮
+  ;; │ loccur-mode │
+  ;; ╰─────────────╯
   (require 'loccur)
 
   ;; based on `loccur': GPL3
@@ -4669,10 +4668,10 @@ If FILE is nil, the file associated with the current buffer is used."
   (set-face-attribute 'loccur-face nil :background "#C8E559" :foreground nil)
 
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | Org-Mode |
-  ;; '----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │ Org-Mode │
+  ;; ╰──────────╯
 
   (defun org-init ()
     (interactive)
@@ -4869,10 +4868,10 @@ Return the description that was displayed, as a string."
                 (print-help-return-message)
                 (with-current-buffer standard-output (buffer-string)))))))))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------------,
-  ;; | PDF-View-Mode |
-  ;; '---------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────╮
+  ;; │ PDF-View-Mode │
+  ;; ╰───────────────╯
 
   (add-hook 'pdf-view-mode-hook 'my/pdf-view-mode-init)
 
@@ -4880,10 +4879,10 @@ Return the description that was displayed, as a string."
     (interactive)
     (spacemacs/toggle-line-numbers-on))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------,
-  ;; | Proced |
-  ;; '--------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────╮
+  ;; │ Proced │
+  ;; ╰────────╯
 
   (add-hook 'proced-mode-hook 'my/proced-init)
 
@@ -4898,10 +4897,10 @@ Return the description that was displayed, as a string."
       "c"          'proced-mode-map
       )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | Ruby-mode |
-  ;; '-----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ Ruby-mode │
+  ;; ╰───────────╯
 
   (defun ruby-init ()
     (define-key spacemacs-ruby-mode-map "sb" 'ruby-send-buffer)
@@ -4915,30 +4914,30 @@ Return the description that was displayed, as a string."
     "g ?"      'goto-gem-grep-all-gems
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------------,
-  ;; | Shell Script |
-  ;; '--------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────╮
+  ;; │ Shell Script │
+  ;; ╰──────────────╯
 
   (spacemacs/set-leader-keys-for-major-mode 'sh-mode
       "J"     'my/collapse-single-line-function
       "."     'find-file-at-point
       )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------------------,
-  ;; | Spacemacs-Buffer-Mode |
-  ;; '-----------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────────────╮
+  ;; │ Spacemacs-Buffer-Mode │
+  ;; ╰───────────────────────╯
 
   (which-key-add-major-mode-key-based-replacements 'spacemacs-buffer-mode
     "m"     "jump to menu"
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | Undo Tree |
-  ;; '-----------'
   (setq undo-tree-git-repo "http://www.dr-qubit.org/git/undo-tree.git")
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ Undo Tree │
+  ;; ╰───────────╯
 
   (setq evil-want-fine-undo "No")
 
@@ -4984,10 +4983,10 @@ Return the description that was displayed, as a string."
   ;; (add-hook 'kill-buffer-hook #'my/save-undo-history)
 
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------------------------,
-  ;; | Undo-Tree-Visualizer-Mode |
-  ;; '---------------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────────────────╮
+  ;; │ Undo-Tree-Visualizer-Mode │
+  ;; ╰───────────────────────────╯
 
   (spacemacs/set-leader-keys-for-major-mode 'undo-tree-visualizer-mode
     "d"              'undo-tree-visualizer-toggle-diff
@@ -5040,17 +5039,17 @@ Return the description that was displayed, as a string."
          (kbd "M-;")   'evil-repeat-find-char-reverse
          )))
 
-  ;; ---------------
+  ;; ───────────────
   ;; Leader Bindings
-  ;; ---------------
+  ;; ───────────────
   (bind-keys :map spacemacs-emacs-lisp-mode-map
              ("m" . spacemacs-undo-tree-visualizer-mode-map)
              )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | View-Mode |
-  ;; '-----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ View-Mode │
+  ;; ╰───────────╯
 
   (evil-define-key 'normal view-mode-map
     "q"   'View-quit
@@ -5061,10 +5060,10 @@ Return the description that was displayed, as a string."
       ))
   (add-hook 'view-mode-hook #'view-mode-init)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | Web-Mode |
-  ;; '----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │ Web-Mode │
+  ;; ╰──────────╯
 
   (spacemacs/set-leader-keys-for-major-mode 'web-mode
     ",gn"            'web-mode-element-next
@@ -5095,10 +5094,10 @@ Return the description that was displayed, as a string."
        (kbd "<C-S-return>") 'my/open-line-above
        ))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----,
-  ;; | w3m |
-  ;; '-----'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────╮
+  ;; │ w3m │
+  ;; ╰─────╯
 
   (add-hook 'w3m-mode-hook 'my/w3m-mode-init)
 
@@ -5111,10 +5110,10 @@ Return the description that was displayed, as a string."
         (kbd "C-h")  'help-map)
     )
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,----------,
-  ;; | Snippets |
-  ;; '----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │ Snippets │
+  ;; ╰──────────╯
 
   (defun my/yas-expand (&optional field)
     "Expand a snippet before point. Simplified version of `yas-expand'."
@@ -5137,10 +5136,10 @@ Return the description that was displayed, as a string."
     (let ((aya-create-with-newline t))
       (call-interactively 'aya-create)))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------,
-  ;; | Align |
-  ;; '-------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────╮
+  ;; │ Align │
+  ;; ╰───────╯
 
   (unless (boundp 'align-default-spacing) (setf align-default-spacing 1))
 
@@ -5237,10 +5236,10 @@ otherwise is equal to 'align-default-spacing."
     (unless spacing (setq spacing align-default-spacing))
     (align-regexp BEG END (pcre-to-elisp "\\s+") 0 spacing repeat))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------,
-  ;; | Regex |
-  ;; '-------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────╮
+  ;; │ Regex │
+  ;; ╰───────╯
 
   ;; modified emacs source: GPL3
   (defun my/pcre-occur (regexp &optional nlines)
@@ -5332,10 +5331,10 @@ ISEARCH DOCUMENTATION.
       (evil-search-incrementally nil evil-regexp-search)
       (pcre-mode init-pcre-mode)))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------------,
-  ;; | Keyboard Macros |
-  ;; '-----------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────────╮
+  ;; │ Keyboard Macros │
+  ;; ╰─────────────────╯
 
   (fset 'my/switch-to-most-recent-buffer [?\C-x ?b return])
   (fset 'my/other-window-quit [C-tab ?q])
@@ -5403,10 +5402,10 @@ Then move to the next line (column 3).
                 ?0 ?f ?・ escape ?a backspace return 32 32 32 32 escape
                 ?$ ?x ?F 40 ?x ?i backspace return escape ?j ?0])
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,--------------------------------,
-  ;; | Key/Keymap Functions & Aliases |
-  ;; '--------------------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────────────────────────────╮
+  ;; │ Key/Keymap Functions & Aliases │
+  ;; ╰────────────────────────────────╯
   ;; to get the definition of a key sequence in a keymap: lookup-key
   ;; to show keymap with which-key:  (which-key--show-keymap keymap-name keymap)
   ;; to show keys sequence that invoked the current command: (this-command-keys)
@@ -5602,10 +5601,10 @@ temporarily enables it to allow getting help on disabled items and buttons."
           (setq yank-menu (copy-sequence saved-yank-menu))
           (fset 'yank-menu (cons 'keymap yank-menu))))))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,---------,
-  ;; | Aliases |
-  ;; '---------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────╮
+  ;; │ Aliases │
+  ;; ╰─────────╯
 
   (defalias 'init 'spacemacs/find-dotfile)
   (defalias 'pr 'cl-prettyprint)
@@ -5636,10 +5635,10 @@ temporarily enables it to allow getting help on disabled items and buttons."
   (defalias 'sreccom 'short-rect-heading-comment)
   (defalias 'ppp 'insert-pp)
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------,
-  ;; | Functions |
-  ;; '-----------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ Functions │
+  ;; ╰───────────╯
 
   (defun get-char-face (&optional pos)
     (interactive)
@@ -7179,9 +7178,9 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
       (insert contents)
       (helm-switch-major-mode)))
 
-  ;; ,--------------------------,
-  ;; | Browser/Server Functions |
-  ;; '--------------------------'
+  ;; ╭──────────────────────────╮
+  ;; │ Browser/Server Functions │
+  ;; ╰──────────────────────────╯
 
   (defun my/serve-buffer-file ()
     (interactive)
@@ -7202,9 +7201,9 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (my/serve-buffer-directory)
     (browse-url-firefox "localhost:8009"))
 
-  ;; ,----------------------,
-  ;; | Yank/Paste Functions |
-  ;; '----------------------'
+  ;; ╭──────────────────────╮
+  ;; │ Yank/Paste Functions │
+  ;; ╰──────────────────────╯
 
   (defun my/kill-new-and-message (string &optional replace)
     (kill-new string replace)
@@ -7227,9 +7226,10 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
   ;; TODO: WIP - instead of quoting, universal argument is passed into expression
   (defmacro my/define-yank-cmd-pass-argument (name expr &optional interactive-code doc)
     "Define a command NAME which evaluates EXPR and yanks the value.
+
 EXPR may contain the anaphoric variable N containing the universal argument.
 INTERACTIVE-CODE describes how N is obtained. By default, the interactive code P is used
-(nil if no argument, otherwise the numeric value). DOC is an optional documentation string."
+- nil if no argument, otherwise the numeric value. DOC is an optional documentation string."
     nil)
 
   ;; TODO: WIP
@@ -7282,10 +7282,10 @@ INTERACTIVE-CODE describes how N is obtained. By default, the interactive code P
       (yank i)
       (incf i)))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------------,
-  ;; | Minor Modes |
-  ;; '-------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────╮
+  ;; │ Minor Modes │
+  ;; ╰─────────────╯
 
   (defun current-minor-modes ()
     (--filter (and (boundp it) (eval it))
@@ -7595,10 +7595,10 @@ entered, return a command which executes it."
     (keyboard-escape-quit)
     (spacemacs/evil-search-clear-highlight))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-----------------------,
-  ;; | Temporary Workarounds |
-  ;; '-----------------------'
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────────────╮
+  ;; │ Temporary Workarounds │
+  ;; ╰───────────────────────╯
   (defun workarounds()
     (interactive)
     (when (file-readable-p "~/.emacs.d/private/local/workarounds.el")
@@ -7607,10 +7607,10 @@ entered, return a command which executes it."
   (when (string< emacs-version "26.1")
     (spacemacs/set-leader-keys "t n" 'linum-mode))
 
-  ;; -------------------------------------------------------------------------------
-  ;; ,-------------------,
-  ;; | Load Private Data |
-  ;; '-------------------'
   (when (file-readable-p "~/.emacs.d/private/private-data.el")
     (load "~/.emacs.d/private/private-data.el"))
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────────────╮
+  ;; │ Load Private Data │
+  ;; ╰───────────────────╯
 )
