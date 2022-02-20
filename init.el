@@ -2086,6 +2086,7 @@ COUNT, BEG, END, and TYPE have no effect."
         "j ,"          'evil-avy-goto-word-0
         "m <f10>"      'my/lacarte-menu-execute/lambda-l-and-exit
         "o a"          'asciiheadings-prefix-key-map
+        "o a c u"      'my/short-rect-heading-comment-to-unibox
         "o c"          'character-prefix-map
         "o f"          'flycheck-command-map
         "o m"          'modes-prefix-key-map
@@ -5379,13 +5380,6 @@ ISEARCH DOCUMENTATION.
     [escape ?: ?: ?s ?/ ?\\ ?/ ?\\ ?/ ?\\ ?\( ?. ?* ?\\ ?\) ?/ ?\\ ?/ ?\\ ?* ?\\ ?1 ?  ?\\ ?* ?\\ ?/ ?/ ?c return])
   (fset 'my/uppercase-double-underline [escape ?v ?i ?l ?g ?u ?y ?y ?p ?v ?i ?l ?r ?=])
   (fset 'my/yank-inside-double-quotes [?y ?i 34])
-  (fset 'my/short-rect-comment-to-unicode-rect
-        [?: ?s ?/ ?- ?/ ?─ ?/ ?g return
-            ?g ?v ?: ?s ?/ ?| ?/ ?│ ?/ ?g return
-            ?g ?v ?: ?s ?/ ?, ?\\ ?( ?$ ?\\ ?| ?  ?\\ ?) ?/ ?╮ ?\\  ?1 ?/ return
-            ?g ?v ?: ?s ?/ ?' ?\\ ?( ?$ ?\\ ?| ?  ?\\ ?) ?/ ?╯ ?\\  ?1 ?/ return
-            ?g ?v ?: ?s ?/ ?  ?, ?/ ?  ?╭ ?/ return
-            ?g ?v ?: ?s ?/ ?  ?' ?/ ?  ?╰ ?/ return ])
 
   (fset 'my/surround-symbol
    (lambda (&optional arg)
@@ -5839,6 +5833,17 @@ If SAME-LINE is non-nil, do not start a new line."
     (interactive)
     (let ((current-prefix-arg t))
       (call-interactively 'eval-defun)))
+
+  (defun my/short-rect-heading-comment-to-unibox ()
+    (interactive)
+    (let ((beg (if (region-active-p) (region-beginning) (line-beginning-position)))
+          (end (if (region-active-p) (region-end) (line-end-position))))
+      (my/evil-substitute beg end "\\|"  "│" '(?g))
+      (my/evil-substitute beg end  ",-" "╭─" '(?g))
+      (my/evil-substitute beg end  "'-" "╰─" '(?g))
+      (my/evil-substitute beg end  "-," "─╮" '(?g))
+      (my/evil-substitute beg end  "-'" "─╯" '(?g))
+      (my/evil-substitute beg end   "-"  "─" '(?g))))
 
   (defalias 'move-visible-beginning-of-line 'back-to-indentation
     "Move to the first non-whitespace character on the line (or the end of line if
