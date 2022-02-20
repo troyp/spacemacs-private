@@ -1003,6 +1003,17 @@ Returns the function definition."
         t))))
     (setq last-kbd-macro fn))
 
+  (defun my/evil-substitute (beg end pcre replacement  &optional flags)
+    "Substitute REPLACEMENT for PCRE within region (or current line if no region active).
+
+PCRE is a PCRE-style regex. REPLACEMENT is a replacement string using \n to represent groups.
+FLAGS is a list of characters, eg '(?g)"
+    (interactive)
+    (evil-ex-substitute
+     beg end
+     (evil-ex-make-substitute-pattern (pcre-to-elisp pcre) flags)
+     `(replace-eval-replacement . ,replacement)))
+
   (defun my/evil-substitute-region (pcre replacement &optional flags)
     "Substitute REPLACEMENT for PCRE within region (or current line if no region active).
 
@@ -1011,10 +1022,7 @@ FLAGS is a list of characters, eg '(?g)"
     (interactive)
     (let ((beg (if (region-active-p) (region-beginning) (line-beginning-position)))
           (end (if (region-active-p) (region-end) (line-end-position))))
-      (evil-ex-substitute
-       beg end
-       (evil-ex-make-substitute-pattern (pcre-to-elisp pcre) flags)
-       `(replace-eval-replacement . ,replacement))))
+      (my/evil-substitute beg end pcre replacement flags)))
 
   ;; ╭────────────────╮
   ;; │ thing-at-point │
