@@ -4122,6 +4122,15 @@ COUNT, BEG, END, and TYPE have no effect."
       (replace-match "\\1: () => \\2,")
       ))
 
+  (defun my/double-slash-comment-to-delimited ()
+    (interactive)
+    (let ((beg (if (region-active-p) (region-beginning) (line-beginning-position)))
+          (end (if (region-active-p) (region-end) (line-end-position))))
+      (save-excursion
+        (goto-char beg)
+        (while (re-search-forward "// ?\\(.*$\\)" end)
+          (replace-match "/* \\1 */")))))
+
   (my/def-variable-local-cycle js-indent-level 4 2)
   (setq js-switch-indent-offset 2)
 
@@ -4134,6 +4143,7 @@ COUNT, BEG, END, and TYPE have no effect."
     "vf"   'my/js-method-to-fn
     "vm"   'my/js-fn-to-method
     "vq"   'my/quoted-string-to-delimited-comment
+    "v/"   'my/double-slash-comment-to-delimited
     "%"    'my/js-url-decode
     )
 
@@ -5376,8 +5386,6 @@ ISEARCH DOCUMENTATION.
   (fset 'my/remove-spacing-inside-double-quotes [?c ?s 40 34 ])
   (fset 'my/collapse-single-line-function [escape ?J ?J ?h ?c ?s 125 123])
   (fset 'my/quote-to-end-of-line [escape ?v 5 left ?s 34])
-  (fset 'my/double-slash-comment-to-delimited
-    [escape ?: ?: ?s ?/ ?\\ ?/ ?\\ ?/ ?\\ ?\( ?. ?* ?\\ ?\) ?/ ?\\ ?/ ?\\ ?* ?\\ ?1 ?  ?\\ ?* ?\\ ?/ ?/ ?c return])
   (fset 'my/uppercase-double-underline [escape ?v ?i ?l ?g ?u ?y ?y ?p ?v ?i ?l ?r ?=])
   (fset 'my/yank-inside-double-quotes [?y ?i 34])
 
