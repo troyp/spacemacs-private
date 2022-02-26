@@ -4523,6 +4523,12 @@ If FILE is nil, the file associated with the current buffer is used."
       ", <f3>"      "kmacro"
       )
 
+  (eval-after-load 'evil-lisp-state
+    '(progn
+      (if evil-lisp-state-global
+          (define-key evil-lisp-state-map "/" (evil-lisp-state-enter-command sp-split-sexp))
+        (define-key evil-lisp-state-major-mode-map "/" (evil-lisp-state-enter-command sp-split-sexp)))))
+
   (defun emacs-lisp-init-fn ()
     (interactive)
     ;; set tab-width to 8 to make GNU sources readable
