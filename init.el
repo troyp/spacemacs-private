@@ -1619,6 +1619,22 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; ╭──────────────────────╮
   ;; │ Keybinding Functions │
   ;; ╰──────────────────────╯
+  ;; References:
+  ;;    [1] https://www.masteringemacs.org/article/mastering-key-bindings-emacs
+  ;; keymap lookup order (from [1] above):
+  ;;     1. overriding-terminal-local-map for terminal-specific key binds.
+  ;;     2. overriding-local-map for keys that should override all other local keymaps.
+  ;;        Be VERY careful if you use this!
+  ;;     3. Keymap char property at point for keymaps that are local to the character point is at.
+  ;;        This is used for stuff like fields in yasnippet and the customize dialog.
+  ;;     4. emulation-mode-map-alists for advanced multi-mode keymap management
+  ;;     5. minor-mode-overriding-map-alist for overriding the keymaps used by minor modes in major modes.
+  ;;     6. minor-mode-map-alist is exactly like the overriding version above,
+  ;;        but the preferred means of specifying the keymaps for minor modes.
+  ;;     7. Keymap text property at point is like the one above for char properties but is for text properties only.
+  ;;     8. current-local-map for keymaps defined in the buffers’ current local map
+  ;;     9. current-global-map is the last place Emacs will look for key binds and it is for the global ones.
+
   ;; spacemacs macros:   evil-map evil-define-key evil-define-minor-mode-key
   ;;                     evil-define-keymap spacemacs|define-micro-state
   ;; bindkey fns/macros: bind-map bind-key bind-key* bind-keys bind-keys*
