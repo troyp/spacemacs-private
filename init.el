@@ -1560,6 +1560,10 @@ COUNT, BEG, END, and TYPE have no effect."
 
   (setq evil-digraphs-table-user
         '(
+          ((?1 ?/) . ?\x215f)    ;; ⅟
+          ((?1 ?7) . ?\x2150)    ;; ⅐
+          ((?1 ?9) . ?\x2151)    ;; ⅑
+          ((?1 ?0) . ?\x2152)    ;; ⅒
           ((?. ? ) . ?\x2024)    ;; ․ 1-dot leader
           ((?. ?/) . ?\x2025)    ;; ‥ 2-dot leader
           ;; compose combinations
