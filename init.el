@@ -1437,6 +1437,13 @@ COUNT, BEG, END, and TYPE have no effect."
   (define-key evil-outer-text-objects-map "" 'evil-a-divider)
 
   ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────╮
+  ;; │ evil markers │
+  ;; ╰──────────────╯
+  (load "~/.emacs.d/private/local/binchen-enhance-emacs-evil-global-markers.el")
+  (global-set-key (kbd "C-M-'") 'counsel-evil-goto-global-marker)
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭────────────╮
   ;; │ evil-snipe │
   ;; ╰────────────╯
