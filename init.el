@@ -4154,6 +4154,31 @@ Committer: %cN <%cE>"))
        (add-hook 'magit-mode-hook 'magit-init-fn)
        ))
 
+  (spacemacs/set-leader-keys-for-major-mode 'magit-diff-mode
+      "s"          'magit-diff-toggle-ignore-all-space
+      "S"          'magit-diff-toggle-ignore-space-change
+      )
+
+  (spacemacs/set-leader-keys-for-major-mode 'magit-status-mode
+      "c"      'magit-status-mode-map
+      "d g g"  'my/magit-diff-meld
+      "d g a"  'my/magit-diff-added-meld
+      "d g c"  'my/magit-diff-committed-meld
+      "o"      'my/git-browse-origin
+      "r"      'my/magit-undo-last-commit
+      "s"      'magit-diff-toggle-ignore-all-space
+      "S"      'magit-diff-toggle-ignore-space-change
+      "y c"    'my/git-yank-commit-messages
+      "SPC"    'magit-diff-show-or-scroll-up
+      "<F2>"   'magit-file-rename
+      )
+
+  (which-key-add-major-mode-key-based-replacements 'magit-status-mode
+      ", c"      "magit-status-mode-map"
+      ", d"      "diff"
+      ", y"      "yank"
+      )
+
   (defun my/magit-mode-kill-buffer (bury)
     (interactive "P")
     (magit-mode-bury-buffer (not bury)))
@@ -4208,30 +4233,6 @@ Committer: %cN <%cE>"))
     (let ((s (s-trim (shell-command-to-string (format "git log --format=%%B -n 1 HEAD~%d" (decf n))))))
        (kill-new s)
        (message s)))
-
-  (spacemacs/set-leader-keys-for-major-mode 'magit-diff-mode
-    "s"      'magit-diff-toggle-ignore-all-space
-    "S"      'magit-diff-toggle-ignore-space-change
-    )
-  (spacemacs/set-leader-keys-for-major-mode 'magit-status-mode
-    "c"      'magit-status-mode-map
-    "d g g"  'my/magit-diff-meld
-    "d g a"  'my/magit-diff-added-meld
-    "d g c"  'my/magit-diff-committed-meld
-    "o"      'my/git-browse-origin
-    "r"      'my/magit-undo-last-commit
-    "s"      'magit-diff-toggle-ignore-all-space
-    "S"      'magit-diff-toggle-ignore-space-change
-    "y c"    'my/git-yank-commit-messages
-    "SPC"    'magit-diff-show-or-scroll-up
-    "<F2>"   'magit-file-rename
-    )
-
-  (which-key-add-major-mode-key-based-replacements 'magit-status-mode
-    ", c"      "magit-status-mode-map"
-    ", d"      "diff"
-    ", y"      "yank"
-    )
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭──────────╮
