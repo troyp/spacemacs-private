@@ -4160,8 +4160,7 @@ Committer: %cN <%cE>"))
     `(progn
        (bind-keys
         :map magit-status-mode-map
-        ("<return>"   . magit-diff-visit-file-other-window)
-        ("<S-return>" . magit-diff-visit-file)
+        ("<S-return>" . magit-diff-visit-file-other-window)
         )
        ))
 
@@ -4169,8 +4168,7 @@ Committer: %cN <%cE>"))
     `(progn
        (bind-keys
         :map magit-diff-mode-map
-        ("<return>"   . magit-diff-visit-file-other-window)
-        ("<S-return>" . magit-diff-visit-file)
+        ("<S-return>" . magit-diff-visit-file-other-window)
         )
        ))
 
