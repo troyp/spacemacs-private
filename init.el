@@ -4121,6 +4121,7 @@ COUNT, BEG, END, and TYPE have no effect."
     ;; replace with C-` binding
     (bind-key "<C-tab>" nil magit-mode-map)
     (fset 'magit-status-mode-map magit-status-mode-map)
+    (global-magit-file-mode t)
     (bind-keys
      :map magit-mode-map
      ("<C-tab>" . nil)
@@ -4154,6 +4155,24 @@ Committer: %cN <%cE>"))
        (add-hook 'magit-mode-hook 'magit-init-fn)
        ))
 
+  (eval-after-load 'magit-status
+    `(progn
+       (bind-keys
+        :map magit-status-mode-map
+        ("<return>"   . magit-diff-visit-file-other-window)
+        ("<S-return>" . magit-diff-visit-file)
+        )
+       ))
+
+  (eval-after-load 'magit-diff
+    `(progn
+       (bind-keys
+        :map magit-diff-mode-map
+        ("<return>"   . magit-diff-visit-file-other-window)
+        ("<S-return>" . magit-diff-visit-file)
+        )
+       ))
+
   (spacemacs/set-leader-keys-for-major-mode 'magit-diff-mode
       "s"          'magit-diff-toggle-ignore-all-space
       "S"          'magit-diff-toggle-ignore-space-change
@@ -4164,6 +4183,7 @@ Committer: %cN <%cE>"))
       "d g g"  'my/magit-diff-meld
       "d g a"  'my/magit-diff-added-meld
       "d g c"  'my/magit-diff-committed-meld
+      "d f"    'magit-diff-toggle-refine-hunk
       "o"      'my/git-browse-origin
       "r"      'my/magit-undo-last-commit
       "s"      'magit-diff-toggle-ignore-all-space
