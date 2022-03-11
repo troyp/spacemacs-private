@@ -4179,6 +4179,8 @@ Committer: %cN <%cE>"))
       ", y"      "yank"
       )
 
+  (defvar my/git-executable "/usr/local/bin/git")
+
   (defun my/magit-mode-kill-buffer (bury)
     (interactive "P")
     (magit-mode-bury-buffer (not bury)))
