@@ -2092,6 +2092,7 @@ COUNT, BEG, END, and TYPE have no effect."
         "f C-."        'find-file-at-point
         "f C-k"        'bookmark-jump
         "f C-y"        'my/yank-filename
+        "g g"          'magit-file-popup
         "g C-x v"      'vc-prefix-map
         ;; "h"            'help-prefix-map
         "h a"          'apropos
