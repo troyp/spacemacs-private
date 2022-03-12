@@ -1477,6 +1477,7 @@ COUNT, BEG, END, and TYPE have no effect."
      (?,     "< " . " >")
      (?$     "${" . "}")
      (?\C-/  "/* " . " */")
+     (?\C-\\  "jsb -d¦ " . "¦")
      (?m     "/* " . " */")
      ;; note: binding C-` as an alternative for ` means C-` C-` can be used to backquote a symbol
      (?\C-`  "`" . "`")
