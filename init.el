@@ -174,6 +174,8 @@ This function should only modify configuration layer settings."
      flycheck-package
      helm-unicode
      jsfmt
+     lispy
+     lispyville
      loccur
      magit-todos
      mozc
@@ -2441,6 +2443,7 @@ COUNT, BEG, END, and TYPE have no effect."
              :menu-name "toggles"
              :prefix "t"
              :prefix-docstring "Commands toggling options."
+             ("l"     . lispyville-mode)
              ("m"     . evil-matchit-mode)
              ("M"     . global-evil-matchit-mode)
              ("O"     . my/toggle-which-key-show-operator-state-maps)
@@ -4584,6 +4587,15 @@ If FILE is nil, the file associated with the current buffer is used."
     (advice-remove 'eval-last-sexp #'endless/eval-last-sexp-advice)
     (advice-remove 'eval-defun #'endless/eval-defun-advice))
 
+  ;; ╭───────╮
+  ;; │ lispy │
+  ;; ╰───────╯
+
+  (use-package lispyville
+    :init
+    (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook) #'lispyville-mode)
+    :config
+    (lispyville-set-key-theme '(operators c-w additional)))
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭───────╮
