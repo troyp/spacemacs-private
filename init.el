@@ -1574,6 +1574,8 @@ COUNT, BEG, END, and TYPE have no effect."
           ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
           ((?0 ?9) . ?\x3000)    ;; CJK full-width space
           ((?. ?-) . ?\x00b7)    ;; middle-dot
+          ((?| ?2) . ?\x2016)    ;; ‖ double vertical bar
+          ((?{ ?+) . ?\x2295)    ;; ⊕ circled plus
           ((?i 34) . ?\x00ef)    ;; ï (also on i:)
           ((?\x22 ?<) . ?\x201c) ;; “
           ((?\x22 ?>) . ?\x201d) ;; ”
@@ -1581,6 +1583,8 @@ COUNT, BEG, END, and TYPE have no effect."
           ((?8 ?8) . ?\x221e)    ;; ∞
           ((?- ?0) . ?\x203f)    ;; ‿
           ((?- ?9) . ?\x2040)    ;; ⁀
+          ((?| 91) . ?\x27e6)    ;; ⟦
+          ((?| 93) . ?\x27e7)    ;; ⟧
           ;; kragen compose combinations
           ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
           ((?T ?,) . ?\x01ae)    ;; Ʈ (replaces Ţ which is also available on ,T) - for consistency
