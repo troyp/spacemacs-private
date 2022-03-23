@@ -358,13 +358,14 @@ rather than a string of regular characters by default.")
 ;; | Section Commands |
 ;; '------------------'
 
-(defun make-section-comment (lines-fn-sym)
+(defun make-section-comment (lines-fn-sym &optional divider-sym)
+  (unless divider-sym (setq divider-sym 'divider))
   `(lambda (s &optional n)
      (interactive "sheading: \np")
      (if (= n 1) (setf n 79))
      (beginning-of-line)
      (push-mark (point))
-     (divider-unicode n)
+     (,divider-sym n)
      (insert-lines (,lines-fn-sym s))
      (open-line 1)
      (comment-region (mark) (point))
@@ -374,8 +375,8 @@ rather than a string of regular characters by default.")
      (pop-mark)))
 
 (defalias 'srh-section-comment (make-section-comment 'short-rect-heading-lines))
-(defalias 'ulrh-section-comment (make-section-comment 'unicode-large-rect-heading-lines))
-(defalias 'urh-section-comment (make-section-comment 'unicode-rect-heading-lines))
+(defalias 'ulrh-section-comment (make-section-comment 'unicode-large-rect-heading-lines 'divider-unicode))
+(defalias 'urh-section-comment (make-section-comment 'unicode-rect-heading-lines 'divider-unicode))
 
 (defun rh-section-comment (s &optional n &optional heading-indent)
   "Rectangular section heading. Using comment syntax,
