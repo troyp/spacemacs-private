@@ -1202,6 +1202,7 @@ FLAGS is a list of characters, eg '(?g)"
           nim-mode
           palette
           replace+ strings
+          symbol-overlay
           thingatpt+
           thumb-frm
           ucs-cmds
@@ -3928,6 +3929,28 @@ COUNT, BEG, END, and TYPE have no effect."
          (kbd "M-;")   'evil-repeat-find-char-reverse
          )
        ))
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────────────────────────────────────────────╮
+  ;; │ highlighting -- symbol-overlay and highlight-phrase │
+  ;; ╰─────────────────────────────────────────────────────╯
+
+  (define-key symbol-overlay-map  (kbd "C-M-h") 'my/toggle-highlight-region)
+  (define-key symbol-overlay-map  (kbd "<backspace>") 'hlt-unhighlight-regexp-groups-region)
+  (define-key symbol-overlay-map  (kbd "C-M-u") 'hlt-unhighlight-all-prop)
+  (define-key global-map (kbd "C-M-h") symbol-overlay-map)
+  (evil-define-key '(normal visual) global-map (kbd "C-M-h") nil)
+
+  (defun my/toggle-highlight-region (term)
+    (interactive "sHighlight term:")
+    (if (string-empty-p term)
+        (hlt-unhighlight-regexp-groups-region)
+      (let ((case-fold-search t))
+        (hlt-highlight-regexp-groups-region nil nil term))))
+
+  (defun my/hlt-unhighlight-last ()
+    (interactive)
+    (hlt-unhighlight-all-prop nil nil))
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭─────────╮
