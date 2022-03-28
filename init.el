@@ -1464,35 +1464,45 @@ COUNT, BEG, END, and TYPE have no effect."
   (setq-default
    evil-surround-pairs-alist
    '(
-     (40  "( " . " )")
-     (91  "[ " . " ]")
-     (?{  "{ " . " }")
-     (41   "(" . ")")
-     (93   "[" . "]")
-     (?}   "{" . "}")
-     (?#  "#{" . "}")
-     (?b   "(" . ")")
-     (?B   "{" . "}")
-     (?>   "<" . ">")
+     ( 40            "( " . " )"  )
+     ( 91            "[ " . " ]"  )
+     ( ?{            "{ " . " }"  )
+     ( 41             "(" . ")"   )
+     ( 93             "[" . "]"   )
+     ( ?}             "{" . "}"   )
+     ( ?#            "#{" . "}"   )
+     ( ?b             "(" . ")"   )
+     ( ?B             "{" . "}"   )
+     ( ?>             "<" . ">"   )
+     ( ?<            "< " . " >"  )
+     ( ?$            "${" . "}"   )
+     ( ?\C-'         "`"  . "'"   )
+     ( ?\C-/        "/* " . " */" )
+     ( ?\C-\\  "jsb -d¦ " . "¦"   )
+     ( ?\C-`   "`"        . "`"   )    ;; so <C-`><C-`> can backquote symbol
      (?t . evil-surround-read-tag)
-     (?< . evil-surround-read-tag)
+     (?, . evil-surround-read-tag)
      (?f . evil-surround-function)
-     (?,     "< " . " >")
-     (?$     "${" . "}")
-     (?\C-/  "/* " . " */")
-     (?\C-\\  "jsb -d¦ " . "¦")
-     (?m     "/* " . " */")
-     ;; note: binding C-` as an alternative for ` means C-` C-` can be used to backquote a symbol
-     (?\C-`  "`" . "`")
-     (?f . my/evil-surround-function-defn)
      (?c . my/evil-surround-character)
+     (?\C-m . my/evil-surround-ask)
      (?s . my/evil-surround-string)
      (?z . my/evil-surround-string-mirrored)
      ))
 
+  (defun my/evil-surround-ask ()
+    "Read surround pair(s) from minibuffer.
+Enter `BEG END' or `BEG' if END delimiter is the same.
+If one delimiter is empty, leave a space at beginning or end."
+    (let* ((beg (evil-surround-read-from-minibuffer "BEG: " ""))
+           (end_ (evil-surround-read-from-minibuffer "END: " ""))
+           (end (if (string-empty-p end_) beg end)))
+      (cons beg end)))
+
+  ;; FIXME
   (defun my/evil-surround-function-defn ()
     "Read a functionname from the minibuffer and wrap selection in function call"
     ;; adapted from evil-surround-function
+    (interactive)
     (let ((fname (evil-surround-read-from-minibuffer "" "")))
       (cond
         ((member major-mode evil-surround-lisp-modes) (cons (format "(defun %s()" (or fname "")) ")"))
