@@ -3945,11 +3945,16 @@ If one delimiter is empty, leave a space at beginning or end."
   ;; │ highlighting -- symbol-overlay and highlight-phrase │
   ;; ╰─────────────────────────────────────────────────────╯
 
-  (define-key symbol-overlay-map  (kbd "C-M-h") 'my/toggle-highlight-region)
-  (define-key symbol-overlay-map  (kbd "<backspace>") 'hlt-unhighlight-regexp-groups-region)
-  (define-key symbol-overlay-map  (kbd "C-M-u") 'hlt-unhighlight-all-prop)
-  (define-key global-map (kbd "C-M-h") symbol-overlay-map)
   (evil-define-key '(normal visual) global-map (kbd "C-M-h") nil)
+  (bind-keys
+   :map symbol-overlay-map
+   ("C-M-h"       . my/toggle-highlight-region)
+   ("<backspace>" . hlt-unhighlight-regexp-groups-region)
+   ("C-M-u"       . hlt-unhighlight-all-prop)
+   ("M-h"         . symbol-overlay-mode)
+   ("N"           . symbol-overlay-switch-forward)
+   ("P"           . symbol-overlay-switch-backward)
+   ("R"           . symbol-overlay-remove-all))
 
   (defun my/toggle-highlight-region (term)
     (interactive "sHighlight term:")
