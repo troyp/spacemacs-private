@@ -1605,6 +1605,7 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?, ?n) . ?\x0146)    ;; ņ (default, but obscured by binding above)
           ((?, ?N) . ?\x0145)    ;; Ņ (default, but obscured by binding above)
           ((?x ?x) . ?\x00d7)    ;; ×
+          ((?< ?|) . ?\x21b5)    ;; ↵
           ))
 
   (defun my/evil-enter-digraphs ()
