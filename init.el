@@ -1969,7 +1969,12 @@ If one delimiter is empty, leave a space at beginning or end."
   ;; │ visual state │
   ;; ╰──────────────╯
 
+  (defun my/evil-move-end-of-line (&optional arg)
+    (interactive "^p")
+    (evil-move-end-of-line arg))
+
   (defun insert-space-visual () (interactive) (execute-kbd-macro " ") (evil-visual-restore))
+  (define-key evil-visual-state-map (kbd "C-e") 'my/evil-move-end-of-line)
   (define-key evil-visual-state-map (kbd "C-SPC") 'evil-forward-char-or-extend)
   (define-key evil-visual-state-map (kbd "C-\\") 'my/shell-command-replace-region)
   (define-key evil-visual-state-map (kbd "M-u") 'evil-upcase)
