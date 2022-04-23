@@ -201,17 +201,6 @@
         "yankimage"
         "zoom"
         ;; user-defined
-        "bdoc"
-        "bind:"
-        "exbind:"
-        "ibind"
-        "vbind"
-        "cbind"
-        "abind"
-        "ibind:"
-        "vbind:"
-        "cbind:"
-        "abind:"
         "bindurl:"
         "command:"
         "commdoc"
@@ -219,20 +208,8 @@
         "docdef"
         "set:"
         "urlmodorsummon_g"
-        ;; site-specific
-        "amazbind"
-        "amazbind:"
-        "ebaybind"
-        "ebaybind:"
-        "ghbind"
-        "ghbind:"
-        "googlebind"
-        "googlebind:"
-        "primevbind"
-        "primevbind:"
-        "woolbind"
-        "woolbind:"
-        "woolbdoc"
+        (: (0+ alnum) "bind" (opt ":"))
+        (: (0+ alnum) "bdoc")
         ))
 
 ;;;###autoload
