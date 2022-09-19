@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: sk_bindurl
+# name: showkeysurl
 # key: sku
 # expand-env: ((yas-triggers-in-field nil))
 # --

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: [...document.querySelectorAll]
+# key: $$qa
+# --
+[...document.querySelectorAll("$0")]

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: document.getElementsByClassName
+# key: $cls
+# --
+document.getElementsByClassName("$0")

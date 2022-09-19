@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: [...document.getElementsByTagName]
+# key: $$tag
+# --
+[...document.getElementsByTagName("$0")]
