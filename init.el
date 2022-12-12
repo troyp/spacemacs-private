@@ -648,6 +648,28 @@ Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
   ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────────────────────────╮
+  ;; │ function/macro indentation │
+  ;; ╰────────────────────────────╯
+
+  (setq lisp-indent-function 'common-lisp-indent-function)
+
+  (defun my/toggle-indent-function ()
+    (interactive)
+    (if (eq lisp-indent-function 'lisp-indent-function)
+        (setq lisp-indent-function 'common-lisp-indent-function)
+      (setq lisp-indent-function 'lisp-indent-function))
+    (message (format "Indent function: %S" lisp-indent-function)))
+
+  (eval-after-load 'cl-indent
+    `(progn
+       (put 'if 'common-lisp-indent-function 2)
+       (put 'use-package 'common-lisp-indent-function 1)
+       ))
+
+  (put 'setq 'lisp-indent-function 1)
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭──────────────────────────╮
   ;; │ custom definition macros │
   ;; ╰──────────────────────────╯
@@ -721,20 +743,6 @@ before packages are loaded."
   (setq left-fringe-width 16)    ;; displays diff-hl mode well
 
   (setq switch-to-visible-buffer nil)
-
-  (setq lisp-indent-function 'common-lisp-indent-function)
-  (defun my/toggle-indent-function ()
-    (interactive)
-    (if (eq lisp-indent-function 'lisp-indent-function)
-        (setq lisp-indent-function 'common-lisp-indent-function)
-      (setq lisp-indent-function 'lisp-indent-function))
-    (message (format "Indent function: %S" lisp-indent-function)))
-
-  (eval-after-load 'cl-indent
-    `(progn
-       (put 'if 'common-lisp-indent-function 2)
-       (put 'use-package 'common-lisp-indent-function 1)
-       ))
 
   ;; not working?
   (setq-default evil-esc-delay 0.00001)
