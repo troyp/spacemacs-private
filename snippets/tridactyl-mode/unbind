@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: unbind
-# key: u
-# --
-unbind ${1:--mode=normal} $0

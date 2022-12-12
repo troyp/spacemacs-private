@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: command ... js -d¦ ...¦
-# key: jsd
-# --
-command $1 js -d¦ $0¦
