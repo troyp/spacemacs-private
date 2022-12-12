@@ -4061,6 +4061,11 @@ If one delimiter is empty, leave a space at beginning or end."
   ;; │ js2-mode │
   ;; ╰──────────╯
 
+  (defun my/js-show-methods ()
+    (interactive)
+    (my/pcre-occur "^ +[^ ]+:(.*) \\{")
+    (switch-to-buffer-other-window "*Occur*"))
+
   (defun my/js-url-decode ()
     (interactive)
     (my/evil-shell-command-replace-region (region-beginning) (region-end) "inclusive" "sed 's/+/%2B/g' | xargs -0 urlencode -d"))
@@ -4126,13 +4131,19 @@ If one delimiter is empty, leave a space at beginning or end."
         (while (re-search-forward "// ?\\(.*$\\)" end)
           (replace-match "/* \\1 */")))))
 
+  (defun my/urldecode-bookmarklet (start end)
+    (interactive "r")
+    (my/shell-command-replace-region start end "sed 's/+/%2B/g' | xargs -0 urlencode -d"))
+
   (my/def-variable-local-cycle js-indent-level 4 2)
   (setq js-switch-indent-offset 2)
 
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode
+    "d"    'my/urldecode-bookmarklet
     "hwc"  'my/lookup-chrome-webextension-api
     "hwf"  'my/lookup-firefox-webextension-api
     "J"    'my/collapse-single-line-function
+    "om"   'my/js-show-methods
     "ti"   'my/cycle-js-indent-level
     "va"   'my/js-method-to-arrow-function
     "vf"   'my/js-method-to-fn
