@@ -49,6 +49,7 @@ This function should only modify configuration layer settings."
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
    '(
+     typescript
      yaml
      php
      ;; ----------------------------------------------------------------
@@ -152,6 +153,8 @@ This function should only modify configuration layer settings."
      ;; ╭─────────────╮
      ;; │ my packages │
      ;; ╰─────────────╯
+     fn
+     evil-visual-replace
      ;; ───────────────────────────────────────────────────────────────────────────────
      ;; ╭────────────────╮
      ;; │ other packages │
@@ -164,9 +167,11 @@ This function should only modify configuration layer settings."
      (dired-subtree :after dired)
      dired-toggle-sudo
      dirtree
+     easy-escape
      elmacro
      elnode
      jedi-direx
+     evil-easymotion
      evil-snipe
      evil-textobj-column
      evil-vimish-fold
