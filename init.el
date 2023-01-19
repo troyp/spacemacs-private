@@ -3836,12 +3836,11 @@ If one delimiter is empty, leave a space at beginning or end."
 
   (eval-after-load "help-mode"
     `(progn
-       (bind-keys :map help-mode-map
-                  ("a" . help-previous)
-                  ("d" . help-next)
-                  )
-       (define-key button-map [remap push-button] #'my/push-button-and-center)
-       ))
+       (bind-keys
+        :map help-mode-map
+        ("H" . help-go-back)
+        ("L" . help-go-forward))
+       (define-key button-map [remap push-button] #'my/push-button-and-center)))
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭─────────╮
@@ -6010,13 +6009,6 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
   (defun my/switch-to-changelog-buffer ()
     (interactive)
     (find-file (concat user-emacs-directory "CHANGELOG.org")))
-
-  (defun help-previous ()
-    (interactive)
-    (help-xref-go-back (current-buffer)))
-  (defun help-next ()
-    (interactive)
-    (help-xref-go-forward (current-buffer)))
 
   (defun help-buttons()
     "List of help buttons in current buffer"
