@@ -4996,6 +4996,13 @@ Return the description that was displayed, as a string."
 
   (setq undo-tree-git-repo "http://www.dr-qubit.org/git/undo-tree.git")
   ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────╮
+  ;; │ SVG │
+  ;; ╰─────╯
+  (setq image-file-name-extensions (remove "svg" image-file-name-extensions))
+  (add-to-list 'auto-mode-alist '("\\.svg\\'" . xml-mode))
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭───────────╮
   ;; │ Undo Tree │
   ;; ╰───────────╯
