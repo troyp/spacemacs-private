@@ -5698,15 +5698,17 @@ temporarily enables it to allow getting help on disabled items and buttons."
   (defalias 'ppp 'insert-pp)
 
   ;; ───────────────────────────────────────────────────────────────────────────────
-  ;; ╭───────────╮
-  ;; │ Functions │
-  ;; ╰───────────╯
+  ;; ╭─────────────╮
+  ;; │             │
+  ;; │  Functions  │
+  ;; │             │
+  ;; ╰─────────────╯
+
+  ;; ucsc-define-char-insert-cmd creates a command for inserting the chosen unicode character
 
   (defun get-char-face (&optional pos)
     (interactive)
     (message "face: %s" (get-char-property (or pos (point)) 'face)))
-
-  (defun evalstr(str) (eval (intern str)))
 
   (defun trim-multiline-string (str) (replace-regexp-in-string  "^\n+\\|\n+$" "" str))
 
@@ -5723,37 +5725,11 @@ temporarily enables it to allow getting help on disabled items and buttons."
                (cl-prettyprint FORM)
                (buffer-string))))
 
+  (defun evalstr(str) (eval (intern str)))
+
   (defun eval-string (s)
     "Evaluates a SEXP which is represented as a string."
-    (eval (car (read-from-string s))))
-
-  (defun browse-buffer-file-firefox ()
-    (interactive)
-    (browse-url-firefox
-     (replace-regexp-in-string
-      " "
-      "%20"
-      (concat "file://"
-              (expand-file-name (or buffer-file-name default-directory))))))
-
-  (setq browse-url-firefox-program "firefox")
-
-  (defun browse-buffer-file-with-external-application ()
-    (interactive)
-    (browse-url-xdg-open buffer-file-name))
-
-  (defun my/browse-url-at-point (&optional point)
-    (interactive)
-    (let ((url (url-get-url-at-point point)))
-      (browse-url-firefox url)))
-
-  (defun my/find-file-or-browse-url-at-point ()
-    (interactive)
-    (let ((url (or (markdown-link-url) (url-get-url-at-point))))
-      (if url
-          (browse-url-firefox url)
-        (find-file-at-point))))
-
+    (eval (car (read-m-string s))))
 
   ;; REGION-BEGINNING and REGION-END
   ;; TODO: make these into text motions
@@ -6065,241 +6041,6 @@ For the meaning of the optional arguments, see `replace-regexp-in-string'."
     (insert "( ")
     (evil-backward-char))
 
-  ;; ============================
-  ;; functions dealing with lines
-  ;; ============================
-
-  (defvar my/blank-line-regexp "^[[:space:]]*$")
-  (defvar my/blank-line-no-whitespace-regexp "^$")
-
-  (defun my/line-at-point-string ()
-    "Return the line around point as a string.
-Similar to (thing-at-point \'line t) except it does not return a trailing newline.
-See also `thing-at-point'"
-    (let ((beg (line-beginning-position))
-          (end (line-end-position)))
-      (buffer-substring-no-properties beg end)))
-
-  (defun my/line-at-point-blank-p ()
-    "Returns a non-nil value if the current line contains only whitespace."
-    (string-match-p my/blank-line-regexp (my/line-at-point-string)))
-  (defun my/line-above-blank-p (&optional n)
-    (save-excursion
-      (forward-line (- (or n 1)))
-      (my/line-at-point-blank-p)))
-  (defun my/line-below-blank-p (&optional n)
-    (save-excursion
-      (forward-line (or n 1))
-      (my/line-at-point-blank-p)))
-  (defun my/adjacent-line-blank-p (&optional n)
-    "Returns a non-nil value if the Nth line above and/or below point contains
-only whitespace).
-See `my/line-at-point-blank-p', `my/line-above-blank-p', `my/line-below-blank-p'"
-    (or (my/line-above-blank-p n)
-        (my/line-below-blank-p n)))
-
-  (defun my/copy-current-line ()
-    (interactive)
-    (when (my/line-visible-end-position)
-      (kill-ring-save (my/line-visible-beginning-position) (my/line-visible-end-position))))
-
-  (defun my/replace-line (count)
-    (interactive "p")
-    (let ((s (pop kill-ring)))
-      (kill-whole-line count)
-      (kill-new s)
-      (evil-paste-before)))
-
-  ;; ==============================
-  ;; functions dealing with columns
-  ;; ==============================
-
-  (defun my/wrap-lines-in-region (beg end)
-    "An interactive function to split lines longer than `fill-column'.
-Splits long lines in the region using `fill-paragraph', but never joins lines.
-Ie., each line is treated as a distinct paragraph."
-    (interactive "r")
-    (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
-    (replace-string "\n" "\n\n" nil beg end)
-    (evil-active-region 1)
-    (fill-paragraph nil t)
-    (replace-string "\n\n" "\n" nil beg end))
-
-  ;; FIXME: splits the line after region (near start of line); irregular indentation.
-  (defun my/wrap-region-or-comment (beg end)
-    "An interactive function to split lines longer than `fill-column'.
-Splits long lines in the region using `fill-paragraph', but never joins lines.
-Ie., each line is treated as a distinct paragraph.
-Comments are first uncommented using `evilnc-comment-or-uncomment-region' before
-wrapping and then re-commented."
-    (interactive "r")
-    (let ((comment? (evilnc--in-comment-p beg)))
-      (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
-      (when comment? (evilnc--comment-or-uncomment-region beg end))
-      (replace-string "\n" "\n\n" nil beg end)
-      (evil-active-region 1)
-      (fill-paragraph nil t)
-      (replace-string "\n\n" "\n" nil beg end)
-      (when comment? (evilnc--comment-or-uncomment-region beg end))))
-
-  ;; redefine | to use a default of `fill-column' rather than 0.
-  (evil-define-motion my/evil-goto-column (count)
-    "Move point to column COUNT.
-
-Columns are indexed from zero. If COUNT is not supplied, use `fill-column'."
-    :type exclusive
-    (move-to-column (or count fill-column)))
-
-  (defun my/extend-to-column (&optional col set-fill-column)
-    "Extend line to column COL by adding spaces, if necessary.
-
-Interactively, COL is provided as a prefix argument. If COL is omitted, the
-value of `fill-column' is used.
-
-If SET-FILL-COLUMN is true, or if the prefix argument is negative, the (positive)
-value of COL is additionally set as the new value of `fill-column'."
-    (interactive "p")
-    (when (or (null col)
-              (and (called-interactively-p) (null current-prefix-arg)))
-      (setq col fill-column))
-    (when (and (called-interactively-p) (< col 0))
-      (setq set-fill-column t)
-      (setq col (abs col)))
-    (when set-fill-column
-      (setf fill-column col))
-    (move-to-column col t))
-
-  (defun my/add-column-marker (beg end &optional group spacing repeat)
-    (interactive "r")
-    (unless group (setq group 1))
-    (let ((endm (save-excursion
-                  (goto-char (1- end))
-                  (end-of-line)
-                  (point-marker))))
-      (save-excursion
-        (goto-char beg)
-        (while (<= (point) (marker-position endm))
-          (end-of-line)
-          (insert " |")
-          (beginning-of-line 2))
-        (set-marker endm (line-end-position))
-        (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
-        (set-marker endm nil))))
-
-  ;; ======================
-  ;; delete duplicate lines
-  ;; ======================
-
-  (defun my/delete-duplicate-lines-nonblank
-      (beg end &optional reverse adjacent delete-blanks interactive)
-    "Delete duplicate lines within region. This is the same as
-`delete-duplicate-lines' except it keeps blank lines by default unless the
-DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
-
-C-u          Keep the last instance of each line
-C-u C-u      Delete blank line duplicates
-C-u C-u C-u  Only delete adjacent duplicates
-\nSee also `spacemacs/uniquify-lines', which deletes adjacent duplicate lines
-within the region."
-    (interactive
-     (progn
-       (list
-        (region-beginning) (region-end)
-        (equal current-prefix-arg '(4))
-        (equal current-prefix-arg '(64))
-        (equal current-prefix-arg '(16))
-        t)))
-    (delete-duplicate-lines beg end reverse adjacent (not delete-blanks) interactive))
-
-  (defun my/just-one-blank-line ()
-    (interactive)
-    (if (and (my/line-at-point-blank-p)
-             (my/adjacent-line-blank-p))
-        (delete-blank-lines)))
-
-  (defun my/remove-blank-lines ()
-    (interactive)
-    (replace-regexp "\n\\([[:space:]]*\n\\)+" "\n\n"))
-
-  (defun my/remove-doubled-blank-lines ()
-    (interactive)
-    (replace-regexp "\n[[:space:]]*\n\\([[:space:]]*\n\\)+" "\n\n"))
-
-  (defun my/delete-adjacent-repeated-lines ()
-    (interactive)
-    (destructuring-bind (beg . end) (evil-get-visual-region-or-buffer)
-      (delete-duplicate-lines beg end nil t nil t)))
-
-  (defun my/remove-trailing-space-and-blank-lines (&optional beg end)
-    (interactive
-     (cond ((use-region-p)   (list (region-beginning) (region-end)))
-           (:else            (list (point) (point-max)))))
-    (delete-trailing-whitespace beg end)
-    (save-excursion
-      (goto-char beg)
-      (while (re-search-forward "\n+" end t)
-        (replace-match "\n" nil nil))))
-
-  (defun my/remove-trailing-space-and-doubled-blank-lines (&optional beg end)
-    (interactive
-     (cond ((use-region-p)   (list (region-beginning) (region-end)))
-           (:else            (list (point) (point-max)))))
-    (delete-trailing-whitespace beg end)
-    (save-excursion
-      (goto-char beg)
-      (while (re-search-forward "\n\n+" end t)
-        (replace-match "\n\n" nil nil))))
-
-  (defun my/sudo-edit-this-file ()
-    (interactive)
-    (let ((f (concat "/sudo::" (expand-file-name buffer-file-name))))
-      (find-file f)))
-
-  (defun my/open-file-at-point ()
-    "Open the file at point using xdg-open."
-    (interactive)
-    (shell-command (concat "xdg-open " (ffap-guess-file-name-at-point))))
-
-  (defun my/new-script (name &optional interpreter)
-    "Create an empty executable script file in the current directory"
-    (interactive "sName:\nsInterpreter:")
-    (let ((cmd (concat "echo '#! " (or interpreter "") "' > " name)))
-      (shell-command cmd)))
-
-  ;; ================
-  ;; shift left/right
-  ;; ================
-  ;; TODO: non-hackish versions
-
-  (defun evil-shift-left-fine ()
-    (interactive)
-    (let ((evil-shift-width 1))
-      (call-interactively 'evil-shift-left)))
-  (defun evil-shift-right-fine ()
-    (interactive)
-    (let ((evil-shift-width 1))
-      (call-interactively 'evil-shift-right)))
-  (defun evil-visual-shift-left-fine ()
-    (interactive)
-    (let ((evil-shift-width 1))
-      (evil-visual-shift-left))
-    (execute-kbd-macro "gv"))
-  (defun evil-visual-shift-right-fine ()
-    (interactive)
-    (let ((evil-shift-width 1))
-      (evil-visual-shift-right))
-    (execute-kbd-macro "gv"))
-  (defun my/evil-shift-left-fine-dispatcher ()
-    (interactive)
-    (if (eq evil-state 'visual)
-        (call-interactively 'evil-visual-shift-left-fine)
-      (call-interactively 'evil-shift-left-fine)))
-  (defun my/evil-shift-right-fine-dispatcher ()
-    (interactive)
-    (if (eq evil-state 'visual)
-        (call-interactively 'evil-visual-shift-right-fine)
-      (call-interactively 'evil-shift-right-fine)))
-
 
   (defun evil-cua-toggle ()
     (interactive)
@@ -6467,10 +6208,6 @@ Inserts the expansion on a new line at the end of the sexp."
     (my/quick-pcre-align-repeat beg end " (?:\")")
     (evil-indent beg end))
 
-  (defun my/quit-window-kill (&optional bury window)
-    (interactive "P")
-    (quit-window (not bury) window))
-
   (defun tsp-info-goto-node (s)
     "Visit a node in a given info manual.
 
@@ -6567,60 +6304,6 @@ If the region is not active, the entire buffer is processed."
       (evil-visual-restore)
       (evil-visual-paste 1)))
 
-  (defun my/kill-buffer-and-window-quit-help ()
-    "Kill the current buffer, close its window, and quit the help buffer.
-
-With a prefix argument, leaves any help buffer open."
-    (interactive)
-    (kill-buffer-and-window)
-    (unless current-prefix-arg
-      (let ((helpbuffer (get-buffer-window "*Help*")))
-        (when helpbuffer
-          (quit-window nil helpbuffer)))))
-
-  (defun my/kill-other-buffer-and-window ()
-    "Kill the other buffer and close its window."
-    (interactive)
-    (save-excursion
-      (let ((orig-buffer (current-buffer)))
-        (when (> (count-windows) 1)
-          (other-window 1 nil)
-          (unless (eq orig-buffer (current-buffer))
-            (kill-buffer))
-          (delete-window)))))
-
-  ;; TODO: find out how to identify active window before minibuffer entry
-  ;;       so this can be called with M-x
-  (defun my/delete-window-ace-move-buffer ()
-    (interactive)
-    (require 'ace-window)
-    (let ((b (current-buffer))
-          (w (aw-select "move to window:")))
-      (delete-window)
-      (set-window-buffer w b)))
-
-  (defun my/delete-window-ace-move-buffer-select ()
-    (interactive)
-    (require 'ace-window)
-    (let ((b (current-buffer))
-          (w (aw-select "move to window:")))
-      (delete-window)
-      (set-window-buffer w b)
-      (select-window w)))
-
-  (defun my/delete-window-ace-move-buffer-quit-help ()
-    (interactive)
-    (require 'ace-window)
-    (let ((b (current-buffer))
-          (w (aw-select "move to window:")))
-      (quit-window nil (get-buffer-window "*Help*"))
-      (delete-window)
-      (set-window-buffer w b)))
-
-  (defun my/quit-help ()
-    (interactive)
-    (quit-window nil (get-buffer-window "*Help*")))
-
   (defun my/web-mode-normalize-html ()
     (interactive)
     (my/shell-command-process-region-as-file "hxnormalize '%s'"))
@@ -6681,6 +6364,7 @@ manager is determined by the `my/external-file-manager' variable."
   (defmacro no-helm-limit (&optional forms)
     "Execute FORMS without any `helm-candidate-number-limit' in effect."
     (declare (debug 'body))
+
     `(let ((helm-candidate-number-limit nil))
        ,forms))
 
@@ -6706,34 +6390,6 @@ manager is determined by the `my/external-file-manager' variable."
   (defun my/lacarte-execute-local-menu-command ()
     (interactive)
     (no-helm-limit (lacarte-execute-menu-command '(local))))
-
-  (defun my/swap-windows (w1 w2)
-    (let ((b1 (window-buffer w1))
-          (b2 (window-buffer w2)))
-      (set-window-buffer w1 b2)
-      (set-window-buffer w2 b1)))
-
-  (defun my/frame-windows (&optional frame)
-    (window-list (selected-frame)))
-
-  (defun my/frame-parameter-names (&optional frame)
-    (let ((frame (or frame (selected-frame))))
-      (mapcar #'car (frame-parameters frame))))
-
-  (defun my/window-swap-with-next ()
-    (interactive)
-    (let* ((ws (my/frame-windows))
-           (w1 (selected-window))
-           (w2 (if (equal (car ws) w1)
-                   (cadr ws)
-                 (car ws))))
-      (message "(my/swap-windows %S %S)" w1 w2)
-      (my/swap-windows w1 w2)))
-
-  (defun my/bury-buffer-and-delete-window ()
-    (interactive)
-    (bury-buffer)
-    (delete-window))
 
   (defun my/copy-matching-lines (regexp &optional unique-buffer append-results)
     "Copy lines containing a match for REGEXP and display in a new buffer.
@@ -6860,36 +6516,6 @@ each line."
     (interactive "sShell command: ")
     (let ((display-buffer-alist '(("*Async Shell Command*" . (display-buffer-no-window nil)))))
       (async-shell-command command)))
-
-  (defun my/get-non-visible-buffer (&optional filter)
-    "Return the first non-visible buffer.
-
-Minibuffer buffers are ignored. If FILTER is supplied, it should be a boolean
-function taking a buffer as its argument. Only buffers satisfying FILTER are
-considered."
-    (let* ((bs (buffer-list)))
-      (while
-          (let ((b (car bs)))
-            (or (get-buffer-window b 'visible)
-                (minibufferp b)
-                (and filter (not (funcall filter b)))))
-        (setq bs (cdr bs)))
-      (car bs)))
-
-  (evil-define-operator my/evil-replace-in-region (beg end)
-    "Select text and replace in region [BEG, END].
-
-Text is selected using `my/evil-select-region-operator'."
-    :move-point nil
-    (interactive "<r>")
-    (let* ((from-str-range (evil-operator-range))
-           (from-str (apply #'buffer-substring from-str-range))
-           (to-str (read-from-minibuffer (format "Replace '%s' with: " from-str))))
-      (perform-replace from-str to-str t
-                       nil                   ;; regex
-                       current-prefix-arg    ;; delimited
-                       nil nil               ;; repeat-count map
-                       beg end)))
 
   (defun my/line-length (&optional N trim)
     "Return the length of the Nth line.
@@ -7239,6 +6865,279 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
       (insert contents)
       (helm-switch-major-mode)))
 
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────────────────────────────╮
+  ;; │ Functions dealing with lines/columns │
+  ;; ╰──────────────────────────────────────╯
+
+  (defvar my/blank-line-regexp "^[[:space:]]*$")
+  (defvar my/blank-line-no-whitespace-regexp "^$")
+
+  (defun my/line-at-point-string ()
+    "Return the line around point as a string.
+Similar to (thing-at-point \'line t) except it does not return a trailing newline.
+See also `thing-at-point'"
+    (let ((beg (line-beginning-position))
+          (end (line-end-position)))
+      (buffer-substring-no-properties beg end)))
+
+  (defun my/line-at-point-blank-p ()
+    "Returns a non-nil value if the current line contains only whitespace."
+    (string-match-p my/blank-line-regexp (my/line-at-point-string)))
+  (defun my/line-above-blank-p (&optional n)
+    (save-excursion
+      (forward-line (- (or n 1)))
+      (my/line-at-point-blank-p)))
+  (defun my/line-below-blank-p (&optional n)
+    (save-excursion
+      (forward-line (or n 1))
+      (my/line-at-point-blank-p)))
+  (defun my/adjacent-line-blank-p (&optional n)
+    "Returns a non-nil value if the Nth line above and/or below point contains
+only whitespace).
+See `my/line-at-point-blank-p', `my/line-above-blank-p', `my/line-below-blank-p'"
+    (or (my/line-above-blank-p n)
+        (my/line-below-blank-p n)))
+
+  (defun my/copy-current-line ()
+    (interactive)
+    (when (my/line-visible-end-position)
+      (kill-ring-save (my/line-visible-beginning-position) (my/line-visible-end-position))))
+
+  (defun my/replace-line (count)
+    (interactive "p")
+    (let ((s (pop kill-ring)))
+      (kill-whole-line count)
+      (kill-new s)
+      (evil-paste-before)))
+
+  ;; ──────────────────────────────
+  ;; functions dealing with columns
+  ;; ──────────────────────────────
+
+  (defun my/wrap-lines-in-region (beg end)
+    "An interactive function to split lines longer than `fill-column'.
+Splits long lines in the region using `fill-paragraph', but never joins lines.
+Ie., each line is treated as a distinct paragraph."
+    (interactive "r")
+    (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+    (replace-string "\n" "\n\n" nil beg end)
+    (evil-active-region 1)
+    (fill-paragraph nil t)
+    (replace-string "\n\n" "\n" nil beg end))
+
+  ;; FIXME: splits the line after region (near start of line); irregular indentation.
+  (defun my/wrap-region-or-comment (beg end)
+    "An interactive function to split lines longer than `fill-column'.
+Splits long lines in the region using `fill-paragraph', but never joins lines.
+Ie., each line is treated as a distinct paragraph.
+Comments are first uncommented using `evilnc-comment-or-uncomment-region' before
+wrapping and then re-commented."
+    (interactive "r")
+    (let ((comment? (evilnc--in-comment-p beg)))
+      (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+      (when comment? (evilnc--comment-or-uncomment-region beg end))
+      (replace-string "\n" "\n\n" nil beg end)
+      (evil-active-region 1)
+      (fill-paragraph nil t)
+      (replace-string "\n\n" "\n" nil beg end)
+      (when comment? (evilnc--comment-or-uncomment-region beg end))))
+
+  ;; redefine | to use a default of `fill-column' rather than 0.
+  (evil-define-motion my/evil-goto-column (count)
+    "Move point to column COUNT.
+
+Columns are indexed from zero. If COUNT is not supplied, use `fill-column'."
+    :type exclusive
+    (move-to-column (or count fill-column)))
+
+  (defun my/extend-to-column (&optional col set-fill-column)
+    "Extend line to column COL by adding spaces, if necessary.
+
+Interactively, COL is provided as a prefix argument. If COL is omitted, the
+value of `fill-column' is used.
+
+If SET-FILL-COLUMN is true, or if the prefix argument is negative, the (positive)
+value of COL is additionally set as the new value of `fill-column'."
+    (interactive "p")
+    (when (or (null col)
+              (and (called-interactively-p) (null current-prefix-arg)))
+      (setq col fill-column))
+    (when (and (called-interactively-p) (< col 0))
+      (setq set-fill-column t)
+      (setq col (abs col)))
+    (when set-fill-column
+      (setf fill-column col))
+    (move-to-column col t))
+
+  (defun my/add-column-marker (beg end &optional group spacing repeat)
+    (interactive "r")
+    (unless group (setq group 1))
+    (let ((endm (save-excursion
+                  (goto-char (1- end))
+                  (end-of-line)
+                  (point-marker))))
+      (save-excursion
+        (goto-char beg)
+        (while (<= (point) (marker-position endm))
+          (end-of-line)
+          (insert " |")
+          (beginning-of-line 2))
+        (set-marker endm (line-end-position))
+        (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
+        (set-marker endm nil))))
+
+  ;; ──────────────────────
+  ;; delete duplicate lines
+  ;; ──────────────────────
+
+  (defun my/delete-duplicate-lines-nonblank
+      (beg end &optional reverse adjacent delete-blanks interactive)
+    "Delete duplicate lines within region. This is the same as
+`delete-duplicate-lines' except it keeps blank lines by default unless the
+DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
+
+C-u          Keep the last instance of each line
+C-u C-u      Delete blank line duplicates
+C-u C-u C-u  Only delete adjacent duplicates
+\nSee also `spacemacs/uniquify-lines', which deletes adjacent duplicate lines
+within the region."
+    (interactive
+     (progn
+       (list
+        (region-beginning) (region-end)
+        (equal current-prefix-arg '(4))
+        (equal current-prefix-arg '(64))
+        (equal current-prefix-arg '(16))
+        t)))
+    (delete-duplicate-lines beg end reverse adjacent (not delete-blanks) interactive))
+
+  (defun my/just-one-blank-line ()
+    (interactive)
+    (if (and (my/line-at-point-blank-p)
+             (my/adjacent-line-blank-p))
+        (delete-blank-lines)))
+
+  (defun my/remove-blank-lines ()
+    (interactive)
+    (replace-regexp "\n\\([[:space:]]*\n\\)+" "\n\n"))
+
+  (defun my/remove-doubled-blank-lines ()
+    (interactive)
+    (replace-regexp "\n[[:space:]]*\n\\([[:space:]]*\n\\)+" "\n\n"))
+
+  (defun my/delete-adjacent-repeated-lines ()
+    (interactive)
+    (destructuring-bind (beg . end) (evil-get-visual-region-or-buffer)
+      (delete-duplicate-lines beg end nil t nil t)))
+
+  (defun my/remove-trailing-space-and-blank-lines (&optional beg end)
+    (interactive
+     (cond ((use-region-p)   (list (region-beginning) (region-end)))
+           (:else            (list (point) (point-max)))))
+    (delete-trailing-whitespace beg end)
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward "\n+" end t)
+        (replace-match "\n" nil nil))))
+
+  (defun my/remove-trailing-space-and-doubled-blank-lines (&optional beg end)
+    (interactive
+     (cond ((use-region-p)   (list (region-beginning) (region-end)))
+           (:else            (list (point) (point-max)))))
+    (delete-trailing-whitespace beg end)
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward "\n\n+" end t)
+        (replace-match "\n\n" nil nil))))
+
+  ;; ────────────────
+  ;; shift left/right
+  ;; ────────────────
+  ;; TODO: non-hackish versions
+
+  (defun evil-shift-left-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (call-interactively 'evil-shift-left)))
+  (defun evil-shift-right-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (call-interactively 'evil-shift-right)))
+  (defun evil-visual-shift-left-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (evil-visual-shift-left))
+    (execute-kbd-macro "gv"))
+  (defun evil-visual-shift-right-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (evil-visual-shift-right))
+    (execute-kbd-macro "gv"))
+  (defun my/evil-shift-left-fine-dispatcher ()
+    (interactive)
+    (if (eq evil-state 'visual)
+        (call-interactively 'evil-visual-shift-left-fine)
+      (call-interactively 'evil-shift-left-fine)))
+  (defun my/evil-shift-right-fine-dispatcher ()
+    (interactive)
+    (if (eq evil-state 'visual)
+        (call-interactively 'evil-visual-shift-right-fine)
+      (call-interactively 'evil-shift-right-fine)))
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭────────────────────────╮
+  ;; │ File Opening Functions │
+  ;; ╰────────────────────────╯
+
+  (defun my/sudo-edit-this-file ()
+    (interactive)
+    (let ((f (concat "/sudo::" (expand-file-name buffer-file-name))))
+      (find-file f)))
+
+  (defun my/open-file-at-point ()
+    "Open the file at point using xdg-open."
+    (interactive)
+    (shell-command (concat "xdg-open " (ffap-guess-file-name-at-point))))
+
+  (defun my/new-script (name &optional interpreter)
+    "Create an empty executable script file in the current directory"
+    (interactive "sName:\nsInterpreter:")
+    (let ((cmd (concat "echo '#! " (or interpreter "") "' > " name)))
+      (shell-command cmd)))
+
+  ;; ───────────────────────────
+  ;; Open files in external apps
+  ;; ───────────────────────────
+
+  (defun browse-buffer-file-firefox ()
+    (interactive)
+    (browse-url-firefox
+     (replace-regexp-in-string
+      " "
+      "%20"
+      (concat "file://"
+              (expand-file-name (or buffer-file-name default-directory))))))
+
+  (setq browse-url-firefox-program "firefox")
+
+  (defun browse-buffer-file-with-external-application ()
+    (interactive)
+    (browse-url-xdg-open buffer-file-name))
+
+  (defun my/browse-url-at-point (&optional point)
+    (interactive)
+    (let ((url (url-get-url-at-point point)))
+      (browse-url-firefox url)))
+
+  (defun my/find-file-or-browse-url-at-point ()
+    (interactive)
+    (let ((url (or (markdown-link-url) (url-get-url-at-point))))
+      (if url
+          (browse-url-firefox url)
+        (find-file-at-point))))
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭──────────────────────────╮
   ;; │ Browser/Server Functions │
   ;; ╰──────────────────────────╯
@@ -7262,6 +7161,7 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
     (my/serve-buffer-directory)
     (browse-url-firefox "localhost:8009"))
 
+  ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭──────────────────────╮
   ;; │ Yank/Paste Functions │
   ;; ╰──────────────────────╯
@@ -7378,6 +7278,137 @@ INTERACTIVE-CODE describes how N is obtained. By default, the interactive code P
   (defun minor-mode-set-lighter (mode lighter)
     (setcar (cdr (assoc 'mozc-mode minor-mode-alist))
             lighter))
+
+;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────────────────────╮
+  ;; │ Buffer/Window Functions │
+  ;; ╰─────────────────────────╯
+
+  (defun my/get-nth-last-buffer (n) (nth n (window-prev-buffers)))
+
+  (defun my/kill-buffer-and-window-quit-help ()
+    "Kill the current buffer, close its window, and quit the help buffer.
+
+With a prefix argument, leaves any help buffer open."
+    (interactive)
+    (kill-buffer-and-window)
+    (unless current-prefix-arg
+      (let ((helpbuffer (get-buffer-window "*Help*")))
+        (when helpbuffer
+          (quit-window nil helpbuffer)))))
+
+  (defun my/kill-other-buffer-and-window ()
+    "Kill the other buffer and close its window."
+    (interactive)
+    (save-excursion
+      (let ((orig-buffer (current-buffer)))
+        (when (> (count-windows) 1)
+          (other-window 1 nil)
+          (unless (eq orig-buffer (current-buffer))
+            (kill-buffer))
+          (delete-window)))))
+
+  (defun my/kill-buffer-force (&optional buffer)
+    "Kill buffer without asking confirmation"
+    (interactive)
+    (let ((kill-buffer-query-functions nil))
+      (kill-buffer nil)))
+
+  ;; TODO: find out how to identify active window before minibuffer entry
+  ;;       so this can be called with M-x
+  (defun my/delete-window-ace-move-buffer ()
+    (interactive)
+    (require 'ace-window)
+    (let ((b (current-buffer))
+          (w (aw-select "move to window:")))
+      (delete-window)
+      (set-window-buffer w b)))
+
+  (defun my/delete-window-ace-move-buffer-select ()
+    (interactive)
+    (require 'ace-window)
+    (let ((b (current-buffer))
+          (w (aw-select "move to window:")))
+      (delete-window)
+      (set-window-buffer w b)
+      (select-window w)))
+
+  (defun my/delete-window-ace-move-buffer-quit-help ()
+    (interactive)
+    (require 'ace-window)
+    (let ((b (current-buffer))
+          (w (aw-select "move to window:")))
+      (quit-window nil (get-buffer-window "*Help*"))
+      (delete-window)
+      (set-window-buffer w b)))
+
+  (defun my/quit-window-kill (&optional bury window)
+    (interactive "P")
+    (quit-window (not bury) window))
+
+  (defun my/quit-help ()
+    (interactive)
+    (quit-window nil (get-buffer-window "*Help*")))
+
+  (defun my/swap-windows (w1 w2)
+    (let ((b1 (window-buffer w1))
+          (b2 (window-buffer w2)))
+      (set-window-buffer w1 b2)
+      (set-window-buffer w2 b1)))
+
+  (defun my/frame-windows (&optional frame)
+    (window-list (selected-frame)))
+
+  (defun my/frame-parameter-names (&optional frame)
+    (let ((frame (or frame (selected-frame))))
+      (mapcar #'car (frame-parameters frame))))
+
+  (defun my/window-swap-with-next ()
+    (interactive)
+    (let* ((ws (my/frame-windows))
+           (w1 (selected-window))
+           (w2 (if (equal (car ws) w1)
+                   (cadr ws)
+                 (car ws))))
+      (message "(my/swap-windows %S %S)" w1 w2)
+      (my/swap-windows w1 w2)))
+
+  (defun my/bury-buffer-and-delete-window ()
+    (interactive)
+    (bury-buffer)
+    (delete-window))
+
+  (defun my/get-non-visible-buffer (&optional filter)
+    "Return the first non-visible buffer.
+
+Minibuffer buffers are ignored. If FILTER is supplied, it should be a boolean
+function taking a buffer as its argument. Only buffers satisfying FILTER are
+considered."
+    (let* ((bs (buffer-list)))
+      (while
+          (let ((b (car bs)))
+            (or (get-buffer-window b 'visible)
+                (minibufferp b)
+                (and filter (not (funcall filter b)))))
+        (setq bs (cdr bs)))
+      (car bs)))
+
+  (evil-define-operator my/evil-replace-in-region (beg end)
+    "Select text and replace in region [BEG, END].
+
+Text is selected using `my/evil-select-region-operator'."
+    :move-point nil
+    (interactive "<r>")
+    (let* ((from-str-range (evil-operator-range))
+           (from-str (apply #'buffer-substring from-str-range))
+           (to-str (read-from-minibuffer (format "Replace '%s' with: " from-str))))
+      (perform-replace from-str to-str t
+                       nil                   ;; regex
+                       current-prefix-arg    ;; delimited
+                       nil nil               ;; repeat-count map
+                       beg end)))
+
+;; ───────────────────────────────────────────────────────────────────────────────
 
   ;; adapted from link-hint.el (Fox Kiester, GPL3)
   (defun my/link-hint-kill-append-link-at-point ()
