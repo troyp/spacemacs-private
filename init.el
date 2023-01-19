@@ -2288,9 +2288,6 @@ If one delimiter is empty, leave a space at beginning or end."
              ("s" . dired-mark-files-regexp)
              )
 
-  (my/def-variable-toggle undo-tree-visualizer-diff)
-  (my/def-variable-toggle undo-tree-visualizer-timestamps)
-  (my/def-variable-toggle undo-tree-auto-save-history)
   (bind-keys :map spacemacs-cmds
              :prefix-map my/undo-prefix-map
              :prefix "C-u"
@@ -5009,12 +5006,21 @@ Return the description that was displayed, as a string."
 
   (setq evil-want-fine-undo "No")
 
-  (setq undo-tree-history-directory-alist
-        (let ((undohistdir (concat spacemacs-private-directory ".undo-tree-history/")))
-          `(("/home/.*/.emacs.d.*/private/.*" . nil)
-            ("/home/.*/code/.*"               . nil)
-            ("."                              . ,undohistdir))))
+  (setq undo-tree-visualizer-diff nil)
+  (setq undo-tree-visualizer-timestamps nil)
+  (setq undo-tree-auto-save-history nil)
 
+  (setq undo-tree-history-directory-alist
+        '(("." "_undo-tree-history")))
+
+  (my/def-variable-toggle undo-tree-visualizer-diff)
+  (my/def-variable-toggle undo-tree-visualizer-timestamps)
+  (my/def-variable-toggle undo-tree-auto-save-history)
+
+  (defun my/undo-auto-save-make-local-and-toggle ()
+    "Make `undo-tree-auto-save-history' buffer-local and toggle"
+    (interactive)
+    (my/variable-make-local-and-toggle 'undo-tree-auto-save-history))
 
   ;; bind-keys to undo-tree register functions even when undo-tree-mode is off
   (bind-keys :map global-map
@@ -5028,8 +5034,6 @@ Return the description that was displayed, as a string."
 
   ;; =====UNDO-TREE-AUTO-SAVE-HISTORY=====
   ;; Causes undo-tree corruption
-
-  (setq undo-tree-auto-save-history t)
 
   ;; Attempt to prevent undo-tree history corruption...
   ;; https://github.com/syl20bnr/spacemacs/issues/774#issuecomment-194527210
@@ -6499,11 +6503,6 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
       (when (not (local-variable-p sym)) (make-local-variable sym))
       (set sym new-value)
       (message (format "%S: %S" sym new-value))))
-
-  (defun my/undo-auto-save-make-local-and-toggle ()
-    "Make `undo-tree-auto-save-history' buffer-local and toggle"
-    (interactive)
-    (my/variable-make-local-and-toggle 'undo-tree-auto-save-history))
 
   (my/def-variable-toggle company-quickhelp-mode)
 
