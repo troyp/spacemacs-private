@@ -4259,6 +4259,7 @@ Committer: %cN <%cE>"))
       "r"      'my/magit-undo-last-commit
       "s"      'magit-diff-toggle-ignore-all-space
       "S"      'magit-diff-toggle-ignore-space-change
+      "u"      'magit-section-up
       "y c"    'my/git-yank-commit-messages
       "SPC"    'magit-diff-show-or-scroll-up
       "<F2>"   'magit-file-rename
