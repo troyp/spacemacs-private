@@ -1215,6 +1215,7 @@ FLAGS is a list of characters, eg '(?g)"
           nim-mode
           palette
           replace+ strings
+          subr+
           symbol-overlay
           thingatpt+
           thumb-frm
