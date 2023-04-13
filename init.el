@@ -1770,6 +1770,8 @@ If one delimiter is empty, leave a space at beginning or end."
 
   (global-set-key [\M-f4] 'kill-buffer-and-window)
 
+  (global-set-key [\C-home] 'spacemacs/new-empty-buffer)
+
   ;; change C-x - from 'shrink-window-if-larger-than-buffer to 'fit-window-to-buffer
   (global-set-key (kbd "\C-x -") 'fit-window-to-buffer)
 
