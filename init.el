@@ -1595,6 +1595,10 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?. ? ) . ?\x2024)    ;; ․ 1-dot leader
           ((?. ?/) . ?\x2025)    ;; ‥ 2-dot leader
           ;; compose combinations
+          ((?L ?\x5b) . ?\x230a)    ;; ⌊
+          ((?L ?\x5d) . ?\x230b)    ;; ⌋
+          ((?7 ?\x5b) . ?\x2308)    ;; ⌈
+          ((?7 ?\x5d) . ?\x2309)    ;; ⌉
           ((?. ?.) . ?\x2026)    ;; (horizontal) ellipsis (replaces ‥)
           ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
           ((?0 ?9) . ?\x3000)    ;; CJK full-width space
@@ -1610,6 +1614,8 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?- ?9) . ?\x2040)    ;; ⁀
           ((?| 91) . ?\x27e6)    ;; ⟦
           ((?| 93) . ?\x27e7)    ;; ⟧
+          ((?\x3b ?\x3b)
+                   . ?\xff1b)    ;; ； fullwidth semicolon
           ;; kragen compose combinations
           ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
           ((?T ?,) . ?\x01ae)    ;; Ʈ (replaces Ţ which is also available on ,T) - for consistency
