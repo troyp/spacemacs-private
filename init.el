@@ -5261,12 +5261,10 @@ Return the description that was displayed, as a string."
 Interactively, operates on the current region and prompts for the PCRE, GROUP,
 SPACING and REPEAT.
 
-GROUP is the number of the group to be modified (ie. spacing group). The entire
-PCRE is group 1, the first subexpression group 2, etc. A negative group value
-indicates that spaces should be added before the group, a positive value means
-spaces should be added after it.
-
+GROUP is the number of the parenthesized group to be modified (ie. spacing group).
 SPACING is the minimum number of spaces between columns.
+
+eg. a regex \":( *)\" with group 1 would align the spaces after a colon.
 
 See `align-regexp' for details."
     (interactive
