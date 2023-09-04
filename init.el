@@ -2193,7 +2193,7 @@ If one delimiter is empty, leave a space at beginning or end."
         "x N"          'rectangle-number-lines-interactive
         "x <insert>"   'region-swap
         "x t r"        'region-swap
-        "x /"          'shell-command-on-region
+        "x /"          'my/shell-command-on-region
         "x \\"         'my/evil-shell-command-replace-region
         "x |"          'my/shell-command-process-region-as-file
         "x C-b"        'my/copy-to-empty-buffer
@@ -6242,6 +6242,20 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
       (message (format "%S: %S" sym new-value))))
 
   (my/def-variable-toggle company-quickhelp-mode)
+
+  (defun my/region-or-buffer-beginning ()
+    (if (region-active-p) (region-beginning) (point-min)))
+  (defun my/region-or-buffer-end ()
+    (if (region-active-p) (region-end) (point-max)))
+
+  (defun my/shell-command-on-region (start end command &rest args)
+    "Run a shell command on the current region or entire buffer."
+    (interactive
+     (list
+      (my/region-or-buffer-beginning)
+      (my/region-or-buffer-end)
+      (read-shell-command "Shell command on region: ")))
+    (apply #'shell-command-on-region start end command args))
 
   (defun my/shell-command-process-region-as-file
       (start end command &optional output-buffer error-buffer)
