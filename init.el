@@ -1876,6 +1876,10 @@ If one delimiter is empty, leave a space at beginning or end."
              ("<backspace>" . my/quit-help)
              )
 
+  (which-key-add-key-based-replacements
+      "M-s h"    "highlight"
+    )
+
   ;; ╭────────────────╮
   ;; │ Mouse bindings │
   ;; ╰────────────────╯
