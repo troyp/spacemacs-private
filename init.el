@@ -4353,6 +4353,8 @@ Committer: %cN <%cE>"))
   (bind-keys :map spacemacs-markdown-mode-map
              ("i C-l"  . my/markdown-gh-linkify-heading)
              ("n"      . my/markdown-next-link)
+             ("T s"    . markdown-table-sort-lines)
+             ("T t"    . markdown-table-transpose)
              ("x ="    . my/uppercase-double-underline)
              ("1"      . my/markdown-underline-heading)
              ("."      . markdown-follow-link-at-point)
@@ -4361,6 +4363,11 @@ Committer: %cN <%cE>"))
              ("M-h"    . my/github-heading-to-readme-link)
              ("M-l"    . my/github-linkify-heading)
              )
+
+  (which-key-add-major-mode-key-based-replacements 'markdown-mode
+      ", t"    "toggle"
+      ", T"    "table"
+      )
 
   (defun markdown-init-fn ()
     (interactive)
