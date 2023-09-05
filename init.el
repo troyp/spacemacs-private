@@ -4348,6 +4348,8 @@ Committer: %cN <%cE>"))
 
   (setq-default my/markdown-browser browse-url-generic-program)
 
+  (setq markdown-command "gfm")
+
   (bind-keys :map spacemacs-markdown-mode-map
              ("i C-l"  . my/markdown-gh-linkify-heading)
              ("n"      . my/markdown-next-link)
