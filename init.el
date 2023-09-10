@@ -2215,6 +2215,7 @@ If one delimiter is empty, leave a space at beginning or end."
         "4"            'spacemacs/workspaces-transient-state/eyebrowse-switch-to-window-config-4-and-exit
         "8"            'spacemacs/enter-ahs-forward
         "*"            'spacemacs/enter-ahs-backward
+        "!"            'my/shell-command-show-output
         "."            'repeat-complex-command
         ","            'helm-mini
         ">"            'my/evil-shift-right-fine-dispatcher
@@ -6260,6 +6261,10 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
     (if (region-active-p) (region-beginning) (point-min)))
   (defun my/region-or-buffer-end ()
     (if (region-active-p) (region-end) (point-max)))
+
+  (defun my/shell-command-show-output ()
+    (interactive)
+    (let ((evil-ex-initial-input "w ! ")) (call-interactively 'evil-ex)))
 
   (defun my/shell-command-on-region (start end command &rest args)
     "Run a shell command on the current region or entire buffer."
