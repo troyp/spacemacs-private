@@ -4363,6 +4363,7 @@ Committer: %cN <%cE>"))
              ("C-v"    . my/markdown-app-call)
              ("M-h"    . my/github-heading-to-readme-link)
              ("M-l"    . my/github-linkify-heading)
+             (","      . markdown-view-mode)
              )
 
   (which-key-add-major-mode-key-based-replacements 'markdown-mode
@@ -4370,9 +4371,24 @@ Committer: %cN <%cE>"))
       ", T"    "table"
       )
 
+  (spacemacs/set-leader-keys-for-major-mode 'markdown-view-mode
+      ","  'my/markdown-mode
+      )
+
+  (bind-keys :map markdown-view-mode-map
+             ("M-n"  . evil-scroll-line-up)
+             ("M-p"  . evil-scroll-line-down)
+             )
+
   (defun markdown-init-fn ()
     (interactive)
     (define-key markdown-mode-mouse-map (kbd "<mouse-2>") 'my/mouse-set-point-and-browse-url)
+    )
+
+  (defun my/markdown-mode ()
+    (interactive)
+    (markdown-mode)
+    (read-only-mode 0)
     )
 
   (eval-after-load 'markdown-mode
