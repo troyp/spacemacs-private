@@ -4358,6 +4358,7 @@ Committer: %cN <%cE>"))
              ("T t"    . markdown-table-transpose)
              ("x ="    . my/uppercase-double-underline)
              ("1"      . my/markdown-underline-heading)
+             ("8"      . my/md-bold-item-hd-to-colon)
              ("."      . markdown-follow-link-at-point)
              ("TAB"    . markdown-show-all)
              ("C-v"    . my/markdown-app-call)
@@ -4520,6 +4521,11 @@ If FILE is nil, the file associated with the current buffer is used."
                       (save-excursion (evil-forward-WORD-begin) (point))
                       (line-end-position))))
     (kmacro-exec-ring-item '([ ?y ?y ?p ?v ?i ?l ?r ?= ] 0 "%d") 1))
+
+  (my/kmacro-fset 'my/md-bold-item-hd-to-colon
+    "Keyboard macro. Apply markdown bold markup to the first alphanumeric sequence on line ending with a colon.
+Moves to the next line afterwards."
+    [48 47 91 97 45 122 65 45 90 48 45 57 93 return 32 67108911 118 102 58 115 67108906 106])
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭──────╮
