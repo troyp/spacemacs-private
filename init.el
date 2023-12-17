@@ -2172,10 +2172,12 @@ If one delimiter is empty, leave a space at beginning or end."
         "s / m"        'my/pcre-multi-occur
         "s / o"        'my/pcre-occur
         "s / l"        'my/pcre-loccur
+        "t M-r"        'easy-escape-minor-mode
         "T |"          'scroll-bar-mode
         "w w"          'ace-swap-window
         "w TAB"        'other-window
         "w DEL"        'my/delete-window-ace-move-buffer-quit-help
+        "w SPC"        'my/window-swap-with-next
         "x a ."        'spacemacs/align-repeat-period
         "x a '"        'spacemacs/align-repeat-quote
         "x a \""       'spacemacs/align-repeat-double-quote
@@ -2216,6 +2218,7 @@ If one delimiter is empty, leave a space at beginning or end."
         "8"            'spacemacs/enter-ahs-forward
         "*"            'spacemacs/enter-ahs-backward
         "!"            'my/shell-command-show-output
+        "C-!"          'e-run-command
         "."            'repeat-complex-command
         ","            'helm-mini
         ">"            'my/evil-shift-right-fine-dispatcher
@@ -2228,6 +2231,7 @@ If one delimiter is empty, leave a space at beginning or end."
         "]"            'my/remove-spacing-inside-brackets
         "{"            'my/add-spacing-inside-braces
         "}"            'my/remove-spacing-inside-braces
+        "|"            'my/wrap-region-or-comment
         "\""           'my/add-spacing-inside-double-quotes
         "C-\""         'my/remove-spacing-inside-double-quotes
         "SPC"          'avy-goto-char-timer
@@ -2237,6 +2241,7 @@ If one delimiter is empty, leave a space at beginning or end."
         "<f3>"         'kmacro-keymap
         "<f5>"         'spacemacs/safe-revert-buffer
         "<f10>"        'my/lacarte-menu-execute/lambda-a-and-exit
+        "C-e"          'bury-buffer
         "C-k"          'my/yank-to-end-of-line
         "C-l"          'my/quick-pcre-align-repeat
         "C-p"          'my/evil-paste-after-as-block
@@ -2253,7 +2258,7 @@ If one delimiter is empty, leave a space at beginning or end."
         "C-'"          'my/quote-to-end-of-line
         "C-\\"         'set-input-method
         "C-SPC"        'cua-toggle-global-mark
-        "C-TAB"        'ace-window
+        "<C-tab>"      'ace-window
         "M-S-SPC"      'my/just-one-blank-line
         "M-p"          'my/evil-paste-after-column-kill-height
         "M-q"          'my/wrap-lines-in-region
@@ -2320,333 +2325,417 @@ If one delimiter is empty, leave a space at beginning or end."
   ;; │ user-cmds-map │
   ;; ╰───────────────╯
 
-  (bind-keys :map global-map
-             ;; S-SPC
-             :prefix-map user-cmds-map
-             :menu-name "user cmds"
-             :prefix "S-SPC"
-             :prefix-docstring "User commands."
-             ("S-SPC"   . my/insert-space)
-             ("SPC"     . my/insert-space-after)    ;; won't bind
-             ("C-S-SPC" . my/insert-space-after)
-             ("S-TAB"   . my/switch-to-most-recent-buffer)
-             ("B"       . my/evil-insert-at-WORD-beginning)
-             ("F"       . my/evil-append-at-WORD-end)
-             )
-  (define-key special-mode-map (kbd "S-SPC") 'user-cmds-map)
+  (progn
+    (bind-keys :map global-map
+               ;; S-SPC
+               :prefix-map user-cmds-map
+               :menu-name "user cmds"
+               :prefix "S-SPC"
+               :prefix-docstring "User commands."
+               ("S-SPC"   . my/insert-space)
+               ("SPC"     . my/insert-space-after)    ;; won't bind
+               ("C-S-SPC" . my/insert-space-after)
+               ("S-TAB"   . my/switch-to-most-recent-buffer)
+               ("B"       . my/evil-insert-at-WORD-beginning)
+               ("E"       . my/evil-append-at-WORD-end)
+               )
+    (define-key special-mode-map (kbd "S-SPC") 'user-cmds-map)
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC d
-             :prefix-map my/delete-prefix-map
-             :menu-name "delete"
-             :prefix "d"
-             :prefix-docstring "Deletion commands."
-             ("'"   . my/delete-inside-double-quotes)
-             ("a '" . my/delete-double-quotes)
-             )
+    (bind-keys :map user-cmds-map
+               ;; S-SPC d
+               :prefix-map my/delete-prefix-map
+               :menu-name "delete"
+               :prefix "d"
+               :prefix-docstring "Deletion commands."
+               ("'"   . my/delete-inside-double-quotes)
+               ("a '" . my/delete-double-quotes)
+               )
 
-  (bind-keys :map user-cmds-map
-             :prefix-map help-download-prefix-map
-             :prefix "h w"
-             :prefix-docstring "Commands to download additional documentation."
-             ("r" . github-download-README)
-             ("w" . github-clone-wiki)
-             )
+    (bind-keys :map user-cmds-map
+               ;; S-SPC f
+               :prefix-map my/file-prefix-map
+               :menu-name "file"
+               :prefix "f"
+               :prefix-docstring "File commands."
+               (">"   . append-to-file)
+               )
 
-  (bind-keys :map user-cmds-map
-             :prefix-map find-function-prefix-map
-             :menu-name "find-function-"
-             :prefix "h /"
-             ("f" . find-function)
-             ("k" . find-function-on-key)
-             ("h" . describe-function)
-             ("w" . find-function-other-window)
-             ("W" . find-function-other-window-noselect)
-             ("5" . find-function-other-frame)
-             ("." . find-function-at-point)
-             )
+    (bind-keys :map user-cmds-map
+               :prefix-map help-download-prefix-map
+               :prefix "h w"
+               :prefix-docstring "Commands to download additional documentation."
+               ("r" . github-download-README)
+               ("w" . github-clone-wiki)
+               )
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC k
-             :prefix-map my/keymaps-prefix-map
-             :menu-name "keys/keymaps"
-             :prefix "k"
-             :prefix-docstring "Commands dealing with keymaps."
-             ("a" . my/which-key-show-keymap-at-point)
-             ("e" . edmacro-insert-key)
-             ("f" . my/get-binding)
-             ("i" . my/lookup-key-interactive)
-             ("m" . which-key-show-minor-mode-keymap)
-             ("p" . my/prettyprint-keymap)
-             ("r" . my/replace-ints-with-char)
-             ("s" . my/which-key-show-current-state-map)
-             ("u" . my/parent-keymap-at-point)
-             ("w" . my/which-key-show)
-             ("K" . which-key-show-top-level)
-             )
+    (bind-keys :map user-cmds-map
+               :prefix-map find-function-prefix-map
+               :menu-name "find-function-"
+               :prefix "h /"
+               ("f" . find-function)
+               ("k" . find-function-on-key)
+               ("h" . describe-function)
+               ("w" . find-function-other-window)
+               ("W" . find-function-other-window-noselect)
+               ("5" . find-function-other-frame)
+               ("." . find-function-at-point)
+               )
 
-  (bind-keys :map my/keymaps-prefix-map
-             ;; S-SPC k d
-             :prefix-map keymaps-describe-prefix-map
-             :prefix "d"
-             :prefix-docstring "Describe commands related to keymaps and key binding."
-             ("b"   . describe-bindings)
-             ("f"   . describe-function)
-             ("k"   . describe-key)
-             ("l"   . spacemacs/describe-last-keys)
-             ("m"   . spacemacs/describe-mode)
-             ("o"   . describe-option)
-             ("K"   . describe-keymap)
-             ("C-b" . describe-personal-keybindings)
-             )
+    (bind-keys :map user-cmds-map
+               ;; S-SPC k
+               :prefix-map my/keymaps-prefix-map
+               :menu-name "keys/keymaps"
+               :prefix "k"
+               :prefix-docstring "Commands dealing with keymaps."
+               ("a" . my/which-key-show-keymap-at-point)
+               ("e" . edmacro-insert-key)
+               ("f" . my/get-binding)
+               ("i" . my/lookup-key-interactive)
+               ("m" . which-key-show-minor-mode-keymap)
+               ("p" . my/prettyprint-keymap)
+               ("r" . my/replace-ints-with-char)
+               ("s" . my/which-key-show-current-state-map)
+               ("u" . my/parent-keymap-at-point)
+               ("w" . my/which-key-show)
+               ("K" . which-key-show-top-level)
+               )
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC j
-             :prefix-map my/jump-prefix-map
-             :menu-name "jump"
-             :prefix "j"
-             :prefix-docstring "Jump commands."
-             ("l ." . my/find-file-or-browse-url-at-point)
-             ("l a" . link-hint-open-all-links)
-             ("l f" . link-hint-open-link)
-             ("l F" . link-hint-open-multiple-links)
-             ("."   . my/find-file-or-browse-url-at-point)
-             )
+    (bind-keys :map my/keymaps-prefix-map
+               ;; S-SPC k d
+               :prefix-map keymaps-describe-prefix-map
+               :prefix "d"
+               :prefix-docstring "Describe commands related to keymaps and key binding."
+               ("b"   . describe-bindings)
+               ("f"   . describe-function)
+               ("k"   . describe-key)
+               ("l"   . spacemacs/describe-last-keys)
+               ("m"   . spacemacs/describe-mode)
+               ("o"   . describe-option)
+               ("K"   . describe-keymap)
+               ("C-b" . describe-personal-keybindings)
+               )
 
-  (bind-keys :map user-cmds-map
-             :prefix-map match-lines-map
-             :menu-name "match lines"
-             :prefix "l"
-             :prefix-docstring "Commands matching lines against a pattern."
-             ("m" . keep-lines)
-             ("n" . flush-lines)
-             ("c" . how-many)
-             ("g" . sort-group-lines)
-             ("h" . highlight-lines-matching-regexp)
-             ("y" . my/copy-matching-lines)
-             ("Y" . my/copy-non-matching-lines)
-             )
+    (bind-keys :map user-cmds-map
+               ;; S-SPC j
+               :prefix-map my/jump-prefix-map
+               :menu-name "jump"
+               :prefix "j"
+               :prefix-docstring "Jump commands."
+               ("l ." . my/find-file-or-browse-url-at-point)
+               ("l a" . link-hint-open-all-links)
+               ("l f" . link-hint-open-link)
+               ("l F" . link-hint-open-multiple-links)
+               ("."   . my/find-file-or-browse-url-at-point)
+               )
 
-  (bind-keys :map match-lines-map
-             :prefix-map delete-lines-map
-             :menu-name "delete lines"
-             :prefix "d"
-             :prefix-docstring "Commands deleting lines against a pattern."
-             ("u" . my/delete-duplicate-lines-nonblank)
-             ("U" . delete-duplicate-lines)
-             )
+    (bind-keys :map user-cmds-map
+               :prefix-map match-lines-map
+               :menu-name "match lines"
+               :prefix "l"
+               :prefix-docstring "Commands matching lines against a pattern."
+               ("m" . keep-lines)
+               ("n" . flush-lines)
+               ("c" . how-many)
+               ("g" . sort-group-lines)
+               ("h" . highlight-lines-matching-regexp)
+               ("y" . my/copy-matching-lines)
+               ("Y" . my/copy-non-matching-lines)
+               )
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC m
-             :prefix-map my/move-prefix-map
-             :menu-name "move"
-             :prefix "m"
-             :prefix-docstring "Move/copy code."
-             ("m"  . avy-move-line)
-             ("r"  . avy-move-region)
-             )
+    (bind-keys :map match-lines-map
+               :prefix-map delete-lines-map
+               :menu-name "delete lines"
+               :prefix "d"
+               :prefix-docstring "Commands deleting lines against a pattern."
+               ("u" . my/delete-duplicate-lines-nonblank)
+               ("U" . delete-duplicate-lines)
+               )
 
-  (bind-keys :map my/move-prefix-map
-             ;; S-SPC mc
-             :prefix-map my/copy-map
-             :menu-name "copy"
-             :prefix "c"
-             :prefix-docstring "copy code."
-             ("c" . avy-copy-line)
-             ("r" . avy-copy-region)
-             )
+    (bind-keys :map user-cmds-map
+               ;; S-SPC m
+               :prefix-map my/move-prefix-map
+               :menu-name "move"
+               :prefix "m"
+               :prefix-docstring "Move/copy code."
+               ("m"  . avy-move-line)
+               ("r"  . avy-move-region)
+               )
 
-  (bind-keys :map match-lines-map
-             :prefix-map occur-map
-             :menu-name "occur"
-             :prefix "o"
-             :prefix-docstring "Show matching lines in occur buffer."
-             ("m" . my/pcre-multi-occur)
-             ("o" . my/pcre-occur)
-             ("l" . my/pcre-loccur)
-             )
+    (bind-keys :map my/move-prefix-map
+               ;; S-SPC mc
+               :prefix-map my/copy-map
+               :menu-name "copy"
+               :prefix "c"
+               :prefix-docstring "copy code."
+               ("c" . avy-copy-line)
+               ("r" . avy-copy-region)
+               )
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC p
-             :prefix-map my/projects-prefix-map
-             :menu-name "projects"
-             :prefix "p"
-             :prefix-docstring "Commands opening projects."
-             ("c" . my/cvim-source-dir)
-             ("d" . my/dactyl-source-dir)
-             ("s" . my/scripts-dir)
-             ("v" . my/vimperator-source-dir-orig)
-             )
+    (bind-keys :map match-lines-map
+               :prefix-map occur-map
+               :menu-name "occur"
+               :prefix "o"
+               :prefix-docstring "Show matching lines in occur buffer."
+               ("m" . my/pcre-multi-occur)
+               ("o" . my/pcre-occur)
+               ("l" . my/pcre-loccur)
+               )
 
-  (my/def-variable-toggle which-key-show-operator-state-maps)
-  (my/def-variable-toggle show-trailing-whitespace)
-  (my/def-variable-toggle indent-tabs-mode)
-  (my/def-variable-toggle fit-frame-inhibit-fitting-flag)
-  (bind-keys :map user-cmds-map
-             ;; S-SPC t
-             :prefix-map my/toggles-prefix-map
-             :menu-name "toggles"
-             :prefix "t"
-             :prefix-docstring "Commands toggling options."
-             ("l"     . lispyville-mode)
-             ("m"     . evil-matchit-mode)
-             ("M"     . global-evil-matchit-mode)
-             ("O"     . my/toggle-which-key-show-operator-state-maps)
-             ("s"     . evil-surround-mode)
-             ("T"     . my/toggle-indent-tabs-mode)
-             ("w"     . my/toggle-show-trailing-whitespace)
-             ("3"     . my/toggle-evil-mc-mode)
-             ("8"     . evil-visualstar-mode)
-             ("C-n"   . my/toggle-evil-mc-mode-and-cursor)
-             ("RET w" . subword-mode)
-             ("'"     . evil-visual-mark-mode)
-             ("`"     . evil-vimish-fold-mode)
-             ("~"     . variable-pitch-mode)
-             ("="     . my/toggle-indent-function)
-             ("|"     . fci-mode)
-             ("?"     . helm-descbinds-mode)  ;; reactivated by helm - TODO: investigate
-             (":"     . nameless-mode)
-             ("["     . diff-hl-flydiff-mode)
-             ("<f4>"  . my/cycle-shell-command-switch)
-             ("C-l"   . toggle-truncate-lines)
-             ("C-s"   . my/undo-auto-save-make-local-and-toggle)
-             ("C-/"   . evil-search-highlight-persist)
-             ("C-'"   . my/toggle-fit-frame-inhibit-fitting-flag)
-             )
+    (bind-keys :map user-cmds-map
+               ;; S-SPC p
+               :prefix-map my/projects-prefix-map
+               :menu-name "projects"
+               :prefix "p"
+               :prefix-docstring "Commands opening projects."
+               ("c" . my/cvim-source-dir)
+               ("d" . my/dactyl-source-dir)
+               ("s" . my/scripts-dir)
+               ("v" . my/vimperator-source-dir-orig)
+               )
+    (bind-keys :map user-cmds-map
+               :prefix-map my/search-map
+               :menu-name "search"
+               :prefix "s"
+               :prefix-docstring "Commands for searching."
+               ;; S-SPC s
+              )
 
-  (bind-keys :map user-cmds-map
-             :prefix-map follow-prefix-map
-             :prefix "w f"
-             :prefix-docstring "Commands dealing with follow-mode."
-             ("f"   . follow-delete-other-windows-and-split)
-             ("SPC" . follow-mode)
-             )
+    (bind-keys :map my/search-map
+               :prefix-map my/highlight-map
+               :menu-name "highlight"
+               :prefix "h"
+               :prefix-docstring "Commands for highlighting."
+               ;; S-SPC s h
+               ("h" . hlt-highlight-regexp-region)
+               ("H" . my/hlt-highlight-regexp-region-case)
+               ("r" . hlt-highlight-regexp-region)
+               ("R" . my/hlt-highlight-regexp-region-case)
+               ("g" . hlt-highlight-regexp-groups-region)
+               ("G" . my/hlt-highlight-regexp-groups-region-case)
+               ("l" . hlt-highlight-lines)
+               ("t" . hlt-highlighter)
+               ("d" . hlt-unhighlight-regexp-groups-region)
+               ("u" . hlt-unhighlight-all-prop)
+               ("." . symbol-overlay-mode)
+               ("m" . symbol-overlay-put)
+               ("N" . symbol-overlay-switch-forward)
+               ("P" . symbol-overlay-switch-backward)
+               ("U" . symbol-overlay-remove-all))
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC x
-             :prefix-map my/structured-text-prefix-map
-             :menu-name "structured text"
-             :prefix "x"
-             :prefix-docstring "Commands dealing with structured text."
-             ("sn" . sort-numeric-fields)
-             )
+    (which-key-add-key-based-replacements
+        "S-SPC h"        "highlight regexp"
+      "S-SPC H"        "highlight regexp (case-sensitive)"
+      "S-SPC r"        "highlight regexp"
+      "S-SPC R"        "highlight regexp (case-sensitive)"
+      "S-SPC g"        "highlight regexp groups"
+      "S-SPC G"        "highlight regexp groups (case-sensitive)"
+      "S-SPC l"        "highlight whole lines"
+      "S-SPC t"        "highlight with mouse"
+      "S-SPC u"        "remove hlt highlighting"
+      "C-M-h h"        "highlight regexp"
+      "C-M-h H"        "highlight regexp (case-sensitive)"
+      "C-M-h r"        "highlight regexp"
+      "C-M-h R"        "highlight regexp (case-sensitive)"
+      "C-M-h g"        "highlight regexp groups"
+      "C-M-h G"        "highlight regexp groups (case-sensitive)"
+      "C-M-h l"        "highlight whole lines"
+      "C-M-h t"        "highlight with mouse"
+      "C-M-h u"        "remove hlt highlighting"
+      )
+    (evil-define-key '(normal visual) global-map (kbd "C-M-h") nil)
+    (global-set-key (kbd "C-M-h") 'my/highlight-map)
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC x r
-             :prefix-map my/rectangle-prefix-map
-             :menu-name "rectangle"
-             :prefix "x r"
-             :prefix-docstring "Commands operating on rectangles."
-             ("c" . clear-rectangle)
-             ("n" . rectangle-number-lines-interactive)
-             ("N" . rectangle-number-lines)
-             ("o" . open-rectangle)
-             ("t" . string-rectangle-history)
-             )
+    (defun my/hlt-highlight-regexp-region-case ()
+      (interactive)
+      (let ((case-fold-search nil))
+        (call-interactively 'hlt-highlight-regexp-region)))
+    (defun my/hlt-highlight-regexp-groups-region-case ()
+      (interactive)
+      (let ((case-fold-search nil))
+        (call-interactively 'hlt-highlight-regexp-groups-region)))
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC y
-             :prefix-map my/yank-map
-             :menu-name "yank"
-             :prefix "y"
-             :prefix-docstring "Commands to copy text to clipboard and kill-ring"
-             ("d"   . my/yank-directory)
-             ("g g" . my/git-yank-commit-messages)
-             ("i"   . my/yank-buffer-initial-integers)
-             ("I"   . my/yank-buffer-first-integers)
-             ("n"   . my/yank-filename)
-             ("l a" . my/link-hint-copy-all-links)
-             ("l f" . link-hint-copy-link)
-             ("l F" . link-hint-copy-multiple-links)
-             ("l ." . link-hint-copy-link-at-point)
-             ("p"   . my/yank-path)
-             (". l" . link-hint-copy-link-at-point)
-             (". s" . my/yank-sexp-at-point)
-             (". w" . my/yank-word-at-point)
-             ("\""  . my/avy-yank-inner-quotes)
-             )
+    (my/def-variable-toggle which-key-show-operator-state-maps)
+    (my/def-variable-toggle show-trailing-whitespace)
+    (my/def-variable-toggle indent-tabs-mode)
+    (my/def-variable-toggle fit-frame-inhibit-fitting-flag)
+    (bind-keys :map user-cmds-map
+               ;; S-SPC t
+               :prefix-map my/toggles-prefix-map
+               :menu-name "toggles"
+               :prefix "t"
+               :prefix-docstring "Commands toggling options."
+               ("l"     . lispyville-mode)
+               ("m"     . evil-matchit-mode)
+               ("M"     . global-evil-matchit-mode)
+               ("O"     . my/toggle-which-key-show-operator-state-maps)
+               ("s"     . evil-surround-mode)
+               ("T"     . my/toggle-indent-tabs-mode)
+               ("w"     . my/toggle-show-trailing-whitespace)
+               ("3"     . my/toggle-evil-mc-mode)
+               ("8"     . evil-visualstar-mode)
+               ("C-n"   . my/toggle-evil-mc-mode-and-cursor)
+               ("RET w" . subword-mode)
+               ("'"     . evil-visual-mark-mode)
+               ("`"     . evil-vimish-fold-mode)
+               ("~"     . variable-pitch-mode)
+               ("="     . my/toggle-indent-function)
+               ("|"     . fci-mode)
+               ("?"     . helm-descbinds-mode)  ;; reactivated by helm - TODO: investigate
+               (":"     . nameless-mode)
+               ("["     . diff-hl-flydiff-mode)
+               ("<f4>"  . my/cycle-shell-command-switch)
+               ("C-l"   . toggle-truncate-lines)
+               ("C-s"   . my/undo-auto-save-make-local-and-toggle)
+               ("C-/"   . evil-search-highlight-persist)
+               ("C-'"   . my/toggle-fit-frame-inhibit-fitting-flag)
+               )
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC -
-             :prefix-map my/diff-prefix-map
-             :menu-name "diff"
-             :prefix "-"
-             :prefix-docstring "Commands for diffing files or text."
-             ("r r" . ediff-regions-linewise)
-             ("r w" . ediff-regions-wordwise)
-             )
+    (bind-keys :map user-cmds-map
+               :prefix-map follow-prefix-map
+               :prefix "w f"
+               :prefix-docstring "Commands dealing with follow-mode."
+               ("f"   . follow-delete-other-windows-and-split)
+               ("SPC" . follow-mode)
+               )
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC !
-             :prefix-map my/external-apps-prefix
-             :menu-name "external apps"
-             :prefix "!"
-             :prefix-docstring "Commands dealing with external applications."
-             ("f b" . helm-firefox-bookmarks)
-             )
+    (bind-keys :map user-cmds-map
+               ;; S-SPC x
+               :prefix-map my/structured-text-prefix-map
+               :menu-name "structured text"
+               :prefix "x"
+               :prefix-docstring "Commands dealing with structured text."
+               ("a"  . my/append-to-region)
+               ("sn" . sort-numeric-fields)
+               )
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC &
-             :prefix-map my/diff-prefix-map
-             :menu-name "diff"
-             :prefix "&"
-             :prefix-docstring "Diff commands."
-             ("f"   . diff-buffer-with-file)
-             ("b"   . ediff-buffers)
-             ("3"   . ediff-buffers3)
-             )
-  (bind-keys :map my/diff-prefix-map
-             ;; S-SPC & m
-             :prefix-map my/merge-prefix-map
-             :menu-name "merge"
-             :prefix "m"
-             :prefix-docstring "Merge commands."
-             ("m" . ediff-merge-files)
-             ("M" . ediff-merge-files-with-ancestor)
-             ("b" . ediff-merge-buffers)
-             ("B" . ediff-merge-buffers-with-ancestor)
-             ("d" . ediff-merge-directories)
-             ("D" . ediff-merge-directories-with-ancestor)
-             )
+    (bind-keys :map user-cmds-map
+               ;; S-SPC x r
+               :prefix-map my/rectangle-prefix-map
+               :menu-name "rectangle"
+               :prefix "x r"
+               :prefix-docstring "Commands operating on rectangles."
+               ("c" . clear-rectangle)
+               ("n" . rectangle-number-lines-interactive)
+               ("N" . rectangle-number-lines)
+               ("o" . open-rectangle)
+               ("t" . string-rectangle-history)
+               )
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC |
-             :prefix-map my/column-prefix-map
-             :menu-name "column"
-             :prefix "|"
-             :prefix-docstring "Column commands."
-             ("e" . my/extend-to-column)
-             ("|" . my/add-column-marker)
-             )
+    (bind-keys :map user-cmds-map
+               ;; S-SPC y
+               :prefix-map my/yank-map
+               :menu-name "yank"
+               :prefix "y"
+               :prefix-docstring "Commands to copy text to clipboard and kill-ring"
+               ("d"   . my/yank-directory)
+               ("g g" . my/git-yank-commit-messages)
+               ("i"   . my/yank-buffer-initial-integers)
+               ("I"   . my/yank-buffer-first-integers)
+               ("n"   . my/yank-filename)
+               ("l a" . my/link-hint-copy-all-links)
+               ("l f" . link-hint-copy-link)
+               ("l F" . link-hint-copy-multiple-links)
+               ("l ." . link-hint-copy-link-at-point)
+               ("p"   . my/yank-path)
+               (". l" . link-hint-copy-link-at-point)
+               (". s" . my/yank-sexp-at-point)
+               (". w" . my/yank-word-at-point)
+               ("\""  . my/avy-yank-inner-quotes)
+               )
 
-  (bind-keys :map user-cmds-map
-             ;; S-SPC <f3>
-             :prefix-map my/snippets-prefix-map
-             :prefix "<f3>"
-             :prefix-docstring "Snippets and templates commands"
-             ("a"      . aya-create-one-line)
-             ("c"      . aya-create)
-             ("n"      . my/aya-create-snippet-with-newline)
-             ("r"      . my/yas-reload-all-no-jit)
-             ("s"      . aya-yank-snippet)
-             ("v"      . yas-visit-snippet-file)
-             ("x"      . aya-expand)
-             ("y"      . yas-new-snippet)
-             ("<tab>"  . helm-yas-complete)
-             ("<f3>"   . aya-open-line)
-             ("M-<f3>" . aya-open-line)
-             )
-  (global-set-key (kbd "M-<f3>") 'my/snippets-prefix-map)
+    (bind-keys :map user-cmds-map
+               :prefix-map my/at-point-map
+               :menu-name "at-point"
+               :prefix "."
+               :prefix-docstring "Commands dealing with the thing at point."
+               ("f" . ffap)
+               ("l" . markdown-follow-thing-at-point)
+               )
 
-  (which-key-add-key-based-replacements
-    "S-SPC K"    "keymaps"
-    "S-SPC X"    "structured text"
-    "S-SPC y g"  "git"
-    "S-SPC y ."  "at-point"
-    "S-SPC !"    "external apps"
-    "S-SPC &"    "diff"
-    "S-SPC & m"  "merge"
-    "S-SPC |"    "column"
+    ;; S-SPC -
+    (bind-keys :map user-cmds-map
+               :prefix-map my/diff-prefix-map
+               :menu-name "diff"
+               :prefix "-"
+               :prefix-docstring "Commands for diffing files or text."
+               ("r r" . ediff-regions-linewise)
+               ("r w" . ediff-regions-wordwise)
+               )
+
+    (bind-keys :map user-cmds-map
+               ;; S-SPC !
+               :prefix-map my/external-apps-prefix
+               :menu-name "external apps"
+               :prefix "!"
+               :prefix-docstring "Commands dealing with external applications."
+               ("f b" . helm-firefox-bookmarks)
+               )
+
+    (bind-keys :map user-cmds-map
+               ;; S-SPC &
+               :prefix-map my/diff-prefix-map
+               :menu-name "diff"
+               :prefix "&"
+               :prefix-docstring "Diff commands."
+               ("f"   . diff-buffer-with-file)
+               ("b"   . ediff-buffers)
+               ("3"   . ediff-buffers3)
+               )
+    (bind-keys :map my/diff-prefix-map
+               ;; S-SPC & m
+               :prefix-map my/merge-prefix-map
+               :menu-name "merge"
+               :prefix "m"
+               :prefix-docstring "Merge commands."
+               ("m" . ediff-merge-files)
+               ("M" . ediff-merge-files-with-ancestor)
+               ("b" . ediff-merge-buffers)
+               ("B" . ediff-merge-buffers-with-ancestor)
+               ("d" . ediff-merge-directories)
+               ("D" . ediff-merge-directories-with-ancestor)
+               )
+
+    (bind-keys :map user-cmds-map
+               ;; S-SPC |
+               :prefix-map my/column-prefix-map
+               :menu-name "column"
+               :prefix "|"
+               :prefix-docstring "Column commands."
+               ("e" . my/extend-to-column)
+               ("|" . my/add-column-marker)
+               )
+
+    (bind-keys :map user-cmds-map
+               ;; S-SPC <f3>
+               :prefix-map my/snippets-prefix-map
+               :prefix "<f3>"
+               :prefix-docstring "Snippets and templates commands"
+               ("a"      . aya-create-one-line)
+               ("c"      . aya-create)
+               ("n"      . my/aya-create-snippet-with-newline)
+               ("r"      . my/yas-reload-all-no-jit)
+               ("s"      . aya-yank-snippet)
+               ("v"      . yas-visit-snippet-file)
+               ("x"      . aya-expand)
+               ("y"      . yas-new-snippet)
+               ("<tab>"  . helm-yas-complete)
+               ("<f3>"   . aya-open-line)
+               ("M-<f3>" . aya-open-line)
+               )
+    (global-set-key (kbd "M-<f3>") 'my/snippets-prefix-map)
+
+    (which-key-add-key-based-replacements
+        "" ""
+      "S-SPC h"    "help"
+      "S-SPC K"    "keymaps"
+      "S-SPC X"    "structured text"
+      "S-SPC y g"  "git"
+      "S-SPC y ."  "at-point"
+      "S-SPC !"    "external apps"
+      "S-SPC &"    "diff"
+      "S-SPC & m"  "merge"
+      "S-SPC |"    "column"
+      )
     )
 
   ;; ───────────────────────────────────────────────────────────────────────────────
@@ -3968,33 +4057,6 @@ If one delimiter is empty, leave a space at beginning or end."
          (kbd "M-;")   'evil-repeat-find-char-reverse
          )
        ))
-
-  ;; ───────────────────────────────────────────────────────────────────────────────
-  ;; ╭─────────────────────────────────────────────────────╮
-  ;; │ highlighting -- symbol-overlay and highlight-phrase │
-  ;; ╰─────────────────────────────────────────────────────╯
-
-  (evil-define-key '(normal visual) global-map (kbd "C-M-h") nil)
-  (bind-keys
-   :map symbol-overlay-map
-   ("C-M-h"       . my/toggle-highlight-region)
-   ("<backspace>" . hlt-unhighlight-regexp-groups-region)
-   ("C-M-u"       . hlt-unhighlight-all-prop)
-   ("M-h"         . symbol-overlay-mode)
-   ("N"           . symbol-overlay-switch-forward)
-   ("P"           . symbol-overlay-switch-backward)
-   ("R"           . symbol-overlay-remove-all))
-
-  (defun my/toggle-highlight-region (term)
-    (interactive "sHighlight term:")
-    (if (string-empty-p term)
-        (hlt-unhighlight-regexp-groups-region)
-      (let ((case-fold-search t))
-        (hlt-highlight-regexp-groups-region nil nil term))))
-
-  (defun my/hlt-unhighlight-last ()
-    (interactive)
-    (hlt-unhighlight-all-prop nil nil))
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭─────────╮
