@@ -1487,6 +1487,8 @@ COUNT, BEG, END, and TYPE have no effect."
      ( ?#            "#{" . "}"   )
      ( ?b             "(" . ")"   )
      ( ?B             "{" . "}"   )
+     ( ?L             "⌊" . "⌋"   )
+     ( ?7             "⌈" . "⌉"   )
      ( ?>             "<" . ">"   )
      ( ?<            "< " . " >"  )
      ( ?$            "${" . "}"   )
@@ -1494,6 +1496,8 @@ COUNT, BEG, END, and TYPE have no effect."
      ( ?\C-/        "/* " . " */" )
      ( ?\C-\\  "jsb -d¦ " . "¦"   )
      ( ?\C-`   "`"        . "`"   )    ;; so <C-`><C-`> can backquote symbol
+     ( ?\C-*         "**" . "**"  )
+     ( ?\C-,         " "   . " "   )    ;; thin space
      (?t . evil-surround-read-tag)
      (?, . evil-surround-read-tag)
      (?f . evil-surround-function)
@@ -1594,6 +1598,14 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?1 ?0) . ?\x2152)    ;; ⅒
           ((?. ? ) . ?\x2024)    ;; ․ 1-dot leader
           ((?. ?/) . ?\x2025)    ;; ‥ 2-dot leader
+          ((?1 ?\x29) . ?\x2474) ;; ⑴
+          ((?2 ?\x29) . ?\x2475) ;; ⑵
+          ((?\x28 ?1) . ?\x2460) ;; ①
+          ((?\x28 ?2) . ?\x2461) ;; ②
+          ((?\x28 ?3) . ?\x2462) ;; ③
+          ((?\x28 ?4) . ?\x2463) ;; ④
+          ((?\x28 ?5) . ?\x2464) ;; ⑤
+          ((?\x28 ?6) . ?\x2465) ;; ⑥
           ;; compose combinations
           ((?L ?\x5b) . ?\x230a)    ;; ⌊
           ((?L ?\x5d) . ?\x230b)    ;; ⌋
