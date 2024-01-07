@@ -1585,10 +1585,14 @@ If one delimiter is empty, leave a space at beginning or end."
   ;; │           │
   ;; ╰───────────╯
 
+  (defun my/apu-mode-hook ()
+    (evilified-state-evilify-map apu-mode-map
+        :mode apu-mode))
+  (add-hook 'apu-mode-hook 'my/apu-mode-hook)
+
   ;; ╭──────────╮
   ;; │ Digraphs │
   ;; ╰──────────╯
-
 
   (setq evil-digraphs-table-user
         '(
@@ -2388,17 +2392,33 @@ If one delimiter is empty, leave a space at beginning or end."
                )
 
     (bind-keys :map user-cmds-map
+               ;; S-SPC h
+               :prefix-map my/help-prefix-map
+               :menu-name "help"
+               :prefix "h"
+               :prefix-docstring "Help commands."
+               )
+
+    (bind-keys :map my/help-prefix-map
+               :prefix-map help-character-prefix-map
+               :prefix "c"
+               :prefix-docstring "Commands to download additional documentation."
+               ("a" . apropos-char)
+               ("d" . describe-char)
+               )
+
+    (bind-keys :map my/help-prefix-map
                :prefix-map help-download-prefix-map
-               :prefix "h w"
+               :prefix "w"
                :prefix-docstring "Commands to download additional documentation."
                ("r" . github-download-README)
                ("w" . github-clone-wiki)
                )
 
-    (bind-keys :map user-cmds-map
-               :prefix-map find-function-prefix-map
+    (bind-keys :map my/help-prefix-map
+               :prefix-map help-download-prefix-map
                :menu-name "find-function-"
-               :prefix "h /"
+               :prefix "/"
                ("f" . find-function)
                ("k" . find-function-on-key)
                ("h" . describe-function)
