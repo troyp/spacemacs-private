@@ -1610,6 +1610,12 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?\x28 ?4) . ?\x2463) ;; ④
           ((?\x28 ?5) . ?\x2464) ;; ⑤
           ((?\x28 ?6) . ?\x2465) ;; ⑥
+          ((?> ?-)    . ?\x2794) ;; ➔ heavy wide-headed rightwards arrow
+          ((?\x22 ?\x27) . ?\x301e) ;; 〞
+          ((?? ?!)    . ?\x2048) ;; ⁈
+          ((?! ??)    . ?\x2049) ;; ⁉
+          ((?: ?:)    . ?\xfe55) ;; ﹕ small colon
+          ((?? ??)    . ?\xfe56) ;; ﹖ small question mark
           ;; compose combinations
           ((?L ?\x5b) . ?\x230a)    ;; ⌊
           ((?L ?\x5d) . ?\x230b)    ;; ⌋
@@ -1633,6 +1639,7 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?\x3b ?\x3b)
                    . ?\xff1b)    ;; ； fullwidth semicolon
           ((?\\ ?,) . ?\x2009)   ;; thin space
+          ((?  ? ) . ?\x00a0)    ;; no-break space
           ;; kragen compose combinations
           ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
           ((?T ?,) . ?\x01ae)    ;; Ʈ (replaces Ţ which is also available on ,T) - for consistency
@@ -1641,8 +1648,10 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?n ?,) . ?\x0273)    ;; ɳ (replaces ţ which is also available on ,n)
           ((?, ?n) . ?\x0146)    ;; ņ (default, but obscured by binding above)
           ((?, ?N) . ?\x0145)    ;; Ņ (default, but obscured by binding above)
+          ((?2 ?:) . ?\x2237)    ;; ∷ (proportion)
           ((?x ?x) . ?\x00d7)    ;; × (multiply)
-          ((?* ?x) . ?\x2A2F)    ;; cross product
+          ((?* ?x) . ?\x2A2F)    ;; ⨯ (cross product)
+          ((?" ?") . ?\x3003)    ;; 〃 (ditto mark)
           ((?< ?|) . ?\x21b5)    ;; ↵
           ))
 
