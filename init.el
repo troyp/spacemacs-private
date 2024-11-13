@@ -1615,11 +1615,15 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?\x28 ?5) . ?\x2464) ;; ⑤
           ((?\x28 ?6) . ?\x2465) ;; ⑥
           ((?> ?-)    . ?\x2794) ;; ➔ heavy wide-headed rightwards arrow
+          ((?- ?})    . ?\x1f80a) ;; 🠊 rightwards arrow with large triangle arrowhead
+          ((?- ?{)    . ?\x1f808) ;; 🠈 leftwards arrow with large triangle arrowhead
           ((?\x22 ?\x27) . ?\x301e) ;; 〞
           ((?? ?!)    . ?\x2048) ;; ⁈
           ((?! ??)    . ?\x2049) ;; ⁉
           ((?: ?:)    . ?\xfe55) ;; ﹕ small colon
           ((?? ??)    . ?\xfe56) ;; ﹖ small question mark
+          ((?< ?=)    . ?\x2264) ;; ≤
+          ((?= ?<)    . ?\x21d0) ;; ⇐
           ;; compose combinations
           ((?L ?\x5b) . ?\x230a)    ;; ⌊
           ((?L ?\x5d) . ?\x230b)    ;; ⌋
@@ -1657,6 +1661,57 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?* ?x) . ?\x2A2F)    ;; ⨯ (cross product)
           ((?" ?") . ?\x3003)    ;; 〃 (ditto mark)
           ((?< ?|) . ?\x21b5)    ;; ↵
+
+          ((?* ?a) . ?\x03B1)    ;; α GREEK SMALL LETTER ALPHA
+          ((?* ?b) . ?\x03B2)    ;; β GREEK SMALL LETTER BETA
+          ((?* ?c) . ?\x03C8)    ;; ψ GREEK SMALL LETTER PSI
+          ((?* ?d) . ?\x03B4)    ;; δ GREEK SMALL LETTER DELTA
+          ((?* ?e) . ?\x03B5)    ;; ε GREEK SMALL LETTER EPSILON
+          ((?* ?f) . ?\x03C6)    ;; φ GREEK SMALL LETTER PHI
+          ((?* ?g) . ?\x03B3)    ;; γ GREEK SMALL LETTER GAMMA
+          ((?* ?h) . ?\x03B7)    ;; η GREEK SMALL LETTER ΕΤΑ
+          ((?* ?i) . ?\x03B9)    ;; ι GREEK SMALL LETTER ΙΟΤΑ
+          ((?* ?j) . ?\x03BE)    ;; ξ GREEK SMALL LETTER XI
+          ((?* ?k) . ?\x03BA)    ;; κ GREEK SMALL LETTER KAPPA
+          ((?* ?l) . ?\x03BB)    ;; λ GREEK SMALL LETTER LAMBDA
+          ((?* ?m) . ?\x03BC)    ;; μ GREEK SMALL LETTER MU
+          ((?* ?n) . ?\x03BD)    ;; ν GREEK SMALL LETTER NU
+          ((?* ?o) . ?\x03BF)    ;; ο GREEK SMALL LETTER OMICRON
+          ((?* ?p) . ?\x03C0)    ;; π GREEK SMALL LETTER PI
+          ((?* ?.) . ?\x037E)    ;; ; GREEK QUESTION MARK
+          ((?* ?r) . ?\x03C1)    ;; ρ GREEK SMALL LETTER RHO
+          ((?* ?s) . ?\x03C3)    ;; σ GREEK SMALL LETTER SIGMA
+          ((?* ?t) . ?\x03C4)    ;; τ GREEK SMALL LETTER TAU
+          ((?* ?u) . ?\x03B8)    ;; θ GREEK SMALL LETTER THETA
+          ((?* ?v) . ?\x03C9)    ;; ω GREEK SMALL LETTER OMEGA
+          ((?* ?w) . ?\x03C2)    ;; ς GREEK SMALL LETTER FINAL SIGMA
+          ((?* ?x) . ?\x03C7)    ;; χ GREEK SMALL LETTER CHI
+          ((?* ?y) . ?\x03C5)    ;; υ GREEK SMALL LETTER UPSILON
+          ((?* ?z) . ?\x03B6)    ;; ζ GREEK SMALL LETTER ZETA
+          ((?* ?A) . ?\x0391)    ;; Α GREEK CAPITAL LETTER ALPHA
+          ((?* ?B) . ?\x0392)    ;; Β GREEK CAPITAL LETTER BETA
+          ((?* ?C) . ?\x03A8)    ;; Ψ GREEK CAPITAL LETTER PSI
+          ((?* ?D) . ?\x0394)    ;; Δ GREEK CAPITAL LETTER DELTA
+          ((?* ?E) . ?\x0395)    ;; Ε GREEK CAPITAL LETTER EPSILON
+          ((?* ?F) . ?\x03A6)    ;; Φ GREEK CAPITAL LETTER PHI
+          ((?* ?G) . ?\x0393)    ;; Γ GREEK CAPITAL LETTER GAMMA
+          ((?* ?H) . ?\x0397)    ;; Η GREEK CAPITAL LETTER ΕΤΑ
+          ((?* ?I) . ?\x0399)    ;; Ι GREEK CAPITAL LETTER ΙΟΤΑ
+          ((?* ?J) . ?\x039E)    ;; Ξ GREEK CAPITAL LETTER XI
+          ((?* ?K) . ?\x039A)    ;; Κ GREEK CAPITAL LETTER KAPPA
+          ((?* ?L) . ?\x039B)    ;; Λ GREEK CAPITAL LETTER LAMBDA
+          ((?* ?M) . ?\x039C)    ;; Μ GREEK CAPITAL LETTER MU
+          ((?* ?N) . ?\x039D)    ;; Ν GREEK CAPITAL LETTER NU
+          ((?* ?O) . ?\x039F)    ;; Ο GREEK CAPITAL LETTER OMICRON
+          ((?* ?P) . ?\x03A0)    ;; Π GREEK CAPITAL LETTER PI
+          ((?* ?R) . ?\x03A1)    ;; Ρ GREEK CAPITAL LETTER RHO
+          ((?* ?S) . ?\x03A3)    ;; Σ GREEK CAPITAL LETTER SIGMA
+          ((?* ?T) . ?\x03A4)    ;; Τ GREEK CAPITAL LETTER TAU
+          ((?* ?U) . ?\x0398)    ;; Θ GREEK CAPITAL LETTER THETA
+          ((?* ?V) . ?\x03A9)    ;; Ω GREEK CAPITAL LETTER OMEGA
+          ((?* ?X) . ?\x03A7)    ;; Χ GREEK CAPITAL LETTER CHI
+          ((?* ?Y) . ?\x03A5)    ;; Υ GREEK CAPITAL LETTER UPSILON
+          ((?* ?Z) . ?\x0396)    ;; Ζ GREEK CAPITAL LETTER ZETA
           ))
 
   (defun my/evil-enter-digraphs ()
