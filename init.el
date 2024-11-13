@@ -4272,6 +4272,31 @@ If one delimiter is empty, leave a space at beginning or end."
     (interactive "r")
     (my/shell-command-replace-region start end "sed 's/+/%2B/g' | xargs -0 urlencode -d"))
 
+  (defun my/add-trailing-semicolon (beg end)
+    (interactive "r")
+    (if (region-active-p)
+        (let* ((range (evil-visual-range))
+               (beg (nth 0 range))
+               (end (nth 1 range)))
+          (my/evil-substitute beg end ";?$" ";" '("g")))
+      (end-of-line)
+      (insert-char 59)))
+
+  (defun my/add-trailing-semicolon (beg end)
+    (interactive "r")
+    (if (region-active-p)
+        (let* ((range (evil-visual-range))
+               (beg (nth 0 range))
+               (end (nth 1 range)))
+          (my/evil-substitute beg end ";?$" ";" '("g")))
+      (end-of-line)
+      (insert-char 59)))
+
+  (defun my/open-js-buffer ()
+    (interactive)
+    (switch-to-buffer "js-scratch")
+    (js2-mode))
+
   (my/def-variable-local-cycle js-indent-level 4 2)
   (setq js-switch-indent-offset 2)
 
@@ -7144,14 +7169,18 @@ Ie., each line is treated as a distinct paragraph.
 Comments are first uncommented using `evilnc-comment-or-uncomment-region' before
 wrapping and then re-commented."
     (interactive "r")
+    (require 'evil-nerd-commenter)
     (let ((comment? (evilnc--in-comment-p beg)))
-      (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
-      (when comment? (evilnc--comment-or-uncomment-region beg end))
-      (replace-string "\n" "\n\n" nil beg end)
-      (evil-active-region 1)
-      (fill-paragraph nil t)
-      (replace-string "\n\n" "\n" nil beg end)
-      (when comment? (evilnc--comment-or-uncomment-region beg end))))
+      (save-excursion
+        (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+        (unless (region-active-p) (evil-visual-line))
+        (when comment? (evilnc--comment-or-uncomment-region beg end))
+        (replace-string "\n" "\n\n" nil beg end)
+        (evil-active-region 1)
+        (fill-paragraph nil t)
+        (replace-string "\n\n" "\n" nil beg end)
+        (replace-string "\n$" "" nil beg end)
+        (when comment? (evilnc--comment-or-uncomment-region beg end)))))
 
   ;; redefine | to use a default of `fill-column' rather than 0.
   (evil-define-motion my/evil-goto-column (count)
@@ -7506,6 +7535,16 @@ With a prefix argument, leaves any help buffer open."
       (let ((helpbuffer (get-buffer-window "*Help*")))
         (when helpbuffer
           (quit-window nil helpbuffer)))))
+
+  (defun my/kill-other-buffer ()
+    "Kill the other buffer and close its window."
+    (interactive)
+    (save-excursion
+      (let ((orig-buffer (current-buffer)))
+        (when (> (count-windows) 1)
+          (other-window 1 nil)
+          (unless (eq orig-buffer (current-buffer))
+            (kill-buffer))))))
 
   (defun my/kill-other-buffer-and-window ()
     "Kill the other buffer and close its window."
