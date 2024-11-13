@@ -4481,8 +4481,11 @@ Committer: %cN <%cE>"))
   (bind-keys :map spacemacs-markdown-mode-map
              ("i C-l"  . my/markdown-gh-linkify-heading)
              ("n"      . my/markdown-next-link)
+             ("t t"    . orgtbl-mode)
+             ("t x"    . markdown-toggle-gfm-checkbox)
              ("T s"    . markdown-table-sort-lines)
              ("T t"    . markdown-table-transpose)
+             ("T T"    . spacemacs//cleanup-org-tables)
              ("x ="    . my/uppercase-double-underline)
              ("1"      . my/markdown-underline-heading)
              ("8"      . my/md-bold-item-hd-to-colon)
@@ -4492,6 +4495,8 @@ Committer: %cN <%cE>"))
              ("M-h"    . my/github-heading-to-readme-link)
              ("M-l"    . my/github-linkify-heading)
              (","      . markdown-view-mode)
+             ("}"      . my/forward-paragraph)
+             ("{"      . my/backward-paragraph)
              )
 
   (which-key-add-major-mode-key-based-replacements 'markdown-mode
@@ -4503,6 +4508,11 @@ Committer: %cN <%cE>"))
       ","  'my/markdown-mode
       )
 
+  (defun my/forward-paragraph (n)
+    (interactive "p")
+    (forward-paragraph n))
+
+  (require 'markdown-mode)
   (bind-keys :map markdown-view-mode-map
              ("M-n"  . evil-scroll-line-up)
              ("M-p"  . evil-scroll-line-down)
@@ -4510,7 +4520,10 @@ Committer: %cN <%cE>"))
 
   (defun markdown-init-fn ()
     (interactive)
+    (setq-local evil-scroll-count 28)
     (define-key markdown-mode-mouse-map (kbd "<mouse-2>") 'my/mouse-set-point-and-browse-url)
+    ;; (remove-hook 'before-save-hook 'spacemacs//cleanup-org-tables)
+    (setq-local before-save-hook nil)
     )
 
   (defun my/markdown-mode ()
@@ -4557,6 +4570,19 @@ Committer: %cN <%cE>"))
     (my/async-shell-command-no-window
      (format "remarkable '%s'" file)))
 
+  (defun my/grip-port () (s-trim (shell-command-to-string "~/.scripts/nextport 6419")))
+  (defun my/markdown-view-with-grip (file)
+    "Serve FILE with grip."
+    (interactive (list (buffer-file-name)))
+    (progn
+      (let ((port (my/grip-port)))
+        (my/async-shell-command-no-window
+         (format "grip '%s' %s" (buffer-file-name) port)
+         (get-buffer "\\*My Shell Output\\*"))
+        (run-with-timer
+         1.0 nil
+         (lambda () (start-process "localhost" nil my/markdown-browser (s-append port "http://localhost:")))))))
+
   (defun my/markdown-view (file &optional app)
     "View markdown FILE with APP.
 
@@ -4584,12 +4610,7 @@ current prefix argument.
 
   (defvar my/markdown-apps
     (list
-     '(grip/browser . (progn (my/async-shell-command-no-window
-                              (format "grip '%s'" (buffer-file-name)))
-                             (run-with-timer
-                              1.0 nil
-                              (fn: start-process
-                                   "localhost" nil my/markdown-browser "http://localhost:6419"))))
+     '(grip/browser . (call-interactively 'my/markdown-view-with-grip))
      '(xdg/html     . (my/markdown-export-to-html-and-view))
      '(browser/md   . (my/async-shell-command-no-window (format "%s 'file://%s'" my/markdown-browser file)))
      '(remarkable   . (my/async-shell-command-no-window (format "remarkable '%s'" file))))
