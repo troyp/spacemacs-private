@@ -1817,13 +1817,12 @@ If one delimiter is empty, leave a space at beginning or end."
   (global-set-key (kbd "M-n") 'evil-scroll-line-up)
   (global-set-key (kbd "M-k") 'scroll-up-line)
   (global-set-key (kbd "M-j") 'scroll-down-line)
-  (global-set-key (kbd "M-K")
-                  (lambda ()
-                    (interactive) (scroll-other-window 1)))
-  (global-set-key (kbd "M-J")
-                  (lambda ()
-                    "Scroll other window down"
-                    (interactive) (scroll-other-window-down 1)))
+  (global-set-key (kbd "C-M-n") 'scroll-up-line)
+  (global-set-key (kbd "C-M-p") 'scroll-down-line)
+  (global-set-key (kbd "C-M-S-J") (fn! (scroll-down 1)))
+  (global-set-key (kbd "C-M-S-K") (fn! (scroll-down -1)))
+  (global-set-key (kbd "M-K") (fn! (scroll-other-window 1)))
+  (global-set-key (kbd "M-J") (fn! (scroll-other-window-down 1)))
 
   (global-set-key (kbd "C-M-d") 'scroll-other-window)
   (global-set-key (kbd "C-M-u") 'scroll-other-window-down)
@@ -1846,10 +1845,9 @@ If one delimiter is empty, leave a space at beginning or end."
   (global-set-key (kbd "C-S-J") 'move-text-down)
   (global-set-key (kbd "C-S-K") 'move-text-up)
 
-  ;; evil-arg
-  (global-set-key (kbd "M-j") 'evil-forward-arg)
-  (global-set-key (kbd "M-k") 'evil-backward-arg)
-
+  ;; ;; evil-arg
+  ;; (global-set-key (kbd "M-j") 'evil-forward-arg)
+  ;; (global-set-key (kbd "M-k") 'evil-backward-arg)
 
   ;; remove C-S-SPC from cua-global-keymap and bind to my/insert-space-after
   (define-key cua-global-keymap (kbd "C-S-SPC") nil)
@@ -1861,7 +1859,6 @@ If one delimiter is empty, leave a space at beginning or end."
 
   (global-set-key (kbd "C-`") 'my/surround-symbol)
 
-  (global-set-key [\M-f12] 'shell-pop)
   (global-set-key (kbd "C-'") 'shell-pop)
 
   (global-set-key (kbd "C-x a C-'") 'abbrev-prefix-mark)
@@ -1872,8 +1869,9 @@ If one delimiter is empty, leave a space at beginning or end."
   (global-set-key [f1] 'help-map)
   (global-set-key (kbd "<C-f1>") 'describe-prefix-bindings)
   (global-set-key (kbd "<M-f1>") 'describe-key)
+  (global-set-key (kbd "<C-f4>") 'spacemacs/default-pop-shell)
   (global-set-key [f5] 'spacemacs-cmds)
-  (global-set-key [\C-f5] 'which-key-show-top-level)
+  (global-set-key (kbd "<C-f5>") 'which-key-show-top-level)
   (global-set-key (kbd "<C-f9>") 'evil-normal-state)
   (global-set-key (kbd "<M-f9>") 'evil-evilified-state)
   (global-set-key (kbd "<S-f9>") 'my/current-mode-and-state)
@@ -1923,6 +1921,10 @@ If one delimiter is empty, leave a space at beginning or end."
   (global-set-key (kbd "<C-mouse-4>") 'spacemacs/zoom-frm-in)
   (global-set-key (kbd "<C-mouse-5>") 'spacemacs/zoom-frm-out)
   (global-set-key (kbd "<double-mouse-1>") 'evil-toggle-fold)
+  ;; (global-set-key (kbd "<M-Drag-mouse-1>") 'mouse-set-secondary)
+  ;; (global-set-key (kbd "<M-mouse-1>") 'mouse-start-secondary)
+  ;; (global-set-key (kbd "<M-mouse-2>") 'mouse-yank-secondary)
+  ;; (global-set-key (kbd "<M-mouse-3>") 'mouse-secondary-save-then-kill)
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭───────────────────────────╮
@@ -1946,6 +1948,8 @@ If one delimiter is empty, leave a space at beginning or end."
   (define-key evil-normal-state-map [delete] 'kill-this-buffer)
   (define-key evil-normal-state-map [S-delete] 'delete-window)
   (define-key evil-normal-state-map [C-delete] 'kill-buffer-and-window)
+  (define-key evil-normal-state-map [mouse-2] 'spacemacs/evil-mc-paste-after)
+  (define-key evil-normal-state-map [mouse-9] 'my/switch-to-most-recent-buffer)
   ;; shift reverses C-d (-scroll-down) and C-o (-jump-backward)
   (define-key evil-normal-state-map (kbd "C-S-d") 'evil-scroll-up)
   (define-key evil-normal-state-map (kbd "C-S-o") 'evil-jump-forward)
@@ -2040,6 +2044,7 @@ If one delimiter is empty, leave a space at beginning or end."
   (define-key evil-visual-state-map (kbd ".") 'er/expand-region)
   (define-key evil-visual-state-map (kbd "M-.") 'er/contract-region)
   (define-key evil-visual-state-map (kbd "O") 'evil-visual-rotate)
+  (define-key evil-visual-state-map (kbd "S") 'evil-Surround-region)
   (evil-visual-replace-visual-bindings :PCRE)
   ;; Frank Fischer: move region
   ;; Too slow for moving more than a few lines
@@ -2095,6 +2100,7 @@ If one delimiter is empty, leave a space at beginning or end."
   (define-key evil-insert-state-map (kbd "C-n")   'next-line)
   (define-key evil-insert-state-map (kbd "C-p")   'previous-line)
   (define-key evil-insert-state-map (kbd "C-M-SPC") 'my/insert-spaces-around-point)
+  (define-key evil-insert-state-map (kbd "C-v")   'helm-unicode)
 
   ;; (define-key evil-insert-state-map (kbd "C-M-SPC") 'hippie-expand)
 
@@ -2476,26 +2482,47 @@ If one delimiter is empty, leave a space at beginning or end."
                )
 
     (bind-keys :map user-cmds-map
-               :prefix-map match-lines-map
+               :prefix-map my/lines-map
                :menu-name "match lines"
                :prefix "l"
                :prefix-docstring "Commands matching lines against a pattern."
-               ("m" . keep-lines)
-               ("n" . flush-lines)
                ("c" . how-many)
-               ("g" . sort-group-lines)
                ("h" . highlight-lines-matching-regexp)
                ("y" . my/copy-matching-lines)
                ("Y" . my/copy-non-matching-lines)
                )
 
-    (bind-keys :map match-lines-map
+    (bind-keys :map my/lines-map
                :prefix-map delete-lines-map
                :menu-name "delete lines"
                :prefix "d"
                :prefix-docstring "Commands deleting lines against a pattern."
+               (";r" . keep-lines)
+               ("r" . flush-lines)
                ("u" . my/delete-duplicate-lines-nonblank)
                ("U" . delete-duplicate-lines)
+               )
+
+    (bind-keys :map my/lines-map
+               :prefix-map occur-map
+               :menu-name "occur"
+               :prefix "o"
+               :prefix-docstring "Show matching lines in occur buffer."
+               ("m" . my/pcre-multi-occur)
+               ("o" . my/pcre-occur)
+               ("l" . my/pcre-loccur)
+               )
+
+    (bind-keys :map my/lines-map
+               :prefix-map sort-lines-map
+               :menu-name "sort lines"
+               :prefix "s"
+               :prefix-docstring "Commands sorting lines"
+               ("c" . sort-lines-by-column)
+               (";c" . sort-lines-by-column-reverse)
+               ("g" . sort-group-lines)
+               ("s" . sort-lines)
+               (";s" . sort-lines-reverse)
                )
 
     (bind-keys :map user-cmds-map
@@ -2516,16 +2543,6 @@ If one delimiter is empty, leave a space at beginning or end."
                :prefix-docstring "copy code."
                ("c" . avy-copy-line)
                ("r" . avy-copy-region)
-               )
-
-    (bind-keys :map match-lines-map
-               :prefix-map occur-map
-               :menu-name "occur"
-               :prefix "o"
-               :prefix-docstring "Show matching lines in occur buffer."
-               ("m" . my/pcre-multi-occur)
-               ("o" . my/pcre-occur)
-               ("l" . my/pcre-loccur)
                )
 
     (bind-keys :map user-cmds-map
@@ -2560,6 +2577,9 @@ If one delimiter is empty, leave a space at beginning or end."
                ("g" . hlt-highlight-regexp-groups-region)
                ("G" . my/hlt-highlight-regexp-groups-region-case)
                ("l" . hlt-highlight-lines)
+               ("l" . hlt-highlight-lines)
+               ("n" . hlt-next-highlight)
+               ("p" . hlt-previous-highlight)
                ("t" . hlt-highlighter)
                ("d" . hlt-unhighlight-regexp-groups-region)
                ("u" . hlt-unhighlight-all-prop)
@@ -2570,25 +2590,21 @@ If one delimiter is empty, leave a space at beginning or end."
                ("U" . symbol-overlay-remove-all))
 
     (which-key-add-key-based-replacements
-        "S-SPC h"        "highlight regexp"
-      "S-SPC H"        "highlight regexp (case-sensitive)"
-      "S-SPC r"        "highlight regexp"
-      "S-SPC R"        "highlight regexp (case-sensitive)"
-      "S-SPC g"        "highlight regexp groups"
-      "S-SPC G"        "highlight regexp groups (case-sensitive)"
-      "S-SPC l"        "highlight whole lines"
-      "S-SPC t"        "highlight with mouse"
-      "S-SPC u"        "remove hlt highlighting"
+        "S-SPC h"        "help"
+      "S-SPC l d"      "delete"
+      "S-SPC l o"      "occur"
+      "S-SPC l s"      "sort"
       "C-M-h h"        "highlight regexp"
       "C-M-h H"        "highlight regexp (case-sensitive)"
       "C-M-h r"        "highlight regexp"
       "C-M-h R"        "highlight regexp (case-sensitive)"
       "C-M-h g"        "highlight regexp groups"
       "C-M-h G"        "highlight regexp groups (case-sensitive)"
-      "C-M-h l"        "highlight whole lines"
+      "C-M-h l"        "whole lines"
       "C-M-h t"        "highlight with mouse"
       "C-M-h u"        "remove hlt highlighting"
       )
+
     (evil-define-key '(normal visual) global-map (kbd "C-M-h") nil)
     (global-set-key (kbd "C-M-h") 'my/highlight-map)
 
@@ -2860,7 +2876,7 @@ If one delimiter is empty, leave a space at beginning or end."
 
   (global-set-key (kbd "C-c C-v") 'browse-buffer-file-firefox)
   (eval-after-load "markdown-mode"
-    '(define-key markdown-mode-map (kbd "C-c C-v") 'my/markdown-view))
+    '(define-key markdown-mode-map (kbd "C-c C-v") 'my/markdown-view-with-grip))
   (eval-after-load "web-mode"
     '(define-key web-mode-map (kbd "C-c C-v") 'browse-buffer-file-with-external-application))
   (eval-after-load "haskell-mode"
@@ -3091,8 +3107,9 @@ If one delimiter is empty, leave a space at beginning or end."
   (eval-after-load 'shell
     '(progn
       (evil-define-key 'insert shell-mode-map
-        (kbd "C-d")    'comint-send-eof
-        (kbd "C-u")    'comint-kill-input)
+        (kbd "<delete>") 'kill-this-buffer
+        (kbd "C-d")      'comint-send-eof
+        (kbd "C-u")      'comint-kill-input)
       (add-hook 'shell-mode-hook 'my/shell-mode-init)))
 
   (spacemacs/set-leader-keys-for-major-mode 'shell-mode
