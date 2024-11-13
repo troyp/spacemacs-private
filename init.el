@@ -1797,19 +1797,21 @@ If one delimiter is empty, leave a space at beginning or end."
   (defun fmap (keybind-fn keyrep defstr)
     "Vim-style keybinding using the key binding function KEYBIND-FN."
     (call keybind-fn (kbd+ keyrep) (edmacro-parse-keys defstr t)))
-
   (defun xmap (keymap keyrep defstr)
     "Vim-style keybinding in KEYMAP. Uses the `define-key' binding function."
     (define-key keymap (kbd+ keyrep) (edmacro-parse-keys defstr t)))
-
-  (defun nmap (keyrep defstr) "Vim-style keybinding for `evil-normal-state'. Uses the `define-key' binding function."
-         (xmap evil-normal-state-map keyrep defstr))
-  (defun imap (keyrep defstr) "Vim-style keybinding for `evil-insert-state'. Uses the `define-key' binding function."
-         (xmap evil-insert-state-map keyrep defstr))
-  (defun vmap (keyrep defstr) "Vim-style keybinding for `evil-visual-state'. Uses the `define-key' binding function."
-         (xmap evil-visual-state-map keyrep defstr))
-  (defun mmap (keyrep defstr) "Vim-style keybinding for `evil-motion-state'. Uses the `define-key' binding function."
-         (xmap evil-motion-state-map keyrep defstr))
+  (defun nmap (keyrep defstr)
+    "Vim-style keybinding for `evil-normal-state'. Uses the `define-key' binding function."
+    (xmap evil-normal-state-map keyrep defstr))
+  (defun imap (keyrep defstr)
+    "Vim-style keybinding for `evil-insert-state'. Uses the `define-key' binding function."
+    (xmap evil-insert-state-map keyrep defstr))
+  (defun vmap (keyrep defstr)
+    "Vim-style keybinding for `evil-visual-state'. Uses the `define-key' binding function."
+    (xmap evil-visual-state-map keyrep defstr))
+  (defun mmap (keyrep defstr)
+    "Vim-style keybinding for `evil-motion-state'. Uses the `define-key' binding function."
+    (xmap evil-motion-state-map keyrep defstr))
 
   (defmacro fn! (&rest body) `(lambda () (interactive) ,@body))
   (defmacro defun! (name doc &rest body) `(defun ,name () ,doc (interactive) ,@body))
