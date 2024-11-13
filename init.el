@@ -3002,9 +3002,10 @@ If one delimiter is empty, leave a space at beginning or end."
   (setq default-input-method "japanese-mozc")
   (setq mozc-candidate-style 'overlay)
   ;; If Emacs doesn't recognize IM, make s-SPC toggle mozc-mode
-  (global-set-key (kbd "s-SPC") 'mozc-mode)
-  (setcar (cdr (assoc 'mozc-mode minor-mode-alist))
-          "日")
+  (defun my/mozc-set-keybinding ()
+    (interactive)
+    (global-set-key (kbd "s-SPC") 'mozc-mode))
+  (setcar (cdr (assoc 'mozc-mode minor-mode-alist)) "日")
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭──────────╮
