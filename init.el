@@ -1039,6 +1039,10 @@ FLAGS is a list of characters, eg '(?g)"
           (end (if (region-active-p) (region-end) (line-end-position))))
       (my/evil-substitute beg end pcre replacement flags)))
 
+  (defun my/append-to-region ()
+    (interactive)
+    (let ((evil-ex-initial-input "s/$/")) (call-interactively 'evil-ex)))
+
   ;; ╭────────────────╮
   ;; │ thing-at-point │
   ;; ╰────────────────╯
