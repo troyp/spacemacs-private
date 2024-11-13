@@ -419,6 +419,8 @@ inserts a divider followed by a rectangular heading."
 (define-key 'asciiheadings-prefix-key-map   ";u"  'underline-comment-and-open-line-below)
 (define-key 'asciiheadings-prefix-key-map   "d"   'divider)
 (define-key 'asciiheadings-prefix-key-map   ";d"  'divider-comment)
+(define-key 'asciiheadings-prefix-key-map   "D"   'divider-thick)
+(define-key 'asciiheadings-prefix-key-map   ";D"  'divider-thick-comment)
 (define-key 'asciiheadings-prefix-key-map   "t"   'divider-thick)
 (define-key 'asciiheadings-prefix-key-map   ";t"  'divider-thick-comment)
 (define-key 'asciiheadings-prefix-key-map   "b"   'box-heading)
