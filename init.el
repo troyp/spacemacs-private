@@ -5462,6 +5462,8 @@ Return the description that was displayed, as a string."
   ;; │ Snippets │
   ;; ╰──────────╯
 
+  (add-to-list 'yas-snippet-dirs "~/.tridactyl/emacs/snippets/")
+
   (defun my/yas-expand (&optional field)
     "Expand a snippet before point. Simplified version of `yas-expand'."
     (interactive)
