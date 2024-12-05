@@ -2329,6 +2329,7 @@ If one delimiter is empty, leave a space at beginning or end."
         "]"            'my/remove-spacing-inside-brackets
         "{"            'my/add-spacing-inside-braces
         "}"            'my/remove-spacing-inside-braces
+        "C-]"          'my/condense-one-line-block
         "|"            'my/wrap-region-or-comment
         "\""           'my/add-spacing-inside-double-quotes
         "C-\""         'my/remove-spacing-inside-double-quotes
@@ -5714,6 +5715,7 @@ ISEARCH DOCUMENTATION.
   (fset 'my/remove-spacing-inside-brackets [ ?c ?s 91 93 ])
   (fset 'my/add-spacing-inside-braces [ ?c ?s 125 123 ])
   (fset 'my/remove-spacing-inside-braces [ ?c ?s 123 125 ])
+  (fset 'my/condense-one-line-block [ ?J ?J ?c ?s 125 123 ])
   (fset 'my/add-spacing-inside-double-quotes [ ?c ?s 34 40 ?c ?s 41 34 ])
   (fset 'my/remove-spacing-inside-double-quotes [?c ?s 40 34 ])
   (fset 'my/collapse-single-line-function [escape ?J ?J ?h ?c ?s 125 123])
