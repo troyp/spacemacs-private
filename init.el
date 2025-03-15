@@ -6604,6 +6604,17 @@ If the region is not active, the entire buffer is processed."
       (evil-visual-restore)
       (evil-visual-paste 1)))
 
+  (defun my/pdf-toc-inc-region (n)
+    "Applied to a region containing PDF TOC code, this command increments the page numbers by N."
+    (interactive "NIncrement: ")
+    (let ((cmd
+           (s-concat
+            "perl -wple 's/(?<=\\/)(\\d+)(?=,)/$1+"
+            (int-to-string n)
+            "/e'"
+            )))
+      (my/shell-command-replace-region (region-beginning) (region-end) cmd)))
+
   (defun my/web-mode-normalize-html ()
     (interactive)
     (my/shell-command-process-region-as-file "hxnormalize '%s'"))
