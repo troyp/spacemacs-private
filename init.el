@@ -6607,8 +6607,7 @@ If the region is not active, the entire buffer is processed."
   (defun my/pdf-toc-format ()
     "Applied to a region containing columns of chapters and page numbers, formats it into PDF TOC code."
     (interactive)
-    (my/evil-substitute-region " +([0-9]+)$" "/\\1")
-    (my/evil-substitute-region "(/[0-9]+)$" "\\1,Black,notBold,notItalic,closed,FitPage"))
+    (my/evil-substitute-region " +([0-9]+)$" "/\\1,Black,notBold,notItalic,closed,FitPage"))
 
   (defun my/pdf-toc-inc-region (n)
     "Applied to a region containing PDF TOC code, this command increments the page numbers by N."
