@@ -78,9 +78,6 @@
    (lambda (s) (indent-string s n))
    ss))
 
-(defun repeat (n s)
-  (apply 'concat (make-list n s)))
-
 (defun explode (s)
   (string-split s ""))
 
@@ -266,6 +263,13 @@ To ignore intangibility, bind `inhibit-point-motion-hooks' to t."
 		   (constrain-to-field (point) orig
 				       (/= arg 1) t nil))))))
 
+;; FIXME
+(defun my/evil-visual-move-end-of-line (&optional arg)
+  (interactive "^p")
+  (if (and (= last-command 'end-of-line)
+           (= (point) (line-beginning-position)))
+      (evil-backward-char 1 t)
+    (evil-end-of-line arg)))
 
 ;; ===============================================================================
 ;;                             __________________________
@@ -274,9 +278,11 @@ To ignore intangibility, bind `inhibit-point-motion-hooks' to t."
 ;;                            |__________________________|
 
 
-(defun kill-current-buffer ()
+(defun my/kill-buffer-force (&optional buffer)
+  "Kill buffer without asking confirmation"
   (interactive)
-  (kill-buffer nil))
+  (let ((kill-buffer-query-functions nil))
+    (kill-buffer nil)))
 
 (defun load-init-file ()
   (interactive)

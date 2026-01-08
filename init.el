@@ -63,9 +63,11 @@ This function should only modify configuration layer settings."
               ;; clojure-enable-fancify-symbols t
               )
      deft
+     djvu
      elfeed
      emacs-lisp
      ess
+     toc
      ;; major-modes
      git
      go
@@ -735,7 +737,6 @@ before packages are loaded."
 ;; ───────────────────────────────────────────────────────────────────────────────
 
   ;; (setq-default tab-always-indent t)
-  (spacemacs/toggle-line-numbers-on)
   (menu-bar-mode)
   (scroll-bar-mode)
   (minibuffer-depth-indicate-mode 1)
@@ -785,6 +786,10 @@ before packages are loaded."
   (defvar my/default-goto-column 80)
   (setq fci-rule-column 80)
   (setq fill-column 79)
+
+  ;; shell-command output
+  (add-to-list 'display-buffer-alist
+               (cons "\\*My Shell Output\\*" (cons #'display-buffer-no-window nil)))
 
   ;; ╭────────╮
   ;; │ Backup │
@@ -879,6 +884,7 @@ before packages are loaded."
            (cua-rectangle-mark-mode -1)
            (cua-cancel))
           (t
+           (spacemacs/evil-search-clear-highlight)
            (evil-emacs-state)
            (cua-rectangle-mark-mode 1))))
 
@@ -949,6 +955,7 @@ before packages are loaded."
   ;; │ Keyboard Macros │
   ;; ╰─────────────────╯
   (define-key kmacro-keymap (kbd "<insert>") 'insert-kbd-macro)
+  (define-key kmacro-keymap (kbd "<f2>") 'name-last-kbd-macro)
   (define-key kmacro-keymap (kbd "M-l") 'helm-execute-kmacro)
   (define-key kmacro-keymap (kbd "M-e") 'edit-last-kbd-macro)
   (define-key kmacro-keymap (kbd "M-s") 'my/set-named-kbd-macro-as-last)
@@ -1249,6 +1256,9 @@ Returns the function definition."
   ;; ;; prevent cursor from moving back a space at the end of a line
   ;; (setq evil-move-cursor-back nil)
 
+  ;; save markers
+  (add-to-list 'desktop-locals-to-save 'evil-markers-alist)
+
   ;; ╭─────────────────────────╮
   ;; │ evil-symbol-word-search │
   ;; ╰─────────────────────────╯
@@ -1275,6 +1285,8 @@ Returns the function definition."
   (spacemacs|define-text-object "q" "curlquote" "‘" "’")
   (spacemacs|define-text-object (kbd "C-]") "corner-bracket" "「" "」")
   (spacemacs|define-text-object "m" "comment" "/* " " */")
+  (spacemacs|define-text-object "7" "comment" "⌈" "⌉")
+  (spacemacs|define-text-object "L" "comment" "⌊" "⌋")
 
   (evil-define-text-object evil-inner-defun (count &optional beg end type)
     "operates on the top-level sexp around point."
@@ -1443,11 +1455,11 @@ COUNT, BEG, END, and TYPE have no effect."
   ;; ╭────────────╮
   ;; │ evil-snipe │
   ;; ╰────────────╯
-  (require 'evil-snipe)
-  (evil-snipe-mode +1)
-  (setq evil-snipe-scope 'whole-visible)
-  (setq evil-snipe-repeat-scope 'whole-buffer)
-  (setq evil-snipe-spillover-scope 'whole-buffer)
+  ;; (require 'evil-snipe)
+  ;; (evil-snipe-mode +1)
+  ;; (setq evil-snipe-scope 'whole-visible)
+  ;; (setq evil-snipe-repeat-scope 'whole-buffer)
+  ;; (setq evil-snipe-spillover-scope 'whole-buffer)
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭───────────────╮
@@ -1472,8 +1484,10 @@ COUNT, BEG, END, and TYPE have no effect."
      ( ?<            "< " . " >"  )
      ( ?$            "${" . "}"   )
      ( ?\C-'         "`"  . "'"   )
+     ( 67108898      "“"   . "”"  )    ;; C-"
      ( ?\C-/        "/* " . " */" )
      ( ?\C-\\  "jsb -d¦ " . "¦"   )
+     ( ?\C-{          "[" . "]{.}" )
      ( ?\C-`   "`"        . "`"   )    ;; so <C-`><C-`> can backquote symbol
      ( ?\C-*         "**" . "**"  )
      ( ?\C-,         " "   . " "   )    ;; thin space
@@ -1581,33 +1595,53 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?1 ?0) . ?\x2152)    ;; ⅒
           ((?. ? ) . ?\x2024)    ;; ․ 1-dot leader
           ((?. ?/) . ?\x2025)    ;; ‥ 2-dot leader
-          ((?1 ?\x29) . ?\x2474) ;; ⑴
-          ((?2 ?\x29) . ?\x2475) ;; ⑵
-          ((?3 ?\x29) . ?\x2476) ;; ⑶
-          ((?4 ?\x29) . ?\x2477) ;; ⑷
-          ((?5 ?\x29) . ?\x2478) ;; ⑸
-          ((?6 ?\x29) . ?\x2479) ;; ⑹
-          ((?\x28 ?1) . ?\x2460) ;; ①
-          ((?\x28 ?2) . ?\x2461) ;; ②
-          ((?\x28 ?3) . ?\x2462) ;; ③
-          ((?\x28 ?4) . ?\x2463) ;; ④
-          ((?\x28 ?5) . ?\x2464) ;; ⑤
-          ((?\x28 ?6) . ?\x2465) ;; ⑥
-          ((?> ?-)    . ?\x2794) ;; ➔ heavy wide-headed rightwards arrow
-          ((?- ?})    . ?\x1f80a) ;; 🠊 rightwards arrow with large triangle arrowhead
-          ((?- ?{)    . ?\x1f808) ;; 🠈 leftwards arrow with large triangle arrowhead
-          ((?\x22 ?\x27) . ?\x301e) ;; 〞
-          ((?? ?!)    . ?\x2048) ;; ⁈
-          ((?! ??)    . ?\x2049) ;; ⁉
-          ((?: ?:)    . ?\xfe55) ;; ﹕ small colon
-          ((?? ??)    . ?\xfe56) ;; ﹖ small question mark
-          ((?< ?=)    . ?\x2264) ;; ≤
-          ((?= ?<)    . ?\x21d0) ;; ⇐
+          ((?1 41) . ?\x2474)    ;; ⑴
+          ((?2 41) . ?\x2475)    ;; ⑵
+          ((?3 41) . ?\x2476)    ;; ⑶
+          ((?4 41) . ?\x2477)    ;; ⑷
+          ((?5 41) . ?\x2478)    ;; ⑸
+          ((?6 41) . ?\x2479)    ;; ⑹
+          ((40 ?1) . ?\x2460)    ;; ①
+          ((40 ?2) . ?\x2461)    ;; ②
+          ((40 ?3) . ?\x2462)    ;; ③
+          ((40 ?4) . ?\x2463)    ;; ④
+          ((40 ?5) . ?\x2464)    ;; ⑤
+          ((40 ?6) . ?\x2465)    ;; ⑥
+          ((?> ?-) . ?\x2794)    ;; ➔ heavy wide-headed rightwards arrow
+          ((?- ?}) . ?\x1f80a)   ;; 🠊 rightwards arrow with large triangle arrowhead
+          ((?- ?{) . ?\x1f808)   ;; 🠈 leftwards arrow with large triangle arrowhead
+          ((34 39) . ?\x301e)    ;; 〞 ("')
+          ((?? ?!) . ?\x2048)    ;; ⁈
+          ((?! ??) . ?\x2049)    ;; ⁉
+          ((?< ?=) . ?\x2264)    ;; ≤
+          ((?= ?<) . ?\x21d0)    ;; ⇐
+          ((?: ?:) . ?\xfe55)    ;; ﹕ small colon
+          ((?? ??) . ?\xfe56)    ;; ﹖ small question mark
+          ((?: ?M) . ?\xa789)    ;; ː modifier letter colon
+          ((?0 ?:) . ?\xff1a)    ;; ： fullwidth colon
+          ((?- ?=) . ?\x2212)    ;; − minus sign
+          ((?- ?^) . ?\x2191)    ;; ↑ upwards arrow
+          ((?\\ ?<) . ?\x2196)   ;; ↑ northwest arrow
+          ((?/ ?>) . ?\x2197)    ;; ↑ northeast arrow
+          ((?\\ ?>) . ?\x2198)   ;; ↑ southeast arrow
+          ((?/ ?<) . ?\x2199)    ;; ↑ southwest arrow
+          ((?' ?') . ?\x2032)    ;; ′ prime (symbol for feet)
+          ((?' 34) . ?\x2033)    ;; ″ double prime (symbol for inches)
           ;; compose combinations
-          ((?L ?\x5b) . ?\x230a)    ;; ⌊
-          ((?L ?\x5d) . ?\x230b)    ;; ⌋
-          ((?7 ?\x5b) . ?\x2308)    ;; ⌈
-          ((?7 ?\x5d) . ?\x2309)    ;; ⌉
+          ((?_ ?0) . ?\x2080)    ;; ₀
+          ((?_ ?1) . ?\x2081)    ;; ₁
+          ((?_ ?2) . ?\x2082)    ;; ₂
+          ((?_ ?3) . ?\x2083)    ;; ₃
+          ((?_ ?4) . ?\x2084)    ;; ₄
+          ((?_ ?5) . ?\x2085)    ;; ₅
+          ((?_ ?6) . ?\x2086)    ;; ₆
+          ((?_ ?7) . ?\x2087)    ;; ₇
+          ((?_ ?8) . ?\x2088)    ;; ₈
+          ((?_ ?9) . ?\x2089)    ;; ₉
+          ((?L 91) . ?\x230a)    ;; ⌊
+          ((?L 93) . ?\x230b)    ;; ⌋
+          ((?7 91) . ?\x2308)    ;; ⌈
+          ((?7 93) . ?\x2309)    ;; ⌉
           ((?. ?.) . ?\x2026)    ;; (horizontal) ellipsis (replaces ‥)
           ((?0 ?-) . ?\x30fb)    ;; CJK middle-dot
           ((?0 ?9) . ?\x3000)    ;; CJK full-width space
@@ -1615,19 +1649,21 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?| ?2) . ?\x2016)    ;; ‖ double vertical bar
           ((?{ ?+) . ?\x2295)    ;; ⊕ circled plus
           ((?i 34) . ?\x00ef)    ;; ï (also on i:)
-          ((?\x22 ?<) . ?\x201c) ;; “
-          ((?\x22 ?>) . ?\x201d) ;; ”
+          ((34 ?<) . ?\x201c)    ;; “
+          ((34 ?>) . ?\x201d)    ;; ”
           ((?o ?o) . ?\x00b0)    ;; °
           ((?8 ?8) . ?\x221e)    ;; ∞
           ((?- ?0) . ?\x203f)    ;; ‿
           ((?- ?9) . ?\x2040)    ;; ⁀
           ((?| 91) . ?\x27e6)    ;; ⟦
           ((?| 93) . ?\x27e7)    ;; ⟧
-          ((?\x3b ?\x3b)
-                   . ?\xff1b)    ;; ； fullwidth semicolon
+          ((59 59) . ?\xff1b)    ;; ； fullwidth semicolon (;;)
           ((?\\ ?,) . ?\x2009)   ;; thin space
+          ((?  ?,) . ?\x202f)    ;; narrow no-break space
           ((?  ? ) . ?\x00a0)    ;; no-break space
           ;; kragen compose combinations
+          ((?: ?+) . ?\x02d0)    ;; ː modifier letter triangular colon
+          ((?| ?:) . ?\xfe56)    ;; ⦂ Z-Notation type colon
           ((?t ?,) . ?\x0288)    ;; ʈ (replaces ţ which is also available on ,t)
           ((?T ?,) . ?\x01ae)    ;; Ʈ (replaces Ţ which is also available on ,T) - for consistency
           ((?, ?t) . ?\x0163)    ;; ţ (default, but obscured by binding above)
@@ -1638,8 +1674,14 @@ If one delimiter is empty, leave a space at beginning or end."
           ((?2 ?:) . ?\x2237)    ;; ∷ (proportion)
           ((?x ?x) . ?\x00d7)    ;; × (multiply)
           ((?* ?x) . ?\x2A2F)    ;; ⨯ (cross product)
+          ((?* ?.) . ?\x22C5)    ;; ⋅ (dot opeartor)
           ((?" ?") . ?\x3003)    ;; 〃 (ditto mark)
           ((?< ?|) . ?\x21b5)    ;; ↵
+          ((40 ?+) . ?\x2295)    ;; ⊕
+          ((?@ ?/) . ?\x2713)    ;; ✓
+          ((?@ ??) . ?\x2714)    ;; ✔ (=compose @@/)
+          ((?v ?/) . ?\x221A)    ;; √
+          ((?/ ?v) . ?\x221A)    ;; √
 
           ((?* ?a) . ?\x03B1)    ;; α GREEK SMALL LETTER ALPHA
           ((?* ?b) . ?\x03B2)    ;; β GREEK SMALL LETTER BETA
@@ -1759,6 +1801,11 @@ If one delimiter is empty, leave a space at beginning or end."
   ;;       eg. C-c n n n ... rather than C-c n C-c n C-c n ...
   ;;   which-key <https://github.com/justbur/emacs-which-key>:
   ;;       display popup showing keybinding completions
+  ;;   transient <https://github.com/magit/transient>
+  ;;       transient command maps
+  ;;
+  ;; useful functions:
+  ;;   (lookup-key evil-operator-state-map "i")
 
   (defun my/define-keys (keymap &rest bindings)
     "Define multiple keys with `define-key'\nBINDINGS has the form KEY DEFN [KEY DEFN ...]"
@@ -1809,6 +1856,7 @@ If one delimiter is empty, leave a space at beginning or end."
     `(defun ,name ()
        ,docstr
        (interactive)
+
        (insert ,before ,after)
        (backward-char (length ,after))))
 
@@ -2034,8 +2082,8 @@ If one delimiter is empty, leave a space at beginning or end."
   ;; fix SPC key after C-u in insert-state
   (define-key universal-argument-map (kbd " ") 'self-insert-and-exit)
 
-  (define-key evil-normal-state-map (kbd "C--") 'spacemacs/evil-numbers-decrease)
-  (define-key evil-normal-state-map (kbd "C-=") 'spacemacs/evil-numbers-increase)
+  (define-key evil-normal-state-map (kbd "C--") 'evil-numbers/dec-at-pt)
+  (define-key evil-normal-state-map (kbd "C-=") 'evil-numbers/inc-at-pt)
 
   ;; evil-shift-up/down-line-or-block
   (define-key evil-normal-state-map [\M-\S-down] 'evil-shift-down-line-or-block)
@@ -2044,11 +2092,14 @@ If one delimiter is empty, leave a space at beginning or end."
   (define-key evil-normal-state-map (kbd "M-e") 'evil-forward-sentence-begin)
   (define-key evil-normal-state-map (kbd "M-a") 'evil-backward-sentence-begin)
 
+  (define-key evil-normal-state-map (kbd "C-M-.") 'my/repeat-last-command)
+
   ;; evil-window: C-w C-w to swap windows
   (bind-key "C-w" #'my/window-swap-with-next evil-window-map)
 
   ;; save
   (define-key evil-normal-state-map "ZC" 'save-buffers-kill-terminal)
+  ;; (define-key evil-normal-state-map (kbd "C-x C-w") 'write-file)
 
   ;; ╭─────────────────╮
   ;; │ evilified state │
@@ -3773,6 +3824,7 @@ If one delimiter is empty, leave a space at beginning or end."
          "M-+"    "diredp-recursive-map"
          "y"      "copy--as-kill"
          ", t s"  "toggle/sort"
+         ", r"    "rename"
          )
        ;; set function definition of 'dired-mode-map (same as value)
        (fset 'dired-mode-map dired-mode-map)
@@ -3786,13 +3838,17 @@ If one delimiter is empty, leave a space at beginning or end."
          "m"     'my/dired-move-files-here
          "o"     'my/git-browse-origin
          "p"     'my/dired-copy-files-here
+         "rd"    'my/dired-rename-transpose-across-dash
+         "rt"    'my/dired-rename-comma-the
+         "rx"    'my/dired-rename-remove-filetype
          "s"     'dired-toggle-sudo
          "to"    'dired-omit-mode
          "tl"    'dired-hide-details-mode
-         "tr"    'toggle-diredp-find-file-reuse-dir
+         "tR"    'toggle-diredp-find-file-reuse-dir
          "tr"    'my/dired-toggle-reuse-buffer
          "tsf"   'dired-sort-menu-toggle-dirs-first
          "tw"    'spacemacs/toggle-diredp-wrap-around-flag
+         "u"     'dired-unmark-all-marks
          "v"     'dired-view-file    ;; for discovery - can just use \v
          "x"     'my/dired-cut-or-copy-files
          "Y"     'diredp-relsymlink-this-file
@@ -3810,10 +3866,56 @@ If one delimiter is empty, leave a space at beginning or end."
          "c"    'wdired-finish-edit
          "a"    'wdired-abort-changes
          "t"    'my/wdired-tidy-name-keep-square-brackets
+         "rp"   'my/wdired-rename-parens-after-author
+         "rd"    'my/dired-rename-transpose-across-dash
+         "rt"    'my/dired-rename-comma-the
+         "rx"    'my/dired-rename-remove-filetype
          )
 
        )
     )
+
+  (defun my/wdired-rename-parens-after-author ()
+    "Perform substitution on the current line or region:
+    (series name) Author Name - etc  ==>  Author Name - (series name) etc"
+    (interactive)
+    (let ((beg (if (region-active-p) (region-beginning) (line-beginning-position)))
+          (end (if (region-active-p) (region-end) (line-end-position))))
+      (my/evil-substitute beg end "(\\([^)]+\\)) ([^-]+)-" "\\2- \\1 ")))
+
+  (defun my/dired-rename (subst)
+    "Perform substitution on the file on the current line or files in the region using perl rename script."
+    (interactive)
+    (let ((files
+           (if (region-active-p)
+               (progn
+                 (diredp-mark-region-files)
+                 (dired-get-marked-files))
+             (list (dired-get-filename)))))
+      (dolist (f files)
+        (let ((qf (concat "\"" f "\"")))
+          (shell-command-to-string
+           (concat "rename '" subst "' " qf))))
+      (dired-unmark-all-marks)))
+
+  (defun my/dired-rename-transpose-across-dash ()
+    "Perform substitution on the current line or region:
+    text 1-text 2.ext    ==>  text 2 - text 1.ext
+    text 1 - text 2.ext  ==>  text 2 - text 1.ext"
+    (interactive)
+    (my/dired-rename "s/(.*)\\/(.*[^ ]) ?- ?(.*)[.](.*)$/$1\\/$3 - $2.$4/"))
+
+  (defun my/dired-rename-comma-the ()
+    "Perform substitution on the current line or region:
+    - text 1, The.ext    ==>  The text.ext"
+    (interactive)
+    (my/dired-rename "s/(.*)\\/(.*[^ ]) ?- ?(.*), The[.](.*)$/$1\\/$2 - The $3.$4/i"))
+
+  (defun my/dired-rename-remove-filetype ()
+    "Perform substitution on the current line or region:
+    - text (ext).ext    ==>  text.ext"
+    (interactive)
+    (my/dired-rename "s/(.*)\\/(.*[^ ]) [[(](.*)[])][.]\\2$/$1.$2/i"))
 
   (eval-after-load "dired-sort-menu" `(require 'dired-sort-menu+))
 
@@ -3838,7 +3940,7 @@ If one delimiter is empty, leave a space at beginning or end."
 
   (defun my/dired-copy-files-here
       (&optional overwrite
-                 keep-time preserve-uid-gid preserve-permissions)
+         keep-time preserve-uid-gid preserve-permissions)
     (interactive "P")
     (dolist (f my/dired-files-to-move-or-copy)
       (let ((newpath (concat (dired-current-directory)
@@ -3931,158 +4033,6 @@ If one delimiter is empty, leave a space at beginning or end."
   ;; ╭──────────────╮
   ;; │ Haskell-Mode │
   ;; ╰──────────────╯
-
-  (eval-after-load "haskell-mode"
-    '(progn
-      (bind-keys :map haskell-mode-map
-       ("C-c C-h" . nil)
-       ("C-c M-h" . haskell-hoogle)
-       ("C-c C-v" . browse-buffer-file-firefox)
-       )
-      (which-key-add-major-mode-key-based-replacements 'haskell-mode
-          "C-c @" "hiding"
-          )
-      (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-      (add-to-list 'evil-emacs-state-modes 'haskell-interactive-mode)
-      ))
-
-  ;; ───────────────────────────────────────────────────────────────────────────────
-  ;; ╭───────────╮
-  ;; │ helm-mode │
-  ;; ╰───────────╯
-
-  (use-package helm-mode
-    ;;
-    :init
-    (defun helm-switch-to-mini ()
-      (interactive)
-      (helm-run-after-exit #'helm-mini))
-    ;;
-    :bind (:map helm-map
-                ("C-q"        . ace-jump-helm-line-and-select)  ;; was ace-jump-helm-line
-                ("C-S-q"      . ace-jump-helm-line)
-                ("C-0"        . helm-select-action)
-                ("C-)"        . helm-execute-persistent-action)
-                ("C-S-O"      . helm-previous-source)
-                ("C-S-W"      . helm-yank-symbol-at-point)
-                ("C-u"        . helm-delete-minibuffer-contents)
-                ("C-,"        . helm-switch-to-mini)
-                ("<f5>"       . nil)
-                ("<f11>"      . nil)
-                ("<escape>"   . evil-evilified-state)
-                ("<S-escape>" . evil-normal-state)
-                ("<f9>"       . spacemacs/helm-navigation-transient-state/body)
-                )
-    ;;
-    :config
-    (evilified-state-evilify-map helm-map
-      :mode helm-mode
-      :bindings
-      "j"           'helm-next-line
-      "k"           'helm-previous-line
-      "i"           'evil-insert
-      "a"           'evil-append
-      [escape]      'keyboard-escape-quit
-      [S-escape]    'evil-normal-state
-      )
-    (spacemacs/set-leader-keys-for-major-mode 'helm-major-mode
-      "tm"    'helm-toggle-all-marks)
-    (my/define-keys helm-map
-      (kbd "M-RET")  spacemacs-helm-major-mode-map
-      (kbd "M-m")    spacemacs-cmds
-      (kbd "S-SPC")  spacemacs-cmds
-      )
-    )
-
-  ;; ───────────────────────────────────────────────────────────────────────────────
-  ;; ╭──────────────╮
-  ;; │ helm-firefox │
-  ;; ╰──────────────╯
-
-  (defgroup firefox nil
-    "Customization variables for interacting with the Firefox browser."
-    :group 'environment)
-
-  (defcustom firefox-profile-directory "~/.mozilla/firefox/"
-    "The root directory for firefox profile config folders."
-    :group 'firefox
-    :type 'string)
-
-  (defcustom firefox-default-user-profile "2xdr1tat.Troy"
-    "The default firefox profile."
-    :group 'firefox
-    :type 'string)
-
-  (defcustom firefox-default-user-path
-    (expand-file-name (file-name-as-directory firefox-default-user-profile)
-                      firefox-profile-directory)
-    "The root directory for firefox profile config folders."
-    :group 'firefox
-    :type 'string)
-
-  ;; requires wmctrl executable
-  ;; firefox executable is "firefox" by default, otherwise $FIREFOXEXE
-  (eval-after-load "helm-firefox"
-    `(progn
-       (defun helm-get-firefox-user-init-dir ()
-         firefox-default-user-path)))
-
-  ;; install firefox protocol ffbookmarks in about:config or user.js:
-  ;; user_pref("network.protocol-handler.expose.ffbookmarks", false);
-  (eval-after-load "firefox-protocol"
-    `(progn
-       (defun firefox-protocol--get-firefox-user-init-dir ()
-         firefox-default-user-path)))
-
-  ;; ───────────────────────────────────────────────────────────────────────────────
-  ;; ╭───────────╮
-  ;; │ help-mode │
-  ;; ╰───────────╯
-
-  (eval-after-load "help-mode"
-    `(progn
-       (bind-keys
-        :map help-mode-map
-        ("H" . help-go-back)
-        ("L" . help-go-forward))
-       (define-key button-map [remap push-button] #'my/push-button-and-center)))
-
-  ;; ───────────────────────────────────────────────────────────────────────────────
-  ;; ╭─────────╮
-  ;; │ Hy-Mode │
-  ;; ╰─────────╯
-
-  (which-key-add-major-mode-key-based-replacements 'hy-mode
-    "SPC m s"    "evaluate"
-    ", s"        "evaluate"
-    "SPC m V"    "pyvenv"
-    ", V"        "pyvenv"
-    )
-
-  ;; ───────────────────────────────────────────────────────────────────────────────
-  ;; ╭─────────╮
-  ;; │ ibuffer │
-  ;; ╰─────────╯
-
-  (evil-set-initial-state 'ibuffer-mode 'evilified)
-  (eval-after-load 'ibuffer
-    `(progn
-       (require 'ibuffer-hydra)
-       (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
-       (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
-       ))
-
-  ;; ───────────────────────────────────────────────────────────────────────────────
-  ;; ╭──────────╮
-  ;; │ ido-mode │
-  ;; ╰──────────╯
-
-  (defun ido-init ()
-    (bind-keys :map ido-completion-map
-               ("M-+" . ido-make-directory)
-               ("M-=" . ido-make-directory)
-               ("M-m" . spacemacs-cmds)
-               ))
 
   (add-hook 'ido-setup-hook 'ido-init)
 
@@ -4288,11 +4238,12 @@ If one delimiter is empty, leave a space at beginning or end."
              "firefox+%28webextension+OR+javascript%29+"
              s)))
 
+  ;; TODO: allow args
   (defun my/js-method-to-arrow-function ()
     (interactive)
     (let ((p (evil-a-paragraph)))
       (goto-char (car p))
-      (re-search-forward "\\([a-zA-Z0-9_!]+\\): function() {\n *\\(.*[^;]\\);?\n *}," (cadr p))
+      (re-search-forward "\\([a-zA-Z0-9_!]+\\): function() {\n? *return *\\(.*[^;\n]\\);?\n? *}," (cadr p))
       (replace-match "\\1: () => \\2,")
       ))
 
@@ -4346,9 +4297,12 @@ If one delimiter is empty, leave a space at beginning or end."
     (js2-mode))
 
   (my/def-variable-local-cycle js-indent-level 4 2)
-  (setq js-switch-indent-offset 2)
+  ;; js-switch-indent-offset: I'd prefer 2, but I can't set switchCase: 0.5 in .eslintrc
+  (setq js-switch-indent-offset 4)
 
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode
+    ","    'my/add-trailing-semicolon
+    "b"    'my/open-js-buffer
     "d"    'my/urldecode-bookmarklet
     "hwc"  'my/lookup-chrome-webextension-api
     "hwf"  'my/lookup-firefox-webextension-api
@@ -4361,6 +4315,7 @@ If one delimiter is empty, leave a space at beginning or end."
     "vq"   'my/quoted-string-to-delimited-comment
     "v/"   'my/double-slash-comment-to-delimited
     "%"    'my/js-url-decode
+    "/"     (my/make-insertion-around-point "/* " " */")
     )
 
   (which-key-add-major-mode-key-based-replacements 'js2-mode
@@ -4409,6 +4364,7 @@ If one delimiter is empty, leave a space at beginning or end."
     (bind-key "<C-tab>" nil magit-mode-map)
     (fset 'magit-status-mode-map magit-status-mode-map)
     (global-magit-file-mode t)
+    (my/def-variable-toggle magit-diff-refine-hunk)
     (bind-keys
      :map magit-mode-map
      ("<C-tab>" . nil)
@@ -4595,6 +4551,8 @@ Committer: %cN <%cE>"))
     (interactive)
     (setq-local evil-scroll-count 28)
     (define-key markdown-mode-mouse-map (kbd "<mouse-2>") 'my/mouse-set-point-and-browse-url)
+    (define-key markdown-mode-map (kbd "M-p") 'evil-scroll-line-down)
+    (define-key markdown-mode-map (kbd "M-n") 'evil-scroll-line-up)
     ;; (remove-hook 'before-save-hook 'spacemacs//cleanup-org-tables)
     (setq-local before-save-hook nil)
     )
@@ -4803,6 +4761,7 @@ Moves to the next line afterwards."
   (bind-keys :map emacs-lisp-mode-map
              ("M-B"  . my/backward-evil-defun)
              ("M-F"  . my/forward-evil-defun)
+             ("M-J"  . (fn! (scroll-other-window-down 1)))
              )
   (bind-keys :map lisp-interaction-mode-map
              ("C-j"  . my/eval-prettyprint-last-sexp)
@@ -4880,12 +4839,15 @@ Moves to the next line afterwards."
 
   ;; ===== EVIL-ADJUST =====
 
+  (add-to-load-path "~/.emacs.d/private/repos/evil-adjust")
   (require 'evil-adjust)
   (evil-adjust :noemacs25fix)
 
   ;; ===== SWITCH TO EVIL LISP STATE =====
 
   ;; (define-key evil-lisp-state-map "." nil) ;; available
+
+  (require 'evil-lisp-state)
 
   (bind-keys :map evil-lisp-state-map
              ("x"   . evil-delete-char)
@@ -4930,7 +4892,14 @@ Moves to the next line afterwards."
     :init
     (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook) #'lispyville-mode)
     :config
-    (lispyville-set-key-theme '(operators c-w additional)))
+    (lispyville-set-key-theme
+     '(operators
+       c-w
+       additional
+       additional-insert))
+    (evil-define-key 'visual-state lispyville-mode-map (kbd "S") nil)
+    (evil-define-key 'visual-state lispyville-mode-map (kbd "M-J") nil)
+    (define-key lispyville-mode-map (kbd "M-J") nil))
 
   ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭───────╮
@@ -5014,7 +4983,9 @@ Moves to the next line afterwards."
      ("<C-c><C-v>" . tsp-org-view-as-html))
     (evil-define-key 'normal org-mode-map
       (kbd "-")    'dired-jump
-      (kbd "g -")  'org-cycle-list-bullet)
+      (kbd "g -")  'org-cycle-list-bullet
+      (kbd "g U")  'evil-downcase
+      )
     )
 
   ;; (evil-define-keymap my/org-map
@@ -5037,7 +5008,17 @@ Moves to the next line afterwards."
        (setq org-default-notes-file
              (expand-file-name (file-name-as-directory "notes.org")
                                org-directory))
+       (add-to-list 'org-src-lang-modes (quote ("dot" . graphviz-dot)))
        ))
+
+  (eval-after-load 'org-table
+    `(progn
+       (evil-define-key 'normal orgtbl-mode-map
+         (kbd "g U")  'evil-downcase)
+       (evil-define-key 'normal orgtbl-mode-map
+         (kbd "<return>")    nil)
+       )
+    )
 
   (spacemacs/set-leader-keys-for-major-mode 'org-mode
     "SPC"          'ace-link-org

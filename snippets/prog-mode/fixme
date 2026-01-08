@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: FIXME
-# key: fix
+# name: fixme
+# key: fixme
 # --
-`(if (string= comment-start ";") ";;" comment-start)` FIXME: $0
+`(if (string= comment-start ";") ";;" comment-start)` FIXME: $0 `comment-end`
