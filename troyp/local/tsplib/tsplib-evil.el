@@ -45,12 +45,12 @@ Evil-mode equivalent of `set-region-to-symbol-at-point'."
               (- (cddr (symbol-at-point-with-bounds)) 1)))))
     r))
 
-(defun evil-get-visual-region-or-buffer ()
-  "Return cons representing the bounds of the current evil region or the entire buffer."
-  (let ((r (if (region-active-p)
-               (cons (region-beginning) (- (region-end) 1))
-             (cons (point-min) (point-max)))))
-    r))
+;; (defun evil-get-visual-region-or-buffer ()
+;;   "Return cons representing the bounds of the current evil region or the entire buffer."
+;;   (let ((r (if (region-active-p)
+;;                (cons (region-beginning) (- (region-end) 1))
+;;              (cons (point-min) (point-max)))))
+;;     r))
 
 ;; ,---------------------,
 ;; | BUFFERS AND WINDOWS |

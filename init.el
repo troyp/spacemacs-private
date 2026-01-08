@@ -1018,31 +1018,6 @@ Returns the function definition."
         t))))
     (setq last-kbd-macro fn))
 
-  (defun my/evil-substitute (beg end pcre replacement  &optional flags)
-    "Substitute REPLACEMENT for PCRE within region (or current line if no region active).
-
-PCRE is a PCRE-style regex. REPLACEMENT is a replacement string using \n to represent groups.
-FLAGS is a list of characters, eg '(?g)"
-    (interactive)
-    (evil-ex-substitute
-     beg end
-     (evil-ex-make-substitute-pattern (pcre-to-elisp pcre) flags)
-     `(replace-eval-replacement . ,replacement)))
-
-  (defun my/evil-substitute-region (pcre replacement &optional flags)
-    "Substitute REPLACEMENT for PCRE within region (or current line if no region active).
-
-PCRE is a PCRE-style regex. REPLACEMENT is a replacement string using \n to represent groups.
-FLAGS is a list of characters, eg '(?g)"
-    (interactive)
-    (let ((beg (if (region-active-p) (region-beginning) (line-beginning-position)))
-          (end (if (region-active-p) (region-end) (line-end-position))))
-      (my/evil-substitute beg end pcre replacement flags)))
-
-  (defun my/append-to-region ()
-    (interactive)
-    (let ((evil-ex-initial-input "s/$/")) (call-interactively 'evil-ex)))
-
   ;; ╭────────────────╮
   ;; │ thing-at-point │
   ;; ╰────────────────╯
@@ -4334,14 +4309,25 @@ If one delimiter is empty, leave a space at beginning or end."
     (interactive "r")
     (my/shell-command-replace-region start end "sed 's/+/%2B/g' | xargs -0 urlencode -d"))
 
+  ;; TODO: test - when working, rewrite #'my/double-slash-comment-to-delimited in terms of this
+  (defun my/regex-replace (regex to-string beg end repeat)
+    (let ((beg (if (region-active-p) (region-beginning) (line-beginning-position)))
+          (end (if (region-active-p) (region-end) (line-end-position))))
+      (save-excursion
+        (goto-char beg)
+        (if repeat
+            (while (re-search-forward regex end)
+              (replace-match to-string))
+          (re-search-forward regex end)
+          (replace-match to-string)))))
+
   (defun my/add-trailing-semicolon (beg end)
     (interactive "r")
     (if (region-active-p)
         (let* ((range (evil-visual-range))
                (beg (nth 0 range))
                (end (nth 1 range)))
-          (my/evil-substitute beg end ";?$" ";" '("g")))
-      (end-of-line)
+          (my/evil-substitute beg end ";?$" ";" '("g"))) (end-of-line)
       (insert-char 59)))
 
   (defun my/add-trailing-semicolon (beg end)
@@ -6389,6 +6375,10 @@ See also `rectangle-number-lines'."
   (defun my/show-last-command ()
     (interactive)
     (message (format "%S" last-command)))
+  (defun my/repeat-last-command ()
+    (interactive)
+    (setf this-command last-command)
+    (command-execute last-command))
 
   (defun sprint-keymap (map)
     (with-temp-buffer
@@ -6521,6 +6511,13 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
     (if (region-active-p) (region-beginning) (point-min)))
   (defun my/region-or-buffer-end ()
     (if (region-active-p) (region-end) (point-max)))
+  (defun my/get-region-or-buffer ()
+    "Return cons representing the bounds of the current region or the entire buffer."
+    (if (region-active-p) (cons (region-beginning) (region-end)) (cons (point-min) (point-max))))
+
+  ;; ╭────────────────╮
+  ;; │ shell commands │
+  ;; ╰────────────────╯
 
   (defun my/shell-command-show-output ()
     (interactive)
@@ -6578,6 +6575,19 @@ If the region is not active, the entire buffer is processed."
       (shell-command-on-region start end command t t
                                error-buffer display-error-buffer)))
 
+  (defun my/shell-command-replace-selection
+      (command &optional error-buffer display-error-buffer)
+    "Process the region as input with COMMAND and replace with output.
+
+If the region is not active, the entire buffer is processed."
+    (interactive
+     (list (read-shell-command "run shell command: ") shell-command-default-error-buffer t))
+    (let ((curbuf  (current-buffer))
+          (start (region-beginning))
+          (end (region-end)))
+      (shell-command-on-region start end command t t
+                               error-buffer display-error-buffer)))
+
   (evil-define-command my/evil-shell-command-replace-region
     (start end type command &optional error-buffer display-error-buffer)
     "Process the region as input with COMMAND and replace with output.
@@ -6604,10 +6614,319 @@ If the region is not active, the entire buffer is processed."
       (evil-visual-restore)
       (evil-visual-paste 1)))
 
+  ;; emacs wiki: https://www.emacswiki.org/emacs/ExecuteExternalCommand
+  (defun e-run-command ()
+    "Run external system programs. Dmenu/Rofi-like.  Tab/C-M-i to completion
+n-[b/p] for walk backward/forward early commands history."
+    (interactive)
+    (require 'subr-x)
+    (start-process "RUN" "RUN" (string-trim-right (read-shell-command "RUN: "))))
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────────────────────────────╮
+  ;; │ Functions dealing with lines/columns │
+  ;; ╰──────────────────────────────────────╯
+
+  (defvar my/blank-line-regexp "^[[:space:]]*$")
+  (defvar my/blank-line-no-whitespace-regexp "^$")
+
+  (defun my/line-at-point-string ()
+    "Return the line around point as a string.
+Similar to (thing-at-point \'line t) except it does not return a trailing newline.
+See also `thing-at-point'"
+    (let ((beg (line-beginning-position))
+          (end (line-end-position)))
+      (buffer-substring-no-properties beg end)))
+
+  (defun my/line-at-point-blank-p ()
+    "Returns a non-nil value if the current line contains only whitespace."
+    (string-match-p my/blank-line-regexp (my/line-at-point-string)))
+  (defun my/line-above-blank-p (&optional n)
+    (save-excursion
+      (forward-line (- (or n 1)))
+      (my/line-at-point-blank-p)))
+  (defun my/line-below-blank-p (&optional n)
+    (save-excursion
+      (forward-line (or n 1))
+      (my/line-at-point-blank-p)))
+  (defun my/adjacent-line-blank-p (&optional n)
+    "Returns a non-nil value if the Nth line above and/or below point contains
+only whitespace).
+See `my/line-at-point-blank-p', `my/line-above-blank-p', `my/line-below-blank-p'"
+    (or (my/line-above-blank-p n)
+        (my/line-below-blank-p n)))
+
+  (defun my/copy-current-line ()
+    (interactive)
+    (when (my/line-visible-end-position)
+      (kill-ring-save (my/line-visible-beginning-position) (my/line-visible-end-position))))
+
+  (defun my/replace-line (count)
+    (interactive "p")
+    (let ((s (pop kill-ring)))
+      (kill-whole-line count)
+      (kill-new s)
+      (evil-paste-before)))
+
+  (defun my/remove-empty-lines (beg end)
+    "Remove all lines containing only whitespace. Interactively"
+    (interactive
+     (destructuring-bind (beg . end) (my/get-region-or-buffer)
+       (list beg end)))
+       (flush-lines "^\\s-*$" beg end))
+
+  ;; ──────────────────────────────
+  ;; functions dealing with columns
+  ;; ──────────────────────────────
+
+  (defun my/wrap-lines-in-region (beg end)
+    "An interactive function to split lines longer than `fill-column'.
+Splits long lines in the region using `fill-paragraph', but never joins lines.
+Ie., each line is treated as a distinct paragraph."
+    (interactive "r")
+    (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+    (replace-string "\n" "\n\n" nil beg end)
+    (evil-active-region 1)
+    (fill-paragraph nil t)
+    (replace-string "\n\n" "\n" nil beg end))
+
+  ;; FIXME: splits the line after region (near start of line); irregular indentation.
+  (defun my/wrap-region-or-comment (beg end)
+    "An interactive function to split lines longer than `fill-column'.
+Splits long lines in the region using `fill-paragraph', but never joins lines.
+Ie., each line is treated as a distinct paragraph.
+Comments are first uncommented using `evilnc-comment-or-uncomment-region' before
+wrapping and then re-commented."
+    (interactive "r")
+    (require 'evil-nerd-commenter)
+    (let ((comment? (evilnc--in-comment-p beg)))
+      (save-excursion
+        (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
+        (unless (region-active-p) (evil-visual-line))
+        (when comment? (evilnc--comment-or-uncomment-region beg end))
+        (replace-string "\n" "\n\n" nil beg end)
+        (evil-active-region 1)
+        (fill-paragraph nil t)
+        (replace-string "\n\n" "\n" nil beg end)
+        (replace-string "\n$" "" nil beg end)
+        (when comment? (evilnc--comment-or-uncomment-region beg end)))))
+
+  ;; redefine | to use a default of `fill-column' rather than 0.
+  (evil-define-motion my/evil-goto-column (count)
+    "Move point to column COUNT.
+
+Columns are indexed from zero. If COUNT is not supplied, use `fill-column'."
+    :type exclusive
+    (move-to-column (or count fill-column)))
+
+  (defun my/extend-to-column (&optional col set-fill-column)
+    "Extend line to column COL by adding spaces, if necessary.
+
+Interactively, COL is provided as a prefix argument. If COL is omitted, the
+value of `fill-column' is used.
+
+If SET-FILL-COLUMN is true, or if the prefix argument is negative, the (positive)
+value of COL is additionally set as the new value of `fill-column'."
+    (interactive "p")
+    (when (or (null col)
+              (and (called-interactively-p) (null current-prefix-arg)))
+      (setq col fill-column))
+    (when (and (called-interactively-p) (< col 0))
+      (setq set-fill-column t)
+      (setq col (abs col)))
+    (when set-fill-column
+      (setf fill-column col))
+    (move-to-column col t))
+
+  (defun my/add-column-marker (beg end &optional group spacing repeat)
+    (interactive "r")
+    (unless group (setq group 1))
+    (let ((endm (save-excursion
+                  (goto-char (1- end))
+                  (end-of-line)
+                  (point-marker))))
+      (save-excursion
+        (goto-char beg)
+        (while (<= (point) (marker-position endm))
+          (end-of-line)
+          (insert " |")
+          (beginning-of-line 2))
+        (set-marker endm (line-end-position))
+        (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
+        (set-marker endm nil))))
+
+  ;; ──────────────────────
+  ;; delete duplicate lines
+  ;; ──────────────────────
+
+  (defun my/delete-duplicate-lines-nonblank
+      (beg end &optional reverse adjacent delete-blanks interactive)
+    "Delete duplicate lines within region. This is the same as
+`delete-duplicate-lines' except it keeps blank lines by default unless the
+DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
+
+C-u          Keep the last instance of each line
+C-u C-u      Delete blank line duplicates
+C-u C-u C-u  Only delete adjacent duplicates
+\nSee also `spacemacs/uniquify-lines', which deletes adjacent duplicate lines
+within the region."
+    (interactive
+     (progn
+       (list
+        (region-beginning) (region-end)
+        (equal current-prefix-arg '(4))
+        (equal current-prefix-arg '(64))
+        (equal current-prefix-arg '(16))
+        t)))
+    (delete-duplicate-lines beg end reverse adjacent (not delete-blanks) interactive))
+
+  (defun my/just-one-blank-line ()
+    (interactive)
+    (if (and (my/line-at-point-blank-p)
+             (my/adjacent-line-blank-p))
+        (delete-blank-lines)))
+
+  (defun my/remove-blank-lines ()
+    (interactive)
+    (replace-regexp "\n\\([[:space:]]*\n\\)+" "\n\n"))
+
+  (defun my/remove-doubled-blank-lines ()
+    (interactive)
+    (replace-regexp "\n[[:space:]]*\n\\([[:space:]]*\n\\)+" "\n\n"))
+
+  (defun my/delete-adjacent-repeated-lines ()
+    (interactive)
+    (destructuring-bind (beg . end) (my/get-region-or-buffer)
+      (delete-duplicate-lines beg end nil t nil t)))
+
+  (defun my/remove-trailing-space-and-blank-lines (&optional beg end)
+    (interactive
+     (cond ((use-region-p)   (list (region-beginning) (region-end)))
+           (:else            (list (point) (point-max)))))
+    (delete-trailing-whitespace beg end)
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward "\n+" end t)
+        (replace-match "\n" nil nil))))
+
+  (defun my/remove-trailing-space-and-doubled-blank-lines (&optional beg end)
+    (interactive
+     (cond ((use-region-p)   (list (region-beginning) (region-end)))
+           (:else            (list (point) (point-max)))))
+    (delete-trailing-whitespace beg end)
+    (save-excursion
+      (goto-char beg)
+      (while (re-search-forward "\n\n+" end t)
+        (replace-match "\n\n" nil nil))))
+
+  ;; ────────────────
+  ;; shift left/right
+  ;; ────────────────
+  ;; TODO: non-hackish versions
+
+  (defun evil-shift-left-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (call-interactively 'evil-shift-left)))
+  (defun evil-shift-right-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (call-interactively 'evil-shift-right)))
+  (defun evil-visual-shift-left-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (evil-visual-shift-left))
+    (execute-kbd-macro "gv"))
+  (defun evil-visual-shift-right-fine ()
+    (interactive)
+    (let ((evil-shift-width 1))
+      (evil-visual-shift-right))
+    (execute-kbd-macro "gv"))
+  (defun my/evil-shift-left-fine-dispatcher ()
+    (interactive)
+    (if (eq evil-state 'visual)
+        (call-interactively 'evil-visual-shift-left-fine)
+      (call-interactively 'evil-shift-left-fine)))
+  (defun my/evil-shift-right-fine-dispatcher ()
+    (interactive)
+    (if (eq evil-state 'visual)
+        (call-interactively 'evil-visual-shift-right-fine)
+      (call-interactively 'evil-shift-right-fine)))
+
+  ;; ╭───────────────────╮
+  ;; │ text substitution │
+  ;; ╰───────────────────╯
+
+  (defun my/evil-substitute (beg end pcre replacement  &optional flags)
+    "Substitute REPLACEMENT for PCRE within region (or current line if no region active).
+
+PCRE is a PCRE-style regex. REPLACEMENT is a replacement string using \n to represent groups.
+FLAGS is a list of characters, eg '(?g)"
+    (interactive)
+    (evil-ex-substitute
+     beg end
+     (evil-ex-make-substitute-pattern (pcre-to-elisp pcre) flags)
+     `(replace-eval-replacement . ,replacement)))
+
+  (defun my/evil-substitute-region (pcre replacement &optional flags)
+    "Substitute REPLACEMENT for PCRE within region (or current line if no region active).
+
+PCRE is a PCRE-style regex. REPLACEMENT is a replacement string using \n to represent groups.
+FLAGS is a list of characters, eg '(?g)"
+    (interactive)
+    (let ((beg (if (region-active-p) (region-beginning) (line-beginning-position)))
+          (end (if (region-active-p) (region-end) (line-end-position))))
+      (my/evil-substitute beg end pcre replacement flags)))
+
+  (defun my/append-to-region ()
+    (interactive)
+    (let ((evil-ex-initial-input "s/$/")) (call-interactively 'evil-ex)))
+
+  (defun my/table-lastcol-inc-region (n)
+    "Applied to a region containing a table ending in a column of numbers, increment the numbers by N."
+    (interactive "NIncrement: ")
+    (let ((cmd
+           (s-concat
+            "perl -wple 's/(?<=\\s)(\\d+)$/$1+"
+            (int-to-string n)
+            "/e'"
+            )))
+      (my/shell-command-replace-region (region-beginning) (region-end) cmd)))
+
+  (defun my/table-lastcol-dec-region (n)
+    "Applied to a region containing a table ending in a column of numbers, decrement the numbers by N."
+    (interactive "NDecrement: ")
+    (let ((cmd
+           (s-concat
+            "perl -wple 's/(?<=\\s)(\\d+)$/$1-"
+            (int-to-string n)
+            "/e'"
+            )))
+      (my/shell-command-replace-region (region-beginning) (region-end) cmd)))
+
+  (evil-define-operator my/evil-replace-in-region (beg end)
+    "Select text and replace in region [BEG, END].
+
+Text is selected using `my/evil-select-region-operator'."
+    :move-point nil
+    (interactive "<r>")
+    (let* ((from-str-range (evil-operator-range))
+           (from-str (apply #'buffer-substring from-str-range))
+           (to-str (read-from-minibuffer (format "Replace '%s' with: " from-str))))
+      (perform-replace from-str to-str t
+                       nil                   ;; regex
+                       current-prefix-arg    ;; delimited
+                       nil nil               ;; repeat-count map
+                       beg end)))
+
+  ;; ╭─────────╮
+  ;; │ PDF ToC │
+  ;; ╰─────────╯
+
   (defun my/pdf-toc-format ()
     "Applied to a region containing columns of chapters and page numbers, formats it into PDF TOC code."
     (interactive)
-    (my/evil-substitute-region " +([0-9]+)$" "/\\1,Black,notBold,notItalic,closed,FitPage"))
+    (my/evil-substitute-region " +([0-9]+)$" "/\\1,Black,notBold,notItalic,closed,TopLeftZoom"))
 
   (defun my/pdf-toc-inc-region (n)
     "Applied to a region containing PDF TOC code, this command increments the page numbers by N."
@@ -6619,6 +6938,30 @@ If the region is not active, the entire buffer is processed."
             "/e'"
             )))
       (my/shell-command-replace-region (region-beginning) (region-end) cmd)))
+
+  (defun my/pdf-toc-dec-region (n)
+    "Applied to a region containing PDF TOC code, this command decrements the page numbers by N."
+    (interactive "NDecrement: ")
+    (let ((cmd
+           (s-concat
+            "perl -wple 's/(?<=\\/)(\\d+)(?=,)/$1-"
+            (int-to-string n)
+            "/e'"
+            )))
+      (my/shell-command-replace-region (region-beginning) (region-end) cmd)))
+
+  (defun my/pdf-toc-capitalize-entry ()
+    (interactive)
+    (evil-normal-state)
+    (end-of-line)
+    (evil-find-char-backward nil ?/)
+    (evil-visual-char)
+    (beginning-of-line)
+    (capitalize-region (region-beginning) (region-end))
+    (next-line))
+
+  ;; (fset 'my/pdf-toc-capitalize-entry
+  ;;       [?\C-e ?F ?/ ?v ?\C-a ?\M-x ?c ?a ?p ?i ?t ?a ?l ?i ?z ?e ?- ?r ?e ?g ?i ?o ?n return ?j])
 
   (defun my/web-mode-normalize-html ()
     (interactive)
@@ -6830,7 +7173,9 @@ each line."
 
   (defun my/async-shell-command-no-window (command &optional output-buffer error-buffer)
     (interactive "sShell command: ")
-    (let ((display-buffer-alist '(("*Async Shell Command*" . (display-buffer-no-window nil)))))
+    (let
+        ;; ((display-buffer-alist '(("\\*Async Shell Command\\*" . (display-buffer-no-window nil)))))
+        ((display-buffer-alist (list (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))))
       (async-shell-command command)))
 
   (defun my/line-length (&optional N trim)
@@ -7182,230 +7527,6 @@ Recognizes `defun', `defalias', `defmacro', `defvar', `defconst', `defmethod',
       (helm-switch-major-mode)))
 
   ;; ───────────────────────────────────────────────────────────────────────────────
-  ;; ╭──────────────────────────────────────╮
-  ;; │ Functions dealing with lines/columns │
-  ;; ╰──────────────────────────────────────╯
-
-  (defvar my/blank-line-regexp "^[[:space:]]*$")
-  (defvar my/blank-line-no-whitespace-regexp "^$")
-
-  (defun my/line-at-point-string ()
-    "Return the line around point as a string.
-Similar to (thing-at-point \'line t) except it does not return a trailing newline.
-See also `thing-at-point'"
-    (let ((beg (line-beginning-position))
-          (end (line-end-position)))
-      (buffer-substring-no-properties beg end)))
-
-  (defun my/line-at-point-blank-p ()
-    "Returns a non-nil value if the current line contains only whitespace."
-    (string-match-p my/blank-line-regexp (my/line-at-point-string)))
-  (defun my/line-above-blank-p (&optional n)
-    (save-excursion
-      (forward-line (- (or n 1)))
-      (my/line-at-point-blank-p)))
-  (defun my/line-below-blank-p (&optional n)
-    (save-excursion
-      (forward-line (or n 1))
-      (my/line-at-point-blank-p)))
-  (defun my/adjacent-line-blank-p (&optional n)
-    "Returns a non-nil value if the Nth line above and/or below point contains
-only whitespace).
-See `my/line-at-point-blank-p', `my/line-above-blank-p', `my/line-below-blank-p'"
-    (or (my/line-above-blank-p n)
-        (my/line-below-blank-p n)))
-
-  (defun my/copy-current-line ()
-    (interactive)
-    (when (my/line-visible-end-position)
-      (kill-ring-save (my/line-visible-beginning-position) (my/line-visible-end-position))))
-
-  (defun my/replace-line (count)
-    (interactive "p")
-    (let ((s (pop kill-ring)))
-      (kill-whole-line count)
-      (kill-new s)
-      (evil-paste-before)))
-
-  ;; ──────────────────────────────
-  ;; functions dealing with columns
-  ;; ──────────────────────────────
-
-  (defun my/wrap-lines-in-region (beg end)
-    "An interactive function to split lines longer than `fill-column'.
-Splits long lines in the region using `fill-paragraph', but never joins lines.
-Ie., each line is treated as a distinct paragraph."
-    (interactive "r")
-    (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
-    (replace-string "\n" "\n\n" nil beg end)
-    (evil-active-region 1)
-    (fill-paragraph nil t)
-    (replace-string "\n\n" "\n" nil beg end))
-
-  ;; FIXME: splits the line after region (near start of line); irregular indentation.
-  (defun my/wrap-region-or-comment (beg end)
-    "An interactive function to split lines longer than `fill-column'.
-Splits long lines in the region using `fill-paragraph', but never joins lines.
-Ie., each line is treated as a distinct paragraph.
-Comments are first uncommented using `evilnc-comment-or-uncomment-region' before
-wrapping and then re-commented."
-    (interactive "r")
-    (require 'evil-nerd-commenter)
-    (let ((comment? (evilnc--in-comment-p beg)))
-      (save-excursion
-        (when (numberp current-prefix-arg) (setq fill-column current-prefix-arg))
-        (unless (region-active-p) (evil-visual-line))
-        (when comment? (evilnc--comment-or-uncomment-region beg end))
-        (replace-string "\n" "\n\n" nil beg end)
-        (evil-active-region 1)
-        (fill-paragraph nil t)
-        (replace-string "\n\n" "\n" nil beg end)
-        (replace-string "\n$" "" nil beg end)
-        (when comment? (evilnc--comment-or-uncomment-region beg end)))))
-
-  ;; redefine | to use a default of `fill-column' rather than 0.
-  (evil-define-motion my/evil-goto-column (count)
-    "Move point to column COUNT.
-
-Columns are indexed from zero. If COUNT is not supplied, use `fill-column'."
-    :type exclusive
-    (move-to-column (or count fill-column)))
-
-  (defun my/extend-to-column (&optional col set-fill-column)
-    "Extend line to column COL by adding spaces, if necessary.
-
-Interactively, COL is provided as a prefix argument. If COL is omitted, the
-value of `fill-column' is used.
-
-If SET-FILL-COLUMN is true, or if the prefix argument is negative, the (positive)
-value of COL is additionally set as the new value of `fill-column'."
-    (interactive "p")
-    (when (or (null col)
-              (and (called-interactively-p) (null current-prefix-arg)))
-      (setq col fill-column))
-    (when (and (called-interactively-p) (< col 0))
-      (setq set-fill-column t)
-      (setq col (abs col)))
-    (when set-fill-column
-      (setf fill-column col))
-    (move-to-column col t))
-
-  (defun my/add-column-marker (beg end &optional group spacing repeat)
-    (interactive "r")
-    (unless group (setq group 1))
-    (let ((endm (save-excursion
-                  (goto-char (1- end))
-                  (end-of-line)
-                  (point-marker))))
-      (save-excursion
-        (goto-char beg)
-        (while (<= (point) (marker-position endm))
-          (end-of-line)
-          (insert " |")
-          (beginning-of-line 2))
-        (set-marker endm (line-end-position))
-        (align-regexp beg (marker-position endm) "\\(\\s-*\\)|" group spacing repeat)
-        (set-marker endm nil))))
-
-  ;; ──────────────────────
-  ;; delete duplicate lines
-  ;; ──────────────────────
-
-  (defun my/delete-duplicate-lines-nonblank
-      (beg end &optional reverse adjacent delete-blanks interactive)
-    "Delete duplicate lines within region. This is the same as
-`delete-duplicate-lines' except it keeps blank lines by default unless the
-DELETE-BLANKS argument is non-nil.\n\nCan be called with the prefixes:
-
-C-u          Keep the last instance of each line
-C-u C-u      Delete blank line duplicates
-C-u C-u C-u  Only delete adjacent duplicates
-\nSee also `spacemacs/uniquify-lines', which deletes adjacent duplicate lines
-within the region."
-    (interactive
-     (progn
-       (list
-        (region-beginning) (region-end)
-        (equal current-prefix-arg '(4))
-        (equal current-prefix-arg '(64))
-        (equal current-prefix-arg '(16))
-        t)))
-    (delete-duplicate-lines beg end reverse adjacent (not delete-blanks) interactive))
-
-  (defun my/just-one-blank-line ()
-    (interactive)
-    (if (and (my/line-at-point-blank-p)
-             (my/adjacent-line-blank-p))
-        (delete-blank-lines)))
-
-  (defun my/remove-blank-lines ()
-    (interactive)
-    (replace-regexp "\n\\([[:space:]]*\n\\)+" "\n\n"))
-
-  (defun my/remove-doubled-blank-lines ()
-    (interactive)
-    (replace-regexp "\n[[:space:]]*\n\\([[:space:]]*\n\\)+" "\n\n"))
-
-  (defun my/delete-adjacent-repeated-lines ()
-    (interactive)
-    (destructuring-bind (beg . end) (evil-get-visual-region-or-buffer)
-      (delete-duplicate-lines beg end nil t nil t)))
-
-  (defun my/remove-trailing-space-and-blank-lines (&optional beg end)
-    (interactive
-     (cond ((use-region-p)   (list (region-beginning) (region-end)))
-           (:else            (list (point) (point-max)))))
-    (delete-trailing-whitespace beg end)
-    (save-excursion
-      (goto-char beg)
-      (while (re-search-forward "\n+" end t)
-        (replace-match "\n" nil nil))))
-
-  (defun my/remove-trailing-space-and-doubled-blank-lines (&optional beg end)
-    (interactive
-     (cond ((use-region-p)   (list (region-beginning) (region-end)))
-           (:else            (list (point) (point-max)))))
-    (delete-trailing-whitespace beg end)
-    (save-excursion
-      (goto-char beg)
-      (while (re-search-forward "\n\n+" end t)
-        (replace-match "\n\n" nil nil))))
-
-  ;; ────────────────
-  ;; shift left/right
-  ;; ────────────────
-  ;; TODO: non-hackish versions
-
-  (defun evil-shift-left-fine ()
-    (interactive)
-    (let ((evil-shift-width 1))
-      (call-interactively 'evil-shift-left)))
-  (defun evil-shift-right-fine ()
-    (interactive)
-    (let ((evil-shift-width 1))
-      (call-interactively 'evil-shift-right)))
-  (defun evil-visual-shift-left-fine ()
-    (interactive)
-    (let ((evil-shift-width 1))
-      (evil-visual-shift-left))
-    (execute-kbd-macro "gv"))
-  (defun evil-visual-shift-right-fine ()
-    (interactive)
-    (let ((evil-shift-width 1))
-      (evil-visual-shift-right))
-    (execute-kbd-macro "gv"))
-  (defun my/evil-shift-left-fine-dispatcher ()
-    (interactive)
-    (if (eq evil-state 'visual)
-        (call-interactively 'evil-visual-shift-left-fine)
-      (call-interactively 'evil-shift-left-fine)))
-  (defun my/evil-shift-right-fine-dispatcher ()
-    (interactive)
-    (if (eq evil-state 'visual)
-        (call-interactively 'evil-visual-shift-right-fine)
-      (call-interactively 'evil-shift-right-fine)))
-
-  ;; ───────────────────────────────────────────────────────────────────────────────
   ;; ╭────────────────────────╮
   ;; │ File Opening Functions │
   ;; ╰────────────────────────╯
@@ -7723,21 +7844,6 @@ considered."
         (setq bs (cdr bs)))
       (car bs)))
 
-  (evil-define-operator my/evil-replace-in-region (beg end)
-    "Select text and replace in region [BEG, END].
-
-Text is selected using `my/evil-select-region-operator'."
-    :move-point nil
-    (interactive "<r>")
-    (let* ((from-str-range (evil-operator-range))
-           (from-str (apply #'buffer-substring from-str-range))
-           (to-str (read-from-minibuffer (format "Replace '%s' with: " from-str))))
-      (perform-replace from-str to-str t
-                       nil                   ;; regex
-                       current-prefix-arg    ;; delimited
-                       nil nil               ;; repeat-count map
-                       beg end)))
-
 ;; ───────────────────────────────────────────────────────────────────────────────
 
   ;; adapted from link-hint.el (Fox Kiester, GPL3)
@@ -8036,3 +8142,4 @@ entered, return a command which executes it."
   ;; │ Load Private Data │
   ;; ╰───────────────────╯
 )
+
