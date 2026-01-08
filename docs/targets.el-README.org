@@ -1,0 +1,600 @@
+#+STARTUP: overview
+* About
+This package is like a combination of the targets, TextObjectify, anyblock, and expand-region vim plugins.
+
+Please note that this package is in an early stage of development. This package is not yet polished, and much of the planned functionality is not yet implemented.
+
+* Differences from =targets.vim=
+- Pairs can be regexps
+- No N or L (see rationale below)
+- Adds "remote" text objects (selected with [[https://github.com/abo-abo/avy][avy]])
+- Objects are supported (e.g. =danw=; this is a todo item for targets.vim)
+- Currently no support for tag text objects and no argument text object
+- Not polished (please make issues)
+
+* Types of Text Objects
+Targets.vim specifies three kinds of text objects. This package adds another three to that list:
+
+- pair (created using ~evil-select-paren~)
+- quote (created using ~evil-select-quote~)
+- separator (created using ~evil-select-paren~)
++ object (created with ~evil-select-*-object~; uses thing-at-point)
++ composite (a combination of any number of the above)
++ simple (e.g. created using ~evil-range~; extra =n=, =l=, etc. text objects not supported; not yet implemented)
+
+** Pair
+A pair consists of an opening and closing delimiter that are different from each other. Each can be a single character or a regexp.
+
+** Quote
+A quote consists of an opening and closing delimiter that are the same. The delimiter must be a single character. Unlike with evil's default quote text objects, =a= will not select any surrounding whitespace (this functionality is moved to =A=). There is an option to keep the default behavior (not yet implemented).
+
+** Separator
+The main difference between a separator and a quote is that there do not need to be a balanced number of separators. A separator delimiter can be a regexp. =a= also behaves slightly differently. It includes the first separator but not the second, so that after a deletion, a separator will still be left in between the text on either side.
+
+** Objects/Things
+These are text objects that use =thingatpt.el= such as =evil-word= and =evil-sentence=. Note that =i= and =a= will act as =I= and =A= for most text objects by default (e.g. there are no delimiters to consider for an =evil-word=). =I= and =A= text objects will still be created because it is still possible and sometimes useful to have different behavior for inner vs. outer things besides how they handle whitespace (e.g. you could potentially create an inner sentence text object that excludes quotations and org markup like [[https://github.com/noctuid/emacs-sentence-navigation][sentence-navigation.el]]). You can [[#custom-inner-vs-outer-behavior][specify a shrink function]] to use for the inner text object to achieve this behavior.
+
+** Miscellaneous/Simple
+Since this package is about adding extra text objects, it also adds a few other specific text objects that evil does not have by default:
+
+- line (not yet implemented)
+- buffer (not yet implemented)
+- argument (as a regexp pair; not yet implemented)
+
+** i, a, I, A, l, n, r
+In addition to the standard inner and outer text objects, the =targets.vim= plugin adds =[I]nside= and =[A]round=. In this package, these act how =i= and =a= do for objects (such as =evil-word=) except they are for the pair, quote, and separator types. =I= will select inside the delimiters excluding any whitespace, and =A= will select all the text encompassed by the delimiters, the delimiters, and either trailing or leading whitespace. Trailing whitespace is preferred.
+
+=[n]ext= and =[l]ast= text objects are also added. These will select the next and previous text object and can take a count. For example, =vin(= would select the next parens, and =v2in(= would select the parens after those. When used with a non-selection operator (such as delete), the point will not be moved.
+
+The =targets.vim= plugin also has =N= and =L= (which act as =n= and =l= with a doubled count). These do not exist for quotes since seeking behavior is intelligent in this package (a proper quote will always be selected). They do not exist for separators because it is easy to double your count if you wish to.
+
+Finally, there is a =[r]emote= text object. This allows you to select the text object to act on using avy. ~avy-resume~ is supported but will only move the point to the corresponding text object. ~evil-repeat~ can be used to repeat the action as well. For example, with [[https://github.com/Dewdrops/evil-exchange][evil-exchange]], =g x a s <avy-keys> . <avy-keys>= could be used to swap two sentences remotely.
+
+Note that the keys used for these can be customized.
+
+* Additions to Evil's Functionality
+Unlike in vim, evil already implements some of the features added in the aforementioned vim plugins. Evil's quote text objects can cover multiple lines, and paren text objects will seek forward if defined with strings instead of characters (like in =TextObjectify=). Evil's quote text objects are smart and will only select within a proper quote (and not the space in between quoted text; like in =targets=). Evil's text objects also support counts and expanding a selection when called again (like =targets= and =expand-region=). Adding composite text objects (like =anyblock= has) allows for expanding a region to fill the next of any number of text objects.
+
+** Seeking
+By default, =i(=, for example, will not seek forward. ~evil-inner-paren~ can be redefined to seek forward by using strings instead of characters for the open and close paren, but the behavior will not always be as intelligent. This is because ~evil-up-block~ (~evil-up-paren~ is used for the default paren text objects) does not consider whether delimiters are escaped or whether they are in the same string or comment. Evil also does not have backward seeking.
+
+Instead of attempting to add more types of seeking to every evil selection function directly, this package just ignores the default seeking. If there is no text object at the point, this package will try the functions in =targets-seek-functions= in order in an attempt to find a text object. Like in =targets.vim=, seeking is customizable (by changing the functions in =targets-seek-functions=). By default, every text object defined with this package will seek first forward and then backward.
+
+If you want to create a new seeking function, you can look at the functions in =targets-seek-functions= and at the arguments they take. It is more likely that you will only want to make slight changes to the seeking behavior. For example, if you don't want backward seeking, you can remove that function from the list. If you don't want any seeking, you can set the list to =nil=. By default, seeking is bounded to the text visible in the window. To alter the bounds, the =targets-bound= variable can changed to specify a user-created function. See the default function's docstring for information on how a user-created function should behave.
+
+** Jump List
+Like in =targets.vim=, you can also customize when seeking causes a new entry to be added to the jump list. To do this, you can change the =targets-push-jump-p= variable to specify a different function. See the default function's docstring for more information. By default, a new entry is added when seeking moves the point to a different line.
+
+* Text Object Creation
+This package provides three main macros for creating text objects.
+
+** ~targets-define-to~
+This is the main way provided by this package for creating text objects in bulk.
+
+Here is a basic example with all the required arguments:
+#+begin_src emacs-lisp
+(targets-define-to paren "(" ")" pair)
+#+end_src
+This will result in the creation of 16 text objects (=inner=, =a=, =inside=, =around=, and the next, last, and remote versions of these).
+
+The first argument is a symbol that will be used when naming the new text objects. The next two arguments specify the delimiters for the text objects. The fourth arguments specifies the type of the text objects. The names for the types are =pair=, =quote=, =separator=, and =object=. Only pairs require the closing delimiter. The opening delimiter should always be a string except for an =object=, for which it should be the symbol corresponding to the thing.
+#+begin_src emacs-lisp
+(targets-define-to double-quote "\"" nil quote)
+(targets-define-to comma "," nil separator)
+(targets-define-to word 'evil-word nil object)
+#+end_src
+
+~targets-define-to~ accepts additional keyword arguments. Specifying =bind= as non-nil will also bind the created text objects. By default, text objects are bound to the opening delimiter (and closing delimiter for pairs, e.g =i(=, =i)=, =a(=, =a)=, etc.). If the delimiters are regexps or the type is =object=, =:keys= must be explicitly specified. =:keys= completely replaces the default keys, and =:more-keys= adds to them. Both can be either a single key or a list of keys. =:inner-key=, =:a-key=, =:inside-key=, =:around-key=, =:next-key=, =:last-key=, and =:remote-key= can also be specified to change the intermediate keys used from their defaults. If any of them is set to =nil=, the corresponding text objects will not be bound.
+#+begin_src emacs-lisp
+(targets-define-to paren "(" ")" pair
+                   :bind t :more-keys "r" :last-key "p" :remote-key nil)
+(targets-define-to word 'evil-word nil object :bind t :keys "w")
+#+end_src
+
+Evil does not support defining mode-local text objects with ~evil-define-key~ (e.g. binding =iw= in the operator and visual states will not override the default =iw=). Buffer-local text objects do work though, so ~targets-define-to~ provides the =:hooks= keyword argument to specify hooks to be used to locally bind the defined text objects (instead of binding them globally). The argument can be a list (e.g. =:hooks (emacs-lisp-mode-hook lisp-mode-hook)=) or a single hook (e.g =:hooks emacs-lisp-mode-hook=). Note that the name specified should be unique from any other targets text object names (e.g. =elisp-quote= if =quote= already exists).
+
+The =:let= keyword is also provided to allow locally defining variables for the created text objects. See [[#text-object-specific-settings][Text Object Specific Settings]] for more information
+
+** ~targets-define-composite-to~
+Composite objects are composed of multiple regular text objects. Whichever text object gives the smallest selection that includes the current selection or point will be used. If there are no text objects around the current selection or at the point, composite text objects will still seek (if ~targets-seek-functions~ is non-nil). When seeking, the closest text object is favored. Counts still work to expand the selection multiple times (e.g. =d2id=).
+
+Here is an example of defining composite text objects that will act on any of the default pair delimiters:
+#+begin_src emacs-lisp
+(targets-define-composite-to pair-delimiter
+  (("(" ")" pair)
+   ("[" "]" pair)
+   ("{" "}" pair)
+   ("<" ">" pair))
+  :bind t
+  :next-key nil
+  :last-key nil
+  :keys "d")
+#+end_src
+
+Here's an example that creates the equivalents of the [[https://github.com/noctuid/evil-textobj-anyblock][anyblock]] text objects:
+#+begin_src emacs-lisp
+(targets-define-composite-to anyblock
+  (("(" ")" pair)
+   ("[" "]" pair)
+   ("{" "}" pair)
+   ("<" ">" pair)
+   ("\"" "\"" quote)
+   ("'" "'" quote)
+   ("`" "`" quote)
+   ("“" "”" quote))
+  :bind t
+  :keys "b")
+#+end_src
+
+~targets-define-composite-to~ has the same keyword arguments as ~targets-define-to~ except there is no =:more-keys=. If =:bind= is specified as non-nil, =:keys= must also be specified.
+
+** ~targets-define-simple-to~
+Not yet implemented.
+
+** Creating New/Integrating Existing Text Objects using =thingatpt.el=
+*** Why =thingatpt.el=?
+Targets already supports creating pair, quote, and separator text objects directly. For more complicated text objects, targets can automatically integrate with any text objects built on top off =thingatpt= (e.g. any text objects that use ~evil-select-inner-object~ or ~evil-select-an-object~). Text objects that use ~evil-range~ directly can generally be rewritten to use ~evil-select-*-object~ instead.
+
+The benefit of using =thingatpt= is that it provides a consistent interface for the functionality needed for text object selection and seeking. It does some of the necessary work itself, and evil already uses =thingatpt= for most non-pair text objects (e.g. words). That means that this section is relevant even if you don't use this package. When a thing is implemented correctly, all the information targets needs for seeking and collecting all visible locations text objects is available. Targets can then be used to create text objects for a thing with a single line:
+#+begin_src emacs-lisp
+(targets-define-to to-name 'thing-name nil object)
+;; or for text objects with the concept of "inner" vs. "outer"
+(targets-define-to to-name 'inner-thing-name 'outer-thing-name object)
+#+end_src
+
+*** What is a Thing?
+Implementing a thing requires implementing 1 to 5 functions:
+- =forward-op= (required)
+  - with a positive count, move to the nth next thing end
+  - with a negative count, move to the nth previous thing beginning
+  - don't move the point if no (more) things
+  - (for evil functionality) return 0 on success and another number (e.g. 1) on failure
+- =beginning-op= - move to the beginning of the current thing or do nothing if no thing at point
+- =end-op= - move to the end of the current thing or do nothing if no thing at point
+- =bounds-of-thing-at-point= - return the bounds (as a cons of the form =(beg . end)=) of the current thing or nil if no thing at point
+- =thing-at-point= (usually unnecessary; unnecessary for text objects) - return the text corresponding to the current thing or nil if no thing at point
+
+=thingatpt= does not specify what the return value of =forward-op= should be, but evil requires it to return =0= on success (or =1=, for example, on failure like ~forward-line~ does). Not all things do this, so you may need to alter the =forward-op= for some things to meet this requirement (or growing a selection will break, for example).
+
+Targets also allows implementing the following functions to support customized behavior for more specialized things (e.g. nestable things):
+- =targets-shrink-inner-op=
+- =targets-no-extend=
+- =targets-seek-op=
+- =targets-seeks-forward-begin=
+- =targets-seeks-backward-end=
+- =targets-overlay-position=
+- =targets-extend-seek-op=
+
+See the following sections for more information on these targets functions.
+
+=thingatpt= and =targets= use symbol properties to store/obtain these functions:
+#+begin_src emacs-lisp
+(put 'thing-name '<op> #'thing-name-<op>)
+
+;; specific example
+(put 'my-sentence 'forward-op #'my-sentence-forward)
+
+;; for 'forward-op specifically, `forward-thing' will alternatively call
+;; `forward-<thing-name>' if it exists
+(defun forward-my-sentence ...)
+#+end_src
+
+=thingatpt= in turn uses these functions to provide the following:
+- ~forward-thing~
+  - with a positive count, move to the nth next thing end
+  - with a negative count, move to the nth previous thing beginning
+  - no guarunteed return value (may return nil on success)
+- ~beginning-of-thing~
+  - move to the beginning of the current thing
+  - returns the beginning position on success; errors on failure (can use ~ignore-errors~ to get nil instead)
+- ~end-of-thing~
+  - move to the end of the current thing
+  - returns the end position on success; errors on failure
+- ~bounds-of-thing-at-point~ - return the bounds of the current thing or errors if no thing at point
+- ~thing-at-point~ - return the text corresponding to the current thing or nil if no thing at point
+
+=forward-op= is the only function required for the previously listed functionality to work. Without a =beginning-op= and =end-op=, it should support both a positive and negative count. Note that there is no =backward-op=; =forward-op= is used for backward movement as well. With a positive count, it should move to the next thing end (which can be the end of the current thing or the end of the next thing if the point is already at the end of the current thing) that number of times. With negative count, it should move to the previous thing beginning (which can be the beginning of the current or previous thing) that number of times.
+
+When =beginning-op= and =end-op= exist, =thingatpt= will use them instead of =forward-op= to move to the beginning and end of the current thing in order to get its bounds. Alternatively, if =bounds-of-thing-at-point= exists, it will be used directly to obtain the thing bounds. Note that ~beginning-of-thing~ and ~end-of-thing~ always call ~bounds-of-thing-at-point~ to get and then move to a thing's beginning or end, so you do not need to explicitly define =beginning-op= or =end-op= if you've already implemented/defined =bounds-of-thing-at-point=. In evil the point is considered as being on the next character, so if you're implementing a text object where the point could be both at the end and at the beginning of a thing, =bounds-of-thing-at-point= should return the bounds of the thing that the point is /on/. For an example, this is how the default list thing behaves:
+#+begin_src emacs-lisp
+(list)|
+;; (bounds-of-thing-at-point 'list) returns nil
+|(list)
+;; (bounds-of-thing-at-point 'list) returns the bounds of list
+(defun (args)|...)
+;; (bounds-of-thing-at-point 'list) returns the bounds of defun
+#+end_src
+
+=thing-at-point= returns a string corresponding to the current thing. It is generally not necessary to manually implement this function for any specific thing as =thingatpt= can just use the thing bounds to get the corresponding buffer string. This functionality is also not needed for text objects.
+
+**** More Details on =forward-op=
+This section isn't strictly necessary to understand how to write a =forward-op= function, but it may make it more clear how =thing-at-point= uses =forward-op= to obtain the bounds of a thing.
+
+To summarize how =thingatpt= finds the bounds of the current thing using only =forward-op=, it will first call ~(forward-thing 1)~ and then ~(forward-thing -1)~ to attempt to find the beginning of the current thing. After that, it will call ~(forward-thing 1)~ again to get the end. If that method fails, it will then try ~(forward-thing -1)~ followed by ~(forward-thing 1)~ to get the end (and then ~(forward-thing -1)~ again to get the beginning). This procedure may not immediately make sense, so to briefly illustrate why this method is necessary, consider the following examples.
+
+In the following case, ~(forward-thing sentence 1)~ will correctly go to the end of the sentence, and ~(forward-thing 'sentence -1)~ will correctly go to the beginning of the current sentence:
+#+begin_src emacs-lisp
+In sente|nce middle.
+#+end_src
+
+However, if the point is already at the sentence end, for example, ~(forward-thing 'sentence 1)~ will move to the end of the /next/ sentence:
+#+begin_src emacs-lisp
+At sentence end.| Next sentence. Next sentence.
+;; after (forward-thing 'sentence 1)
+At sentence end. Next sentence.| Next sentence.
+#+end_src
+
+=thingatpt= can detect this failure by then running ~(forard-thing 'sentence -1)~:
+#+begin_src emacs-lisp
+At sentence end. |Next sentence. Next sentence.
+;; point is after original position: failure
+#+end_src
+
+If the original ~(forward-thing 'sentence 1)~ had moved to the end of the /current/ sentence, ~(forward-thing 'sentence -1)~ would have moved the point to the beginning of the current sentence, which has to either be before original position or the original position itself. Since the point is after the original position, we know this method failed and moved to the next sentence instead. However, =thingatpt= can then use ~(forward-thing 'sentence -1)~ instead to reliably move to the beginning of the current sentence. There are extra checks to handle some edge cases (e.g. the second method actually calls ~(forward-thing -1)~, ~(forward-thing 1)~, and then ~(forward-thing -1)~), but these are the basic steps used to get the bounds of a thing; if you want to learn more, I'd recommend looking at ~bounds-of-thing-at-point~ directly as it is only around 50 LOC.
+
+*** Method for Implementing Text Objects Using Things
+You can use whatever method you want, but this is my preferred way of creating new text objects. The basic process I use is as follows:
+- Implement =bounds-of-thing-at-point= or =beginning-op= and =end-op= (used to select the current text object)
+- Implement evil motions (optional)
+- Implement =forward-op= (used for seeking and text object location collection) using evil motions
+
+I prefer to implement =beginning-op= and =end-op= independently from =forward-op= as they can potentially be useful when implementing evil motions and =forward-op=. If there is not already a function to confirm that there is a thing at the point (e.g. ~syntax-ppss~ can be used for strings/comments), you can use ~bounds-of-thing-at-point~ once you've implemented it. The main thing to remember is to properly handle edge cases (stay at the current thing when at its end or beginning and don't move the point if there is no thing at point).
+
+It's not necessary to implement evil motions, but it can be done without much extra work. You can implement =forward-op= without motions and then create motions from the thing using, for example, ~evil-forward-beginning~, ~evil-forward-end~, ~evil-backward-beginning~, and ~evil-backward-end~ (this is how evil defines a few motions; see ~evil-forward-section-begin~ for an example). These functions make certain assumptions that aren't necessarily always true, and I generally prefer to just implement all motions manually if it isn't too much extra work.
+
+Here's an example for how you might go about implementing a forward begin motion without the thing being fully implemented (i.e. no =forward-op=). This example tries to describe how to handle common edge cases, but it is not all-encompassing.
+#+begin_src emacs-lisp
+(evil-define-motion my-forward-thing-begin (count)
+  "Go to the next thing beginning COUNT times."
+  ;; if should add to the jump list
+  ;; :jump t
+  ;; you may also want to set :type; for example, if the motion should act
+  ;; linewise when used with an operator:
+  ;; :type line
+  (or count (setq count 1))
+  (if (< count 0)
+      ;; implement the backward version as a separate motion
+      (my-backward-thing-begin (- count))
+    (cl-dotimes (i count)
+      ;; 1. save the current position in case of failure
+      (let ((orig-pos (point))
+            ;; 1.1 if you are using something like `re-search-forward' and need
+            ;; case-sensitive search, set `case-fold-search' to nil
+            case-fold-search
+            ;; for recording a succesful search
+            successp)
+        ;; 2. move to the end of the current thing if searching for the next
+        ;; thing requires it (e.g. if you are implementing a string thing by
+        ;; searching for string delimiters, you'll want to skip past the end of
+        ;; a current string, so the search doesn't jump to the closing string
+        ;; delimiter)
+        (end-of-thing 'thing-name)
+        ;; 3. find the next thing if possible
+        (while (and
+                ;; 3.1 `re-search-forward' or some dumb search not guaranteed
+                ;; to jump to a real thing may be useful if there is not
+                ;; already a reliable way to jump to the next thing; this should
+                ;; fail if there are no more things after the current one
+                (re-search-forward "regexp" nil t)
+                ;; 3.2 continue searching forward while the search succeeds but
+                ;; doesn't find a real thing; quit searching when on a real
+                ;; thing; if there is an existing function that
+                ;; can test whether there is actually a thing at the point,
+                ;; prefer it to using `bounds-of-thing-at-point' (e.g. it may
+                ;; have been used when implementing `bounds-of-thing-at-point'
+                ;; for the thing)
+                (not (setq successp (bounds-of-thing-at-point 'thing)))))
+        ;; 4. end the current loop iteration
+        (if succesp
+            ;; when succesful, move to the beginning of the thing; you may just
+            ;; be able to do this with `match-beginning'; otherwise, you can
+            ;; potentially use `beginning-of-thing' or (goto-char (car
+            ;; successp)) if you used `bounds-of-thing-at-point' for checking in
+            ;; step 3
+            (goto-char (match-beginning 0))
+          ;; otherwise, return to the original position from the start of the
+          ;; loop and exit the loop since there are no more things after the
+          ;; point
+          (goto-char orig-pos)
+          (cl-return))))))
+#+end_src
+
+The other three motions will be fairly similar. The main differences are with regards to order and direction. For example, for a forward end motion, remember that if you aren't already at the end of the current thing, the first iteration should move to the end of the current thing instead of to the end of the next thing.
+
+Once you've implemented forward end and backward beginning functions, you can just implement =forward-op= on top of them:
+#+begin_src emacs-lisp
+(defun my-forward-thing (count)
+  (let ((orig-pos (point)))
+    (if (< count 0)
+        (my-backward-thing-begin (- count))
+      (my-forward-thing-end count))
+    (if (= (point) orig-pos)
+        1
+      ;; return 0 on success (evil has `zerop' checks; e.g. see
+      ;; `evil-forward-not-thing')
+      0)))
+(put 'thing-name 'forward-op #'my-forward-thing)
+#+end_src
+
+You can then create basic text objects without using targets like this:
+#+begin_src emacs-lisp
+(evil-define-text-object my-inner-thing (count &optional beg end type)
+  (evil-select-inner-object 'thing-name beg end type count))
+
+(evil-define-text-object my-a-thing (count &optional beg end type)
+  (evil-select-an-object 'thing-name beg end type count))
+#+end_src
+
+*** Custom Inner vs. Outer Behavior
+By default, the inner and outer versions of =object= type text objects are equivalent to the inside and around versions respectively (i.e. the inner version will select the thing, and the outer version will also select spaces after or before it). If you want to create a text object for a thing where it makes sense to exclude, for example, some type of delimiter for the inner version, you can create a "shrink" function to achieve this. It should take an evil range (=(BEG END ...)=) and return the new evil range after shrinking the region.
+
+For example, if you wanted to create a thing version of the paren object or any text object where the delimiters are single characters, you could define a shrink function like this:
+#+begin_src emacs-lisp
+(defun targets--shrink-inner (range)
+  "Shrink RANGE by 1 character on each side."
+  (cl-incf (car bounds))
+  (cl-decf (cadr bounds))
+  bounds)
+(put 'my-thing 'targets-shrink-inner-op #'targets--shrink-inner)
+#+end_src
+
+Since this is common for inner text objects, you can just specify =t= to use targets' default shrink function:
+#+begin_src emacs-lisp
+;; use default shrink function
+(put 'my-thing 'targets-shrink-inner-op t)
+#+end_src
+
+Note that you don't need to check if the range is non-nil or if the new range is valid (i.e. the beginning is not equal to or after the end); targets already handles these cases.
+
+This is the equivalent without using targets (~evil-select-inner-object~ should be used for both):
+#+begin_src emacs-lisp
+(evil-define-text-object my-inner-thing (count &optional beg end type)
+  (let* ((range
+          (evil-select-inner-object 'my-thing beg end type count))
+         (new-range (when range
+                      (my-shrink-thing range))))
+    (if (and new-range
+             (< (car new-range) (cadr new-range)))
+        new-range
+      range)))
+
+(evil-define-text-object my-a-thing (count &optional beg end type)
+  (evil-select-inner-object 'my-thing beg end type count))
+#+end_src
+
+*** Preventing Selection of Non-things and Region Expansion
+For some things (particularly non-nestable things), extending an active region/visual selection does not make sense. For example, if you were to write a string text objects using =thingatpt=, region extension would act like this:
+#+begin_src emacs-lisp
+(~"string|" (foo (bar "string")))
+;; press the key for "a string" again
+(~"string" (foo (bar| "string")))
+#+end_src
+
+Furthermore, if you were to attempt to delete a string in between strings, evil would delete the region in between strings instead of seeking. As it is unlikely for this behavior to be useful, you can prevent it by setting the =targets-no-extend= symbol property:
+#+begin_src emacs-lisp
+(put 'my-thing 'targets-no-extend t)
+#+end_src
+
+Now targets will seek forward in cases where there is no thing at the point or the same object is already selected. For example:
+#+begin_src emacs-lisp
+(~"string|" (foo (bar "string")))
+;; press the key for "a string" again
+("string" (foo (bar ~"string|")))
+#+end_src
+
+*** Creating Nestable Things
+Default forward functions like ~forward-sexp~ do not enter into nested lists but instead stay at the same level. Using a thing with this behavior will work fine with this package, but if you want seeking/remote operations to work with things at all nesting levels, you may wish to create a forward function that will enter and exit nested things. To extend/improve behavior of seeking, you can implement the following functions:
+
+- =targets-seek-op=
+- =targets-seeks-forward-begin= (see [[#bounds-of-thing-at-point-ambiguity][Bounds of Thing at Point Ambiguity]])
+- =targets-seeks-backward-end= (see above)
+- =targets-overlay-position= (usually unnecessary)
+
+A =forward-op= can be written to enter and exit nested things, but its default behavior (i.e. going to the end of a thing) is not suitable for seeking. Consider the following example:
+#+begin_src emacs-lisp
+;; "l" is being used for a list thing
+(|foo (bar (baz)))
+;; dinl
+(foo (bar (|)))
+#+end_src
+
+In this example, you might expect =dinl= to delete =bar...=, but it instead deletes =baz...=. This is because =forward-op= normally seeks to the next thing /end/ not beginning. While you could simply write your =forward-op= so that it moves forward to thing beginning instead, targets provides =targets-seek-op= for this purpose instead (since targets, evil, or another package may want to rely on =forward-op= going to a thing's end). =targets-seek-op= should follow these rules:
+
+- With a positive count, move to the thing a "next" text object should act on
+- With a negative count, move to the thing a "previous" text object should act on
+- Do not move the point on failure
+- Return value does not matter
+
+Here are some possible behaviors for =targets-seek-op=:
+1. Go to the next thing beginning with a positive count or to the previous thing beginning with a negative count (=targets-overlay-position= unnecessary)
+2. Go to the next thing beginning or end with a positive count or to the previous thing beginning or end with a positive count (=targets-overlay-position= required to consistently display the overlay at the start)
+3. Go to the next thing beginning with a positive count or to the previous thing end with a negative count (opposite of =forward-op=; probably just as undesirable since it will be impossible to have next/previous text objects work on things that start before the point or end after the point)
+
+With 1, seeking will have this behavior:
+#+begin_src emacs-lisp
+(foo (bar (|baz)) (qux))
+;; dinl
+(foo (bar (|baz)) ())
+#+end_src
+
+With 2, =dinl= will delete the next list, even if it started before the point:
+#+begin_src emacs-lisp
+(foo (bar (|baz)) (qux))
+;; dinl
+(foo (|) (qux))
+#+end_src
+
+I personally prefer 1 since it consistently acts on opening delimiters and is easy to implement, but you can implement =targets-seek-op= however you want. You could even create alternate text objects for both behaviors if you wanted to.
+
+=targets-overlay-position= is used when collecting text object locations during remote selection to obtain the positions to put overlays at for each thing. It should follow these rules:
+
+- The function takes no arguments and should move the point to the location to put the overlay; the point is guaranteed to be on a thing initially
+- The return value doesn't matter
+
+For example, if =targets-seek-op= sometimes or always moves the point to a thing end, and you only want avy overlays to appear on thing beginnings, you could implement =targets-overlay-position= like this:
+#+begin_src emacs-lisp
+(defun my-thing-overlay-position ()
+  (beginning-of-thing 'my-thing))
+(put 'my-thing 'targets-overlay-position 'my-thing-overlay-position)
+#+end_src
+
+By default, targets will use the current thing beginning as the overlay position, so you do not actually need to implement =targets-overlay-position= unless you want overlays to sometimes or always be at the end of a thing (or some other position).
+
+Also note that targets will automatically sort the collected positions, so it doesn't matter if the overlay positions are not found in order.
+
+**** Custom Region Expansion Behavior
+Evil's object/thing selection functions are not suitable for extending a visual selection for nestable things. If you want repeatedly calling the text object in visual state to expand the selection to the outer thing, you can implement =targets-extend-seek-op= to have the following behavior:
+
+- Takes no arguments
+- Should move the point to the location where ~bounds-of-thing-at-point~ should be called (e.g. move the point to the outer thing)
+- Should return non-nil on success; should error or return nil on failure (in which case targets will seek if seeking is enabled)
+
+For example, implementing region for a list thing would look like this:
+#+begin_src emacs-lisp
+(defun my-up-list ()
+  "Like `up-list' but return non-nil on success."
+  (let ((orig-pos (point)))
+    (ignore-errors (up-list))
+    (unless (= (point) orig-pos)
+      (point))))
+(put 'my-list-thing 'targets-extend-seek-op #'my-up-list)
+#+end_src
+
+**** Bounds of Thing at Point Ambiguity
+You can probably ignore this section unless you are having issues with the wrong thing being selected when the point is bordering two things. Targets is smart enough to handle most cases where there is a thing on either side of the point automatically, but for some things, you may need to keep this possibility in mind when implementing =bounds-of-thing-at-point= (or =beginning-op= and =end-op=).
+
+As previously mentioned, evil considers the point to be on the character after it. Consider the following example for an =evil-word=:
+#+begin_src emacs-lisp
+foo|-bar
+#+end_src
+
+In this example, the point is at the end of the word =foo= and at the beginning of the hyphen. Since the point is considered on the hyphen, there is no ambiguity. =diw= will act on the hyphen. However, now consider seeking. ~forward-op~ will move to the next thing if it as at the end of a thing. Targets can't always move to the end of a thing and then seek since this could skip over nested things (this is why =targets-seek-op= exists). Since =forward-op= (or =targets-seek-op=) may not move the point to the next thing, targets has to check ~bounds-of-thing-at-point~ to see if the thing as changed. For most cases this works as expected:
+#+begin_src emacs-lisp
+|foo bar
+;; (forward-thing 'evil-word)
+foo| bar
+;; (bounds-of-thing-at-point 'evil-word) returns bounds of foo
+#+end_src
+
+This won't work when things are directly next to each other though:
+#+begin_src emacs-lisp
+|foo-bar
+;; (forward-thing 'evil-word)
+foo|-bar
+;; (bounds-of-thing-at-point 'evil-word) returns bounds of -; not what we
+;; wanted!
+#+end_src
+
+Targets handles this by checking the bounds at the character before the point when seeking to the end of a thing (this also handles cases where ~bounds-of-thing-at-point~ returns nil at the end of a thing, e.g. the default list thing).
+
+As for nested text objects, targets can handle both of the common cases where the point is at two things:
+#+begin_src emacs-lisp
+;; at end of thing, use previous character's bounds
+(foo (bar)|)
+;; not at end of thing, don't use previous character's bounds
+(|(foo) bar)
+#+end_src
+
+For a nestable thing with a custom =targets-seek-op=, targets may not correctly handle the following case since seeking could potentially have moved the point either to the end of foo or to the beginning of bar:
+#+begin_src emacs-lisp
+(foo)|(bar)
+#+end_src
+
+This case is unlikely because there will generally be a space in between lists, but if this is a possible issue for your thing (e.g. a thing end can be right next to a beginning and =targets-seek-op= may go to the beginning of a thing with a positive count), then you must let targets know how your custom seek operation behaves by setting =targets-seeks-backward-end= and/or =targets-seeks-forard-begin=:
+#+begin_src emacs-lisp
+;; this seek operation always seeks to the thing end (for both directions)
+(put 'my-thing 'targets-seek-op #'my-thing-custom-seek)
+;; let targets know
+(put 'my-thing 'targets-seeks-backward-end t)
+
+;; this seek operation always seeks to the thing beginning (for both directions)
+(put 'my-thing 'targets-seek-op #'my-thing-new-custom-seek)
+;; let targets know
+(put 'my-thing 'targets-seeks-forward-begin t)
+#+end_src
+
+* Specific Provided Text Objects
+** ~targets-last-text-object~
+This command will run the last text object used in the current state (operator or visual). Note that this only works for text objects defined with targets.el. For operator state, it may be useful if you want to use a different operator with the previous text object (otherwise you could just use ~evil-repeat~). It is probably more useful for visual state where it can be used as a shorter key to expand the region. The last text object for visual state resets in between visual selections. You can set =targets-default-text-object= to a default text object to use the first time ~targets-last-text-object~ is run after visual state is entered.
+
+~targets-last-text-object~ is unbound by default; I personally bind it to =RET=:
+#+begin_src emacs-lisp
+(define-key evil-visual-state-map (kbd "RET") #'targets-last-text-object)
+(define-key evil-operator-state-map (kbd "RET") #'targets-last-text-object)
+#+end_src
+* Configuration
+~targets-setup~ can be used to create and optionally bind all the text objects specified in =targets-text-objects=, =targets-user-text-objects=, and =targets-composite-text-objects=. Each is a list of lists of arguments to be passed to ~targets-define-to~ (or ~targets-define-composite-to~ in the case of =targets-composite-text-objects=). Entries in =targets-user-text-objects= that have the same name as a default text object in =targets-text-objects= are given precedence. This allows easily overriding any of the default text objects. There are no default composite text objects.
+
+Please note that if you do not use ~targets-setup~, you will need to run ~(add-hook 'post-command-hook #'targets--post-command)~ for jump list and position resetting functionality to work correctly. In case it does other necessary setup in the future, it is recommended that you use it even if you do not wish to create/bind text objects with it.
+
+When run without any arguments, ~targets-setup~ will only create the text objects. It takes an optional, positional argument that specifies whether text objects should also be bound to keys. Keyword arguments can be used to customize the keys used in the bindings. =:inside-key= and =:around-key= determine what keys are bound to =targets-inside-text-objects-map= and =targets-around-text-objects-map= in the visual and operator states. They default to =I= and =A= respectively. If they are not changed from their defaults, they will be bound in a way such that =I= and =A= will continue to work as normal with a visual block selection.
+
+=inner-key=, =a-key=, =:next-key=, =:last-key=, and =:remote-key= can also be specified; they will be passed to ~targets-define-to~.
+#+begin_src emacs-lisp
+(targets-setup t :last-key "L" :around-key (kbd "C-a"))
+;; don't bind remote text objects
+(targets-setup t :remote-key nil)
+#+end_src
+
+Note that all of the =*-key= keywords and =:bind= can be overridden for an individual entry in =targets-text-objects= or =targets-user-text-objects=. =targets-text-objects= is composed of =targets-pair-text-objects=, =targets-quote-text-objects=, =targets-separator-text-objects=, and =targets-object-text-objects=. If you would like to completely modify the default text objects, you can also set any of these before loading targets.
+#+begin_src emacs-lisp
+(setq targets-quote-text-objects
+  '((single-quote "'" nil quote :next-key "N")
+    (double-quote "\"" nil quote :last-key "L")
+    (smart-single-quote "‘" "’" quote :bind nil)
+    ...))
+#+end_src
+
+After targets has loaded, you can still add items to and remove items from =targets-text-objects=, =targets-user-text-objects=, and =targets-composite-text-objects= before running ~targets-setup~.
+
+** Example Use-package Setup
+#+begin_src emacs-lisp
+  (use-package targets
+    :load-path "path/to/targets.el"
+    :init
+    (setq targets-user-text-objects '((pipe "|" nil separator)
+                                      (paren "(" ")" pair :more-keys "b")
+                                      (bracket "[" "]" pair :more-keys "r")
+                                      (curly "{" "}" pair :more-keys "c")))
+    :config
+    (targets-setup t
+                   :inside-key nil
+                   :around-key nil
+                   :remote-key nil))
+#+end_src
+
+* Settings
+** Text Object Specific Settings
+:PROPERTIES:
+:CUSTOM_ID: text-object-specific-settings
+:END:
+
+The =:let= keyword can be used to locally bind certain variables for all the text objects created by a single ~targets-define-to~ or ~targets-define-composite-to~ statement:
+#+begin_src emacs-lisp
+(targets-define-to paren "(" ")" pair
+                   :let ((targets-bound #'my-targets-paren-bound)))
+#+end_src
+
+=targets-settings-alist= can also be set to locally bind certain variables for specific text objects (matched by the exact symbol or a regexp). These bindings will override those created with =:let=. At the moment, only the bindings for the symbol or regexp that is matched first will be used.
+#+begin_src emacs-lisp
+(setq targets-settings-alist
+      '((targets-inner-paren
+         ((targets-bound #'my-inner-paren-bound)))
+        ("^targets-[[:alpha:]]+-remote"
+         ((targets-bound #'my-smaller-bound)))))
+#+end_src
+
+** Prevent Position Resetting
+Some operators should move the point even when used with next, last, or remote text objects (e.g. ~evil-change~). To prevent position resetting with these operator, you can customize =evil-change-commands= (if your custom change operator is not already in it) or =targets-no-reset-operators=.
+
+** Avy Settings
+For remote text objects, the user can change =targets-avy-style=, =targets-avy-keys=, =targets-avy-background=, =targets-avy-all-windows=, and =targets-avy-all-windows-alt=. All will override the corresponding avy settings when set by the user. By default, they are not bound, and the values of the corresponding avy settings are used. Note that you can also use =avy-keys-alist= and =avy-styles-alist= for customizing the behavior of specific text objects.
+
+Although =targets-avy-all-windows= and =targets-avy-all-windows-alt= exist, changing them is not recommended. Using remote text objects with more than one window is not fully supported (and not all that useful). While it will work to create a visual selection, it will not work with other operators unless the other window is for the same buffer. I have not found a way around this at the moment.
+
+* Inspiration
+- [[https://github.com/wellle/targets.vim][wellle/targets.vim]] vim plugin
+- [[https://github.com/rhysd/vim-textobj-anyblock][rhysd/vim-textobj-anyblock]] vim plugin
+- [[https://github.com/paradigm/TextObjectify][paradigm/TextObjectify]] vim plugin
+- [[https://github.com/magnars/expand-region.el][expand-region.el]] emacs package and [[https://github.com/terryma/vim-expand-region][terryma/vim-expand-region]] vim plugin
+- [[https://redd.it/5fotth][this]] reddit thread

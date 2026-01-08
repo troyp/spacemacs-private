@@ -1,0 +1,1142 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <base href="https://www.emacswiki.org/emacs/TsvMode#toc2"><title>EmacsWiki: Tsv Mode</title><link rel="alternate" type="application/wiki" title="Edit this page" href="https://www.emacswiki.org/emacs?action=edit;id=TsvMode"><style data-savepage-href="https://www.emacswiki.org/light.css" type="text/css">
+/*
+----------------------------------------------------------------------------
+EmacsWiki light theme
+----------------------------------------------------------------------------
+A combination of some of the existing themes on the EmacsWiki at
+http://emacswiki.org, with various other additions.
+The base theme was the cali2.css theme - question marks indicate things left
+over which might be removable.
+A dark subtheme is implemented by an additional 'dark' class on the main
+<body> element.
+Released under the MIT License.
+----------------------------------------------------------------------------
+*/
+
+
+/* ---------------------------------------------------------------------- */
+/* Base */
+/* ---------------------------------------------------------------------- */
+
+body {
+    margin: 0 0 1.5em 0;
+    padding: 1em 1em;
+    color: #111;
+    background-color: #fffefe;
+    font-size: 100%;
+}
+body.dark {
+    color: #ccc;
+    background-color: #181818;
+}
+
+/* Screenshots, Images */
+img {
+    max-width: 100%;
+}
+
+/* Code - used for keysequences, function references (anything in `...') */
+/* Pre - used for blocks of code */
+code, pre {
+    color: #444;
+    background-color: #f9f8f8;
+    border: 1px solid #ddd;
+
+    font-family: monospace;
+
+    /* For some reason, using a different font than the default monospace */
+    /* increases the size of the text, so need to counteract that here */
+    /* font-size: 0.8em; */
+}
+body.dark code, body.dark pre {
+    color: #ccc;
+    background-color: #222;
+    border: 1px solid #333;
+}
+code {
+    padding: 1px;
+}
+pre {
+    margin: 1em 0;
+    padding: 1em 2em;
+    overflow: auto; /* add horizontal scrollbar if necessary */
+}
+
+
+
+
+/* Links */
+a {
+    color: #06b;
+    background-color: inherit;
+
+    /* This works on firefox, but just shows as a plain underline in chrome, which looks terrible */
+    /* text-decoration: underline dotted #09c; */
+
+    /* Faking a dotted underline, works on all browsers but can't adjust position */
+    text-decoration: none;
+    /* border-bottom: 1px dotted #09c; */
+}
+a:link, a:visited {
+    background-color: inherit;
+}
+a:active, a:hover {
+    color: #09d;
+}
+
+body.dark a {
+    color: #9c5;
+}
+body.dark a:active, body.dark a:hover {
+    color: #ae6;
+}
+/* external links */
+/* a.url:before { content: "\2197"; } */
+/* .safari a.url:before { content: url(http://www.emacswiki.org/alex/pics/arrow.png); } */
+/* image links */
+a.image img {
+    border: none;
+}
+a.left {
+    float: left;
+    margin: 20px;
+}
+a.right {
+    float: right;
+    margin: 20px;
+}
+
+
+/* Images */
+/* dim images for dark theme */
+body.dark img {filter: brightness(70%);}
+body.dark img:hover {filter: brightness(100%);}
+
+
+/* Headers */
+h1, h2, h3, h4 {
+    margin: 0;
+    padding: 0;
+    font-weight: normal;
+    line-height: normal;
+    clear: both;
+}
+@media (max-width: 580px) {
+    h2 {font-size: 1.5em;}
+    h3 {font-size: 1.2em;}
+    h4 {font-size: 1.7em;}
+}
+@media (min-width: 580px) {
+    h2 {font-size: 1.7em;}
+    h3 {font-size: 1.3em;}
+    h4 {font-size: 1em;}
+}
+
+
+/* h1 */
+/* defined further below */
+
+/* h2 */
+h2 {
+    /* line under header */
+    margin-top: 1.2em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #aaa;
+
+    /* divider between sections */
+    /* margin-top: 1em; */
+    /* padding-top: 1em; */
+    /* border-top: 1px solid #bbb; */
+    /* margin-bottom: 1em; */
+}
+
+/* h3 */
+h3 {
+    font-style: italic;
+    margin-top: 0.1em;
+    padding-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+/* h4 */
+h4 {
+    font-style: italic;
+    margin-top: 0.1em;
+    padding-top: 0.5em;
+}
+
+
+/* hr */
+hr {
+    border: 0;
+    height: 0;
+    border-bottom: 1px solid #ccc;
+    padding-top: 1em;
+    margin-bottom: 2em;
+    width: 100%;
+    clear: both;
+}
+
+
+/* Tables */
+table {
+    /* border-collapse: collapse; /\* otherwise leaves gaps in between cell outlines *\/ */
+}
+table tr.first td {
+    border-bottom: 1px solid #bbb;
+}
+table td,th {
+    padding: 0 1ex;
+    text-align: left;
+}
+/* odd/even rows */
+/* table tr.odd { */
+/*     background-color: #fcfbfb; */
+/* } */
+
+
+/* Table on the new page */
+/* ? */
+p.table a { float: left; width: 20ex; }
+p.table + p { clear: both; padding-top: 10px; }
+
+
+/* Definition lists */
+dt {
+    font-weight: bold;
+}
+
+
+
+/* ---------------------------------------------------------------------- */
+/* Layout */
+/* ---------------------------------------------------------------------- */
+
+
+/* Header - includes logo, search bar, goto bar, and article title */
+div.header {
+}
+div.header .specialdays {
+    display: block;
+    position: absolute;
+    top: 10px;
+}
+
+
+/* Logo */
+/* hide the existing logo and override it with a different image */
+img.logo {
+    display: none;
+}
+a.logo {
+    display: block;
+    /* just a placeholder for the moment */
+    background: /*savepage-url=./images/logo218x38.png*/ url();
+    width: 218px;
+    height: 38px;
+    top: 22px;
+    left: 22px;
+    border-bottom: none;
+    text-decoration: none;
+    float: left;
+}
+body.dark a.logo {
+    filter: invert(90%) hue-rotate(150deg) saturate(0.9);
+}
+
+/* Search bar */
+/* don't let search bar overwrite logo */
+@media (max-width: 580px) {
+    form.search {
+        margin-top: 0.5em;
+    }
+}
+.header .menu {
+    float: right;
+    height: 2.5em;
+}
+form.search {
+    float: right;
+    clear: both;
+}
+.menu p {
+    margin: 0;
+    margin-top: 0.1em;
+    padding: 0;
+}
+label[for="searchlang"], input#searchlang {
+    display: none;
+}
+
+
+/* Bars (Goto bar, Translation bar, Edit bar) */
+span.bar a {
+    font-size: 1em;
+    color: #444;
+}
+body.dark span.bar a {
+    color: #888;
+}
+
+/* Goto bar (SiteMap, HowTo, etc) */
+@media (max-width: 580px) { /* show along top */
+    span.gotobar {
+        float: left;
+        margin-top: 0.5em;
+    }
+    span.gotobar a + a:before {
+        content: "|";
+        color: #ccc;
+    }
+}
+@media (min-width: 580px) { /* show on left side */
+    span.gotobar {
+        position: absolute;
+        top: 3.5em;
+        left: 20px;
+        width: 140px; /* left+width=160px */
+        padding-right: 1em;
+        padding-top: 30px;
+        border-top: 1px solid #aaa;
+    }
+    body.dark span.gotobar {
+        border-top: 1px solid #444;
+    }
+    span.gotobar a {
+        display: block;
+        margin-top: 0.5em;
+    }
+}
+span.gotobar {
+    line-height: 1em;
+}
+span.gotobar a {
+    border-bottom: none;
+    text-decoration: none;
+}
+span.gotobar a:hover {
+    color: #09d;
+}
+body.dark span.bar a:hover {
+    color: #ae6;
+}
+
+
+/* Messages */
+div.message {
+    position: absolute;
+    left: 300px;
+    top: 1em;
+    height: 1.4em;
+    margin: 0;
+    padding: 5px 2em 2px;
+    background-color: MediumTurquoise;
+    color: #000;
+    box-shadow: 2px 2px 2px 0 #888;
+}
+div.message p {
+    margin: 0;
+}
+body.dark div.message {
+    border: solid 1px #08f;
+    background-color: black;
+    color: #08f;
+    box-shadow: none;
+}
+
+
+
+/* h1 (title) */
+@media (max-width: 580px) {
+    div.header h1 {
+        margin-top: 1em;
+        float: left;
+        clear: both;
+        font-size: 2em;
+    }
+}
+@media (min-width: 580px) {
+    div.header h1 {
+        margin-left: 160px;
+        border-left: 1px solid #aaa;
+        border-top: 1px solid #aaa;
+        padding-left: 20px;
+        font-size: 2.5em;
+    }
+    body.dark div.header h1 {
+        border-left: 1px solid #444;
+        border-top: 1px solid #444;
+    }
+}
+div.header h1 {
+    padding-top: 30px;
+}
+div.header h1 a {
+    color: inherit;
+    background-color: inherit;
+    border-bottom: none;
+    text-decoration: none;
+}
+
+
+/* Content */
+@media (max-width: 580px) {
+    div.content, div.rc, div.diff, div.comment {
+        clear: both;
+    }
+}
+@media (min-width: 580px) {
+    div.content, div.rc, div.diff, div.comment {
+        margin-left: 160px; /* see gotobar */
+        border-left: 1px solid #aaa;
+        padding: 1em;
+    }
+    body.dark div.content, body.dark div.rc, body.dark div.diff, body.dark div.comment {
+        border-left: 1px solid #444;
+    }
+}
+div.content, div.rc, div.diff, div.comment {
+    min-height: 14em; /* so gotobar won't overwrite footer on small pages */
+}
+div.content {
+    padding-top: 0.5em;
+}
+
+
+/* Table of contents */
+.toc {
+    width: 50%;
+    font-size: 90%;
+    padding: 0 1em;
+    margin: 2em 0;
+    line-height: 1.4em;
+    border: 1px solid #ccc;
+}
+body.dark .toc {
+    border: 1px solid #333;
+}
+.toc a {
+    color: #666;
+    /* color: #09d; */
+    /* border-bottom: 1px dotted #09c; */
+}
+.toc a:hover {
+    color: #09d;
+}
+body.dark .toc a {
+    color: #999;
+}
+body.dark .toc a:hover {
+    color: #ae6;
+}
+
+
+/* Portraits */
+/* see https://oddmuse.org/wiki/Portraits_Support_Extension */
+/* see also News page, below */
+div.portrait {
+    margin: 0;
+    float: left;
+    clear: left;
+    font-size: 0.75em;
+    text-align: center;
+}
+div.portrait p {
+    margin: 0;
+    padding-top: 1ex;
+}
+/* for the image inside a.newauthor */
+img.portrait {
+    margin: 0;
+    margin-right: 0.5em;
+    float: left;
+    clear: left;
+    /* picture frame */
+    padding: 6px;
+    background-color: white;
+    border: 1px solid #999;
+    /* scale the image */
+    width: 100%;
+    /* preferred image size is 48x48px */
+    max-width: 62px;
+}
+/* portrait caption */
+div.portrait a.local {
+    float: left;
+    display: block;
+    clear: both;
+    text-decoration: none;
+    border-bottom: none;
+    min-width: 74px; /* 62px from above + 2*6px padding */
+    margin-right: 1em;
+}
+div.comment {
+    clear: both;
+}
+
+
+/* IRC */
+.irc .time {
+    display: none;
+}
+dl.irc dt {
+    float: left;
+    text-align: right;
+    width: 20ex;
+}
+dl.irc dd {
+    display: block;
+    margin-left: 22ex;
+}
+
+
+
+/* Calendar */
+/* (pre gets different colors below) */
+div.month {
+    padding: 0;
+    margin: 0 2ex;
+}
+div.month a {
+    text-decoration: none;
+}
+div.month pre {
+    color: inherit;
+    background-color: inherit;
+}
+body div.month {
+    float: right;
+    padding: 0 1ex;
+}
+.year div.month {
+    float: left;
+    padding: 0;
+}
+div.month a.edit {
+    color: inherit;
+    background-color: inherit;
+    font-weight: inherit;
+}
+
+
+/* diff */
+div.diff { padding-left: 5%; padding-right: 5%; }
+div.old p, div.new p { margin: 0; } /* so padding below will work right */
+div.old, div.new { padding: 0.5em; }
+div.old { background-color: #f98; color: #000; }
+div.new { background-color: #aea; color: #000; }
+body.dark div.old { background-color: #911; color: #000; }
+body.dark div.new { background-color: #393; color: #000; }
+/* inner shadow */
+body.dark div.old, body.dark div.new {
+   -moz-box-shadow:    inset 0 0 5px #000;
+   -webkit-box-shadow: inset 0 0 5px #000;
+   box-shadow:         inset 0 0 5px #000;
+}
+
+
+/* Footer */
+div.footer {
+    clear: both;
+    font-size: 0.9em;
+}
+div.footer hr {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #aaa;
+}
+body.dark div.footer hr {
+    border-bottom: 1px solid #444;
+}
+
+/* Footer edit bar */
+div.footer span.edit {
+    display: block;
+    position: absolute;
+    top: 30px;
+    left: 206px;
+    white-space: nowrap;
+}
+
+div.time a.author, div.time a.diff {
+    color: gray;
+    border-bottom: 1px dotted #09c;
+}
+body.dark div.time a.author, body.dark div.time a.diff {
+    border-bottom: none;
+}
+div.time a.author:hover, div.time a.diff:hover {
+    color: #09d;
+}
+body.dark div.time a.author, body.dark .footer div.time a.diff {
+    color: gray;
+    border-bottom: 1px dotted #cf8;
+}
+body.dark div.time a.author:hover, body.dark .footer div.time a.diff:hover {
+    color: #ae6;
+}
+
+
+/* Legal */
+@media (max-width: 580px) {
+    /* hide CC logo */
+    .footer .licence {
+        display: none;
+    }
+}
+p.legal {
+    margin: 0;
+    padding: 0;
+    font-style: italic;
+    font-size: 1.1em;
+}
+p.legal a {
+    color: gray;
+    border-bottom: 1px dotted #09c;
+}
+p.legal a:hover {
+    color: #09d;
+}
+body.dark p.legal a {
+    color: gray;
+    border-bottom: 1px dotted #cfc;
+}
+body.dark p.legal a:hover {
+    color: #ae6;
+}
+/* also has <div style="float:right; margin-left:1ex;"> */
+a.license {
+    border-bottom: none;
+    text-decoration: none;
+}
+
+
+/* Center lower menu items and add border*/
+
+/* Translation bar */
+.footer span.translation.bar {
+    display: block;
+    text-align: center;
+    font-size: 0.9em;
+}
+/* hide the br element, which we don't need */
+.footer .translation br {
+    display: none;
+}
+/* add a little space between languages */
+.footer .translation a + a {
+    margin-left: 0.5ex;
+}
+.footer .translation a {
+    border-bottom: 1px dotted #09c;
+}
+.footer .translation a:hover {
+    color: #09d;
+}
+body.dark .footer .translation a {
+    border-bottom: inherit;
+}
+body.dark .footer .translation a:hover {
+    /* color: inherit; */
+    color: #ae6;
+}
+/* Edit bar (buttons) */
+.footer .edit.bar {
+    display: block;
+    text-align: center;
+    padding: 5px 0px 15px 0;
+}
+/* account for missing translation bar in testEdit.htm */
+.footer hr + .edit.bar {
+    padding-top: 2em;
+    padding-bottom: 1.5em;
+}
+/* Last edit */
+.footer div.time {
+    display: block;
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+
+/* Display buttons */
+.edit.bar a {
+    display:inline-block;
+    zoom:1;
+    padding:4px 12px;
+    margin-bottom:0;
+    /* font-size:14px; */
+    line-height:20px;
+    text-align:center;
+    vertical-align:middle;
+    cursor:pointer;
+    color:#333333;
+    text-shadow:0 1px 1px rgba(255, 255, 255, 0.75);
+    background-color:#f5f5f5;
+    background-image:-moz-linear-gradient(top, #ffffff, #e6e6e6);
+    background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
+    background-image:-webkit-linear-gradient(top, #ffffff, #e6e6e6);
+    background-image:-o-linear-gradient(top, #ffffff, #e6e6e6);
+    background-image:linear-gradient(to bottom, #ffffff, #e6e6e6);
+    background-repeat:repeat-x;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
+    border-color:#e6e6e6 #e6e6e6 #bfbfbf;
+    border-color:rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    border:1px solid #cccccc;
+    border:0;
+    border-bottom-color:#b3b3b3;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    margin-left:.3em;
+    -webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+}
+.edit.bar a:hover,.edit.bar a:focus,.edit.bar a:active, .edit.bar a.active,.edit.bar a.disabled,.edit.bar a[disabled] {
+    background-image: linear-gradient(to bottom, #f8f8f8, #f0f0f0);
+}
+.edit.bar a:active, .edit.bar a.active {
+    background-color:#cccccc;
+}
+body.dark .edit.bar a:hover {
+    color:#80f;
+}
+
+body.dark .edit.bar a {
+    filter: invert(90%);
+}
+
+
+
+
+
+/* Printing */
+@media print {
+    div.diff, div.diff+hr, div.refer, div.near, div.sister, div.cal, div.footer,
+    span.specialdays, span.gotobar, a.edit, a.number span,
+    div.rc form, div.definition { display: none; }
+    body { font: 12pt "Neep", "Arial", sans-serif; color: #000; }
+    a:link, a:visited { color: #000; text-decoration: none; font-style: oblique; }
+    a[class="url number"]:after, a[class="inter number"]:after { content: "[" attr(href) "]"; }
+    a[class="local number"]:after { content: "[" attr(title) "]"; }
+    a.near { font-weight: normal; text-decoration: none; font-style: oblique; }
+    a.near:link, a.near:visited, a.near:active, a.near:hover {
+        color: inherit; background-color: inherit;
+    }
+    a[class="near"]:after { content: " [" attr(title) "]"; }
+}
+
+
+/* Syntax highlighting */
+/* from emacs.css */
+span.builtin      { color: #483d8b; } /* DarkSlateBlue */
+span.comment      { color: #b22222; } /* Firebrick */
+span.constant     { color: #008b8b; } /* DarkCyan */
+span.function     { color: #0000ff; } /* Blue1 */
+span.keyword      { color: #7f007f; } /* Purple */
+span.string       { color: #8b475d; } /* VioletRed4 */
+span.type         { color: #228b22; } /* ForestGreen */
+span.warning      { color: #ff0000; font-weight: bold; } /* Red1 */
+span.comment span,
+span.string  span { color: inherit; }
+span.comment span.important.constant,
+span.string  span.important.constant { color: #008b8b; }
+
+/* old: Equivalent to Output::HTML */
+span.linecomment  { color: green; }
+span.blockcomment { color: green; }
+span.prepro       { color: purple; }
+span.select       { font-weight: bold; }
+span.quote        { color: blue; }
+span.category_1   { color: teal; }
+span.category_2   { color: blue; }
+span.category_3   { color: blue; }
+
+
+/* dark version */
+/* adapted from ample-flat theme */
+body.dark span.builtin      { color: #9fbfdf; } /* light-blue */
+body.dark span.comment      { color: #857575; } /* gray */
+body.dark span.constant     { color: #ab85a3; } /* purple */
+body.dark span.function     { color: #a9df90; } /* green */
+body.dark span.keyword      { color: #91a0b3; } /* blue */
+body.dark span.string       { color: #ddbc91; } /* tan */
+body.dark span.type         { color: #ad8572; } /* red */
+body.dark span.warning      { color: red; }
+body.dark span.comment span,
+body.dark span.string  span { color: inherit; }
+body.dark span.comment span.important.constant,
+body.dark span.string  span.important.constant { color: #706565; }
+
+
+
+/* ---------------------------------------------------------------------- */
+/* Pages */
+/* ---------------------------------------------------------------------- */
+
+
+/* Recent Changes */
+/* hide the hr since the header div already has a line */
+div.rc {
+    padding-top: 0;
+}
+div.rc hr {
+    display: none;
+}
+div.rc h2 {
+    margin-top: 0;
+}
+div.rc table {
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+div.rc td, th {
+    border: none;
+}
+div.rc form {
+    border-top: 1px solid #ccc;
+    padding: 1em 0;
+}
+
+
+/* Edit */
+textarea {
+    font-family: Consolas, 'Bitstream Vera Sans Mono', Monaco, 'Lucida Console', Courier, monospace;
+    font-size: 0.9em;
+}
+textarea[name="text"] {
+    width: 100%;
+    height: 80%;
+}
+textarea[name="summary"] {
+    width: 100%;
+    height: 3em;
+}
+body.dark textarea, body.dark input {
+    background-color: #181818;
+    color: #ccc;
+    border: 1px solid #555;
+}
+
+
+
+
+/* Comment */
+div.comment form {
+    padding: 1em;
+    border-top: 1px solid #ccc;
+}
+span.time {
+    /* The default font EB Garamond doesn't have monospace numbers, so use this. */
+    font-family: Times, "Times Roman", "Times New Roman", serif;
+}
+textarea[name="aftertext"] {
+    width: 100%;
+    height: 10em;
+    margin: 0.5em 0;
+}
+div.comment p {
+}
+/* ? */
+div.commentshown {
+    font-size: smaller;
+    padding: 0 2em 1ex 2em;
+}
+div.commentshown hr {
+    margin: 1em;
+}
+.commenthidden { display: none; }
+.commentshown { display: block; }
+
+
+/* News */
+/* headings */
+div.journal {
+    padding-top: 1em;
+}
+div.page {
+    padding-top: 1em;
+    border-top: 1px solid #ccc;
+    padding-bottom: 1em;
+}
+h1 a.local {
+    color: #222;
+    font-size: 0.9em;
+    border-bottom: none;
+    text-decoration: none;
+}
+.dark h1 a.local {
+    color: #ccc;
+}
+div.color {
+    clear: both;
+    margin: 0;
+    padding: 1ex 1em;
+    min-height: 100px; /* give room for portraits */
+}
+/* alternate conversations with .one/.two */
+div.color.one {
+    color: #444;
+    background-color: #f4f3f2;
+    border: 1px solid #ddd;
+    /* border: 1px dotted #999; */
+}
+.dark div.color.one {
+    color: #ccc;
+    background-color: #282828;
+    border: 1px solid #333;
+}
+/* news text */
+/* make text match the top margin of the portrait */
+div.page div.portrait + p {
+    margin-top: 0.5ex;
+}
+
+/* anonymised IP numbers */
+
+.red {
+    background: red;
+    color: red;
+}
+
+.orange {
+    background: orange;
+    color: orange;
+}
+
+.yellow {
+    background: yellow;
+    color: yellow;
+}
+
+.green {
+    background: green;
+    color: green;
+}
+
+.blue {
+    background: blue;
+    color: blue;
+}
+
+.indigo {
+    background: indigo;
+    color: indigo;
+}
+
+.violet {
+    background: violet;
+    color: violet;
+}
+
+.white {
+    background: white;
+    color: white;
+}
+
+.ip-code {
+    border: 1px solid #666;
+}
+
+
+/* Local Variables: */
+/* css-indent-offset: 4 */
+/* whitespace-mode: t */
+/* End: */
+</style><meta name="robots" content="INDEX,FOLLOW"><link rel="alternate" type="application/rss+xml" title="EmacsWiki" href="https://www.emacswiki.org/emacs?action=rss"><link rel="alternate" type="application/rss+xml" title="EmacsWiki: TsvMode" href="https://www.emacswiki.org/emacs?action=rss;rcidonly=TsvMode">
+<link rel="alternate" type="application/rss+xml" title="Emacs Wiki with page content" href="https://www.emacswiki.org/full.rss">
+<link rel="alternate" type="application/rss+xml" title="Emacs Wiki with page content and diff" href="https://www.emacswiki.org/full-diff.rss">
+<link rel="alternate" type="application/rss+xml" title="Emacs Wiki including minor differences" href="https://www.emacswiki.org/minor-edits.rss">
+<link rel="alternate" type="application/rss+xml" title="Changes for TsvMode only" href="https://www.emacswiki.org/emacs?action=rss;rcidonly=TsvMode"><meta content="width=device-width" name="viewport">
+<script type="text/javascript" data-savepage-src="/outliner.0.5.0.62-toc.js" src=""></script>
+<script type="text/javascript"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><style charset="utf-8" type="text/css" class="firebugResetStyles">/* See license.txt for terms of usage */
+/** reset styling **/
+.firebugResetStyles {
+    z-index: 2147483646 !important;
+    top: 0 !important;
+    left: 0 !important;
+    display: block !important;
+    border: 0 none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    outline: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    position: fixed !important;
+    transform: rotate(0deg) !important;
+    transform-origin: 50% 50% !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: transparent none !important;
+    pointer-events: none !important;
+    white-space: normal !important;
+}
+style.firebugResetStyles {
+    display: none !important;
+}
+
+.firebugBlockBackgroundColor {
+    background-color: transparent !important;
+}
+
+.firebugResetStyles:before, .firebugResetStyles:after {
+    content: "" !important;
+}
+/**actual styling to be modified by firebug theme**/
+.firebugCanvas {
+    display: none !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.firebugLayoutBox {
+    width: auto !important;
+    position: static !important;
+}
+
+.firebugLayoutBoxOffset {
+    opacity: 0.8 !important;
+    position: fixed !important;
+}
+
+.firebugLayoutLine {
+    opacity: 0.4 !important;
+    background-color: #000000 !important;
+}
+
+.firebugLayoutLineLeft, .firebugLayoutLineRight {
+    width: 1px !important;
+    height: 100% !important;
+}
+
+.firebugLayoutLineTop, .firebugLayoutLineBottom {
+    width: 100% !important;
+    height: 1px !important;
+}
+
+.firebugLayoutLineTop {
+    margin-top: -1px !important;
+    border-top: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineRight {
+    border-right: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineBottom {
+    border-bottom: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineLeft {
+    margin-left: -1px !important;
+    border-left: 1px solid #999999 !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.firebugLayoutBoxParent {
+    border-top: 0 none !important;
+    border-right: 1px dashed #E00 !important;
+    border-bottom: 1px dashed #E00 !important;
+    border-left: 0 none !important;
+    position: fixed !important;
+    width: auto !important;
+}
+
+.firebugRuler{
+    position: absolute !important;
+}
+
+.firebugRulerH {
+    top: -15px !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 14px !important;
+    background: url("data:image/png,%89PNG%0D%0A%1A%0A%00%00%00%0DIHDR%00%00%13%88%00%00%00%0E%08%02%00%00%00L%25a%0A%00%00%00%04gAMA%00%00%D6%D8%D4OX2%00%00%00%19tEXtSoftware%00Adobe%20ImageReadyq%C9e%3C%00%00%04%F8IDATx%DA%EC%DD%D1n%E2%3A%00E%D1%80%F8%FF%EF%E2%AF2%95%D0D4%0E%C1%14%B0%8Fa-%E9%3E%CC%9C%87n%B9%81%A6W0%1C%A6i%9A%E7y%0As8%1CT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AATE9%FE%FCw%3E%9F%AF%2B%2F%BA%97%FDT%1D~K(%5C%9D%D5%EA%1B%5C%86%B5%A9%BDU%B5y%80%ED%AB*%03%FAV9%AB%E1%CEj%E7%82%EF%FB%18%BC%AEJ8%AB%FA'%D2%BEU9%D7U%ECc0%E1%A2r%5DynwVi%CFW%7F%BB%17%7Dy%EACU%CD%0E%F0%FA%3BX%FEbV%FEM%9B%2B%AD%BE%AA%E5%95v%AB%AA%E3E5%DCu%15rV9%07%B5%7F%B5w%FCm%BA%BE%AA%FBY%3D%14%F0%EE%C7%60%0EU%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5JU%88%D3%F5%1F%AE%DF%3B%1B%F2%3E%DAUCNa%F92%D02%AC%7Dm%F9%3A%D4%F2%8B6%AE*%BF%5C%C2Ym~9g5%D0Y%95%17%7C%C8c%B0%7C%18%26%9CU%CD%13i%F7%AA%90%B3Z%7D%95%B4%C7%60%E6E%B5%BC%05%B4%FBY%95U%9E%DB%FD%1C%FC%E0%9F%83%7F%BE%17%7DkjMU%E3%03%AC%7CWj%DF%83%9An%BCG%AE%F1%95%96yQ%0Dq%5Dy%00%3Et%B5'%FC6%5DS%95pV%95%01%81%FF'%07%00%00%00%00%00%00%00%00%00%F8x%C7%F0%BE%9COp%5D%C9%7C%AD%E7%E6%EBV%FB%1E%E0(%07%E5%AC%C6%3A%ABi%9C%8F%C6%0E9%AB%C0'%D2%8E%9F%F99%D0E%B5%99%14%F5%0D%CD%7F%24%C6%DEH%B8%E9rV%DFs%DB%D0%F7%00k%FE%1D%84%84%83J%B8%E3%BA%FB%EF%20%84%1C%D7%AD%B0%8E%D7U%C8Y%05%1E%D4t%EF%AD%95Q%BF8w%BF%E9%0A%BF%EB%03%00%00%00%00%00%00%00%00%00%B8vJ%8E%BB%F5%B1u%8Cx%80%E1o%5E%CA9%AB%CB%CB%8E%03%DF%1D%B7T%25%9C%D5(%EFJM8%AB%CC'%D2%B2*%A4s%E7c6%FB%3E%FA%A2%1E%80~%0E%3E%DA%10x%5D%95Uig%15u%15%ED%7C%14%B6%87%A1%3B%FCo8%A8%D8o%D3%ADO%01%EDx%83%1A~%1B%9FpP%A3%DC%C6'%9C%95gK%00%00%00%00%00%00%00%00%00%20%D9%C9%11%D0%C0%40%AF%3F%EE%EE%92%94%D6%16X%B5%BCMH%15%2F%BF%D4%A7%C87%F1%8E%F2%81%AE%AAvzr%DA2%ABV%17%7C%E63%83%E7I%DC%C6%0Bs%1B%EF6%1E%00%00%00%00%00%00%00%00%00%80cr%9CW%FF%7F%C6%01%0E%F1%CE%A5%84%B3%CA%BC%E0%CB%AA%84%CE%F9%BF)%EC%13%08WU%AE%AB%B1%AE%2BO%EC%8E%CBYe%FE%8CN%ABr%5Dy%60~%CFA%0D%F4%AE%D4%BE%C75%CA%EDVB%EA(%B7%F1%09g%E5%D9%12%00%00%00%00%00%00%00%00%00H%F6%EB%13S%E7y%5E%5E%FB%98%F0%22%D1%B2'%A7%F0%92%B1%BC%24z3%AC%7Dm%60%D5%92%B4%7CEUO%5E%F0%AA*%3BU%B9%AE%3E%A0j%94%07%A0%C7%A0%AB%FD%B5%3F%A0%F7%03T%3Dy%D7%F7%D6%D4%C0%AAU%D2%E6%DFt%3F%A8%CC%AA%F2%86%B9%D7%F5%1F%18%E6%01%F8%CC%D5%9E%F0%F3z%88%AA%90%EF%20%00%00%00%00%00%00%00%00%00%C0%A6%D3%EA%CFi%AFb%2C%7BB%0A%2B%C3%1A%D7%06V%D5%07%A8r%5D%3D%D9%A6%CAu%F5%25%CF%A2%99%97zNX%60%95%AB%5DUZ%D5%FBR%03%AB%1C%D4k%9F%3F%BB%5C%FF%81a%AE%AB'%7F%F3%EA%FE%F3z%94%AA%D8%DF%5B%01%00%00%00%00%00%00%00%00%00%8E%FB%F3%F2%B1%1B%8DWU%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*UiU%C7%BBe%E7%F3%B9%CB%AAJ%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5*%AAj%FD%C6%D4%5Eo%90%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5%86%AF%1B%9F%98%DA%EBm%BBV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%AD%D6%E4%F58%01%00%00%00%00%00%00%00%00%00%00%00%00%00%40%85%7F%02%0C%008%C2%D0H%16j%8FX%00%00%00%00IEND%AEB%60%82") repeat-x !important;
+    border-top: 1px solid #BBBBBB !important;
+    border-right: 1px dashed #BBBBBB !important;
+    border-bottom: 1px solid #000000 !important;
+}
+
+.firebugRulerV {
+    top: 0 !important;
+    left: -15px !important;
+    width: 14px !important;
+    height: 100% !important;
+    background: url("data:image/png,%89PNG%0D%0A%1A%0A%00%00%00%0DIHDR%00%00%00%0E%00%00%13%88%08%02%00%00%00%0E%F5%CB%10%00%00%00%04gAMA%00%00%D6%D8%D4OX2%00%00%00%19tEXtSoftware%00Adobe%20ImageReadyq%C9e%3C%00%00%06~IDATx%DA%EC%DD%D1v%A20%14%40Qt%F1%FF%FF%E4%97%D9%07%3BT%19%92%DC%40(%90%EEy%9A5%CB%B6%E8%F6%9Ac%A4%CC0%84%FF%DC%9E%CF%E7%E3%F1%88%DE4%F8%5D%C7%9F%2F%BA%DD%5E%7FI%7D%F18%DDn%BA%C5%FB%DF%97%BFk%F2%10%FF%FD%B4%F2M%A7%FB%FD%FD%B3%22%07p%8F%3F%AE%E3%F4S%8A%8F%40%EEq%9D%BE8D%F0%0EY%A1Uq%B7%EA%1F%81%88V%E8X%3F%B4%CEy%B7h%D1%A2E%EBohU%FC%D9%AF2fO%8BBeD%BE%F7X%0C%97%A4%D6b7%2Ck%A5%12%E3%9B%60v%B7r%C7%1AI%8C%BD%2B%23r%00c0%B2v%9B%AD%CA%26%0C%1Ek%05A%FD%93%D0%2B%A1u%8B%16-%95q%5Ce%DCSO%8E%E4M%23%8B%F7%C2%FE%40%BB%BD%8C%FC%8A%B5V%EBu%40%F9%3B%A72%FA%AE%8C%D4%01%CC%B5%DA%13%9CB%AB%E2I%18%24%B0n%A9%0CZ*Ce%9C%A22%8E%D8NJ%1E%EB%FF%8F%AE%CAP%19*%C3%BAEKe%AC%D1%AAX%8C*%DEH%8F%C5W%A1e%AD%D4%B7%5C%5B%19%C5%DB%0D%EF%9F%19%1D%7B%5E%86%BD%0C%95%A12%AC%5B*%83%96%CAP%19%F62T%86%CAP%19*%83%96%CA%B8Xe%BC%FE)T%19%A1%17xg%7F%DA%CBP%19*%C3%BA%A52T%86%CAP%19%F62T%86%CA%B0n%A9%0CZ%1DV%C6%3D%F3%FCH%DE%B4%B8~%7F%5CZc%F1%D6%1F%AF%84%F9%0F6%E6%EBVt9%0E~%BEr%AF%23%B0%97%A12T%86%CAP%19%B4T%86%CA%B8Re%D8%CBP%19*%C3%BA%A52huX%19%AE%CA%E5%BC%0C%7B%19*CeX%B7h%A9%0C%95%E1%BC%0C%7B%19*CeX%B7T%06%AD%CB%5E%95%2B%BF.%8F%C5%97%D5%E4%7B%EE%82%D6%FB%CF-%9C%FD%B9%CF%3By%7B%19%F62T%86%CA%B0n%D1R%19*%A3%D3%CA%B0%97%A12T%86uKe%D0%EA%B02*%3F1%99%5DB%2B%A4%B5%F8%3A%7C%BA%2B%8Co%7D%5C%EDe%A8%0C%95a%DDR%19%B4T%C66%82fA%B2%ED%DA%9FC%FC%17GZ%06%C9%E1%B3%E5%2C%1A%9FoiB%EB%96%CA%A0%D5qe4%7B%7D%FD%85%F7%5B%ED_%E0s%07%F0k%951%ECr%0D%B5C%D7-g%D1%A8%0C%EB%96%CA%A0%A52T%C6)*%C3%5E%86%CAP%19%D6-%95A%EB*%95q%F8%BB%E3%F9%AB%F6%E21%ACZ%B7%22%B7%9B%3F%02%85%CB%A2%5B%B7%BA%5E%B7%9C%97%E1%BC%0C%EB%16-%95%A12z%AC%0C%BFc%A22T%86uKe%D0%EA%B02V%DD%AD%8A%2B%8CWhe%5E%AF%CF%F5%3B%26%CE%CBh%5C%19%CE%CB%B0%F3%A4%095%A1%CAP%19*Ce%A8%0C%3BO*Ce%A8%0C%95%A12%3A%AD%8C%0A%82%7B%F0v%1F%2FD%A9%5B%9F%EE%EA%26%AF%03%CA%DF9%7B%19*Ce%A8%0C%95%A12T%86%CA%B8Ze%D8%CBP%19*Ce%A8%0C%95%D1ae%EC%F7%89I%E1%B4%D7M%D7P%8BjU%5C%BB%3E%F2%20%D8%CBP%19*Ce%A8%0C%95%A12T%C6%D5*%C3%5E%86%CAP%19*Ce%B4O%07%7B%F0W%7Bw%1C%7C%1A%8C%B3%3B%D1%EE%AA%5C%D6-%EBV%83%80%5E%D0%CA%10%5CU%2BD%E07YU%86%CAP%19*%E3%9A%95%91%D9%A0%C8%AD%5B%EDv%9E%82%FFKOee%E4%8FUe%A8%0C%95%A12T%C6%1F%A9%8C%C8%3D%5B%A5%15%FD%14%22r%E7B%9F%17l%F8%BF%ED%EAf%2B%7F%CF%ECe%D8%CBP%19*Ce%A8%0C%95%E1%93~%7B%19%F62T%86%CAP%19*Ce%A8%0C%E7%13%DA%CBP%19*Ce%A8%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4h%A9%0C%B3E%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4h%A9%0C%B3E%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4%AE%A4%F5%25%C0%00%DE%BF%5C'%0F%DA%B8q%00%00%00%00IEND%AEB%60%82") repeat-y !important;
+    border-left: 1px solid #BBBBBB !important;
+    border-right: 1px solid #000000 !important;
+    border-bottom: 1px dashed #BBBBBB !important;
+}
+
+.overflowRulerX > .firebugRulerV {
+    left: 0 !important;
+}
+
+.overflowRulerY > .firebugRulerH {
+    top: 0 !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.fbProxyElement {
+    position: fixed !important;
+    pointer-events: auto !important;
+}
+</style>
+    <link rel="icon" href="data:image/png;base64,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">
+    <script id="savepage-pageloader" type="application/javascript">
+      savepage_PageLoader(5);
+      "use strict";function savepage_PageLoader(maxframedepth){var resourceMimeType=new Array();var resourceBase64Data=new Array();var resourceBlobUrl=new Array();window.addEventListener("DOMContentLoaded",function(a){createBlobURLs();replaceReferences(0,document.documentElement)},false);function createBlobURLs(){var i,j,binaryString,blobData;var a=new Array();for(i=0;i<resourceMimeType.length;i++){if(typeof resourceMimeType[i]!="undefined"){binaryString=atob(resourceBase64Data[i]);resourceBase64Data[i]="";a.length=0;for(j=0;j<binaryString.length;j++){a[j]=binaryString.charCodeAt(j)}blobData=new Blob([new Uint8Array(a)],{type:resourceMimeType[i]});resourceMimeType[i]="";resourceBlobUrl[i]=window.URL.createObjectURL(blobData)}}}function replaceReferences(a,b){var i,regex1,regex2,csstext,blobData;regex1=/url\(\s*((?:"[^"]+")|(?:'[^']+')|(?:[^\s)]+))\s*\)/gi;regex2=/data:[^;]*;resource=(\d+);base64,/i;if(b.hasAttribute("style")){csstext=b.style.cssText;b.style.cssText=csstext.replace(regex1,replaceCSSRef)}if(b.localName=="style"){csstext=b.textContent;b.textContent=csstext.replace(regex1,replaceCSSRef)}else if(b.localName=="link"&&(b.rel.toLowerCase()=="icon"||b.rel.toLowerCase()=="shortcut icon")){if(b.href!="")b.href=b.href.replace(regex2,replaceRef)}else if(b.localName=="body"){if(b.background!="")b.background=b.background.replace(regex2,replaceRef)}else if(b.localName=="img"){if(b.src!="")b.src=b.src.replace(regex2,replaceRef)}else if(b.localName=="input"&&b.type.toLowerCase()=="image"){if(b.src!="")b.src=b.src.replace(regex2,replaceRef)}else if(b.localName=="audio"){if(b.src!=""){b.src=b.src.replace(regex2,replaceRef);b.load()}}else if(b.localName=="video"){if(b.src!=""){b.src=b.src.replace(regex2,replaceRef);b.load()}if(b.poster!="")b.poster=b.poster.replace(regex2,replaceRef)}else if(b.localName=="source"){if(b.src!=""){b.src=b.src.replace(regex2,replaceRef);b.parentElement.load()}}else if(b.localName=="track"){if(b.src!="")b.src=b.src.replace(regex2,replaceRef)}else if(b.localName=="object"){if(b.data!="")b.data=b.data.replace(regex2,replaceRef)}else if(b.localName=="embed"){if(b.src!="")b.src=b.src.replace(regex2,replaceRef)}if(b.localName=="iframe"||b.localName=="frame"){if(a<maxframedepth){if(b.hasAttribute("data-savepage-sameorigin")){blobData=new Blob([decodeURIComponent(b.src.substr(29))],{type:"text/html;charset=utf-8"});b.onload=function(){try{if(b.contentDocument.documentElement!=null){replaceReferences(a+1,b.contentDocument.documentElement)}}catch(e){}};b.src=window.URL.createObjectURL(blobData)}}}else{for(i=0;i<b.childNodes.length;i++){if(b.childNodes[i]!=null){if(b.childNodes[i].nodeType==1)replaceReferences(a,b.childNodes[i])}}}}function replaceCSSRef(a,b,c,d){var e=new Array();e=b.match(/data:[^;]*;resource=(\d+);base64,/i);if(e!=null)return"url("+resourceBlobUrl[+e[1]]+")";else return a}function replaceRef(a,b,c,d){return resourceBlobUrl[+b]}
+      }
+    </script>
+    <meta name="savepage-url" content="https://www.emacswiki.org/emacs/TsvMode#toc2">
+    <meta name="savepage-title" content="EmacsWiki: Tsv Mode">
+    <meta name="savepage-date" content="Mon Apr 22 2019 10:49:43 GMT+1000 (AEST)">
+    <meta name="savepage-state" content="Basic Items; Used page loader; Retained cross-origin frames; Removed unsaved URLs; Max frame depth = 5; Max resource size = 50MB; Max resource time = 10s;">
+    <meta name="savepage-version" content="13.5">
+    <meta name="savepage-comments" content=""></head><body class="default"><div class="header"><h1><a href="https://www.emacswiki.org/emacs?search=%22TsvMode%22" rel="nofollow" title="Click to search for references to this page"><span style="padding-right: 0.5ex;">Tsv</span><span style="padding-right: 0.5ex;">Mode</span></a></h1></div><div class="wrapper"><div class="content browse"><p>If you have use my elisp <a class="local" href="https://www.emacswiki.org/emacs/Bibus">Bibus</a>, I think you must be familar with this mode.</p><div class="toc"><ol><li><a href="#toc6">Contents</a></li><li><a href="#toc1">Features</a></li><li><a href="#toc2">Download</a></li><li><a href="#toc3">Installation</a></li><li><a href="#toc4">Key bindings</a></li><li><a href="#toc5">TODO</a></li></ol></div><h2 id="toc1">Features</h2><ol><li>Align table column pretty, and the exceed char is elided. The column width is adjustable with single key. You can also hide some unimportant columns.</li><li>Navigate with TAB</li><li>Sort column(you can specific a sort method, this is not provide by any other program)</li><li>Set the first line as the <a class="local" href="https://www.emacswiki.org/emacs/HeaderLine">HeaderLine</a>, sometimes it very convenient especially for a long table.</li><li>Support file seperate by character that in “\t,.: “ and so on.</li></ol><h2 id="toc2">Download</h2><p><a class="inter Lisp" href="/emacs/tsv-mode.el"><span class="site">Lisp</span><span class="separator">:</span><span class="interpage">tsv-mode.el</span></a></p><h2 id="toc3">Installation</h2><pre class="real">(add-to-list 'load-path "/path/to/lib")
+(autoload 'tsv-mode "tsv-mode" "A mode to edit table like file" t)
+(autoload 'tsv-normal-mode "tsv-mode" "A minor mode to edit table like file" t)
+</pre><h2 id="toc4">Key bindings</h2><p>Navigate: </p><pre class="real">TAB             tsv-next-field
+&lt;backtab&gt;       tsv-prev-field
+C-v             tsv-scroll-up
+M-v             tsv-scroll-down
+j               next-line
+k               previous-line
+</pre><p>Copy and paste: </p><pre class="real">C-k             tsv-kill-line
+C-w             tsv-kill-region
+C-y             tsv-yank
+M-w             tsv-kill-ring-save
+w               tsv-copy-field-at-point
+</pre><p>Column operation: </p><pre class="real">&lt;               tsv-narrow-column
+&gt;               tsv-widen-column
+C-c C-&lt;         tsv-narrow-to-min
+C-c C-&gt;         tsv-widen-to-max
+C-c C-n         tsv-set-column-width
+C-c C-w         tsv-set-all-column-width
+H               tsv-hide-column
+S               tsv-show-column
+C-c C-s         tsv-sort-column
+C-c C-l         tsv-sort-lines-region
+</pre><p>Other: </p><pre class="real">RET             tsv-edit-field-at-point
+s               tsv-show-field-at-point
+Q               tsv-exit
+C-c C-e         tsv-normal-mode
+C-c C-u         tsv-revert-with-separator
+C-x n n         tsv-narrow-to-region
+C-x n w         tsv-widen
+</pre><p>There is a minor mode tsv-normal-mode. There is only some key binds for this minor mode: </p><pre class="real">C-a             tsv-normal-beginning-of-field/line
+C-e             tsv-normal-end-of-field/line
+TAB             tsv-normal-next-field
+&lt;backtab&gt;       tsv-normal-prev-field
+C-v             tsv-scroll-up
+M-v             tsv-scroll-down
+C-c C-c         Quit tsv-normal-mode
+</pre><h2 id="toc5">TODO</h2><ol><li>More column operation, such as add, delete, move</li><li>Add new rows.</li><li>Undo support</li><li>Formula </li></ol></div><div class="wrapper close"></div></div>
+
+
+</body></html>
