@@ -1903,8 +1903,10 @@ If one delimiter is empty, leave a space at beginning or end."
   (global-set-key (kbd "M-j") 'scroll-down-line)
   (global-set-key (kbd "C-M-n") 'scroll-up-line)
   (global-set-key (kbd "C-M-p") 'scroll-down-line)
-  (global-set-key (kbd "C-M-S-J") (fn! (scroll-down 1)))
-  (global-set-key (kbd "C-M-S-K") (fn! (scroll-down -1)))
+  (global-set-key (kbd "C-M-S-J") 'my/move-region-down)
+  (global-set-key (kbd "C-M-S-K") 'my/move-region-up)
+  ;; (global-set-key (kbd "C-M-S-J") (fn! (scroll-down 1)))
+  ;; (global-set-key (kbd "C-M-S-K") (fn! (scroll-down -1)))
   (global-set-key (kbd "M-K") (fn! (scroll-other-window 1)))
   (global-set-key (kbd "M-J") (fn! (scroll-other-window-down 1)))
 
@@ -5689,6 +5691,8 @@ ISEARCH DOCUMENTATION.
   (fset 'my/quote-to-end-of-line [escape ?v 5 left ?s 34])
   (fset 'my/uppercase-double-underline [escape ?v ?i ?l ?g ?u ?y ?y ?p ?v ?i ?l ?r ?=])
   (fset 'my/yank-inside-double-quotes [?y ?i 34])
+  (fset 'my/move-region-up [?v escape ?g ?v ?d up ?P])
+  (fset 'my/move-region-down [?v escape ?g ?v ?d down ?P])
 
   (fset 'my/surround-symbol
    (lambda (&optional arg)
