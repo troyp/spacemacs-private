@@ -6556,18 +6556,18 @@ If the region is not active, the entire buffer is processed."
       (shell-command-on-region start end command t t
                                error-buffer display-error-buffer)))
 
-  (defun my/shell-command-replace-selection
-      (command &optional error-buffer display-error-buffer)
-    "Process the region as input with COMMAND and replace with output.
+;;   (defun my/shell-command-replace-selection
+;;       (command &optional error-buffer display-error-buffer)
+;;     "Process the region as input with COMMAND and replace with output.
 
-If the region is not active, the entire buffer is processed."
-    (interactive
-     (list (read-shell-command "run shell command: ") shell-command-default-error-buffer t))
-    (let ((curbuf  (current-buffer))
-          (start (region-beginning))
-          (end (region-end)))
-      (shell-command-on-region start end command t t
-                               error-buffer display-error-buffer)))
+;; If the region is not active, the entire buffer is processed."
+;;     (interactive
+;;      (list (read-shell-command "run shell command: ") shell-command-default-error-buffer t))
+;;     (let ((curbuf  (current-buffer))
+;;           (start (region-beginning))
+;;           (end (region-end)))
+;;       (shell-command-on-region start end command t t
+;;                                error-buffer display-error-buffer)))
 
   (evil-define-command my/evil-shell-command-replace-region
     (start end type command &optional error-buffer display-error-buffer)
