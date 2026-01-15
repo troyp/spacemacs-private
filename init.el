@@ -5879,6 +5879,7 @@ Then move to the next line (column 3).
   (defalias 'alias/key-vector-to-readable-string 'key-description)
   ;; WARNING: key-description is described as an *approximate* inverse to kbd.
   (defalias 'alias/key-readable-string-to-string 'kbd)  ;; or edmacro-parse-keys or read-kbd-macro
+  (defalias 'alias/key-vector-to-readable-string 'key-description)
   (defalias 'alias/key-input-to-vector 'read-key-sequence-vector)
   (defalias 'alias/key-input-to-string 'read-key-sequence)
   (defun my/key-readable-string-to-vector (keystr) (edmacro-parse-keys keystr t))
@@ -7087,7 +7088,13 @@ Text is selected using `my/evil-select-region-operator'."
             )))
       (my/shell-command-replace-region (region-beginning) (region-end) cmd)))
 
+  ;; (fset 'my/pdf-toc-capitalize-entry
+  ;;       [escape ?$ ?F ?/ ?v ?\C-a ?\M-x ?c ?a ?p ?i ?t ?a ?l ?i ?z ?e ?- ?r ?e ?g ?i ?o ?n return ?j])
+
   (defun my/pdf-toc-capitalize-entry ()
+    "In a PDF ToC file, capitalize the entry on the current line.
+
+This function capitalizes everything up to the final forward-slash (/) character."
     (interactive)
     (evil-normal-state)
     (end-of-line)
@@ -7096,9 +7103,6 @@ Text is selected using `my/evil-select-region-operator'."
     (beginning-of-line)
     (capitalize-region (region-beginning) (region-end))
     (next-line))
-
-  ;; (fset 'my/pdf-toc-capitalize-entry
-  ;;       [?\C-e ?F ?/ ?v ?\C-a ?\M-x ?c ?a ?p ?i ?t ?a ?l ?i ?z ?e ?- ?r ?e ?g ?i ?o ?n return ?j])
 
   (defun my/web-mode-normalize-html ()
     (interactive)

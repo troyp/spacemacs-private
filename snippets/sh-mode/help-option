@@ -2,8 +2,8 @@
 # name: help-option
 # key: help
 # --
-if [[ "\$1" =~ ^-h$\\|^--help$ ]]; then
+if [[ "\$1" =~ ^-h$ || ^--help$ ]]; then
     cat <<EOF
 $0
 EOF
-    ${1:return 0}; fi;
+    ${1:return} 0; fi;
