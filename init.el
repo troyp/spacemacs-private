@@ -4036,6 +4036,158 @@ If one delimiter is empty, leave a space at beginning or end."
   ;; │ Haskell-Mode │
   ;; ╰──────────────╯
 
+  (eval-after-load "haskell-mode"
+    '(progn
+      (bind-keys :map haskell-mode-map
+       ("C-c C-h" . nil)
+       ("C-c M-h" . haskell-hoogle)
+       ("C-c C-v" . browse-buffer-file-firefox)
+       )
+      (which-key-add-major-mode-key-based-replacements 'haskell-mode
+          "C-c @" "hiding"
+          )
+      (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+      (add-to-list 'evil-emacs-state-modes 'haskell-interactive-mode)
+      ))
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ helm-mode │
+  ;; ╰───────────╯
+
+  (use-package helm-mode
+    ;;
+    :init
+    (defun helm-switch-to-mini ()
+      (interactive)
+      (helm-run-after-exit #'helm-mini))
+    ;;
+    :bind (:map helm-map
+                ("C-q"        . ace-jump-helm-line-and-select)  ;; was ace-jump-helm-line
+                ("C-S-q"      . ace-jump-helm-line)
+                ("C-0"        . helm-select-action)
+                ("C-)"        . helm-execute-persistent-action)
+                ("C-S-O"      . helm-previous-source)
+                ("C-S-W"      . helm-yank-symbol-at-point)
+                ("C-u"        . helm-delete-minibuffer-contents)
+                ("C-,"        . helm-switch-to-mini)
+                ("<f5>"       . nil)
+                ("<f11>"      . nil)
+                ("<escape>"   . evil-evilified-state)
+                ("<S-escape>" . evil-normal-state)
+                ("<f9>"       . spacemacs/helm-navigation-transient-state/body)
+                )
+    ;;
+    :config
+    (evilified-state-evilify-map helm-map
+      :mode helm-mode
+      :bindings
+      "j"           'helm-next-line
+      "k"           'helm-previous-line
+      "i"           'evil-insert
+      "a"           'evil-append
+      [escape]      'keyboard-escape-quit
+      [S-escape]    'evil-normal-state
+      )
+    (spacemacs/set-leader-keys-for-major-mode 'helm-major-mode
+      "tm"    'helm-toggle-all-marks)
+    (my/define-keys helm-map
+      (kbd "M-RET")  spacemacs-helm-major-mode-map
+      (kbd "M-m")    spacemacs-cmds
+      (kbd "S-SPC")  spacemacs-cmds
+      )
+    )
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────────╮
+  ;; │ helm-firefox │
+  ;; ╰──────────────╯
+
+  (defgroup firefox nil
+    "Customization variables for interacting with the Firefox browser."
+    :group 'environment)
+
+  (defcustom firefox-profile-directory "~/.mozilla/firefox/"
+    "The root directory for firefox profile config folders."
+    :group 'firefox
+    :type 'string)
+
+  (defcustom firefox-default-user-profile "2xdr1tat.Troy"
+    "The default firefox profile."
+    :group 'firefox
+    :type 'string)
+
+  (defcustom firefox-default-user-path
+    (expand-file-name (file-name-as-directory firefox-default-user-profile)
+                      firefox-profile-directory)
+    "The root directory for firefox profile config folders."
+    :group 'firefox
+    :type 'string)
+
+  ;; requires wmctrl executable
+  ;; firefox executable is "firefox" by default, otherwise $FIREFOXEXE
+  (eval-after-load "helm-firefox"
+    `(progn
+       (defun helm-get-firefox-user-init-dir ()
+         firefox-default-user-path)))
+
+  ;; install firefox protocol ffbookmarks in about:config or user.js:
+  ;; user_pref("network.protocol-handler.expose.ffbookmarks", false);
+  (eval-after-load "firefox-protocol"
+    `(progn
+       (defun firefox-protocol--get-firefox-user-init-dir ()
+         firefox-default-user-path)))
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭───────────╮
+  ;; │ help-mode │
+  ;; ╰───────────╯
+
+  (eval-after-load "help-mode"
+    `(progn
+       (bind-keys
+        :map help-mode-map
+        ("H" . help-go-back)
+        ("L" . help-go-forward))
+       (define-key button-map [remap push-button] #'my/push-button-and-center)))
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────╮
+  ;; │ Hy-Mode │
+  ;; ╰─────────╯
+
+  (which-key-add-major-mode-key-based-replacements 'hy-mode
+    "SPC m s"    "evaluate"
+    ", s"        "evaluate"
+    "SPC m V"    "pyvenv"
+    ", V"        "pyvenv"
+    )
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭─────────╮
+  ;; │ ibuffer │
+  ;; ╰─────────╯
+
+  (evil-set-initial-state 'ibuffer-mode 'evilified)
+  (eval-after-load 'ibuffer
+    `(progn
+       (require 'ibuffer-hydra)
+       (define-key ibuffer-mode-map "." 'hydra-ibuffer-main/body)
+       (add-hook 'ibuffer-hook #'hydra-ibuffer-main/body)
+       ))
+
+  ;; ───────────────────────────────────────────────────────────────────────────────
+  ;; ╭──────────╮
+  ;; │ ido-mode │
+  ;; ╰──────────╯
+
+  (defun ido-init ()
+    (bind-keys :map ido-completion-map
+               ("M-+" . ido-make-directory)
+               ("M-=" . ido-make-directory)
+               ("M-m" . spacemacs-cmds)
+               ))
+
   (add-hook 'ido-setup-hook 'ido-init)
 
   ;; (spacemacs/set-leader-keys-for-minor-mode 'ido-mode
