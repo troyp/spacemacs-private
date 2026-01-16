@@ -2611,8 +2611,11 @@ If one delimiter is empty, leave a space at beginning or end."
                ("c" . sort-lines-by-column)
                (";c" . sort-lines-by-column-reverse)
                ("g" . sort-group-lines)
+               ("i" . my/sort-lines-case-insensitive)
                ("s" . sort-lines)
-               (";s" . sort-lines-reverse)
+               (";i" . my/sort-lines-reverse-case-insensitive)
+               (";s" . spacemacs/sort-lines-reverse)
+               ("u" . my/sort-and-uniquify-lines)
                )
 
     (bind-keys :map user-cmds-map
@@ -6137,6 +6140,24 @@ temporarily enables it to allow getting help on disabled items and buttons."
     "Evaluates a SEXP which is represented as a string."
     (eval (car (read-m-string s))))
 
+  (defun my/variable-make-local-and-toggle (sym)
+    "Make a variable buffer-local and toggle"
+    (interactive "SVariable: ")
+    (let ((new-value (not (and (boundp sym) (eval sym)))))
+      (when (not (local-variable-p sym)) (make-local-variable sym))
+      (set sym new-value)
+      (message (format "%S: %S" sym new-value))))
+
+  (my/def-variable-toggle company-quickhelp-mode)
+
+  (defun my/region-or-buffer-beginning ()
+    (if (region-active-p) (region-beginning) (point-min)))
+  (defun my/region-or-buffer-end ()
+    (if (region-active-p) (region-end) (point-max)))
+  (defun my/get-region-or-buffer ()
+    "Return cons representing the bounds of the current region or the entire buffer."
+    (if (region-active-p) (cons (region-beginning) (region-end)) (cons (point-min) (point-max))))
+
   ;; REGION-BEGINNING and REGION-END
   ;; TODO: make these into text motions
   (defun evil-visual-jump-to-region-beginning ()
@@ -6635,24 +6656,6 @@ The node is chosen via `helm'. Optionally, a node pattern can be given alone."
               :input   node
               :buffer  "*helm info*"))))
 
-  (defun my/variable-make-local-and-toggle (sym)
-    "Make a variable buffer-local and toggle"
-    (interactive "SVariable: ")
-    (let ((new-value (not (and (boundp sym) (eval sym)))))
-      (when (not (local-variable-p sym)) (make-local-variable sym))
-      (set sym new-value)
-      (message (format "%S: %S" sym new-value))))
-
-  (my/def-variable-toggle company-quickhelp-mode)
-
-  (defun my/region-or-buffer-beginning ()
-    (if (region-active-p) (region-beginning) (point-min)))
-  (defun my/region-or-buffer-end ()
-    (if (region-active-p) (region-end) (point-max)))
-  (defun my/get-region-or-buffer ()
-    "Return cons representing the bounds of the current region or the entire buffer."
-    (if (region-active-p) (cons (region-beginning) (region-end)) (cons (point-min) (point-max))))
-
   ;; ╭────────────────╮
   ;; │ shell commands │
   ;; ╰────────────────╯
@@ -7056,6 +7059,23 @@ Text is selected using `my/evil-select-region-operator'."
                        current-prefix-arg    ;; delimited
                        nil nil               ;; repeat-count map
                        beg end)))
+
+  (defun my/sort-and-uniquify-lines ()
+    (interactive)
+    (call-interactively 'sort-lines)
+    (evil-visual-refresh)
+    (call-interactively 'spacemacs/uniquify-lines))
+
+  (defun my/sort-lines-case-insensitive ()
+    (interactive)
+    (let ((sort-fold-case t))
+      (call-interactively #'sort-lines)))
+
+  (defun my/sort-lines-reverse-case-insensitive ()
+    (interactive)
+    (destructuring-bind (beg . end) (my/get-region-or-buffer)
+      (let ((sort-fold-case t))
+        (sort-lines t beg end))))
 
   ;; ╭─────────╮
   ;; │ PDF ToC │
@@ -8195,12 +8215,6 @@ entered, return a command which executes it."
       (cond ((member response (list "yes" "y" " ")) t)
             ((member response (list "no" "n" "")) nil)
             (t (my/y-or-n-p prompt)))))
-
-  (defun my/sort-and-uniquify-lines ()
-    (interactive)
-    (call-interactively 'sort-lines)
-    (evil-visual-refresh)
-    (call-interactively 'spacemacs/uniquify-lines))
 
   (defun my/open-my-fork (&optional sourcebase forkbase)
     (interactive)
